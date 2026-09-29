@@ -114,7 +114,7 @@ export default function AnalyzingScreen() {
     >
       <View style={styles.top}>
         <Wordmark color={colors.ink} size={19} />
-        <Chip label={uiCopy(locale).ai} tone="ink" />
+        <Chip label={uiCopy(locale).ai} tone="ink" centered />
       </View>
       <AppText variant="title" accessibilityRole="header" style={styles.title}>
         {t('analyzing.title')}

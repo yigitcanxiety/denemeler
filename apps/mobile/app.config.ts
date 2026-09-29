@@ -94,6 +94,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     predictiveBackGestureEnabled: false,
   },
   web: {
+    // Browser preview (scripts/export-web-preview.mjs): single-page app, no server rendering.
+    output: 'single',
     favicon: './assets/images/placeholder-favicon.png',
   },
   locales: {
@@ -137,6 +139,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   experiments: {
     typedRoutes: true,
+    // Web preview only: exported with a placeholder base path that
+    // scripts/export-web-preview.mjs rewrites to a runtime-detected one, so the export works
+    // under any sub-path. Native builds ignore baseUrl.
+    ...(process.env.TONELLE_WEB_BASE_PLACEHOLDER ? { baseUrl: process.env.TONELLE_WEB_BASE_PLACEHOLDER } : {}),
   },
   extra: {
     ...config.extra,

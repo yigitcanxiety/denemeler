@@ -78,7 +78,7 @@ export default function WelcomeScreen() {
         <MonoLabel slash caps={false} color={colors.ink} size={12.5}>
           {t('common.tagline')}
         </MonoLabel>
-        <Chip label={uiCopy(locale).free} tone="ink" />
+        <Chip label={uiCopy(locale).free} tone="ink" centered />
       </Reveal>
 
       <View style={styles.hero}>

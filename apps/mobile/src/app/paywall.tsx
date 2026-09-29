@@ -132,6 +132,7 @@ export default function PaywallScreen() {
 
   // Android hardware back behaves like the close button (so the exit offer can show).
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (exitVisible) return false;
       close();
@@ -229,7 +230,7 @@ export default function PaywallScreen() {
                       <AppText variant="label" color={colors.onInk} style={styles.planName}>
                         {plan.kind === 'yearly' ? t('paywall.yearlyName') : t('paywall.weeklyName')}
                       </AppText>
-                      {highlight ? <Chip label={t('paywall.bestValue')} tone="soft" /> : null}
+                      {highlight ? <Chip label={t('paywall.bestValue')} tone="soft" centered /> : null}
                       <View style={styles.flex} />
                       <View style={[styles.radio, active && styles.radioActive]}>
                         {active ? <View style={styles.radioDot} /> : null}

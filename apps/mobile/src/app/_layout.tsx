@@ -11,7 +11,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { DemoBadge } from '@/components/demo-badge';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { isWebDemo } from '@/lib/env';
 import { initPurchases } from '@/purchases/purchases';
 import { useAppStore } from '@/store/app-store';
 import { colors } from '@/theme';
@@ -46,6 +48,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
+      {isWebDemo ? <DemoBadge /> : null}
       <Stack
         screenOptions={{
           headerShown: false,

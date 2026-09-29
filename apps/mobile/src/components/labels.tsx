@@ -34,7 +34,7 @@ export function MonoLabel({
       variant="monoLabel"
       color={color}
       numberOfLines={numberOfLines}
-      style={[{ fontSize: size, lineHeight: Math.round(size * 1.35) }, style]}
+      style={[{ fontSize: size, lineHeight: Math.round(size * 1.35), letterSpacing: caps ? 0.6 : 0 }, style]}
     >
       {slash ? `/${text}` : text}
     </AppText>
@@ -69,17 +69,20 @@ export function Chip({
   tone = 'soft',
   style,
   caps = true,
+  centered = false,
 }: {
   label: string;
   tone?: ChipTone;
   style?: StyleProp<ViewStyle>;
   caps?: boolean;
+  /** Vertically centre the chip inside a row (default hugs the start of a column). */
+  centered?: boolean;
 }) {
   const locale = useLocale();
   const t = CHIP_TONES[tone];
   return (
-    <View style={[styles.chip, { backgroundColor: t.bg, borderColor: t.border }, style]}>
-      <AppText variant="monoLabel" color={t.fg} style={styles.chipText} numberOfLines={1}>
+    <View style={[styles.chip, centered && styles.chipCentered, { backgroundColor: t.bg, borderColor: t.border }, style]}>
+      <AppText variant="monoLabel" color={t.fg} style={[styles.chipText, !caps && styles.chipTextPlain]} numberOfLines={1}>
         {caps ? upper(label, locale) : label}
       </AppText>
     </View>
@@ -104,5 +107,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.sm - 2,
     borderWidth: 1,
   },
+  chipCentered: { alignSelf: 'center' },
   chipText: { fontSize: 10.5, lineHeight: 13, letterSpacing: 0.6 },
+  chipTextPlain: { letterSpacing: 0 },
 });

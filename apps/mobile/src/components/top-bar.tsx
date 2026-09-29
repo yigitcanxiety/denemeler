@@ -47,7 +47,7 @@ export function TopBar({
           <Wordmark color={dark ? colors.onInk : colors.ink} />
         )}
       </View>
-      {chip ? <Chip label={chip} tone={dark ? 'soft' : 'ink'} /> : null}
+      {chip ? <Chip label={chip} tone={dark ? 'soft' : 'ink'} centered /> : null}
       {right}
       {onClose ? (
         <IconButton icon="close" label={closeLabel} onPress={onClose} size={38} tone={dark ? 'glass' : 'light'} style={dark ? styles.btnDark : undefined} />

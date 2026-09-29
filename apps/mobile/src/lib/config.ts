@@ -51,3 +51,12 @@ export function revenueCatKeyFor(env: AppEnv, platform: MobilePlatform): string 
   if (platform === 'android') return env.rcAndroidKey;
   return null;
 }
+
+/**
+ * Web-only offline demo: the browser preview (`expo export --platform web`) runs without an API
+ * when EXPO_PUBLIC_API_URL is unset and answers with the shared mock analysis instead.
+ * Native builds always talk to the API.
+ */
+export function isWebDemoMode(raw: RawEnv, platform: MobilePlatform): boolean {
+  return platform === 'web' && !clean(raw.EXPO_PUBLIC_API_URL);
+}

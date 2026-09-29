@@ -1,7 +1,7 @@
 import { LOOKS } from '@tonelle/shared';
 import { Redirect, router } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
@@ -33,6 +33,11 @@ export default function ResultsScreen() {
   const serverLookIds = useAppStore((s) => s.recommendedLookIds);
   const quiz = useAppStore((s) => s.quiz);
   const [tab, setTab] = useState<Tab>('results');
+  const scrollRef = useRef<ScrollView>(null);
+  const switchTab = (next: Tab) => {
+    setTab(next);
+    scrollRef.current?.scrollTo({ y: 0, animated: false });
+  };
 
   if (!analysis) return <Redirect href="/" />;
   if (!premium) return <Redirect href="/teaser" />;
@@ -45,6 +50,7 @@ export default function ResultsScreen() {
 
   return (
     <Screen
+      scrollRef={scrollRef}
       footer={
         <BottomNav<Tab>
           left={{ icon: 'share', label: t('share.title'), onPress: () => router.push('/share') }}
@@ -54,7 +60,7 @@ export default function ResultsScreen() {
             { key: 'looks', label: copy.navLooks },
           ]}
           value={tab}
-          onChange={setTab}
+          onChange={switchTab}
         />
       }
     >
@@ -96,7 +102,7 @@ export default function ResultsScreen() {
                 {byId('eyeShape').value}
               </AppText>
             </View>
-            <Chip label={copy.ai} tone="ink" />
+            <Chip label={copy.ai} tone="ink" centered />
           </Card>
 
           <Card tone="light" style={styles.gap}>

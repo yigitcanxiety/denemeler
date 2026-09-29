@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "doctor": "expo-doctor",
-    "assets": "node ./scripts/generate-placeholder-assets.mjs"
+    "assets": "node ./scripts/generate-placeholder-assets.mjs",
+    "export:web-preview": "node ./scripts/export-web-preview.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/inter-tight": "^0.4.2",

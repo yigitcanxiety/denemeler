@@ -39,7 +39,7 @@ export function SeasonCard({
         <MonoLabel color={colors.onInkMuted} slash>
           {t('results.yourSeason')}
         </MonoLabel>
-        {chip ? <Chip label={chip} tone="soft" /> : null}
+        {chip ? <Chip label={chip} tone="soft" centered /> : null}
       </View>
       <FitWordmark lines={season.name.split(' ')} color={colors.onInk} maxSize={78} delay={150} />
       <View style={styles.meter}>

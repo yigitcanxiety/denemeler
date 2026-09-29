@@ -35,6 +35,8 @@ const VARIANTS: Record<Variant, { bg: string; fg: string; border: string }> = {
   onInk: { bg: 'transparent', fg: colors.onInk, border: colors.inkLine },
 };
 
+const DISABLED_PRIMARY = { bg: colors.paperSunken, fg: colors.inkMuted, border: colors.paperSunken };
+
 export function Button({
   label,
   onPress,
@@ -46,7 +48,8 @@ export function Button({
   compact,
   icon,
 }: ButtonProps) {
-  const v = VARIANTS[variant];
+  // Disabled primary becomes a solid sunken pill (no see-through grid lines); others fade.
+  const v = disabled && !loading && variant === 'primary' ? DISABLED_PRIMARY : VARIANTS[variant];
   const inactive = disabled || loading;
   return (
     <PressableScale
@@ -60,7 +63,8 @@ export function Button({
         styles.base,
         compact && styles.compact,
         { backgroundColor: v.bg, borderColor: v.border },
-        inactive && styles.disabled,
+        inactive && variant !== 'primary' && styles.disabled,
+        loading && variant === 'primary' && styles.loading,
         style,
       ]}
     >
@@ -132,6 +136,7 @@ const styles = StyleSheet.create({
   spinner: { marginRight: spacing.sm },
   icon: { marginLeft: spacing.sm },
   disabled: { opacity: 0.4 },
+  loading: { opacity: 0.85 },
   iconButton: { alignItems: 'center', justifyContent: 'center' },
   iconLight: { borderWidth: StyleSheet.hairlineWidth, borderColor: colors.line },
 });

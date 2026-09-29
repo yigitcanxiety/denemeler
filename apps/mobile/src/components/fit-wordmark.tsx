@@ -8,7 +8,7 @@ import { colors, fonts, motion } from '@/theme';
 const BASE = 20;
 const TRACKING = -0.055; // em
 const LINE = 1.08;
-const OVERLAP = 0.17; // em pulled up between lines
+const OVERLAP = 0.1; // em pulled up between lines (small enough that ş/ç/ğ descenders clear the next line)
 
 /**
  * Giant tight-tracked grotesk that spans the full container width (the TONELLE wordmark, big
@@ -38,7 +38,7 @@ export function FitWordmark({
   const [measured, setMeasured] = useState<Record<number, number>>({});
   const ready = width > 0 && lines.every((_, i) => (measured[i] ?? 0) > 0);
   const widest = Math.max(1, ...lines.map((_, i) => measured[i] ?? 1));
-  const size = ready ? Math.min(maxSize, (width / widest) * BASE * 0.995) : 0;
+  const size = ready ? Math.min(maxSize, (width / widest) * BASE * 0.985) : 0;
 
   let charIndex = 0;
   return (
@@ -60,8 +60,16 @@ export function FitWordmark({
               setMeasured((m) => (m[i] === w ? m : { ...m, [i]: w }));
             }}
           >
-            {[...line].map((ch, j) => (
-              <Text key={j} allowFontScaling={false} style={[styles.letter, { fontFamily, fontSize: BASE, lineHeight: BASE * LINE, letterSpacing: BASE * TRACKING }]}>
+            {[...line].map((ch, j, all) => (
+              <Text
+                key={j}
+                allowFontScaling={false}
+                style={[
+                  styles.letter,
+                  // No negative tracking after the last glyph, or its ink overhangs the measured box.
+                  { fontFamily, fontSize: BASE, lineHeight: BASE * LINE, letterSpacing: j === all.length - 1 ? 0 : BASE * TRACKING },
+                ]}
+              >
                 {ch}
               </Text>
             ))}
@@ -75,10 +83,11 @@ export function FitWordmark({
               key={`${i}-${line}`}
               style={[styles.row, styles.clip, { height: size * LINE, marginTop: i === 0 ? 0 : -size * OVERLAP }]}
             >
-              {[...line].map((ch, j) => (
+              {[...line].map((ch, j, all) => (
                 <Letter
                   key={j}
                   char={ch}
+                  last={j === all.length - 1}
                   size={size}
                   color={color}
                   fontFamily={fontFamily}
@@ -95,6 +104,7 @@ export function FitWordmark({
 
 function Letter({
   char,
+  last,
   size,
   color,
   fontFamily,
@@ -102,6 +112,7 @@ function Letter({
   reveal,
 }: {
   char: string;
+  last: boolean;
   size: number;
   color: string;
   fontFamily: string;
@@ -124,7 +135,7 @@ function Letter({
       allowFontScaling={false}
       style={[
         styles.letter,
-        { fontFamily, fontSize: size, lineHeight: size * LINE, letterSpacing: size * TRACKING, color },
+        { fontFamily, fontSize: size, lineHeight: size * LINE, letterSpacing: last ? 0 : size * TRACKING, color },
         animated,
       ]}
     >

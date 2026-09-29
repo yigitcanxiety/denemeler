@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
@@ -17,6 +17,8 @@ export interface ScreenProps {
   background?: string;
   /** Hairline construction grid behind the content (paper screens). */
   grid?: boolean | 'accent';
+  /** Ref to the inner ScrollView (e.g. to scroll back to the top on tab change). */
+  scrollRef?: RefObject<ScrollView | null>;
 }
 
 export function Screen({
@@ -28,6 +30,7 @@ export function Screen({
   contentStyle,
   background = colors.paper,
   grid = true,
+  scrollRef,
 }: ScreenProps) {
   return (
     <SafeAreaView edges={edges} style={[styles.root, { backgroundColor: background }]}>
@@ -35,6 +38,7 @@ export function Screen({
       {header ? <View style={styles.header}>{header}</View> : null}
       {scroll ? (
         <ScrollView
+          ref={scrollRef}
           contentContainerStyle={[styles.content, contentStyle]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -44,7 +48,7 @@ export function Screen({
       ) : (
         <View style={[styles.content, styles.fill, contentStyle]}>{children}</View>
       )}
-      {footer ? <View style={styles.footer}>{footer}</View> : null}
+      {footer ? <View style={[styles.footer, { backgroundColor: background }]}>{footer}</View> : null}
     </SafeAreaView>
   );
 }
@@ -54,5 +58,12 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   header: { paddingHorizontal: GUTTER, paddingTop: spacing.xs, paddingBottom: spacing.sm },
   content: { paddingHorizontal: GUTTER, paddingBottom: spacing.xl, gap: spacing.md },
-  footer: { paddingHorizontal: GUTTER, paddingTop: spacing.sm, paddingBottom: spacing.sm, gap: spacing.sm },
+  footer: {
+    paddingHorizontal: GUTTER,
+    paddingTop: spacing.sm + 2,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.line,
+  },
 });

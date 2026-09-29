@@ -2,7 +2,7 @@ import { LOCALES, type Locale } from '@tonelle/shared';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
@@ -18,7 +18,7 @@ import { Rule, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import type { LegalPage } from '@/lib/config';
-import { indexLabel, uiCopy } from '@/lib/ui-copy';
+import { indexLabel, uiCopy, upper } from '@/lib/ui-copy';
 import { isDevPurchases, manageSubscriptions, restorePurchases, switchUser } from '@/purchases/purchases';
 import { openLegal } from '@/services/legal';
 import { useAppStore } from '@/store/app-store';
@@ -57,18 +57,25 @@ export default function SettingsScreen() {
     }
   };
 
+  const deleteNow = () => {
+    const newId = deleteAllData();
+    void switchUser(newId);
+    setMessage({ text: t('settings.deleteDataDone'), tone: 'success' });
+    router.dismissTo('/');
+  };
+
   const confirmDelete = () => {
+    // react-native-web's Alert is a no-op; the browser preview uses the native confirm dialog.
+    if (Platform.OS === 'web') {
+      if (window.confirm(`${t('settings.deleteDataTitle')}\n\n${t('settings.deleteDataBody')}`)) deleteNow();
+      return;
+    }
     Alert.alert(t('settings.deleteDataTitle'), t('settings.deleteDataBody'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
         text: t('settings.deleteDataConfirm'),
         style: 'destructive',
-        onPress: () => {
-          const newId = deleteAllData();
-          void switchUser(newId);
-          setMessage({ text: t('settings.deleteDataDone'), tone: 'success' });
-          router.dismissTo('/');
-        },
+        onPress: deleteNow,
       },
     ]);
   };
@@ -83,7 +90,8 @@ export default function SettingsScreen() {
           </SectionTitle>
           <PillSegmented<Locale>
             role="radiogroup"
-            options={LOCALES.map((code: Locale) => ({ key: code, label: t(`language.${code}`) }))}
+            // Each language name is uppercased in its own locale ("English" must not become "ENGLİSH").
+            options={LOCALES.map((code: Locale) => ({ key: code, label: upper(t(`language.${code}`), code) }))}
             value={locale}
             onChange={setLocale}
             style={styles.langTrack}
@@ -99,7 +107,7 @@ export default function SettingsScreen() {
             <AppText variant="body" color={premium ? colors.onInk : colors.onInkMuted} style={styles.flex}>
               {premium ? t('settings.premiumActive') : t('settings.premiumInactive')}
             </AppText>
-            {premium ? <Chip label={uiCopy(locale).premium} tone="soft" /> : null}
+            {premium ? <Chip label={uiCopy(locale).premium} tone="soft" centered /> : null}
           </View>
           <Button
             label={restoring ? t('paywall.restoring') : t('settings.restorePurchases')}

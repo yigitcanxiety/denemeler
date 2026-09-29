@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, IconButton } from '@/components/button';
 import { FaceGuide } from '@/components/face-guide';
 import { Icon } from '@/components/icon';
-import { Chip, MonoLabel } from '@/components/labels';
+import { Chip, MonoLabel, NumberTag } from '@/components/labels';
 import { PressableScale } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
@@ -17,6 +17,7 @@ import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
 import { useT } from '@/hooks/use-i18n';
+import { indexLabel } from '@/lib/ui-copy';
 import { deleteTempFile, preparePhoto } from '@/services/photo';
 import { useAppStore, type SessionPhoto } from '@/store/app-store';
 import { colors, GUTTER, radii, spacing } from '@/theme';
@@ -28,6 +29,9 @@ const HINTS = [
   'camera.hintGlasses',
   'camera.hintStraight',
 ] as const;
+
+/** The web preview has no live camera UI; selfies come from a file upload instead. */
+const UPLOAD_ONLY = Platform.OS === 'web';
 
 export default function CameraScreen() {
   const t = useT();
@@ -121,6 +125,44 @@ export default function CameraScreen() {
     );
   }
 
+  /* ---------- Browser preview: no live camera, photo upload only ---------- */
+  if (UPLOAD_ONLY) {
+    return (
+      <Screen
+        footer={<Button label={t('camera.upload')} onPress={() => void pick()} loading={busy} icon="upload" />}
+      >
+        <CardStack>
+          <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('camera.title')} />
+          <Card style={styles.permission}>
+            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
+              {t('camera.upload')}
+            </AppText>
+            <AppText variant="body" color={colors.onInkMuted}>
+              {t('camera.subtitle')}
+            </AppText>
+            <View style={styles.webHints}>
+              {HINTS.map((key, i) => (
+                <View key={key} style={styles.webHintRow}>
+                  <NumberTag label={indexLabel(i)} tone="light" size={24} />
+                  <AppText variant="mono" color={colors.onInk} style={styles.flex}>
+                    {t(key)}
+                  </AppText>
+                </View>
+              ))}
+            </View>
+            <MonoLabel color={colors.onInkSubtle} caps={false}>
+              {t('camera.fileTypes')}
+            </MonoLabel>
+          </Card>
+        </CardStack>
+        <View style={styles.permissionArt}>
+          <FaceGuide width={150} height={198} />
+        </View>
+        {error ? <Notice tone="error" message={error} /> : null}
+      </Screen>
+    );
+  }
+
   /* ---------- Permission states ---------- */
   if (!permission?.granted) {
     const blocked = permission && !permission.canAskAgain;
@@ -179,7 +221,7 @@ export default function CameraScreen() {
       <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom']}>
         <View style={styles.topRow}>
           <IconButton icon="close" label={t('common.close')} onPress={() => router.back()} tone="glass" size={44} />
-          <Chip label={t('camera.title')} tone="soft" />
+          <Chip label={t('camera.title')} tone="soft" centered />
         </View>
         <View style={styles.topHints}>
           <AppText variant="label" color={colors.onInk} align="center">
@@ -303,5 +345,7 @@ const styles = StyleSheet.create({
   },
   previewImage: { width: '100%', height: '100%' },
   permission: { gap: spacing.md },
+  webHints: { gap: spacing.sm },
+  webHintRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   permissionArt: { alignItems: 'center', paddingVertical: spacing.lg },
 });

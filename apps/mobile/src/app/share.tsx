@@ -1,7 +1,7 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useRef, useState } from 'react';
-import { Image, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Image, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import Svg, { Circle, Line } from 'react-native-svg';
 
@@ -18,9 +18,13 @@ import { usePremium } from '@/hooks/use-premium';
 import { env } from '@/lib/env';
 import { isLookId, lookSummary } from '@/lib/looks';
 import { seasonText } from '@/lib/results';
+import { uiCopy } from '@/lib/ui-copy';
 import { deleteTempFile } from '@/services/photo';
 import { useAppStore } from '@/store/app-store';
 import { colors, GUTTER, heat, radii, spacing } from '@/theme';
+
+/** view-shot + native share sheet are app-only; the web preview shows the card without the button. */
+const CAN_SHARE_IMAGE = Platform.OS !== 'web';
 
 export default function ShareScreen() {
   const t = useT();
@@ -76,12 +80,14 @@ export default function ShareScreen() {
     <Screen
       header={<TopBar onClose={() => router.back()} closeLabel={t('common.close')} title={t('share.title')} />}
       footer={
-        <Button
-          label={busy ? t('share.generating') : t('share.shareButton')}
-          onPress={() => void share()}
-          loading={busy}
-          icon="share"
-        />
+        CAN_SHARE_IMAGE ? (
+          <Button
+            label={busy ? t('share.generating') : t('share.shareButton')}
+            onPress={() => void share()}
+            loading={busy}
+            icon="share"
+          />
+        ) : null
       }
     >
       <MonoLabel caps={false} style={styles.center}>
@@ -160,6 +166,7 @@ export default function ShareScreen() {
         </View>
       </View>
 
+      {CAN_SHARE_IMAGE ? null : <Notice tone="info" message={uiCopy(locale).shareAppOnly} />}
       {error ? <Notice tone="error" message={error} /> : null}
     </Screen>
   );

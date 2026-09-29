@@ -17,6 +17,9 @@ const COPY = {
     palette: 'Palet',
     free: 'ÜCRETSİZ',
     locked: 'KİLİTLİ',
+    demoBadge: 'DEMO',
+    demoDetail: 'Tarayıcı önizlemesi · örnek analiz, fotoğrafın hiçbir yere gönderilmez',
+    shareAppOnly: 'Görsel olarak paylaşma yalnızca uygulamada. Tarayıcı önizlemesinde kartı ekran görüntüsüyle kaydedebilirsin.',
     season: { spring: 'İlkbahar', summer: 'Yaz', autumn: 'Sonbahar', winter: 'Kış' },
   },
   en: {
@@ -29,6 +32,9 @@ const COPY = {
     palette: 'Palette',
     free: 'FREE',
     locked: 'LOCKED',
+    demoBadge: 'DEMO',
+    demoDetail: 'Browser preview · sample analysis, your photo is not sent anywhere',
+    shareAppOnly: 'Sharing as an image works in the app. In the browser preview, take a screenshot of the card.',
     season: { spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter' },
   },
 } as const;
