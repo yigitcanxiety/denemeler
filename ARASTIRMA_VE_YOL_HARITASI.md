@@ -61,8 +61,8 @@
 
 ## 3. Ürün kararı (MVP kapsamı)
 
-### Çalışma adı önerileri
-`Glowa`, `Tonely`, `Palette AI`, `Renkim`, `LookMate`. Kısa, TR ve AB'de telaffuzu kolay isimler. App Store'da uygunluğunu ve marka tescilini (TÜRKPATENT/EUIPO) kontrol et.
+### İsim
+**Tonelle** (yayıncı: Doribleg Trade Ltd). Gerekçe ve kontroller için 10. bölüme bak.
 
 ### MVP'de OLACAKLAR (v1.0, 14 gün)
 1. **Onboarding quiz (5–7 soru):** cilt tipi, göz rengi, günlük/özel gün tercihi, bütçe, makyaj seviyesi. Bu, kullanıcıya yatırım hissi verir ve dönüşümü artırır.
@@ -172,7 +172,7 @@
 | **EU AI Act** | Güzellik analizi yasaklı kategoride değil. **Md. 50 şeffaflık (Ağustos 2026'dan itibaren geçerli):** AI ile üretilen/düzenlenen görselleri "AI ile oluşturuldu" diye etiketle (görselin köşesine + metadata). |
 | **DSA / App Store "Trader" statüsü** | AB App Store'da satış için tacir bilgisi (adres, telefon, e-posta) **herkese açık** gösteriliyor. Şahıs olarak yayınlıyorsan buna hazırlıklı ol. Gerekirse şirket veya sanal ofis adresi kullan. |
 | **Apple incelemesi** | Gizlilik "nutrition label" doğru doldurulmalı, yüz verisinin kullanımını açıkla (Guideline 5.1.2). Abonelik şartları paywall'da görünür olmalı (fiyat, süre, iptal). |
-| **Şirket / vergi** | Hızlı başlangıç için **şahıs şirketi** (TR) açıp mağaza gelirini fatura et. Genç girişimci vergi istisnası (29 yaş altı) varsa değerlendir. Bir mali müşavirle konuş. |
+| **Şirket / vergi** | Yayıncı **Doribleg Trade Ltd**. Mağaza gelirleri şirkete faturalanacak. Şirketin kurulu olduğu ülke (UK Ltd mi, TR Ltd. Şti. mi) vergiyi, web ödeme sağlayıcısını ve KVKK/GDPR'da veri sorumlusunu belirliyor. Bir mali müşavirle konuş. |
 | **Meta reklam ücreti** | Temmuz 2026'dan beri Türkiye'de reklamlara %5, FR/IT/ES'te %3, AT'de %5 konum ücreti ekleniyor. Bütçeyi buna göre planla. |
 
 ---
@@ -256,11 +256,22 @@
 
 ---
 
-## 10. Hemen verilmesi gereken kararlar (checklist)
+## 10. Kararlar
 
-- [ ] **İsim ve marka:** listeden seç ya da yenisini öner
-- [ ] **Kapsam:** Renk analizi + 3 makyaj look (önerilen) mi, yalnızca makyaj look mu?
-- [ ] **Yayın kimliği:** şahıs mı, şirket mi? (AB'de trader bilgisi herkese açık olacak)
+### Verilen kararlar
+- [x] **Yayıncı:** **Doribleg Trade Ltd** (şirket hesabı). Apple şirket hesabı için **D-U-N-S numarası** gerekiyor (ücretsiz, 1–2 hafta sürebilir, hemen başvur). AB App Store'da trader bilgisi olarak şirket adresi görünecek.
+- [x] **Uygulama adı:** **Tonelle**
+  - *Ton* (TR "ton", EN "tone") + *-elle* (FR "o/kadın", zarif ve kadınsı çağrışım). TR, DE, FR, IT, ES, PL ve NL'de kolay okunuyor ve olumsuz bir anlamı yok.
+  - Arama sonucu (29.09.2026): App Store, Google Play ve web'de "Tonelle" adında bir uygulama ya da güzellik markası çıkmadı. Elenen adaylar: Tonely, Palettia, Hueva, Glowmi, Seasona (hepsi kullanımda).
+  - Mağaza başlıkları:
+    - TR: **Tonelle: AI Makyaj & Renk Analizi**
+    - EN: **Tonelle: AI Makeup & Color Match**
+    - DE: **Tonelle: KI Make-up & Farbanalyse**
+  - Yedek isim: **Palora**
+  - Yapılacaklar: `tonelle.app` domainini al. TÜRKPATENT ve EUIPO'da sınıf 9 (yazılım) + 3 (kozmetik) + 44 (güzellik hizmetleri) için marka araştırması yap ve başvur. Instagram ve TikTok'ta `@tonelle.app` / `@tonelleapp` kullanıcı adlarını al.
+- [x] **Kapsam:** Renk analizi + 3 makyaj görünümü (önerilen kapsam)
+
+### Açık kararlar
 - [ ] **İlk platform:** iOS + Android birlikte (önerilen, Expo) mi, önce iOS mu?
 - [ ] **Reklam bütçesi:** ilk 30 gün için günlük ₺750 mi, ₺1.500 mü?
 - [ ] **Görsel modeli:** Gemini API mı, fal.ai mı?
