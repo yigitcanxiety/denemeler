@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates PLACEHOLDER app icon / splash PNGs (rose-nude background with a "T" monogram)
+ * Generates PLACEHOLDER app icon / splash PNGs (lavender background with a violet "T" monogram)
  * using only Node built-ins (zlib). Replace the files in assets/images/placeholder-* with
  * real brand artwork before release — keep the file names or update app.config.ts.
  *
@@ -14,11 +14,11 @@ import { fileURLToPath } from 'node:url';
 
 const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'images');
 
-// Mirrors src/theme.ts
-const NUDE_100 = [0xf9, 0xf0, 0xea];
-const BLUSH_200 = [0xf4, 0xcf, 0xd0];
-const ACCENT = [0xb8, 0x5c, 0x64];
-const INK_INVERSE = [0xfd, 0xf9, 0xf6];
+// Mirrors src/theme.ts (v3 "Aura"): board, a near-white halo, violet, paper
+const BOARD = [0xe9, 0xe5, 0xfb];
+const HALO = [0xfd, 0xfc, 0xff];
+const VIOLET = [0x74, 0x57, 0xf5];
+const PAPER = [0xff, 0xff, 0xff];
 
 /* ---------- PNG encoding ---------- */
 
@@ -150,9 +150,9 @@ write(
   'placeholder-icon.png',
   1024,
   (size) => {
-    const c = createCanvas(size, NUDE_100);
-    fillShape(c, BLUSH_200, circle(0.5, 0.5, 0.36));
-    fillShape(c, ACCENT, monogramT(0.5, 0.5, 0.4));
+    const c = createCanvas(size, BOARD);
+    fillShape(c, HALO, circle(0.5, 0.5, 0.36));
+    fillShape(c, VIOLET, monogramT(0.5, 0.5, 0.4));
     return c;
   },
   false,
@@ -164,8 +164,8 @@ write(
   1024,
   (size) => {
     const c = createCanvas(size, null);
-    fillShape(c, BLUSH_200, circle(0.5, 0.5, 0.26));
-    fillShape(c, ACCENT, monogramT(0.5, 0.5, 0.28));
+    fillShape(c, HALO, circle(0.5, 0.5, 0.26));
+    fillShape(c, VIOLET, monogramT(0.5, 0.5, 0.28));
     return c;
   },
   true,
@@ -183,14 +183,14 @@ write(
   true,
 );
 
-// Splash image (shown centred on the nude background colour set in app.config.ts).
+// Splash image (shown centred on the white background colour set in app.config.ts).
 write(
   'placeholder-splash.png',
   512,
   (size) => {
     const c = createCanvas(size, null);
-    fillShape(c, ACCENT, circle(0.5, 0.5, 0.48));
-    fillShape(c, INK_INVERSE, monogramT(0.5, 0.5, 0.46));
+    fillShape(c, VIOLET, circle(0.5, 0.5, 0.48));
+    fillShape(c, PAPER, monogramT(0.5, 0.5, 0.46));
     return c;
   },
   true,
@@ -200,8 +200,8 @@ write(
   'placeholder-favicon.png',
   48,
   (size) => {
-    const c = createCanvas(size, ACCENT);
-    fillShape(c, INK_INVERSE, monogramT(0.5, 0.5, 0.6));
+    const c = createCanvas(size, VIOLET);
+    fillShape(c, PAPER, monogramT(0.5, 0.5, 0.6));
     return c;
   },
   false,

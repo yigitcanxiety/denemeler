@@ -1,25 +1,24 @@
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { BottomSheet } from '@/components/bottom-sheet';
-import { Button } from '@/components/button';
+import { Button, IconButton } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
-import { Chip, MonoLabel, NumberTag } from '@/components/labels';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
-import { Neck } from '@/components/stack';
 import { AppText } from '@/components/text';
-import { TopBar } from '@/components/top-bar';
+import { CheckRow, Pill } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import {
   defaultPlanKey,
   exitDiscountPercent,
   legalLinesFor,
   planPriceLine,
+  yearlySavingsPercent,
 } from '@/lib/paywall';
-import { indexLabel, uiCopy } from '@/lib/ui-copy';
+import { percentLabel, uiCopy } from '@/lib/ui-copy';
 import {
   isDevPurchases,
   loadPaywall,
@@ -28,7 +27,6 @@ import {
   type PaywallData,
   type Plan,
 } from '@/purchases/purchases';
-import { openLegal } from '@/services/legal';
 import { colors, fonts, radii, spacing, typography } from '@/theme';
 
 const FEATURES = [
@@ -44,6 +42,7 @@ type Status = 'loading' | 'ready' | 'error';
 export default function PaywallScreen() {
   const t = useT();
   const locale = useLocale();
+  const copy = uiCopy(locale);
   const [status, setStatus] = useState<Status>('loading');
   const [data, setData] = useState<PaywallData>({ plans: [], exitOffer: null });
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
@@ -51,7 +50,6 @@ export default function PaywallScreen() {
   const [message, setMessage] = useState<{ text: string; tone: 'error' | 'info' | 'success' } | null>(null);
   const [exitVisible, setExitVisible] = useState(false);
   const [exitShown, setExitShown] = useState(false);
-
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -79,6 +77,7 @@ export default function PaywallScreen() {
     [data.plans, selectedKey],
   );
   const regularYearly = data.plans.find((p) => p.kind === 'yearly');
+  const savings = yearlySavingsPercent(data.plans);
   const platform = Platform.OS === 'ios' ? 'ios' : 'android';
 
   const onSuccess = () => {
@@ -146,12 +145,24 @@ export default function PaywallScreen() {
       ? t('paywall.processing')
       : selected?.intro?.type === 'trial'
         ? t('paywall.ctaTrial')
-        : t('paywall.ctaSubscribe');
+        : selected?.kind === 'report'
+          ? t('paywall.ctaReport')
+          : t('paywall.ctaSubscribe');
 
-  const copy = uiCopy(locale);
+  const exitPercent = data.exitOffer ? exitDiscountPercent(regularYearly, data.exitOffer) : 0;
 
   return (
     <Screen
+      header={
+        <View style={styles.top}>
+          <IconButton icon="close" label={t('common.close')} size={34} onPress={close} />
+          <Pressable onPress={() => void restore()} accessibilityRole="button" hitSlop={10} disabled={busy !== null}>
+            <AppText variant="smallStrong" color={colors.muted}>
+              {busy === 'restore' ? t('paywall.restoring') : copy.restoreShort}
+            </AppText>
+          </Pressable>
+        </View>
+      }
       footer={
         <>
           <Button
@@ -160,106 +171,44 @@ export default function PaywallScreen() {
             loading={busy === 'purchase'}
             disabled={!selected || status !== 'ready' || busy !== null}
           />
-          <View style={styles.footerLinks}>
-            <Pressable onPress={() => void restore()} accessibilityRole="button" hitSlop={8} disabled={busy !== null}>
-              <AppText variant="monoSmall" color={colors.ink}>
-                {busy === 'restore' ? t('paywall.restoring') : t('paywall.restore')}
-              </AppText>
-            </Pressable>
-            <AppText variant="monoSmall">/</AppText>
-            <Pressable onPress={() => void openLegal(locale, 'terms')} accessibilityRole="link" hitSlop={8}>
-              <AppText variant="monoSmall" color={colors.ink}>
-                {t('legal.terms')}
-              </AppText>
-            </Pressable>
-            <AppText variant="monoSmall">/</AppText>
-            <Pressable onPress={() => void openLegal(locale, 'privacy')} accessibilityRole="link" hitSlop={8}>
-              <AppText variant="monoSmall" color={colors.ink}>
-                {t('legal.privacy')}
-              </AppText>
-            </Pressable>
-          </View>
+          <AppText variant="caption" align="center">
+            {selected?.intro?.type === 'trial' ? copy.trialFine : t('paywall.cancelAnytime')}
+          </AppText>
         </>
       }
     >
-      <TopBar onClose={close} closeLabel={t('common.close')} chip={copy.premium} />
       {isDevPurchases ? <DevBanner /> : null}
 
       <Reveal style={styles.intro}>
-        <AppText variant="title" accessibilityRole="header" style={styles.title}>
-          {t('paywall.title')}
+        <AppText variant="display" accessibilityRole="header">
+          {copy.paywallTitle}
         </AppText>
-        <AppText variant="bodyMuted">{t('paywall.subtitle')}</AppText>
+        <View style={styles.features}>
+          {FEATURES.map((key) => (
+            <CheckRow key={key} label={t(key)} />
+          ))}
+        </View>
       </Reveal>
 
-      <View style={styles.features}>
-        {FEATURES.map((key, i) => (
-          <View key={key} style={styles.featureRow}>
-            <NumberTag label={indexLabel(i)} size={24} />
-            <AppText variant="body" style={styles.flex}>
-              {t(key)}
-            </AppText>
-          </View>
-        ))}
-      </View>
-
       {status === 'loading' ? (
-        <ActivityIndicator color={colors.ink} style={styles.loader} accessibilityLabel={t('common.loading')} />
+        <ActivityIndicator color={colors.violet} style={styles.loader} accessibilityLabel={t('common.loading')} />
       ) : status === 'error' ? (
         <View style={styles.errorBox}>
           <Notice tone="error" message={t('errors.network')} />
-          <Button label={t('common.retry')} variant="secondary" onPress={reload} />
+          <Button label={t('common.retry')} variant="ghost" onPress={reload} />
         </View>
       ) : (
-        <View accessibilityRole="radiogroup">
-          {data.plans.map((plan, i) => {
-            const active = plan.key === selected?.key;
-            const highlight = plan.kind === 'yearly';
-            return (
-              <View key={plan.key}>
-                {i > 0 ? <Neck /> : null}
-                <Reveal delay={150 + i * 90}>
-                  <PressableScale
-                    onPress={() => setSelectedKey(plan.key)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ selected: active, checked: active }}
-                    pressedScale={0.985}
-                    style={[styles.plan, active && styles.planActive]}
-                  >
-                    <View style={styles.planHeader}>
-                      <AppText variant="label" color={colors.onInk} style={styles.planName}>
-                        {plan.kind === 'yearly' ? t('paywall.yearlyName') : t('paywall.weeklyName')}
-                      </AppText>
-                      {highlight ? <Chip label={t('paywall.bestValue')} tone="soft" centered /> : null}
-                      <View style={styles.flex} />
-                      <View style={[styles.radio, active && styles.radioActive]}>
-                        {active ? <View style={styles.radioDot} /> : null}
-                      </View>
-                    </View>
-                    <Text
-                      style={[typography.numeral, styles.price, { color: active ? colors.onInk : colors.onInkMuted }]}
-                      maxFontSizeMultiplier={1.2}
-                      adjustsFontSizeToFit
-                      numberOfLines={1}
-                    >
-                      {plan.priceString}
-                    </Text>
-                    <AppText variant="mono" color={colors.onInkMuted} style={styles.priceLine}>
-                      {planPriceLine(plan, t)}
-                    </AppText>
-                    {plan.pricePerWeekString ? (
-                      <AppText variant="mono" color={colors.accentSoft} style={styles.priceLine}>
-                        {t('paywall.yearlyEquivalent', { price: plan.pricePerWeekString })}
-                      </AppText>
-                    ) : null}
-                  </PressableScale>
-                </Reveal>
-              </View>
-            );
-          })}
-          <MonoLabel caps={false} style={styles.cancel}>
-            {t('paywall.cancelAnytime')}
-          </MonoLabel>
+        <View style={styles.plans} accessibilityRole="radiogroup">
+          {data.plans.map((plan, i) => (
+            <Reveal key={plan.key} delay={80 + i * 60}>
+              <PlanCard
+                plan={plan}
+                active={plan.key === selected?.key}
+                badge={plan.kind === 'yearly' && savings ? `${t('paywall.bestValue')} · ${percentLabel(savings, locale)}` : null}
+                onPress={() => setSelectedKey(plan.key)}
+              />
+            </Reveal>
+          ))}
         </View>
       )}
 
@@ -268,7 +217,7 @@ export default function PaywallScreen() {
       {selected ? (
         <View style={styles.legal}>
           {legalLinesFor(selected, t, platform).map((line) => (
-            <AppText key={line} variant="monoSmall" style={styles.legalText}>
+            <AppText key={line} variant="caption" style={styles.legalText}>
               {line}
             </AppText>
           ))}
@@ -285,35 +234,33 @@ export default function PaywallScreen() {
       >
         {data.exitOffer ? (
           <>
-            {isDevPurchases ? <Chip label="DEV" tone="soft" /> : null}
-            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
+            {isDevPurchases ? <Pill tone="butter" label={copy.dev} /> : null}
+            <AppText variant="h2" accessibilityRole="header">
               {t('paywall.exitTitle')}
             </AppText>
-            <Text style={[typography.numeral, { color: colors.accentSoft }]}>
-              −{exitDiscountPercent(regularYearly, data.exitOffer)}%
-            </Text>
-            <AppText variant="body" color={colors.onInkMuted}>
-              {t('paywall.exitBody', {
-                percent: exitDiscountPercent(regularYearly, data.exitOffer),
-                price: data.exitOffer.priceString,
-              })}
+            <View style={styles.exitRow}>
+              <AppText style={styles.exitPercent}>{`−${percentLabel(exitPercent, locale)}`}</AppText>
+              <Pill tone="violet" label={t('paywall.yearlyName')} size="md" />
+            </View>
+            <AppText variant="bodyMuted">
+              {t('paywall.exitBody', { percent: exitPercent, price: data.exitOffer.priceString })}
             </AppText>
             <Button
-              label={t('paywall.exitCta', { percent: exitDiscountPercent(regularYearly, data.exitOffer) })}
-              variant="soft"
+              label={t('paywall.exitCta', { percent: exitPercent })}
               onPress={() => void buy(data.exitOffer)}
               loading={busy === 'purchase'}
             />
             <Button
               label={t('paywall.exitDismiss')}
-              variant="onInk"
+              variant="quiet"
+              compact
               onPress={() => {
                 setExitVisible(false);
                 router.back();
               }}
             />
             {legalLinesFor(data.exitOffer, t, platform).map((line) => (
-              <AppText key={line} variant="monoSmall" color={colors.onInkSubtle} style={styles.legalText}>
+              <AppText key={line} variant="caption" style={styles.legalText}>
                 {line}
               </AppText>
             ))}
@@ -324,41 +271,85 @@ export default function PaywallScreen() {
   );
 }
 
+function PlanCard({
+  plan,
+  active,
+  badge,
+  onPress,
+}: {
+  plan: Plan;
+  active: boolean;
+  badge: string | null;
+  onPress: () => void;
+}) {
+  const t = useT();
+  const copy = uiCopy(useLocale());
+  const name =
+    plan.kind === 'yearly' ? t('paywall.yearlyName') : plan.kind === 'weekly' ? t('paywall.weeklyName') : t('paywall.reportName');
+  const sub =
+    plan.kind === 'report'
+      ? copy.noSubscription
+      : plan.kind === 'weekly' && plan.intro?.type === 'discount'
+        ? copy.firstWeek(plan.intro.priceString)
+        : planPriceLine(plan, t);
+  // Yearly shows its weekly equivalent as the big number (DESIGN.md §3.6).
+  const big = plan.kind === 'yearly' && plan.pricePerWeekString ? plan.pricePerWeekString : plan.priceString;
+  const unit = plan.kind === 'report' ? copy.once : plan.kind === 'yearly' && !plan.pricePerWeekString ? t('paywall.periodYear') : copy.perWeekShort;
+
+  return (
+    <PressableScale
+      onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityState={{ selected: active, checked: active }}
+      accessibilityLabel={`${name}. ${sub}. ${big} ${unit}`}
+      style={[styles.plan, active && styles.planActive]}
+    >
+      {badge ? <Pill tone={active ? 'ink' : 'violet'} label={badge} style={styles.badge} /> : null}
+      <View style={[styles.radio, active && styles.radioActive]} />
+      <View style={styles.planText}>
+        <AppText variant="label">{name}</AppText>
+        <AppText variant="caption" numberOfLines={2}>
+          {sub}
+        </AppText>
+      </View>
+      <View style={styles.price}>
+        <AppText style={styles.priceBig} numberOfLines={1} adjustsFontSizeToFit>
+          {big}
+        </AppText>
+        <AppText variant="caption">{unit}</AppText>
+      </View>
+    </PressableScale>
+  );
+}
+
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
-  intro: { gap: spacing.sm, marginTop: spacing.md },
-  title: { fontSize: 34, lineHeight: 35 },
-  features: { gap: 10, marginVertical: spacing.sm },
-  featureRow: { flexDirection: 'row', gap: spacing.md, alignItems: 'center' },
+  top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  intro: { gap: spacing.md },
+  features: { gap: 9 },
   loader: { marginVertical: spacing.xxl },
   errorBox: { gap: spacing.md },
+  plans: { gap: 14, marginTop: 4 },
   plan: {
-    backgroundColor: colors.ink,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    minHeight: 72,
     borderRadius: radii.card,
     borderWidth: 1.5,
-    borderColor: colors.ink,
-    paddingHorizontal: 22,
-    paddingVertical: 20,
-    gap: 4,
+    borderColor: colors.line,
+    backgroundColor: colors.paper,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
-  planActive: { borderColor: colors.accentSoft },
-  planHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  planName: { fontSize: 16 },
-  price: { fontSize: 50, lineHeight: 56, marginTop: spacing.sm },
-  priceLine: { fontSize: 12, lineHeight: 17 },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 1.5,
-    borderColor: colors.inkLine,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  radioActive: { borderColor: colors.accentSoft },
-  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.accentSoft },
-  cancel: { textAlign: 'center', marginTop: spacing.md },
-  footerLinks: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm, flexWrap: 'wrap' },
+  planActive: { borderColor: colors.violet, backgroundColor: colors.violetSoft },
+  badge: { position: 'absolute', top: -10, right: 14 },
+  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: colors.line, backgroundColor: colors.paper },
+  radioActive: { borderWidth: 6, borderColor: colors.violet },
+  planText: { flex: 1, gap: 2 },
+  price: { alignItems: 'flex-end', maxWidth: '45%' },
+  priceBig: { ...typography.number, fontSize: 24, lineHeight: 28 },
   legal: { gap: spacing.sm },
-  legalText: { fontSize: 11, lineHeight: 16, fontFamily: fonts.mono },
+  legalText: { fontFamily: fonts.body, fontSize: 10.5, lineHeight: 15 },
+  exitRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  exitPercent: { ...typography.number, fontSize: 52, lineHeight: 58, color: colors.violet },
 });

@@ -1,6 +1,11 @@
 import {
+  PROFILE_AXES,
+  PROFILE_AXIS_LABELS,
   SEASONS,
+  colorProfile,
   localized,
+  shadeMatch,
+  type ProfileAxis,
   type FaceAnalysis,
   type Locale,
   type TranslationKey,
@@ -41,15 +46,42 @@ export function seasonText(analysis: Pick<FaceAnalysis, 'season'>, locale: Local
   };
 }
 
-/** Chooses black or white text for a swatch background (WCAG relative luminance). */
-export function readableTextOn(hex: string): '#2b2124' | '#ffffff' {
-  const match = /^#?([0-9a-f]{6})$/i.exec(hex);
-  if (!match) return '#2b2124';
-  const value = parseInt(match[1] as string, 16);
-  const channel = (shift: number) => {
-    const c = ((value >> shift) & 0xff) / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  };
-  const luminance = 0.2126 * channel(16) + 0.7152 * channel(8) + 0.0722 * channel(0);
-  return luminance > 0.4 ? '#2b2124' : '#ffffff';
+export interface ProfilePoint {
+  axis: ProfileAxis;
+  label: string;
+  value: number;
+}
+
+/** Colour-profile radar points in `PROFILE_AXES` order (descriptive 0–100, never a score). */
+export function profilePoints(analysis: FaceAnalysis, locale: Locale): ProfilePoint[] {
+  const profile = colorProfile(analysis);
+  return PROFILE_AXES.map((axis) => ({ axis, label: localized(PROFILE_AXIS_LABELS[axis], locale), value: profile[axis] }));
+}
+
+/** The three coloured bars under the radar: warmth, contrast, softness. */
+export const PROFILE_BAR_AXES = ['warmth', 'contrast', 'softness'] as const satisfies readonly ProfileAxis[];
+
+export function profileBars(analysis: FaceAnalysis, locale: Locale): ProfilePoint[] {
+  const points = profilePoints(analysis, locale);
+  return PROFILE_BAR_AXES.map((axis) => points.find((p) => p.axis === axis)!);
+}
+
+export interface ShadeCard {
+  kind: 'lip' | 'blush' | 'eyeshadow';
+  hex: string;
+  match: number;
+}
+
+/** Best-fitting shade per category with its "% uyum" (fit with the user's season). */
+export function topShades(
+  analysis: FaceAnalysis,
+  shades: { lip: readonly string[]; blush: readonly string[]; eyeshadow: readonly string[] } = analysis,
+): ShadeCard[] {
+  const kinds = ['lip', 'blush', 'eyeshadow'] as const;
+  return kinds.flatMap((kind) => {
+    const ranked = shades[kind]
+      .map((hex) => ({ kind, hex, match: shadeMatch(hex, analysis) }))
+      .sort((a, b) => b.match - a.match);
+    return ranked[0] ? [ranked[0]] : [];
+  });
 }

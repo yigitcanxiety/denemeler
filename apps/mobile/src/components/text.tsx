@@ -10,7 +10,7 @@ export interface AppTextProps extends TextProps {
   align?: 'left' | 'center' | 'right';
 }
 
-/** Themed text. Inter Tight for display/body, JetBrains Mono for annotations (system fallback). */
+/** Themed text: Gloock for display, Plus Jakarta Sans for UI (system fallback). */
 export function AppText({ variant = 'body', color, align, style, ...rest }: AppTextProps) {
   return (
     <Text

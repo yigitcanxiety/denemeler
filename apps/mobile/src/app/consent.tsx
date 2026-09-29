@@ -4,23 +4,24 @@ import { StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Checkbox } from '@/components/checkbox';
-import { Icon } from '@/components/icon';
-import { MonoLabel } from '@/components/labels';
+import { Icon, type IconName } from '@/components/icon';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
-import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
-import { TopBar } from '@/components/top-bar';
-import { Rule } from '@/components/ui';
+import { BackTitle, Card } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import type { LegalPage } from '@/lib/config';
-import { indexLabel } from '@/lib/ui-copy';
 import { openLegal } from '@/services/legal';
 import { useAppStore } from '@/store/app-store';
 import { colors, radii, spacing } from '@/theme';
 
-const POINTS = ['consent.pointProcessing', 'consent.pointNoStorage', 'consent.pointOnDevice', 'consent.pointNoScoring'] as const;
+const POINTS: { key: 'consent.pointProcessing' | 'consent.pointNoStorage' | 'consent.pointOnDevice' | 'consent.pointNoScoring'; icon: IconName }[] = [
+  { key: 'consent.pointProcessing', icon: 'sparkle' },
+  { key: 'consent.pointNoStorage', icon: 'shield' },
+  { key: 'consent.pointOnDevice', icon: 'lock' },
+  { key: 'consent.pointNoScoring', icon: 'check' },
+];
 
 export default function ConsentScreen() {
   const t = useT();
@@ -42,49 +43,38 @@ export default function ConsentScreen() {
   const accept = () => {
     if (!canContinue) return;
     acceptConsent();
-    router.replace('/quiz');
+    router.replace('/tips');
   };
 
   return (
     <Screen
+      header={<BackTitle title={t('consent.title')} onBack={() => router.back()} backLabel={t('common.back')} />}
       footer={
         <>
           {!canContinue ? (
-            <AppText variant="monoSmall" align="center">
+            <AppText variant="small" align="center">
               {t('consent.requiredHint')}
             </AppText>
           ) : null}
           <Button label={t('consent.accept')} onPress={accept} disabled={!canContinue} />
-          <Button label={t('consent.decline')} variant="ghost" compact onPress={() => setDeclined(true)} />
+          <Button label={t('consent.decline')} variant="quiet" compact onPress={() => setDeclined(true)} />
         </>
       }
     >
-      <CardStack>
-        <TopBar onBack={() => router.back()} backLabel={t('common.back')} chip="KVKK · GDPR" />
-        <Card style={styles.intro}>
-          <AppText variant="title" color={colors.onInk} accessibilityRole="header">
-            {t('consent.title')}
-          </AppText>
-          <AppText variant="body" color={colors.onInkMuted}>
-            {t('consent.intro')}
-          </AppText>
-        </Card>
-        <Card style={styles.points}>
-          {POINTS.map((key, i) => (
-            <Reveal key={key} delay={120 + i * 90}>
-              {i > 0 ? <Rule onInk style={styles.rule} /> : null}
-              <View style={styles.point}>
-                <AppText variant="mono" color={colors.accentSoft} style={styles.pointIndex}>
-                  {indexLabel(i)}
-                </AppText>
-                <AppText variant="body" color={colors.onInk} style={styles.pointText}>
-                  {t(key)}
-                </AppText>
-              </View>
-            </Reveal>
-          ))}
-        </Card>
-      </CardStack>
+      <AppText variant="bodyMuted">{t('consent.intro')}</AppText>
+
+      <Card tone="mist" style={styles.points}>
+        {POINTS.map((point, i) => (
+          <Reveal key={point.key} delay={i * 60} style={styles.point}>
+            <View style={styles.pointIcon}>
+              <Icon name={point.icon} size={15} color={colors.violet} />
+            </View>
+            <AppText variant="small" color={colors.ink} style={styles.pointText}>
+              {t(point.key)}
+            </AppText>
+          </Reveal>
+        ))}
+      </Card>
 
       <View style={styles.links}>
         {links.map((link) => (
@@ -93,12 +83,13 @@ export default function ConsentScreen() {
             onPress={() => void openLegal(locale, link.page)}
             accessibilityRole="link"
             accessibilityLabel={link.label}
+            hitSlop={4}
             style={styles.linkChip}
           >
-            <MonoLabel caps={false} color={colors.ink} size={12}>
+            <AppText variant="smallStrong" color={colors.violet}>
               {link.label}
-            </MonoLabel>
-            <Icon name="external" size={14} color={colors.accent} />
+            </AppText>
+            <Icon name="external" size={13} color={colors.violet} />
           </PressableScale>
         ))}
       </View>
@@ -117,22 +108,26 @@ export default function ConsentScreen() {
 }
 
 const styles = StyleSheet.create({
-  intro: { gap: spacing.md },
-  points: { paddingVertical: 8 },
-  rule: { marginVertical: 2 },
-  point: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start', paddingVertical: 12 },
-  pointIndex: { width: 22, marginTop: 2 },
-  pointText: { flex: 1, fontSize: 15, lineHeight: 22 },
-  links: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.xs },
+  points: { gap: 12, padding: 16 },
+  point: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  pointIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 9,
+    backgroundColor: colors.paper,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pointText: { flex: 1, fontSize: 13.5, lineHeight: 19.5 },
+  links: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   linkChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     minHeight: 40,
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 12,
     borderRadius: radii.pill,
-    borderWidth: 1,
-    borderColor: colors.lineStrong,
+    backgroundColor: colors.violetSoft,
   },
   declined: { gap: spacing.sm },
 });

@@ -1,62 +1,66 @@
-import { LOOKS } from '@tonelle/shared';
+import { LOOKS, type LookId } from '@tonelle/shared';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
+import { BeforeAfter } from '@/components/before-after';
 import { Button } from '@/components/button';
-import { HeatFace } from '@/components/heat-face';
-import { Chip, MonoLabel, NumberTag } from '@/components/labels';
-import { Reveal } from '@/components/motion';
+import { Icon } from '@/components/icon';
+import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
-import { PillSegmented } from '@/components/pill-segmented';
+import { CoverImage, PORTRAITS } from '@/components/portraits';
 import { Screen } from '@/components/screen';
-import { Card, CardStack } from '@/components/stack';
+import { ShadeCard } from '@/components/shade-card';
 import { AppText } from '@/components/text';
-import { TopBar } from '@/components/top-bar';
-import { Rule, SectionTitle, SwatchBar } from '@/components/ui';
+import { BackTitle, Pill, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import { errorKeyFor } from '@/lib/api';
-import { isLookId, localizedSteps, lookShades, lookSummary } from '@/lib/looks';
-import { indexLabel, uiCopy } from '@/lib/ui-copy';
+import { isLookId, localizedSteps, lookShades, lookSummary, resolveRecommendedLooks } from '@/lib/looks';
+import { completeQuiz } from '@/lib/quiz';
+import { topShades } from '@/lib/results';
+import { uiCopy } from '@/lib/ui-copy';
 import { api } from '@/services/api';
 import { useAppStore } from '@/store/app-store';
-import { colors, heat, radii, spacing } from '@/theme';
+import { colors, fonts, GUTTER, radii } from '@/theme';
 
-const IMAGE_HEIGHT = 440;
+/** Makeup try-on (DESIGN.md §3.8). Premium only: locked users are sent to the paywall. */
+export default function TryOnScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  // Keyed by look: switching looks resets the screen state and cancels an in-flight render.
+  return <TryOn key={id} id={id} />;
+}
 
-export default function LookDetailScreen() {
+function TryOn({ id }: { id: string | undefined }) {
   const t = useT();
   const locale = useLocale();
+  const copy = uiCopy(locale);
   const premium = usePremium();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { width } = useWindowDimensions();
   const analysis = useAppStore((s) => s.analysis);
+  const serverLookIds = useAppStore((s) => s.recommendedLookIds);
+  const quiz = useAppStore((s) => s.quiz);
   const photo = useAppStore((s) => s.photo);
   const anonId = useAppStore((s) => s.anonId);
   const rendered = useAppStore((s) => (isLookId(id) ? s.renders[id] : undefined));
   const setRender = useAppStore((s) => s.setRender);
   const [loading, setLoading] = useState(false);
   const [errorKey, setErrorKey] = useState<ReturnType<typeof errorKeyFor> | null>(null);
-  const [showBefore, setShowBefore] = useState(false);
+  const [openStep, setOpenStep] = useState<number | null>(0);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
   if (!isLookId(id) || !analysis) return <Redirect href="/" />;
-  if (!premium) return <Redirect href="/teaser" />;
+  if (!premium) return <Redirect href="/paywall" />;
 
   const look = LOOKS[id];
   const summary = lookSummary(id, locale);
   const steps = localizedSteps(look, locale);
-  const shades = lookShades(analysis, look);
-  const copy = uiCopy(locale);
-  const facePalette = [
-    shades.lip[0] ?? heat[0],
-    shades.lip[1] ?? shades.lip[0] ?? heat[1],
-    shades.blush[0] ?? heat[2],
-    shades.eyeshadow[0] ?? heat[3],
-    heat[4],
-  ];
+  const shades = topShades(analysis, lookShades(analysis, look));
+  const recommended = resolveRecommendedLooks(analysis, serverLookIds, completeQuiz(quiz));
+  const order: LookId[] = [...recommended, ...(Object.keys(LOOKS) as LookId[]).filter((l) => !recommended.includes(l))];
+  const frameH = Math.round(Math.min(width - GUTTER * 2, 520) * 1.08);
 
   const render = async () => {
     if (!photo) {
@@ -74,7 +78,6 @@ export default function LookDetailScreen() {
         { signal: controller.signal },
       );
       setRender(id, response.image);
-      setShowBefore(false);
     } catch (error) {
       if (!controller.signal.aborted) setErrorKey(errorKeyFor(error));
     } finally {
@@ -83,140 +86,184 @@ export default function LookDetailScreen() {
   };
 
   return (
-    <Screen>
-      <CardStack>
-        <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={summary.name} />
-        <Card padded={false} style={styles.imageFrame}>
-          {loading ? (
-            <View style={styles.center} accessibilityRole="progressbar" accessibilityLabel={t('look.rendering')}>
-              <HeatFace width={200} palette={facePalette} stroke={colors.onInk} scanning scanLabel={copy.analyzingTag} />
-              <AppText variant="label" color={colors.onInk} align="center">
-                {t('look.rendering')}
-              </AppText>
-              <MonoLabel caps={false} color={colors.onInkMuted}>
-                {t('look.renderingHint')}
-              </MonoLabel>
-            </View>
-          ) : rendered ? (
-            <>
-              <Image
-                source={{ uri: showBefore && photo ? photo.dataUrl : rendered }}
-                style={styles.image}
-                resizeMode="cover"
-                accessibilityIgnoresInvertColors
-                accessible
-                accessibilityLabel={`${summary.name}. ${t('common.aiGeneratedNote')}`}
-              />
-              {!showBefore ? (
-                <View style={styles.aiLabel}>
-                  <Chip label={t('common.aiGenerated')} tone="soft" />
-                </View>
-              ) : null}
-              {photo ? (
-                <View style={styles.toggle}>
-                  <PillSegmented
-                    options={[
-                      { key: 'before', label: t('look.before') },
-                      { key: 'after', label: t('look.after') },
-                    ]}
-                    value={showBefore ? 'before' : 'after'}
-                    onChange={(k) => setShowBefore(k === 'before')}
-                    height={46}
-                  />
-                </View>
-              ) : null}
-            </>
-          ) : (
-            <View style={styles.center}>
-              <HeatFace width={210} palette={facePalette} stroke={colors.onInk} />
-              <AppText variant="body" color={colors.onInkMuted} align="center" style={styles.placeholderText}>
-                {summary.description}
-              </AppText>
-            </View>
-          )}
-        </Card>
-      </CardStack>
+    <Screen header={<BackTitle title={copy.tryOnTitle} onBack={() => router.back()} backLabel={t('common.back')} />}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.bleed}
+        contentContainerStyle={styles.chips}
+        accessibilityRole="tablist"
+      >
+        {order.map((lookId) => {
+          const active = lookId === id;
+          return (
+            <PressableScale
+              key={lookId}
+              onPress={() => router.setParams({ id: lookId })}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active }}
+              style={[styles.chip, active && styles.chipOn]}
+            >
+              <AppText style={[styles.chipText, active && styles.chipTextOn]}>{lookSummary(lookId, locale).name}</AppText>
+            </PressableScale>
+          );
+        })}
+      </ScrollView>
 
-      {rendered && !loading ? (
-        <MonoLabel caps={false} style={styles.centerText}>
-          {t('common.aiGeneratedNote')}
-        </MonoLabel>
+      {photo ? (
+        <BeforeAfter
+          before={photo.dataUrl}
+          after={rendered ?? null}
+          height={frameH}
+          loading={loading}
+          labels={{ before: t('look.before'), after: t('look.after'), ai: t('common.aiGenerated'), slider: copy.sliderLabel }}
+        />
+      ) : (
+        <View style={[styles.noPhoto, { height: frameH }]}>
+          <CoverImage source={PORTRAITS.three} focusY={0.2} style={StyleSheet.absoluteFill} />
+          <View style={styles.noPhotoVeil} />
+          <View style={styles.noPhotoCard}>
+            <Icon name="camera" size={22} color={colors.violet} />
+            <AppText variant="small" color={colors.ink} align="center">
+              {copy.needPhoto}
+            </AppText>
+            <Button label={copy.addSelfie} compact icon="camera" onPress={() => void render()} />
+          </View>
+        </View>
+      )}
+
+      {loading ? (
+        <View style={styles.renderingRow} accessibilityRole="progressbar" accessibilityLabel={t('look.rendering')}>
+          <AppText variant="smallStrong" color={colors.violet}>
+            {t('look.rendering')}
+          </AppText>
+          <AppText variant="caption">{t('look.renderingHint')}</AppText>
+        </View>
       ) : null}
-
       {errorKey ? <Notice tone="error" message={t(errorKey)} /> : null}
 
-      <Button
-        label={photo ? t('look.tryOn') : `${t('look.tryOn')} · ${t('camera.title')}`}
-        onPress={() => void render()}
-        loading={loading}
-        variant={rendered ? 'secondary' : 'primary'}
-        icon="spark"
-      />
-      {!photo ? (
-        <MonoLabel caps={false} style={styles.centerText}>
-          {t('common.privacyBadge')}
-        </MonoLabel>
+      {photo && !rendered ? (
+        <Button label={t('look.tryOn')} icon="sparkle" onPress={() => void render()} loading={loading} />
       ) : null}
-      {rendered ? (
-        <Button
-          label={t('look.shareLook')}
-          onPress={() => router.push({ pathname: '/share', params: { lookId: id } })}
-          icon="share"
-        />
+      {rendered && !loading ? (
+        <>
+          <Button
+            label={t('look.shareLook')}
+            icon="share"
+            variant="ghost"
+            onPress={() => router.push({ pathname: '/share', params: { lookId: id } })}
+          />
+          <AppText variant="caption" align="center">
+            {t('common.aiGeneratedNote')}
+          </AppText>
+        </>
       ) : null}
 
-      <View style={styles.meta}>
-        {summary.occasions.map((o) => (
-          <Chip key={o} label={t(`look.occasionTag.${o}`)} tone="outline" />
-        ))}
-        <Chip label={t(`look.intensity.${summary.intensity}`)} tone="ink" />
-        <Chip label={t(`look.level.${summary.level}`)} tone="ink" />
+      <Reveal style={styles.gapSm}>
+        <AppText variant="h2">{summary.name}</AppText>
+        <AppText variant="bodyMuted">{summary.description}</AppText>
+        <View style={styles.tags}>
+          {summary.occasions.map((o) => (
+            <Pill key={o} tone="rose" label={t(`look.occasionTag.${o}`)} />
+          ))}
+          <Pill tone="violet" label={t(`look.intensity.${summary.intensity}`)} />
+          <Pill tone="violet" label={t(`look.level.${summary.level}`)} />
+        </View>
+      </Reveal>
+
+      <View style={styles.gapSm}>
+        <SectionTitle>{copy.shadesForLook}</SectionTitle>
+        <View style={styles.shades}>
+          {shades.map((shade) => (
+            <ShadeCard key={shade.kind} shade={shade} locale={locale} style={styles.flex} />
+          ))}
+        </View>
       </View>
 
-      <Card style={styles.shades}>
-        <SectionTitle onInk>{t('look.shadesTitle')}</SectionTitle>
-        <MonoLabel color={colors.onInkMuted}>{t('results.lipTitle')}</MonoLabel>
-        <SwatchBar colors={shades.lip} height={30} onInk showHex />
-        <MonoLabel color={colors.onInkMuted}>{t('results.blushTitle')}</MonoLabel>
-        <SwatchBar colors={shades.blush} height={30} onInk showHex />
-        <MonoLabel color={colors.onInkMuted}>{t('results.eyeshadowTitle')}</MonoLabel>
-        <SwatchBar colors={shades.eyeshadow} height={30} onInk showHex />
-      </Card>
-
-      <SectionTitle>{t('look.stepsTitle')}</SectionTitle>
-      <View>
-        {steps.map((step, i) => (
-          <Reveal key={step.number} delay={80 * i}>
-            {i > 0 ? <Rule style={styles.rule} /> : null}
-            <View style={styles.step}>
-              <NumberTag label={indexLabel(step.number - 1)} />
-              <View style={styles.stepText}>
-                <MonoLabel>{t('look.stepLabel', { number: step.number })}</MonoLabel>
-                <AppText variant="label" style={styles.stepTitle}>
-                  {step.title}
-                </AppText>
-                <AppText variant="bodyMuted">{step.body}</AppText>
+      <View style={styles.gapSm}>
+        <SectionTitle>{t('look.stepsTitle')}</SectionTitle>
+        <View style={styles.steps}>
+          {steps.map((step, i) => {
+            const open = openStep === i;
+            return (
+              <View key={step.number} style={[styles.step, i > 0 && styles.stepBorder]}>
+                <PressableScale
+                  onPress={() => setOpenStep(open ? null : i)}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: open }}
+                  accessibilityLabel={`${t('look.stepLabel', { number: step.number })}: ${step.title}`}
+                  style={styles.stepHead}
+                >
+                  <View style={[styles.stepNum, open && styles.stepNumOn]}>
+                    <AppText style={[styles.stepNumText, open && styles.stepNumTextOn]}>{step.number}</AppText>
+                  </View>
+                  <AppText variant="label" style={styles.flex}>
+                    {step.title}
+                  </AppText>
+                  <View style={open ? styles.chevronOpen : undefined}>
+                    <Icon name="chevronDown" size={18} color={colors.muted} />
+                  </View>
+                </PressableScale>
+                {open ? (
+                  <Reveal distance={4}>
+                    <AppText variant="small" color={colors.ink} style={styles.stepBody}>
+                      {step.body}
+                    </AppText>
+                  </Reveal>
+                ) : null}
               </View>
-            </View>
-          </Reveal>
-        ))}
+            );
+          })}
+        </View>
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  imageFrame: { height: IMAGE_HEIGHT },
-  image: { width: '100%', height: '100%' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, padding: spacing.xl },
-  centerText: { textAlign: 'center' },
-  placeholderText: { fontSize: 15, lineHeight: 22 },
-  aiLabel: { position: 'absolute', top: spacing.lg, left: spacing.lg },
-  toggle: { position: 'absolute', bottom: spacing.lg, left: spacing.xxxl, right: spacing.xxxl },
-  meta: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  shades: { gap: spacing.sm, borderRadius: radii.card },
-  rule: { marginVertical: spacing.md },
-  step: { flexDirection: 'row', gap: spacing.md },
-  stepText: { flex: 1, gap: 4 },
-  stepTitle: { fontSize: 17 },
+  flex: { flex: 1 },
+  bleed: { marginHorizontal: -GUTTER, flexGrow: 0 },
+  chips: { gap: 8, paddingHorizontal: GUTTER },
+  chip: {
+    minHeight: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    borderRadius: radii.pill,
+    backgroundColor: colors.mist,
+    borderWidth: 1,
+    borderColor: colors.line,
+  },
+  chipOn: { backgroundColor: colors.ink, borderColor: colors.ink },
+  chipText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.ink },
+  chipTextOn: { color: colors.paper },
+  noPhoto: { borderRadius: radii.xl, overflow: 'hidden', justifyContent: 'flex-end', padding: 14 },
+  noPhotoVeil: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: 'rgba(255,255,255,0.25)' },
+  noPhotoCard: {
+    backgroundColor: colors.floatBg,
+    borderRadius: radii.card,
+    padding: 16,
+    gap: 10,
+    alignItems: 'center',
+  },
+  renderingRow: { alignItems: 'center', gap: 2, marginTop: -4 },
+  gapSm: { gap: 10 },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  shades: { flexDirection: 'row', gap: 8 },
+  steps: { borderWidth: 1, borderColor: colors.line, borderRadius: radii.card, overflow: 'hidden' },
+  step: { paddingHorizontal: 14 },
+  stepBorder: { borderTopWidth: 1, borderTopColor: colors.line },
+  stepHead: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 54 },
+  stepNum: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.mist,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepNumOn: { backgroundColor: colors.violet },
+  stepNumText: { fontFamily: fonts.bold, fontSize: 12, color: colors.muted },
+  stepNumTextOn: { color: colors.onViolet },
+  chevronOpen: { transform: [{ rotate: '180deg' }] },
+  stepBody: { paddingLeft: 38, paddingBottom: 14, lineHeight: 19 },
 });

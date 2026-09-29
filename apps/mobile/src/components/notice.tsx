@@ -2,19 +2,27 @@ import { StyleSheet, View } from 'react-native';
 
 import { colors, radii, spacing } from '@/theme';
 
+import { Icon } from './icon';
 import { AppText } from './text';
 
-/** Inline status message: light card with a coloured marker bar, mono text. */
-export function Notice({ message, tone = 'info' }: { message: string; tone?: 'info' | 'error' | 'success' }) {
-  const marker = tone === 'error' ? colors.danger : tone === 'success' ? colors.success : colors.inkSubtle;
+const TONES = {
+  info: { bg: colors.mist, fg: colors.muted, icon: 'sparkle' },
+  success: { bg: colors.mint, fg: colors.mintInk, icon: 'check' },
+  warning: { bg: colors.butter, fg: colors.butterInk, icon: 'alert' },
+  error: { bg: colors.roseSoft, fg: colors.roseInk, icon: 'alert' },
+} as const;
+
+/** Inline status message in a soft tinted well. */
+export function Notice({ message, tone = 'info' }: { message: string; tone?: keyof typeof TONES }) {
+  const t = TONES[tone];
   return (
     <View
-      style={styles.box}
+      style={[styles.box, { backgroundColor: t.bg }]}
       accessibilityRole={tone === 'error' ? 'alert' : 'text'}
       accessibilityLiveRegion="polite"
     >
-      <View style={[styles.marker, { backgroundColor: marker }]} />
-      <AppText variant="mono" color={tone === 'info' ? colors.inkMuted : colors.ink} style={styles.text}>
+      <Icon name={t.icon} size={16} color={t.fg} />
+      <AppText variant="small" color={t.fg} style={styles.text}>
         {message}
       </AppText>
     </View>
@@ -22,15 +30,6 @@ export function Notice({ message, tone = 'info' }: { message: string; tone?: 'in
 }
 
 const styles = StyleSheet.create({
-  box: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    borderRadius: radii.md,
-    padding: spacing.md,
-    backgroundColor: colors.paperRaised,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.line,
-  },
-  marker: { width: 3, borderRadius: 2 },
-  text: { flex: 1, fontSize: 12.5, lineHeight: 18 },
+  box: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.sm, borderRadius: radii.md, padding: spacing.md },
+  text: { flex: 1, fontSize: 13, lineHeight: 18 },
 });

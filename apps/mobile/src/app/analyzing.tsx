@@ -4,14 +4,12 @@ import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-
 
 import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
-import { Chip, MonoLabel } from '@/components/labels';
 import { Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
+import { ScanPortrait } from '@/components/scan-portrait';
 import { Screen } from '@/components/screen';
-import { Card } from '@/components/stack';
-import { Sunburst } from '@/components/sunburst';
 import { AppText } from '@/components/text';
-import { Wordmark } from '@/components/top-bar';
+import { Eyebrow } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { getIsPremium } from '@/hooks/use-premium';
 import {
@@ -23,14 +21,15 @@ import {
 } from '@/lib/analyzing';
 import { errorKeyFor, isApiClientError } from '@/lib/api';
 import { completeQuiz } from '@/lib/quiz';
-import { indexLabel, seasonCompassLabels, uiCopy } from '@/lib/ui-copy';
+import { percentLabel, uiCopy } from '@/lib/ui-copy';
 import { api } from '@/services/api';
 import { useAppStore } from '@/store/app-store';
-import { colors, GUTTER, spacing } from '@/theme';
+import { colors, fonts, spacing, typography } from '@/theme';
 
 export default function AnalyzingScreen() {
   const t = useT();
   const locale = useLocale();
+  const copy = uiCopy(locale);
   const { width } = useWindowDimensions();
   const photo = useAppStore((s) => s.photo);
   const quiz = useAppStore((s) => s.quiz);
@@ -41,11 +40,11 @@ export default function AnalyzingScreen() {
   const [errorKey, setErrorKey] = useState<ReturnType<typeof errorKeyFor> | null>(null);
   const [attempt, setAttempt] = useState(0);
 
-  // Elapsed clock driving the rotating messages and progress.
+  // Elapsed clock driving the checklist and the progress ring.
   useEffect(() => {
     if (errorKey || done) return;
     const started = Date.now();
-    const timer = setInterval(() => setElapsed(Date.now() - started), 250);
+    const timer = setInterval(() => setElapsed(Date.now() - started), 200);
     return () => clearInterval(timer);
   }, [errorKey, done, attempt]);
 
@@ -69,6 +68,9 @@ export default function AnalyzingScreen() {
         if (controller.signal.aborted) return;
         setAnalysis(response);
         setDone(true);
+        // Let the ring reach 100% before moving on.
+        await new Promise((r) => setTimeout(r, 450));
+        if (controller.signal.aborted) return;
         router.replace(getIsPremium() ? '/results' : '/teaser');
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -95,105 +97,104 @@ export default function AnalyzingScreen() {
     setAttempt((a) => a + 1);
   };
 
-  const stepIndex = analyzingStepIndex(elapsed);
-  const message = t(ANALYZING_STEPS[stepIndex] ?? ANALYZING_STEPS[0]);
-  const percent = Math.round(analyzingProgress(elapsed, done) * 100);
-  const size = Math.min(width - GUTTER * 2, 360);
+  const stepIndex = done ? ANALYZING_STEPS.length : analyzingStepIndex(elapsed);
+  const progress = analyzingProgress(elapsed, done);
+  const size = Math.min(width - 96, 260);
+  const current = ANALYZING_STEPS[Math.min(stepIndex, ANALYZING_STEPS.length - 1)] ?? ANALYZING_STEPS[0];
 
   return (
     <Screen
-      grid="accent"
       footer={
         errorKey ? (
           <>
             <Button label={t('common.retry')} onPress={retry} icon="refresh" />
-            <Button label={t('camera.retake')} variant="secondary" onPress={() => router.replace('/camera')} />
+            <Button label={t('camera.retake')} variant="ghost" onPress={() => router.replace('/camera')} />
           </>
         ) : null
       }
     >
-      <View style={styles.top}>
-        <Wordmark color={colors.ink} size={19} />
-        <Chip label={uiCopy(locale).ai} tone="ink" centered />
+      <View style={styles.head}>
+        <Eyebrow label={copy.scanChip} />
+        <AppText variant="h2" align="center" accessibilityRole="header">
+          {copy.scanTitle}
+        </AppText>
       </View>
-      <AppText variant="title" accessibilityRole="header" style={styles.title}>
-        {t('analyzing.title')}
-      </AppText>
 
-      <View style={styles.burst}>
-        <Sunburst
-          size={size}
-          photoUri={photo?.dataUrl}
-          percent={percent}
-          labels={seasonCompassLabels(locale)}
-          tag={uiCopy(locale).analyzingTag}
-          active={!errorKey}
-        />
+      <View style={styles.center}>
+        <ScanPortrait size={size} source={photo ? { uri: photo.dataUrl } : null} progress={progress} active={!errorKey} />
       </View>
+
+      <AppText
+        style={styles.pct}
+        align="center"
+        accessibilityRole="progressbar"
+        accessibilityValue={{ min: 0, max: 100, now: Math.round(progress * 100) }}
+      >
+        {percentLabel(progress * 100, locale)}
+      </AppText>
 
       {errorKey ? (
         <Notice tone="error" message={t(errorKey)} />
       ) : (
-        <Card style={styles.status}>
-          <View accessibilityLiveRegion="polite" accessible accessibilityLabel={message}>
-            <Reveal key={stepIndex} distance={6}>
-              <AppText variant="label" color={colors.onInk} style={styles.current}>
-                {message}
-              </AppText>
-            </Reveal>
-          </View>
-          <View style={styles.steps} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            {ANALYZING_STEPS.map((key, i) => {
-              const state = i < stepIndex ? 'done' : i === stepIndex ? 'current' : 'todo';
-              return (
-                <View key={key} style={styles.stepRow}>
-                  <AppText
-                    variant="mono"
-                    color={state === 'current' ? colors.accentSoft : colors.onInkSubtle}
-                    style={styles.stepIndex}
-                  >
-                    {indexLabel(i)}
-                  </AppText>
-                  <AppText
-                    variant="mono"
-                    color={state === 'todo' ? colors.onInkSubtle : state === 'current' ? colors.onInk : colors.onInkMuted}
-                    style={styles.stepText}
-                    numberOfLines={1}
-                  >
-                    {t(key)}
-                  </AppText>
-                  {state === 'done' ? <Icon name="check" size={14} color={colors.accentSoft} /> : null}
-                  {state === 'current' ? <View style={styles.liveDot} /> : null}
+        <View style={styles.steps} accessibilityLiveRegion="polite" accessible accessibilityLabel={t(current)}>
+          {ANALYZING_STEPS.map((key, i) => {
+            const state = i < stepIndex ? 'done' : i === stepIndex ? 'now' : 'todo';
+            return (
+              <Reveal key={key} delay={i * 50} style={styles.stepRow}>
+                <View style={[styles.stepDot, state === 'done' && styles.stepDotDone]}>
+                  {state === 'done' ? <Icon name="check" size={11} color={colors.onViolet} strokeWidth={2.6} /> : null}
+                  {state === 'now' ? <View style={styles.nowDot} /> : null}
                 </View>
-              );
-            })}
-          </View>
+                <AppText
+                  variant="small"
+                  color={state === 'done' ? colors.ink : state === 'now' ? colors.violet : colors.muted}
+                  style={[styles.stepText, state === 'now' && styles.stepNow]}
+                  numberOfLines={1}
+                >
+                  {state === 'now' ? `${t(key)}…` : t(key)}
+                </AppText>
+              </Reveal>
+            );
+          })}
           {isAnalysisSlow(elapsed) ? (
-            <AppText variant="mono" color={colors.onInkMuted} style={styles.slow}>
+            <AppText variant="small" style={styles.slow}>
               {t('analyzing.slow')}
             </AppText>
           ) : null}
-        </Card>
+        </View>
       )}
 
-      <MonoLabel caps={false} color={colors.inkMuted} style={styles.privacy}>
-        {t('analyzing.privacy')}
-      </MonoLabel>
+      <View style={styles.privacy}>
+        <Icon name="shield" size={14} color={colors.muted} />
+        <AppText variant="caption" style={styles.flex}>
+          {t('analyzing.privacy')}
+        </AppText>
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: spacing.xs },
-  title: { marginTop: spacing.sm },
-  burst: { alignItems: 'center', paddingVertical: spacing.sm },
-  status: { gap: spacing.md },
-  current: { fontSize: 17 },
-  steps: { gap: 6 },
-  stepRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  stepIndex: { width: 22, fontSize: 12 },
-  stepText: { flex: 1, fontSize: 12.5 },
-  liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.accentSoft },
-  slow: { fontSize: 12, lineHeight: 17 },
-  privacy: { textAlign: 'center', marginTop: spacing.xs },
+  flex: { flexShrink: 1 },
+  head: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.sm },
+  center: { alignItems: 'center' },
+  pct: { ...typography.number, fontSize: 48, lineHeight: 52, marginTop: -4 },
+  steps: { gap: 9, paddingHorizontal: spacing.md },
+  stepRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  stepDot: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: colors.mist,
+    borderWidth: 1,
+    borderColor: colors.line,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepDotDone: { backgroundColor: colors.violet, borderColor: colors.violet },
+  nowDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.violet },
+  stepText: { flex: 1, fontSize: 13.5 },
+  stepNow: { fontFamily: fonts.semibold },
+  slow: { marginTop: 4 },
+  privacy: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingHorizontal: spacing.md },
 });

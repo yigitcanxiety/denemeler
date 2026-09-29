@@ -1,9 +1,8 @@
-import { InterTight_300Light } from '@expo-google-fonts/inter-tight/300Light';
-import { InterTight_400Regular } from '@expo-google-fonts/inter-tight/400Regular';
-import { InterTight_500Medium } from '@expo-google-fonts/inter-tight/500Medium';
-import { InterTight_600SemiBold } from '@expo-google-fonts/inter-tight/600SemiBold';
-import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono/400Regular';
-import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono/500Medium';
+import { Gloock_400Regular } from '@expo-google-fonts/gloock/400Regular';
+import { PlusJakartaSans_400Regular } from '@expo-google-fonts/plus-jakarta-sans/400Regular';
+import { PlusJakartaSans_500Medium } from '@expo-google-fonts/plus-jakarta-sans/500Medium';
+import { PlusJakartaSans_600SemiBold } from '@expo-google-fonts/plus-jakarta-sans/600SemiBold';
+import { PlusJakartaSans_700Bold } from '@expo-google-fonts/plus-jakarta-sans/700Bold';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -22,12 +21,11 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
-    InterTight_300Light,
-    InterTight_400Regular,
-    InterTight_500Medium,
-    InterTight_600SemiBold,
-    JetBrainsMono_400Regular,
-    JetBrainsMono_500Medium,
+    Gloock_400Regular,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
   });
   const reduced = useReducedMotion();
   const hydrated = useAppStore((s) => s.hydrated);
@@ -45,6 +43,9 @@ export default function RootLayout() {
 
   if (!ready) return null;
 
+  // Calm, quick transitions (DESIGN.md §6): fades; none with reduce motion.
+  const fade = reduced ? 'none' : 'fade';
+
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
@@ -53,15 +54,16 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: colors.paper },
-          animation: reduced ? 'none' : 'slide_from_right',
+          animation: reduced ? 'none' : 'fade_from_bottom',
+          animationDuration: 250,
         }}
       >
-        <Stack.Screen name="index" options={{ animation: reduced ? 'none' : 'fade' }} />
+        <Stack.Screen name="(tabs)" options={{ animation: fade }} />
         <Stack.Screen name="consent" />
-        <Stack.Screen name="quiz" />
-        <Stack.Screen name="camera" options={{ contentStyle: { backgroundColor: colors.night } }} />
-        <Stack.Screen name="analyzing" options={{ gestureEnabled: false, animation: reduced ? 'none' : 'fade' }} />
-        <Stack.Screen name="teaser" options={{ gestureEnabled: false, animation: reduced ? 'none' : 'fade' }} />
+        <Stack.Screen name="tips" />
+        <Stack.Screen name="camera" />
+        <Stack.Screen name="analyzing" options={{ gestureEnabled: false, animation: fade }} />
+        <Stack.Screen name="teaser" options={{ gestureEnabled: false, animation: fade }} />
         <Stack.Screen
           name="paywall"
           options={{
@@ -70,10 +72,9 @@ export default function RootLayout() {
             animation: reduced ? 'none' : 'slide_from_bottom',
           }}
         />
-        <Stack.Screen name="results" options={{ gestureEnabled: false }} />
         <Stack.Screen name="look/[id]" />
+        <Stack.Screen name="quiz" />
         <Stack.Screen name="share" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="settings" />
       </Stack>
     </SafeAreaProvider>
   );

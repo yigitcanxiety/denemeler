@@ -15,8 +15,8 @@
     "export:web-preview": "node ./scripts/export-web-preview.mjs"
   },
   "dependencies": {
-    "@expo-google-fonts/inter-tight": "^0.4.2",
-    "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo-google-fonts/gloock": "^0.4.2",
+    "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@tonelle/shared": "workspace:*",
     "expo": "~57.0.26",

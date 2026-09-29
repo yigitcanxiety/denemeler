@@ -1,41 +1,32 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
-import { Image, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, IconButton } from '@/components/button';
-import { FaceGuide } from '@/components/face-guide';
+import { FaceGuide, faceCircle } from '@/components/face-guide';
 import { Icon } from '@/components/icon';
-import { Chip, MonoLabel, NumberTag } from '@/components/labels';
-import { PressableScale } from '@/components/motion';
+import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
-import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
-import { TopBar } from '@/components/top-bar';
-import { useT } from '@/hooks/use-i18n';
-import { indexLabel } from '@/lib/ui-copy';
+import { BackTitle, Pill, Ring } from '@/components/ui';
+import { useLocale, useT } from '@/hooks/use-i18n';
+import { uiCopy } from '@/lib/ui-copy';
 import { deleteTempFile, preparePhoto } from '@/services/photo';
 import { useAppStore, type SessionPhoto } from '@/store/app-store';
-import { colors, GUTTER, radii, spacing } from '@/theme';
-
-const HINTS = [
-  'camera.hintLight',
-  'camera.hintNoFilter',
-  'camera.hintNoMakeup',
-  'camera.hintGlasses',
-  'camera.hintStraight',
-] as const;
+import { colors, GUTTER, spacing } from '@/theme';
 
 /** The web preview has no live camera UI; selfies come from a file upload instead. */
 const UPLOAD_ONLY = Platform.OS === 'web';
 
 export default function CameraScreen() {
   const t = useT();
-  /** `returnTo=look`: just capture a new photo and go back (used by look detail). */
+  const copy = uiCopy(useLocale());
+  const { width, height } = useWindowDimensions();
+  /** `returnTo=look`: just capture a new photo and go back (used by the makeup try-on). */
   const { returnTo, error: errorParam } = useLocalSearchParams<{ returnTo?: string; error?: string }>();
   const setPhoto = useAppStore((s) => s.setPhoto);
   const [permission, requestPermission] = useCameraPermissions();
@@ -45,11 +36,11 @@ export default function CameraScreen() {
   const [preview, setPreview] = useState<SessionPhoto | null>(null);
   const [error, setError] = useState<string | null>(errorParam === 'no_face' ? t('errors.no_face') : null);
 
-  const handleImage = async (uri: string, width: number, height: number) => {
+  const handleImage = async (uri: string, w: number, h: number) => {
     setBusy(true);
     setError(null);
     try {
-      setPreview(await preparePhoto(uri, width, height));
+      setPreview(await preparePhoto(uri, w, h));
     } catch {
       deleteTempFile(uri);
       setError(t('errors.unsupportedFile'));
@@ -95,116 +86,109 @@ export default function CameraScreen() {
     else router.replace('/analyzing');
   };
 
-  /* ---------- Preview of the captured / picked photo ---------- */
+  /* ---------- "Harika görünüyorsun" confirmation ---------- */
   if (preview) {
+    const size = Math.min(width - GUTTER * 2 - 40, 280);
     return (
       <Screen
-        scroll={false}
+        header={<BackTitle title={copy.confirmTitle} onBack={() => setPreview(null)} backLabel={copy.otherSelfie} />}
         footer={
           <>
-            <Button label={t('camera.usePhoto')} onPress={usePhoto} icon="arrow" />
-            <Button label={t('camera.retake')} variant="secondary" onPress={() => setPreview(null)} />
+            <Button label={copy.otherSelfie} variant="ghost" onPress={() => setPreview(null)} />
+            <Button
+              label={returnTo === 'look' ? t('camera.usePhoto') : copy.startAnalysis}
+              onPress={usePhoto}
+              icon="sparkle"
+            />
           </>
         }
       >
-        <TopBar onBack={() => setPreview(null)} backLabel={t('camera.retake')} chip={t('common.privacyBadge')} />
-        <View style={styles.previewWrap}>
-          <Image
-            source={{ uri: preview.dataUrl }}
-            style={styles.previewImage}
-            resizeMode="cover"
-            accessibilityIgnoresInvertColors
-            accessible
-            accessibilityLabel={t('camera.title')}
-          />
-          <View style={[StyleSheet.absoluteFill, styles.centerAll]} pointerEvents="none">
-            <FaceGuide width={180} height={236} tone="light" />
-          </View>
-        </View>
-      </Screen>
-    );
-  }
-
-  /* ---------- Browser preview: no live camera, photo upload only ---------- */
-  if (UPLOAD_ONLY) {
-    return (
-      <Screen
-        footer={<Button label={t('camera.upload')} onPress={() => void pick()} loading={busy} icon="upload" />}
-      >
-        <CardStack>
-          <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('camera.title')} />
-          <Card style={styles.permission}>
-            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
-              {t('camera.upload')}
-            </AppText>
-            <AppText variant="body" color={colors.onInkMuted}>
-              {t('camera.subtitle')}
-            </AppText>
-            <View style={styles.webHints}>
-              {HINTS.map((key, i) => (
-                <View key={key} style={styles.webHintRow}>
-                  <NumberTag label={indexLabel(i)} tone="light" size={24} />
-                  <AppText variant="mono" color={colors.onInk} style={styles.flex}>
-                    {t(key)}
-                  </AppText>
-                </View>
-              ))}
+        <AppText variant="bodyMuted">{copy.confirmBody}</AppText>
+        <Reveal style={styles.confirm}>
+          <View style={{ width: size + 36, height: size + 36, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={StyleSheet.absoluteFill}>
+              <Ring size={size + 36} stroke={5} progress={0.78} />
             </View>
-            <MonoLabel color={colors.onInkSubtle} caps={false}>
-              {t('camera.fileTypes')}
-            </MonoLabel>
-          </Card>
-        </CardStack>
-        <View style={styles.permissionArt}>
-          <FaceGuide width={150} height={198} />
+            <View style={[styles.halo, { width: size + 16, height: size + 16, borderRadius: (size + 16) / 2 }]} />
+            <Image
+              source={{ uri: preview.dataUrl }}
+              style={{ width: size, height: size, borderRadius: size / 2 }}
+              resizeMode="cover"
+              accessibilityIgnoresInvertColors
+              accessible
+              accessibilityLabel={copy.greatSelfie}
+            />
+          </View>
+          <Pill tone="violet" icon="check" label={copy.greatSelfie} size="md" style={styles.center} />
+        </Reveal>
+        <View style={styles.privacy}>
+          <Icon name="shield" size={14} color={colors.muted} />
+          <AppText variant="small">{t('common.privacyBadge')}</AppText>
         </View>
-        {error ? <Notice tone="error" message={error} /> : null}
       </Screen>
     );
   }
 
-  /* ---------- Permission states ---------- */
-  if (!permission?.granted) {
-    const blocked = permission && !permission.canAskAgain;
+  /* ---------- Upload (browser preview) and permission states ---------- */
+  if (UPLOAD_ONLY || !permission?.granted) {
+    const blocked = !UPLOAD_ONLY && permission && !permission.canAskAgain;
+    const size = Math.min(width - GUTTER * 2 - 80, 230);
     return (
       <Screen
+        header={
+          <BackTitle
+            title={UPLOAD_ONLY ? copy.uploadTitle : t('camera.permissionTitle')}
+            onBack={() => router.back()}
+            backLabel={t('common.back')}
+          />
+        }
         footer={
-          <>
-            {permission === null ? null : blocked ? (
-              <Button label={t('camera.openSettings')} onPress={() => void Linking.openSettings()} />
-            ) : (
-              <Button label={t('camera.permissionButton')} onPress={() => void requestPermission()} />
-            )}
-            <Button label={t('camera.upload')} variant="secondary" onPress={() => void pick()} loading={busy} icon="upload" />
-          </>
+          UPLOAD_ONLY ? (
+            <Button label={t('camera.upload')} onPress={() => void pick()} loading={busy} icon="upload" />
+          ) : (
+            <>
+              {permission === null ? null : blocked ? (
+                <Button label={t('camera.openSettings')} onPress={() => void Linking.openSettings()} />
+              ) : (
+                <Button label={t('camera.permissionButton')} onPress={() => void requestPermission()} icon="camera" />
+              )}
+              <Button label={t('camera.upload')} variant="ghost" onPress={() => void pick()} loading={busy} icon="upload" />
+            </>
+          )
         }
       >
-        <CardStack>
-          <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('camera.title')} />
-          <Card style={styles.permission}>
-            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
-              {t('camera.permissionTitle')}
-            </AppText>
-            <AppText variant="body" color={colors.onInkMuted}>
-              {blocked ? t('camera.permissionDenied') : t('camera.permissionBody')}
-            </AppText>
-            <MonoLabel color={colors.onInkSubtle} caps={false}>
-              {t('camera.fileTypes')}
-            </MonoLabel>
-          </Card>
-        </CardStack>
-        <View style={styles.permissionArt}>
-          <FaceGuide width={150} height={198} />
+        <AppText variant="bodyMuted">
+          {UPLOAD_ONLY ? copy.uploadBody : blocked ? t('camera.permissionDenied') : t('camera.permissionBody')}
+        </AppText>
+        <PressableScale
+          onPress={() => void pick()}
+          accessibilityRole="button"
+          accessibilityLabel={t('camera.upload')}
+          style={[styles.dropzone, { width: size, height: size, borderRadius: size / 2 }]}
+        >
+          <View style={styles.dropIcon}>
+            <Icon name={UPLOAD_ONLY ? 'image' : 'camera'} size={26} color={colors.violet} />
+          </View>
+          <AppText variant="smallStrong" color={colors.violet}>
+            {t('camera.upload')}
+          </AppText>
+          <AppText variant="caption" align="center" style={styles.dropHint}>
+            {t('camera.fileTypes')}
+          </AppText>
+        </PressableScale>
+        {error ? <Notice tone="warning" message={error} /> : null}
+        <View style={styles.privacy}>
+          <Icon name="shield" size={14} color={colors.muted} />
+          <AppText variant="small">{t('common.privacyBadge')}</AppText>
         </View>
-        {error ? <Notice tone="error" message={error} /> : null}
       </Screen>
     );
   }
 
   /* ---------- Live camera ---------- */
+  const circle = faceCircle(width, height);
   return (
     <View style={styles.cameraRoot}>
-      <StatusBar style="light" />
       <CameraView
         ref={cameraRef}
         style={StyleSheet.absoluteFill}
@@ -216,45 +200,37 @@ export default function CameraScreen() {
         accessibilityLabel={t('camera.frameHint')}
       />
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <FaceGuide overlay />
+        <FaceGuide />
       </View>
       <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom']}>
         <View style={styles.topRow}>
-          <IconButton icon="close" label={t('common.close')} onPress={() => router.back()} tone="glass" size={44} />
-          <Chip label={t('camera.title')} tone="soft" centered />
+          <IconButton icon="back" label={t('common.back')} onPress={() => router.back()} tone="glass" size={40} />
+          <AppText variant="h2" style={styles.cameraTitle}>
+            {t('camera.title')}
+          </AppText>
         </View>
-        <View style={styles.topHints}>
-          <AppText variant="label" color={colors.onInk} align="center">
+        <View style={{ position: 'absolute', left: 0, right: 0, top: circle.cy + circle.r + 22 }} pointerEvents="none">
+          <AppText variant="label" align="center">
             {t('camera.frameHint')}
           </AppText>
-          <MonoLabel color={colors.onInkMuted} caps={false} style={styles.center}>
+          <AppText variant="small" align="center">
             {t('camera.hintLight')}
-          </MonoLabel>
+          </AppText>
         </View>
         <View style={styles.flex} />
         <View style={styles.bottom}>
-          <View style={styles.hintList}>
-            {HINTS.slice(1).map((key) => (
-              <View key={key} style={styles.hintPill}>
-                <AppText variant="monoSmall" color={colors.onInk}>
-                  {t(key)}
-                </AppText>
-              </View>
-            ))}
-          </View>
-          {error ? <Notice tone="error" message={error} /> : null}
+          {error ? <Notice tone="warning" message={error} /> : null}
           <View style={styles.controls}>
             <PressableScale
               onPress={() => void pick()}
               accessibilityRole="button"
               accessibilityLabel={t('camera.upload')}
               style={styles.sideButton}
-              hitSlop={8}
             >
               <View style={styles.sideIcon}>
-                <Icon name="upload" size={20} color={colors.onInk} />
+                <Icon name="image" size={20} color={colors.violet} />
               </View>
-              <AppText variant="monoSmall" color={colors.onInk} align="center" numberOfLines={2}>
+              <AppText variant="caption" color={colors.ink} align="center" numberOfLines={1}>
                 {t('camera.upload')}
               </AppText>
             </PressableScale>
@@ -266,17 +242,13 @@ export default function CameraScreen() {
               accessibilityState={{ disabled: !cameraReady || busy, busy }}
               style={({ pressed }) => [styles.shutter, (pressed || busy) && styles.shutterPressed]}
             >
-              <View style={styles.shutterInner}>
-                <View style={styles.shutterDot} />
-              </View>
+              <View style={styles.shutterInner} />
             </Pressable>
             <View style={styles.sideButton} />
           </View>
-          {Platform.OS === 'android' ? null : (
-            <MonoLabel color={colors.onInkMuted} caps={false} style={styles.center}>
-              {t('common.privacyBadge')}
-            </MonoLabel>
-          )}
+          <AppText variant="caption" align="center">
+            {t('common.privacyBadge')}
+          </AppText>
         </View>
       </SafeAreaView>
     </View>
@@ -285,67 +257,56 @@ export default function CameraScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  center: { textAlign: 'center' },
-  centerAll: { alignItems: 'center', justifyContent: 'center' },
-  cameraRoot: { flex: 1, backgroundColor: colors.night },
-  cameraUi: { flex: 1 },
-  topRow: {
-    flexDirection: 'row',
+  center: { alignSelf: 'center' },
+  confirm: { alignItems: 'center', gap: spacing.lg, paddingVertical: spacing.lg },
+  halo: { position: 'absolute', backgroundColor: colors.paper },
+  privacy: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
+  dropzone: {
+    alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: GUTTER + 4,
-    paddingTop: spacing.xs,
+    justifyContent: 'center',
+    gap: 6,
+    marginVertical: spacing.lg,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.violet,
+    backgroundColor: colors.mist,
   },
-  topHints: { alignItems: 'center', gap: 4, paddingHorizontal: spacing.xl, marginTop: spacing.md },
-  bottom: { paddingHorizontal: GUTTER + 4, paddingBottom: spacing.lg, gap: spacing.md },
-  hintList: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'center' },
-  hintPill: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: radii.sm,
-    backgroundColor: 'rgba(22,16,16,0.6)',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(239,233,227,0.2)',
+  dropIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.violetSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
   },
+  dropHint: { paddingHorizontal: 28 },
+  cameraRoot: { flex: 1, backgroundColor: colors.paper },
+  cameraUi: { flex: 1 },
+  topRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: GUTTER, paddingTop: spacing.sm },
+  cameraTitle: { fontSize: 22 },
+  bottom: { paddingHorizontal: GUTTER, paddingBottom: spacing.md, gap: spacing.md },
   controls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sideButton: { width: 84, minHeight: 44, alignItems: 'center', justifyContent: 'center', gap: 4 },
   sideIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(22,16,16,0.55)',
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    backgroundColor: colors.violetSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
   shutter: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 1.5,
-    borderColor: colors.onInk,
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    borderWidth: 4,
+    borderColor: colors.violet,
+    backgroundColor: colors.paper,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  shutterPressed: { opacity: 0.6 },
-  shutterInner: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: colors.onInk,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  shutterDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent },
-  previewWrap: {
-    flex: 1,
-    marginTop: spacing.sm,
-    borderRadius: radii.card,
-    overflow: 'hidden',
-    backgroundColor: colors.ink,
-  },
-  previewImage: { width: '100%', height: '100%' },
-  permission: { gap: spacing.md },
-  webHints: { gap: spacing.sm },
-  webHintRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
-  permissionArt: { alignItems: 'center', paddingVertical: spacing.lg },
+  shutterPressed: { opacity: 0.7 },
+  shutterInner: { width: 58, height: 58, borderRadius: 29, backgroundColor: colors.violet },
 });

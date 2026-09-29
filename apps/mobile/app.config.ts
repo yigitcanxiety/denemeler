@@ -25,7 +25,8 @@ const CAMERA_TR =
 const PHOTOS_TR =
   'Tonelle, renk ve makyaj analizin için galerinden bir selfie seçmene olanak tanır. Fotoğrafın saklanmaz.';
 
-const NUDE_50 = '#FDF9F6';
+/** v3 "Aura" paper (src/theme.ts). */
+const PAPER = '#FFFFFF';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -36,7 +37,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   userInterfaceStyle: 'light',
   icon: './assets/images/placeholder-icon.png',
-  backgroundColor: NUDE_50,
+  backgroundColor: PAPER,
   ios: {
     bundleIdentifier: 'app.tonelle',
     supportsTablet: false,
@@ -76,7 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     adaptiveIcon: {
       foregroundImage: './assets/images/placeholder-adaptive-icon.png',
       monochromeImage: './assets/images/placeholder-monochrome-icon.png',
-      backgroundColor: '#F9F0EA',
+      backgroundColor: '#E9E5FB',
     },
     // CAMERA is the only runtime permission. (INTERNET and Play BILLING are normal/install-time
     // permissions added by React Native and react-native-purchases.)
@@ -113,7 +114,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: NUDE_50,
+        backgroundColor: PAPER,
         image: './assets/images/placeholder-splash.png',
         imageWidth: 120,
       },

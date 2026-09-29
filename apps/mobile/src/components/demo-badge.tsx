@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { useLocale } from '@/hooks/use-i18n';
 import { uiCopy } from '@/lib/ui-copy';
-import { colors, GUTTER } from '@/theme';
+import { colors, fonts, GUTTER } from '@/theme';
 
 import { AppText } from './text';
 
@@ -12,11 +12,9 @@ export function DemoBadge() {
   return (
     <View style={styles.strip} accessibilityRole="alert" accessibilityLabel={`${copy.demoBadge}. ${copy.demoDetail}`}>
       <View style={styles.tag}>
-        <AppText variant="monoLabel" color={colors.accentContrast} style={styles.tagText}>
-          {copy.demoBadge}
-        </AppText>
+        <AppText style={styles.tagText}>{copy.demoBadge}</AppText>
       </View>
-      <AppText variant="monoSmall" color={colors.onInkMuted} numberOfLines={1} style={styles.detail}>
+      <AppText variant="caption" color={colors.paper} numberOfLines={1} style={styles.detail}>
         {copy.demoDetail}
       </AppText>
     </View>
@@ -28,11 +26,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: GUTTER + 4,
+    paddingHorizontal: GUTTER,
     paddingVertical: 5,
-    backgroundColor: colors.night,
+    backgroundColor: colors.ink,
   },
-  tag: { backgroundColor: colors.accent, borderRadius: 4, paddingHorizontal: 6, paddingVertical: 1 },
-  tagText: { fontSize: 10, lineHeight: 14 },
-  detail: { flex: 1, fontSize: 10.5 },
+  tag: { backgroundColor: colors.violet, borderRadius: 999, paddingHorizontal: 7, paddingVertical: 1 },
+  tagText: { fontFamily: fonts.bold, fontSize: 9.5, lineHeight: 13, letterSpacing: 0.6, color: colors.onViolet },
+  detail: { flex: 1, fontSize: 10.5, opacity: 0.8 },
 });

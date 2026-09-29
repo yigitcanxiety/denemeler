@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { ANALYZING_STEPS, analyzingProgress, analyzingStepIndex, isAnalysisSlow } from './analyzing';
 import { pickDeviceLocale } from './locale';
 import { isLookId, localizedSteps, lookShades, lookSummary, resolveRecommendedLooks } from './looks';
-import { confidencePercent, readableTextOn, seasonText, traitChips } from './results';
+import { confidencePercent, profileBars, profilePoints, seasonText, topShades, traitChips } from './results';
 
 describe('pickDeviceLocale', () => {
   it('uses Turkish on Turkish devices, English otherwise', () => {
@@ -76,9 +76,18 @@ describe('results helpers', () => {
     expect(seasonText(MOCK_ANALYSIS, 'en').name).toBe('Soft Autumn');
   });
 
-  it('picks readable text colours', () => {
-    expect(readableTextOn('#000000')).toBe('#ffffff');
-    expect(readableTextOn('#FDF9F6')).toBe('#2b2124');
-    expect(readableTextOn('bad')).toBe('#2b2124');
+  it('derives the colour profile radar and bars', () => {
+    const points = profilePoints(MOCK_ANALYSIS, 'tr');
+    expect(points).toHaveLength(6);
+    expect(points[0]).toMatchObject({ axis: 'warmth', label: 'Sıcaklık' });
+    expect(points.every((p) => p.value >= 0 && p.value <= 100)).toBe(true);
+    expect(profileBars(MOCK_ANALYSIS, 'en').map((b) => b.label)).toEqual(['Warmth', 'Contrast', 'Softness']);
+  });
+
+  it('ranks the best shade per category with its fit', () => {
+    const cards = topShades(MOCK_ANALYSIS);
+    expect(cards.map((c) => c.kind)).toEqual(['lip', 'blush', 'eyeshadow']);
+    expect(cards.every((c) => c.match >= 60 && c.match <= 98)).toBe(true);
+    expect(topShades(MOCK_ANALYSIS, { lip: [], blush: ['#D98C78'], eyeshadow: [] })).toHaveLength(1);
   });
 });

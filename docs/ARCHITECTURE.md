@@ -98,11 +98,11 @@ Routes (locale prefix, default `tr`, `en` available; `/` redirects by Accept-Lan
 - `/[locale]/privacy`, `/[locale]/kvkk` (aydınlatma metni), `/[locale]/consent` (açık rıza metni), `/[locale]/terms`, `/[locale]/contact`
 - Web payment is not live yet: the web paywall shows plans and routes to the app stores (env URLs). Keep a `PaymentProvider` seam for Paddle/Stripe later.
 
-Design: see docs/DESIGN.md (v2 "Editorial Lab"). Tokens in `apps/web/src/styles/tokens.css`, mirrored in `apps/mobile/src/theme.ts`.
+Design: see docs/DESIGN.md (v3 "Aura"; v1 scope = colour analysis + makeup try-on). Tokens in `apps/web/src/styles/tokens.css`, mirrored in `apps/mobile/src/theme.ts`.
 
 ## Mobile (apps/mobile)
 
-Expo (SDK 57), TypeScript, expo-router. Screens: welcome → consent → quiz (5 steps) → camera (expo-camera, front, face framing guide, light hint) → analyzing → teaser (blurred) → paywall (RevenueCat, weekly + yearly, intro price, exit offer) → results → look detail → share card → settings (language, restore purchases, delete my data, legal links). API base URL from `EXPO_PUBLIC_API_URL`. RevenueCat keys from `EXPO_PUBLIC_RC_IOS_KEY` / `EXPO_PUBLIC_RC_ANDROID_KEY`; when absent the app runs in "dev purchases" mode that unlocks locally. Bundle id / package: `app.tonelle`.
+Expo (SDK 57), TypeScript, expo-router. Tabs: Bugün (home) · Sonuçlar (results) · centre scan button · Profil (settings, preferences quiz, restore, delete data, legal). Flow: consent (first time) → selfie tips → camera/upload + "Harika görünüyorsun" confirmation → analyzing → teaser (locked result) → paywall (RevenueCat, weekly + yearly + one-time report, intro price, exit offer) → results → look try-on (before/after slider) → share card. API base URL from `EXPO_PUBLIC_API_URL`. RevenueCat keys from `EXPO_PUBLIC_RC_IOS_KEY` / `EXPO_PUBLIC_RC_ANDROID_KEY`; when absent the app runs in "dev purchases" mode that unlocks locally. Bundle id / package: `app.tonelle`.
 
 ## Quality gates
 

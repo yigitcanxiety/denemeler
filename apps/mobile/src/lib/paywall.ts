@@ -3,6 +3,7 @@ import {
   PRICING,
   PRODUCT_IDS,
   formatPrice,
+  regionForLocale,
   weeklyEquivalent,
   type Locale,
   type PlanId,
@@ -152,12 +153,12 @@ export function toPaywallPlan<P extends PackageLike>(pkg: P): PaywallPlan<P> {
 
 const KIND_ORDER: Record<PlanKind, number> = { yearly: 0, weekly: 1, report: 2, other: 3 };
 
-/** Subscription plans from the current offering, yearly first. */
+/** Plans from the current offering (yearly, weekly, one-time report), yearly first. */
 export function plansFromOfferings<P extends PackageLike>(offerings: OfferingsLike<P> | null): PaywallPlan<P>[] {
   const packages = offerings?.current?.availablePackages ?? [];
   return packages
     .map((pkg) => toPaywallPlan(pkg))
-    .filter((plan) => plan.kind === 'weekly' || plan.kind === 'yearly')
+    .filter((plan) => plan.kind !== 'other')
     .sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind]);
 }
 
@@ -179,6 +180,15 @@ export function exitDiscountPercent(regular: PaywallPlan | undefined, offer: Pay
     return Math.round((1 - offer.price / regular.price) * 100);
   }
   return EXIT_OFFER.discountPercent;
+}
+
+/** Saving of the yearly plan vs. paying weekly for a year ("En avantajlı · %88"), or null. */
+export function yearlySavingsPercent(plans: readonly PaywallPlan[]): number | null {
+  const yearly = plans.find((p) => p.kind === 'yearly');
+  const weekly = plans.find((p) => p.kind === 'weekly');
+  if (!yearly || !weekly || yearly.price <= 0 || weekly.price <= 0) return null;
+  const percent = Math.round((1 - yearly.price / (weekly.price * 52)) * 100);
+  return percent > 0 ? percent : null;
 }
 
 /* ---------- Legal copy ---------- */
@@ -222,11 +232,17 @@ export function planPriceLine(plan: PaywallPlan, t: Translate): string {
   return t('paywall.oneTime', { price: plan.priceString });
 }
 
+/** Trial length and yearly price from the shared price list, for copy shown before the paywall. */
+export function displayTrial(locale: Locale): { days: number; yearlyPrice: string } {
+  const { yearly } = PRICING[regionForLocale(locale)];
+  return { days: yearly.trialDays ?? 0, yearlyPrice: formatPrice(yearly.amount, yearly.currency, locale) };
+}
+
 /* ---------- Dev purchases mode ---------- */
 
 /** Display plans built from the shared price list, used when RevenueCat is not configured. */
 export function devPlans(region: PricingRegion, locale: Locale): PaywallPlan<null>[] {
-  const { weekly, yearly } = PRICING[region];
+  const { weekly, yearly, report } = PRICING[region];
   const fmt = (amount: number) => formatPrice(amount, weekly.currency, locale);
   return [
     {
@@ -250,6 +266,15 @@ export function devPlans(region: PricingRegion, locale: Locale): PaywallPlan<nul
         weekly.introAmount !== undefined
           ? { type: 'discount', priceString: fmt(weekly.introAmount), unit: 'WEEK', units: 1, days: 7 }
           : null,
+      source: null,
+    },
+    {
+      key: 'dev_report',
+      kind: 'report',
+      price: report.amount,
+      priceString: fmt(report.amount),
+      pricePerWeekString: null,
+      intro: null,
       source: null,
     },
   ];
