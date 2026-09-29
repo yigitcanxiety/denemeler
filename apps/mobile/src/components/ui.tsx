@@ -1,45 +1,32 @@
+import { useEffect } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { readableTextOn } from '@/lib/results';
-import { colors, fonts, radii, shadows, spacing } from '@/theme';
+import { colors, motion, radii, spacing } from '@/theme';
 
+import { NumberTag } from './labels';
 import { AppText } from './text';
 
-export function Card({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
-  return <View style={[styles.card, style]}>{children}</View>;
-}
-
-export function Chip({ label, value, tone = 'default' }: { label?: string; value: string; tone?: 'default' | 'accent' }) {
-  return (
-    <View
-      style={[styles.chip, tone === 'accent' && styles.chipAccent]}
-      accessible
-      accessibilityLabel={label ? `${label}: ${value}` : value}
-    >
-      {label ? (
-        <AppText variant="caption" color={colors.inkMuted}>
-          {label}
-        </AppText>
-      ) : null}
-      <AppText variant="label" color={tone === 'accent' ? colors.accent : colors.ink}>
-        {value}
-      </AppText>
-    </View>
-  );
-}
-
-export function Swatch({ hex, size = 44, showHex }: { hex: string; size?: number; showHex?: boolean }) {
+export function Swatch({ hex, size = 44, showHex, onInk }: { hex: string; size?: number; showHex?: boolean; onInk?: boolean }) {
   return (
     <View style={styles.swatchWrap} accessible accessibilityLabel={hex}>
-      <View style={[styles.swatch, { width: size, height: size, borderRadius: size / 2, backgroundColor: hex }]}>
+      <View
+        style={[
+          styles.swatch,
+          { width: size, height: size, borderRadius: size / 2, backgroundColor: hex },
+          onInk && styles.swatchOnInk,
+        ]}
+      >
         {showHex && size >= 56 ? (
-          <AppText variant="caption" color={readableTextOn(hex)} style={styles.swatchHex}>
+          <AppText variant="monoSmall" color={readableTextOn(hex)}>
             {hex.toUpperCase()}
           </AppText>
         ) : null}
       </View>
       {showHex && size < 56 ? (
-        <AppText variant="caption" style={styles.swatchCaption}>
+        <AppText variant="monoSmall" color={onInk ? colors.onInkMuted : colors.inkMuted} style={styles.swatchCaption}>
           {hex.toUpperCase()}
         </AppText>
       ) : null}
@@ -47,85 +34,118 @@ export function Swatch({ hex, size = 44, showHex }: { hex: string; size?: number
   );
 }
 
-export function SwatchRow({ colors: hexes, size, showHex }: { colors: string[]; size?: number; showHex?: boolean }) {
+export function SwatchRow({ colors: hexes, size, showHex, onInk }: { colors: string[]; size?: number; showHex?: boolean; onInk?: boolean }) {
   return (
     <View style={styles.swatchRow}>
       {hexes.map((hex, i) => (
-        <Swatch key={`${hex}-${i}`} hex={hex} size={size} showHex={showHex} />
+        <Swatch key={`${hex}-${i}`} hex={hex} size={size} showHex={showHex} onInk={onInk} />
       ))}
     </View>
   );
 }
 
-export function ProgressBar({ value, label }: { value: number; label?: string }) {
-  const clamped = Math.min(1, Math.max(0, value));
+/**
+ * Palette as a segmented swatch bar (BRIK segmented progress, in colour). Segments grow in one
+ * by one (opacity only with reduce motion). `showHex` prints mono codes under each segment.
+ */
+export function SwatchBar({
+  colors: hexes,
+  height = 56,
+  showHex,
+  onInk,
+  style,
+}: {
+  colors: string[];
+  height?: number;
+  showHex?: boolean;
+  onInk?: boolean;
+  style?: StyleProp<ViewStyle>;
+}) {
   return (
-    <View
-      style={styles.track}
-      accessibilityRole="progressbar"
-      accessibilityLabel={label}
-      accessibilityValue={{ min: 0, max: 100, now: Math.round(clamped * 100) }}
-    >
-      <View style={[styles.fill, { width: `${clamped * 100}%` }]} />
+    <View style={style} accessible accessibilityLabel={hexes.join(', ')}>
+      <View style={[styles.bar, { height }]}>
+        {hexes.map((hex, i) => (
+          <BarSegment key={`${hex}-${i}`} hex={hex} index={i} first={i === 0} last={i === hexes.length - 1} />
+        ))}
+      </View>
+      {showHex ? (
+        <View style={styles.hexRow}>
+          {hexes.map((hex, i) => (
+            <AppText
+              key={`${hex}-${i}`}
+              variant="monoSmall"
+              color={onInk ? colors.onInkSubtle : colors.inkSubtle}
+              style={styles.hex}
+              numberOfLines={1}
+              adjustsFontSizeToFit
+            >
+              {hex.replace('#', '').toUpperCase()}
+            </AppText>
+          ))}
+        </View>
+      ) : null}
     </View>
   );
 }
 
-export function SectionTitle({ children }: { children: string }) {
+function BarSegment({ hex, index, first, last }: { hex: string; index: number; first: boolean; last: boolean }) {
+  const reduced = useReducedMotion();
+  const p = useSharedValue(0);
+  useEffect(() => {
+    p.value = reduced
+      ? withTiming(1, { duration: motion.reducedFade })
+      : withDelay(120 + index * 60, withTiming(1, { duration: 600, easing: motion.outExpo }));
+  }, [reduced, index, p]);
+  const animated = useAnimatedStyle(() =>
+    reduced ? { opacity: p.value } : { opacity: p.value, transform: [{ scaleY: 0.4 + p.value * 0.6 }] },
+  );
   return (
-    <AppText variant="heading" accessibilityRole="header">
-      {children}
-    </AppText>
+    <Animated.View
+      style={[
+        styles.segment,
+        { backgroundColor: hex },
+        first && styles.segFirst,
+        last && styles.segLast,
+        animated,
+      ]}
+    />
   );
 }
 
-export function Badge({ label, tone = 'accent' }: { label: string; tone?: 'accent' | 'dev' | 'ink' }) {
-  const bg = tone === 'dev' ? colors.warning : tone === 'ink' ? colors.surfaceInverse : colors.accent;
+export function SectionTitle({ children, index, onInk }: { children: string; index?: string; onInk?: boolean }) {
   return (
-    <View style={[styles.badge, { backgroundColor: bg }]}>
-      <AppText variant="caption" color={colors.accentContrast} style={styles.badgeText}>
-        {label}
+    <View style={styles.sectionTitle}>
+      {index ? <NumberTag label={index} tone={onInk ? 'light' : 'ink'} size={24} /> : null}
+      <AppText variant="heading" color={onInk ? colors.onInk : colors.ink} accessibilityRole="header" style={styles.flex}>
+        {children}
       </AppText>
     </View>
   );
 }
 
+/** Thin hairline divider. */
+export function Rule({ onInk, style }: { onInk?: boolean; style?: StyleProp<ViewStyle> }) {
+  return <View style={[styles.rule, { backgroundColor: onInk ? colors.inkLine : colors.line }, style]} />;
+}
+
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: colors.surfaceRaised,
-    borderRadius: radii.card,
-    padding: spacing.xl,
-    borderWidth: 1,
-    borderColor: colors.border,
-    gap: spacing.md,
-    ...shadows.soft,
-  },
-  chip: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radii.md,
-    backgroundColor: colors.surfaceSunken,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  chipAccent: { backgroundColor: colors.accentSoft, borderColor: colors.accentSoft },
+  flex: { flex: 1 },
   swatchWrap: { alignItems: 'center', gap: spacing.xs },
   swatch: {
-    borderWidth: 1,
-    borderColor: 'rgba(43,33,36,0.08)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(35,24,22,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  swatchHex: { fontSize: 10 },
-  swatchCaption: { fontSize: 10 },
+  swatchOnInk: { borderColor: 'rgba(239,233,227,0.2)' },
+  swatchCaption: { fontSize: 9.5 },
   swatchRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
-  track: { height: 6, borderRadius: radii.pill, backgroundColor: colors.surfaceSunken, overflow: 'hidden' },
-  fill: { height: 6, borderRadius: radii.pill, backgroundColor: colors.accent },
-  badge: {
-    alignSelf: 'flex-start',
-    paddingHorizontal: spacing.md,
-    paddingVertical: 3,
-    borderRadius: radii.pill,
-  },
-  badgeText: { fontFamily: fonts.bodySemiBold, letterSpacing: 0.6 },
+  bar: { flexDirection: 'row', gap: 3 },
+  segment: { flex: 1, borderRadius: 3 },
+  segFirst: { borderTopLeftRadius: radii.md, borderBottomLeftRadius: radii.md },
+  segLast: { borderTopRightRadius: radii.md, borderBottomRightRadius: radii.md },
+  hexRow: { flexDirection: 'row', gap: 3, marginTop: 6 },
+  hex: { flex: 1, textAlign: 'center', fontSize: 9 },
+  sectionTitle: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  rule: { height: StyleSheet.hairlineWidth },
 });

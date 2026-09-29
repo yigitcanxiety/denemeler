@@ -39,6 +39,15 @@ export interface SiteContent {
     faq: string;
     startCta: string;
     primaryNavLabel: string;
+    menu: string;
+    closeMenu: string;
+    menuTitle: string;
+  };
+  preloader: {
+    label: string;
+    skip: string;
+    /** Four season families, clockwise from the top (N, E, S, W). */
+    seasons: string[];
   };
   hero: {
     eyebrow: string;
@@ -49,6 +58,26 @@ export interface SiteContent {
     trustPoints: string[];
     storesLabel: string;
     illustrationLabel: string;
+    analyzingTag: string;
+    notes: string[];
+  };
+  story: {
+    title: string;
+    subtitle: string;
+    steps: { title: string; body: string; screen: string }[];
+  };
+  sphere: {
+    eyebrow: string;
+    title: string;
+    steps: { title: string; body: string }[];
+  };
+  people: {
+    title: string;
+    /** Small disclosure shown whenever placeholder testimonials are displayed. */
+    caption: string;
+  };
+  dock: {
+    note: string;
   };
   how: {
     title: string;
@@ -161,5 +190,9 @@ export interface SiteContent {
     shareFailed: string;
     renderFailed: string;
     homeLink: string;
+    analyzingTag: string;
+    navResults: string;
+    navLooks: string;
+    photoFrameLabel: string;
   };
 }

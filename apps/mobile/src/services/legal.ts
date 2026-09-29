@@ -8,7 +8,7 @@ import { colors } from '@/theme';
 export function openLegal(locale: Locale, page: LegalPage): Promise<unknown> {
   return WebBrowser.openBrowserAsync(legalUrl(env.siteUrl, locale, page), {
     controlsColor: colors.accent,
-    toolbarColor: colors.surface,
+    toolbarColor: colors.paper,
     presentationStyle: WebBrowser.WebBrowserPresentationStyle.PAGE_SHEET,
   }).catch(() => undefined);
 }

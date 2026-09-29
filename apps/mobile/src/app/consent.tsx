@@ -1,15 +1,21 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { Checkbox } from '@/components/checkbox';
+import { Icon } from '@/components/icon';
+import { MonoLabel } from '@/components/labels';
+import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
+import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
+import { Rule } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import type { LegalPage } from '@/lib/config';
+import { indexLabel } from '@/lib/ui-copy';
 import { openLegal } from '@/services/legal';
 import { useAppStore } from '@/store/app-store';
 import { colors, radii, spacing } from '@/theme';
@@ -41,48 +47,59 @@ export default function ConsentScreen() {
 
   return (
     <Screen
-      header={<TopBar onBack={() => router.back()} backLabel={t('common.back')} />}
       footer={
         <>
           {!canContinue ? (
-            <AppText variant="caption" align="center">
+            <AppText variant="monoSmall" align="center">
               {t('consent.requiredHint')}
             </AppText>
           ) : null}
           <Button label={t('consent.accept')} onPress={accept} disabled={!canContinue} />
-          <Button label={t('consent.decline')} variant="ghost" onPress={() => setDeclined(true)} />
+          <Button label={t('consent.decline')} variant="ghost" compact onPress={() => setDeclined(true)} />
         </>
       }
     >
-      <AppText variant="title" accessibilityRole="header">
-        {t('consent.title')}
-      </AppText>
-      <AppText variant="bodyMuted">{t('consent.intro')}</AppText>
-
-      <View style={styles.points}>
-        {POINTS.map((key) => (
-          <View key={key} style={styles.point}>
-            <View style={styles.dot} />
-            <AppText variant="body" style={styles.pointText}>
-              {t(key)}
-            </AppText>
-          </View>
-        ))}
-      </View>
+      <CardStack>
+        <TopBar onBack={() => router.back()} backLabel={t('common.back')} chip="KVKK · GDPR" />
+        <Card style={styles.intro}>
+          <AppText variant="title" color={colors.onInk} accessibilityRole="header">
+            {t('consent.title')}
+          </AppText>
+          <AppText variant="body" color={colors.onInkMuted}>
+            {t('consent.intro')}
+          </AppText>
+        </Card>
+        <Card style={styles.points}>
+          {POINTS.map((key, i) => (
+            <Reveal key={key} delay={120 + i * 90}>
+              {i > 0 ? <Rule onInk style={styles.rule} /> : null}
+              <View style={styles.point}>
+                <AppText variant="mono" color={colors.accentSoft} style={styles.pointIndex}>
+                  {indexLabel(i)}
+                </AppText>
+                <AppText variant="body" color={colors.onInk} style={styles.pointText}>
+                  {t(key)}
+                </AppText>
+              </View>
+            </Reveal>
+          ))}
+        </Card>
+      </CardStack>
 
       <View style={styles.links}>
         {links.map((link) => (
-          <Pressable
+          <PressableScale
             key={link.page}
             onPress={() => void openLegal(locale, link.page)}
             accessibilityRole="link"
             accessibilityLabel={link.label}
             style={styles.linkChip}
           >
-            <AppText variant="caption" color={colors.accent}>
-              {link.label} ↗
-            </AppText>
-          </Pressable>
+            <MonoLabel caps={false} color={colors.ink} size={12}>
+              {link.label}
+            </MonoLabel>
+            <Icon name="external" size={14} color={colors.accent} />
+          </PressableScale>
         ))}
       </View>
 
@@ -100,16 +117,22 @@ export default function ConsentScreen() {
 }
 
 const styles = StyleSheet.create({
-  points: { gap: spacing.md },
-  point: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start' },
-  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent, marginTop: 8 },
+  intro: { gap: spacing.md },
+  points: { paddingVertical: 8 },
+  rule: { marginVertical: 2 },
+  point: { flexDirection: 'row', gap: spacing.md, alignItems: 'flex-start', paddingVertical: 12 },
+  pointIndex: { width: 22, marginTop: 2 },
   pointText: { flex: 1, fontSize: 15, lineHeight: 22 },
-  links: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  links: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.xs },
   linkChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    minHeight: 40,
     paddingHorizontal: spacing.md,
-    paddingVertical: 8,
     borderRadius: radii.pill,
-    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: colors.lineStrong,
   },
   declined: { gap: spacing.sm },
 });

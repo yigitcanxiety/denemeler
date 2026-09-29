@@ -1,8 +1,9 @@
-import { Fraunces_500Medium } from '@expo-google-fonts/fraunces/500Medium';
-import { Fraunces_600SemiBold } from '@expo-google-fonts/fraunces/600SemiBold';
-import { Inter_400Regular } from '@expo-google-fonts/inter/400Regular';
-import { Inter_500Medium } from '@expo-google-fonts/inter/500Medium';
-import { Inter_600SemiBold } from '@expo-google-fonts/inter/600SemiBold';
+import { InterTight_300Light } from '@expo-google-fonts/inter-tight/300Light';
+import { InterTight_400Regular } from '@expo-google-fonts/inter-tight/400Regular';
+import { InterTight_500Medium } from '@expo-google-fonts/inter-tight/500Medium';
+import { InterTight_600SemiBold } from '@expo-google-fonts/inter-tight/600SemiBold';
+import { JetBrainsMono_400Regular } from '@expo-google-fonts/jetbrains-mono/400Regular';
+import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono/500Medium';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -19,11 +20,12 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
-    Fraunces_500Medium,
-    Fraunces_600SemiBold,
-    Inter_400Regular,
-    Inter_500Medium,
-    Inter_600SemiBold,
+    InterTight_300Light,
+    InterTight_400Regular,
+    InterTight_500Medium,
+    InterTight_600SemiBold,
+    JetBrainsMono_400Regular,
+    JetBrainsMono_500Medium,
   });
   const reduced = useReducedMotion();
   const hydrated = useAppStore((s) => s.hydrated);
@@ -47,16 +49,16 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.surface },
+          contentStyle: { backgroundColor: colors.paper },
           animation: reduced ? 'none' : 'slide_from_right',
         }}
       >
-        <Stack.Screen name="index" />
+        <Stack.Screen name="index" options={{ animation: reduced ? 'none' : 'fade' }} />
         <Stack.Screen name="consent" />
         <Stack.Screen name="quiz" />
-        <Stack.Screen name="camera" options={{ contentStyle: { backgroundColor: '#000' } }} />
+        <Stack.Screen name="camera" options={{ contentStyle: { backgroundColor: colors.night } }} />
         <Stack.Screen name="analyzing" options={{ gestureEnabled: false, animation: reduced ? 'none' : 'fade' }} />
-        <Stack.Screen name="teaser" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="teaser" options={{ gestureEnabled: false, animation: reduced ? 'none' : 'fade' }} />
         <Stack.Screen
           name="paywall"
           options={{

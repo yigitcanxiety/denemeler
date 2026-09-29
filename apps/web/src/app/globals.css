@@ -1,32 +1,35 @@
 @import 'tailwindcss';
 @import '../styles/tokens.css';
 
+/* ======================================================================
+ * Base
+ * ==================================================================== */
+
 @layer base {
   html {
     color-scheme: light;
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 5rem;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
+    scroll-padding-top: 6rem;
+    background-color: var(--color-paper);
   }
 
   body {
-    background-color: var(--color-surface);
+    background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv11';
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
     text-wrap: balance;
   }
 
@@ -40,24 +43,390 @@
   }
 
   ::selection {
-    background: var(--color-blush-200);
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  details > summary {
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
   }
 }
 
-/* ---------- Motion (all disabled for prefers-reduced-motion) ---------- */
+/* Faint film grain over paper and night (DESIGN §2). Static, never animated. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
-@keyframes tonelle-fade-up {
+/* ======================================================================
+ * Layout helpers
+ * ==================================================================== */
+
+@utility shell {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (width >= 40rem) {
+    padding-inline: 24px;
+  }
+  @media (width >= 64rem) {
+    padding-inline: 40px;
+  }
+}
+
+/* Mono annotation text (JetBrains Mono, 12–15px, lh 1.35). */
+@utility mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+@utility mono-caps {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Big light numerals (BRIK). */
+@utility numeral {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ======================================================================
+ * Themes
+ * ==================================================================== */
+
+/* Dark "night" scope: every token-based utility inside flips to the night palette. */
+.theme-night {
+  --color-paper: var(--color-night);
+  --color-paper-raised: var(--color-night-raised);
+  --color-paper-sunken: #0e0a0a;
+  --color-line: var(--color-night-line);
+  --color-line-strong: rgb(242 201 203 / 0.24);
+  --color-ink: #f3ece6;
+  --color-ink-soft: #e6ded7;
+  --color-ink-muted: #b9aba5;
+  --color-ink-subtle: #978883;
+  background-color: var(--color-night);
+  color: var(--color-ink);
+}
+
+/* ======================================================================
+ * Construction grid
+ * ==================================================================== */
+
+.cgrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  padding-inline: 16px;
+}
+.cgrid > i {
+  display: block;
+  border-left: 1px solid var(--color-line);
+  transform-origin: top;
+}
+.cgrid > i:last-child {
+  border-right: 1px solid var(--color-line);
+}
+.cgrid > i:nth-child(n + 5) {
+  display: none;
+}
+@media (width >= 40rem) {
+  .cgrid {
+    padding-inline: 24px;
+  }
+}
+@media (width >= 48rem) {
+  .cgrid {
+    --cols: 6;
+  }
+  .cgrid > i:nth-child(n + 5) {
+    display: block;
+  }
+  .cgrid > i:nth-child(n + 7) {
+    display: none;
+  }
+}
+@media (width >= 64rem) {
+  .cgrid {
+    --cols: 8;
+    padding-inline: 40px;
+  }
+  .cgrid > i:nth-child(n + 7) {
+    display: block;
+  }
+}
+@media (width >= 90rem) {
+  .cgrid {
+    max-width: 1440px;
+    margin-inline: auto;
+  }
+}
+/* The last visible column carries the right border. */
+.cgrid > i:nth-child(4) {
+  border-right: 1px solid var(--color-line);
+}
+@media (width >= 48rem) {
+  .cgrid > i:nth-child(4) {
+    border-right: 0;
+  }
+  .cgrid > i:nth-child(6) {
+    border-right: 1px solid var(--color-line);
+  }
+}
+@media (width >= 64rem) {
+  .cgrid > i:nth-child(6) {
+    border-right: 0;
+  }
+}
+
+.hline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid var(--color-line);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* ======================================================================
+ * Dark stacked cards with notch necks (BRIK)
+ * ==================================================================== */
+
+.ink-card {
+  --neck-gap: 10px;
+  --neck-inset: 26px;
+  position: relative;
+  background-color: var(--color-ink);
+  color: var(--color-ink-inverse);
+  border-radius: var(--radius-card);
+}
+
+/* Necks are utilities so they can switch per breakpoint (e.g. `neck-top lg:neck-left`). */
+/* Neck to the card above (vertical stack with a --neck-gap gap). */
+@utility neck-top {
+  &::before {
+    content: '';
+    position: absolute;
+    background: inherit;
+    pointer-events: none;
+    --r: calc(var(--neck-gap) / 2);
+    top: calc(-1 * var(--neck-gap) - 0.5px);
+    bottom: auto;
+    height: calc(var(--neck-gap) + 1px);
+    width: auto;
+    left: calc(var(--neck-inset) - var(--neck-gap) / 2);
+    right: calc(var(--neck-inset) - var(--neck-gap) / 2);
+    -webkit-mask:
+      radial-gradient(circle at 0 50%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 50%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle at 0 50%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) left / 51% 100% no-repeat,
+      radial-gradient(circle at 100% 50%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) right / 51% 100% no-repeat;
+  }
+}
+/* Neck to the card on the left (side-by-side pair with a --neck-gap gap). */
+@utility neck-left {
+  &::before {
+    content: '';
+    position: absolute;
+    background: inherit;
+    pointer-events: none;
+    --r: calc(var(--neck-gap) / 2);
+    left: calc(-1 * var(--neck-gap) - 0.5px);
+    right: auto;
+    width: calc(var(--neck-gap) + 1px);
+    height: auto;
+    top: calc(var(--neck-inset) - var(--neck-gap) / 2);
+    bottom: calc(var(--neck-inset) - var(--neck-gap) / 2);
+    -webkit-mask:
+      radial-gradient(circle at 50% 0, #0000 calc(var(--r) - 0.5px), #000 var(--r)) top / 100% 51% no-repeat,
+      radial-gradient(circle at 50% 100%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) bottom / 100% 51% no-repeat;
+    mask:
+      radial-gradient(circle at 50% 0, #0000 calc(var(--r) - 0.5px), #000 var(--r)) top / 100% 51% no-repeat,
+      radial-gradient(circle at 50% 100%, #0000 calc(var(--r) - 0.5px), #000 var(--r)) bottom / 100% 51% no-repeat;
+  }
+}
+@utility neck-none {
+  &::before {
+    content: none;
+  }
+}
+
+/* ======================================================================
+ * Segmented progress (||||||||)
+ * ==================================================================== */
+
+.seg {
+  display: flex;
+  gap: 3px;
+  align-items: stretch;
+}
+.seg > i {
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 3px;
+  background-color: rgb(242 201 203 / 0.16);
+  transition: background-color 220ms ease;
+  transition-delay: calc(var(--i, 0) * 22ms);
+}
+.seg > i[data-on] {
+  background-color: var(--color-accent-soft);
+}
+.seg-light > i {
+  background-color: var(--color-line);
+}
+.seg-light > i[data-on] {
+  background-color: var(--color-ink);
+}
+
+/* ======================================================================
+ * Buttons
+ * ==================================================================== */
+
+.press {
+  transition:
+    transform 180ms var(--ease-out-expo),
+    background-color 200ms ease,
+    color 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+.press:active:not(:disabled):not([aria-disabled='true']) {
+  transform: scale(0.97);
+}
+
+/* ======================================================================
+ * Motion system (DESIGN §3). Everything below is neutralised for
+ * prefers-reduced-motion at the end of this file.
+ * ==================================================================== */
+
+@keyframes t-rise {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-
-@keyframes tonelle-shimmer {
+@keyframes t-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes t-letter {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes t-grow-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes t-grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes t-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes t-slide-l {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes t-slide-r {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes t-breathe {
+  0%,
+  100% {
+    transform: scale(0.97);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+}
+@keyframes t-shift {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+@keyframes t-scan {
+  0% {
+    transform: translateY(-2%);
+  }
+  50% {
+    transform: translateY(98%);
+  }
+  100% {
+    transform: translateY(-2%);
+  }
+}
+@keyframes t-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes t-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes t-shimmer {
   from {
     background-position: -200% 0;
   }
@@ -66,144 +435,268 @@
   }
 }
 
-@keyframes tonelle-scan {
-  0% {
-    top: 4%;
-  }
-  50% {
-    top: 92%;
-  }
-  100% {
-    top: 4%;
-  }
+/* --- Intro (load-time, CSS only so it never waits for JS; paused under the preloader) --- */
+.intro {
+  animation: t-rise 0.9s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-fade {
+  animation: t-fade 1s ease both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-grow-y {
+  animation: t-grow-y 1.2s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-grow-x {
+  animation: t-grow-x 1.2s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-draw .draw {
+  stroke-dasharray: 1 1;
+  animation: t-draw 1.6s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-slide-l {
+  animation: t-slide-l 1.1s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.intro-slide-r {
+  animation: t-slide-r 1.1s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
 }
 
-@keyframes tonelle-reveal {
-  0%,
-  12% {
-    clip-path: inset(0 100% 0 0);
-  }
-  45%,
-  70% {
-    clip-path: inset(0 0 0 0);
-  }
-  100% {
-    clip-path: inset(0 100% 0 0);
-  }
+/* Giant wordmark: letters rise out of a clip mask, 40 ms stagger. */
+.wm-letter {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 0.04em;
+  margin-top: -0.04em;
+  /* Clip only the bottom edge: letters rise from below, neighbours may overlap sideways. */
+  clip-path: inset(-0.3em -0.3em 0 -0.3em);
+}
+.wm-letter > span {
+  display: inline-block;
+}
+.wm-intro .wm-letter > span {
+  animation: t-letter 1s var(--ease-out-expo) both;
+  animation-delay: calc(var(--d, 0ms) + var(--i, 0) * 40ms);
 }
 
-@keyframes tonelle-reveal-line {
-  0%,
-  12% {
-    left: 0%;
-  }
-  45%,
-  70% {
-    left: 100%;
-  }
-  100% {
-    left: 0%;
-  }
+html[data-preload] .intro,
+html[data-preload] .intro-fade,
+html[data-preload] .intro-grow-y,
+html[data-preload] .intro-grow-x,
+html[data-preload] .intro-draw .draw,
+html[data-preload] .intro-slide-l,
+html[data-preload] .intro-slide-r,
+html[data-preload] .wm-intro .wm-letter > span {
+  animation-play-state: paused;
 }
 
-@keyframes tonelle-pulse-ring {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
-  70% {
-    transform: scale(1.08);
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
+/* "Play" variants: same as intro but never paused (preloader, analyzing screen). */
+.play-draw .draw {
+  stroke-dasharray: 1 1;
+  animation: t-draw 1.4s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+.play-fade {
+  animation: t-fade 0.6s ease both;
+  animation-delay: var(--d, 0ms);
 }
 
-@keyframes tonelle-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+/* --- Preloader --- */
+.preloader {
+  display: none;
+  transition: opacity 0.6s ease;
+}
+html[data-preload] .preloader,
+.preloader[data-leaving] {
+  display: flex;
+}
+.preloader[data-leaving] {
+  opacity: 0;
+  pointer-events: none;
+}
+.preloader-stage {
+  transition: transform 0.65s var(--ease-out-expo);
+}
+.preloader[data-leaving] .preloader-stage {
+  transform: scale(1.4);
 }
 
-@utility tonelle-enter {
-  animation: tonelle-fade-up 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+/* --- Scroll reveals (IntersectionObserver adds [data-inview]; see RevealObserver) --- */
+html.js:not(.no-io) [data-reveal]:not([data-inview]) {
+  opacity: 0;
+  transform: translateY(8px);
+}
+[data-reveal] {
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  transition-delay: var(--d, 0ms);
+}
+html.js:not(.no-io) [data-reveal='fade']:not([data-inview]) {
+  transform: none;
 }
 
-@utility tonelle-shimmer {
-  background-image: linear-gradient(
-    90deg,
-    var(--color-surface-sunken) 0%,
-    var(--color-nude-50) 50%,
-    var(--color-surface-sunken) 100%
-  );
+[data-draw] .draw {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.6s var(--ease-out-expo);
+  transition-delay: var(--d, 0ms);
+}
+html.js:not(.no-io) [data-draw]:not([data-inview]) .draw {
+  stroke-dashoffset: 1;
+}
+
+html.js:not(.no-io) [data-wm]:not([data-inview]) .wm-letter > span {
+  transform: translateY(108%);
+}
+[data-wm] .wm-letter > span {
+  transition: transform 1s var(--ease-out-expo);
+  transition-delay: calc(var(--i, 0) * 40ms);
+}
+
+html.js:not(.no-io) [data-grow]:not([data-inview]) {
+  transform: scaleY(0);
+}
+[data-grow] {
+  transform-origin: top;
+  transition: transform 1.2s var(--ease-out-expo);
+  transition-delay: var(--d, 0ms);
+}
+
+/* --- Continuous loops --- */
+.breathe {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: t-breathe 6s ease-in-out infinite;
+  animation-delay: var(--d, 0ms);
+}
+.shift {
+  animation: t-shift 7s ease-in-out infinite;
+  animation-delay: var(--d, 0ms);
+}
+.scanline {
+  animation: t-scan 3.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.blink {
+  animation: t-blink 1.2s steps(2, jump-none) infinite;
+}
+.spin {
+  animation: t-spin 1s linear infinite;
+}
+.shimmer {
+  background-image: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.25) 50%, transparent 100%);
   background-size: 200% 100%;
-  animation: tonelle-shimmer 1.6s linear infinite;
+  animation: t-shimmer 1.6s linear infinite;
 }
 
-@utility tonelle-scanline {
-  animation: tonelle-scan 2.8s ease-in-out infinite;
+/* Step-to-step entrance in the /analyze flow. */
+.enter {
+  animation: t-rise 0.6s var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
 }
 
-@utility tonelle-reveal {
-  animation: tonelle-reveal 7s ease-in-out infinite;
+/* ======================================================================
+ * Dialog
+ * ==================================================================== */
+
+.tonelle-dialog::backdrop {
+  background: rgb(35 24 22 / 0.5);
+  backdrop-filter: blur(4px);
+}
+.tonelle-dialog[open] {
+  animation: t-rise 0.3s var(--ease-out-expo) both;
 }
 
-@utility tonelle-reveal-line {
-  animation: tonelle-reveal-line 7s ease-in-out infinite;
+/* Full-screen menu sheet */
+.menu-sheet {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+.menu-sheet::backdrop {
+  background: transparent;
+}
+.menu-sheet[open] {
+  animation: t-fade 0.24s ease both;
+}
+.menu-sheet[open] .menu-item {
+  animation: t-rise 0.6s var(--ease-out-expo) both;
+  animation-delay: calc(80ms + var(--i, 0) * 50ms);
 }
 
-@utility tonelle-pulse-ring {
-  animation: tonelle-pulse-ring 2.4s ease-out infinite;
-}
-
-@utility tonelle-float {
-  animation: tonelle-float 5s ease-in-out infinite;
-}
+/* ======================================================================
+ * Reduced motion: no transforms or loops; opacity fades ≤150 ms only.
+ * ==================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .intro,
+  .intro-fade,
+  .intro-grow-y,
+  .intro-grow-x,
+  .intro-slide-l,
+  .intro-slide-r,
+  .enter,
+  .wm-intro .wm-letter > span,
+  .menu-sheet[open] .menu-item,
+  .tonelle-dialog[open] {
+    animation: t-fade 150ms ease both !important;
+    animation-delay: 0ms !important;
+  }
+  .intro-draw .draw {
+    animation: none !important;
+  }
+  .breathe,
+  .shift,
+  .scanline,
+  .blink,
+  .spin,
+  .shimmer {
+    animation: none !important;
+  }
+  .spin {
+    opacity: 0.6;
+  }
+  [data-reveal],
+  html.js:not(.no-io) [data-reveal]:not([data-inview]) {
+    transform: none !important;
+    transition: opacity 150ms ease !important;
+    transition-delay: 0ms !important;
+  }
+  [data-draw] .draw,
+  html.js:not(.no-io) [data-draw]:not([data-inview]) .draw {
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+  [data-wm] .wm-letter > span,
+  html.js:not(.no-io) [data-wm]:not([data-inview]) .wm-letter > span,
+  [data-grow],
+  html.js:not(.no-io) [data-grow]:not([data-inview]) {
+    transform: none !important;
+    transition: none !important;
+  }
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+  .seg > i {
+    transition-delay: 0ms;
+  }
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 150ms !important;
+    scroll-behavior: auto !important;
   }
-
-  /* Keep the before/after illustration on the "after" state instead of animating. */
-  .tonelle-reveal {
-    animation: none !important;
-    clip-path: inset(0 50% 0 0);
-  }
-  .tonelle-reveal-line {
-    animation: none !important;
-    left: 50%;
-  }
-  .tonelle-scanline {
-    animation: none !important;
-    top: 50%;
-  }
-}
-
-/* ---------- Dialog ---------- */
-
-.tonelle-dialog::backdrop {
-  background: rgb(43 33 36 / 0.45);
-  backdrop-filter: blur(4px);
-}
-
-.tonelle-dialog[open] {
-  animation: tonelle-fade-up 0.25s ease-out both;
-}
-
-/* Hide number/details marker consistently */
-details > summary {
-  list-style: none;
-}
-details > summary::-webkit-details-marker {
-  display: none;
 }

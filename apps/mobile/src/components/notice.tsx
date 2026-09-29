@@ -4,15 +4,17 @@ import { colors, radii, spacing } from '@/theme';
 
 import { AppText } from './text';
 
+/** Inline status message: light card with a coloured marker bar, mono text. */
 export function Notice({ message, tone = 'info' }: { message: string; tone?: 'info' | 'error' | 'success' }) {
-  const color = tone === 'error' ? colors.danger : tone === 'success' ? colors.success : colors.inkMuted;
+  const marker = tone === 'error' ? colors.danger : tone === 'success' ? colors.success : colors.inkSubtle;
   return (
     <View
-      style={[styles.box, { borderColor: color }]}
+      style={styles.box}
       accessibilityRole={tone === 'error' ? 'alert' : 'text'}
       accessibilityLiveRegion="polite"
     >
-      <AppText variant="bodyMuted" color={tone === 'info' ? colors.inkMuted : color}>
+      <View style={[styles.marker, { backgroundColor: marker }]} />
+      <AppText variant="mono" color={tone === 'info' ? colors.inkMuted : colors.ink} style={styles.text}>
         {message}
       </AppText>
     </View>
@@ -21,9 +23,14 @@ export function Notice({ message, tone = 'info' }: { message: string; tone?: 'in
 
 const styles = StyleSheet.create({
   box: {
-    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
     borderRadius: radii.md,
     padding: spacing.md,
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: colors.paperRaised,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.line,
   },
+  marker: { width: 3, borderRadius: 2 },
+  text: { flex: 1, fontSize: 12.5, lineHeight: 18 },
 });

@@ -31,6 +31,14 @@ export const en: SiteContent = {
     faq: 'FAQ',
     startCta: 'Try it free',
     primaryNavLabel: 'Main',
+    menu: 'Menu',
+    closeMenu: 'Close menu',
+    menuTitle: 'Menu',
+  },
+  preloader: {
+    label: 'Loading Tonelle',
+    skip: 'Skip',
+    seasons: ['Spring', 'Summer', 'Autumn', 'Winter'],
   },
   hero: {
     eyebrow: 'AI colour & makeup analysis',
@@ -42,7 +50,67 @@ export const en: SiteContent = {
     trustPoints: ['Your photo is never stored', '12 colour seasons', 'Made for warm & olive skin'],
     storesLabel: 'Also on your phone',
     illustrationLabel:
-      'Illustration: the same face before and after a soft, colour-matched makeup look, labelled as AI-generated.',
+      'Illustration: a line-drawn face with a heat map showing colour-matched makeup shades on the lips, cheeks and eyelids.',
+    analyzingTag: 'Analyzing…',
+    notes: [
+      '/AI that reads your undertone, skin depth and contrast from a single selfie',
+      'Your lip, blush and eyeshadow shades, and the looks that suit you, on your own face.',
+    ],
+  },
+  story: {
+    title: 'From selfie to a personal guide',
+    subtitle: 'Four steps, about a minute.',
+    steps: [
+      {
+        title: 'Take a selfie',
+        body: 'Face soft daylight and switch filters off. The oval guide helps you frame your face.',
+        screen: 'Selfie',
+      },
+      {
+        title: 'Your face is scanned',
+        body: 'The AI reads your undertone, skin depth and hair–eye contrast. Your photo is deleted right after the analysis.',
+        screen: 'Scan',
+      },
+      {
+        title: 'Your colour season',
+        body: 'See which of the 12 seasons fits you best, your best colours and the ones to keep away from your face.',
+        screen: 'Season',
+      },
+      {
+        title: 'Looks on your face',
+        body: 'Try natural, office, glam or evening looks on your own photo, with shades and step-by-step guides.',
+        screen: 'Look',
+      },
+    ],
+  },
+  sphere: {
+    eyebrow: '/Four families, twelve seasons',
+    title: 'Every season has its own light',
+    steps: [
+      {
+        title: 'Spring: warm and clear',
+        body: 'Coral, peach and butter yellow. Golden-based, fresh and lively colours brighten your face.',
+      },
+      {
+        title: 'Summer: cool and soft',
+        body: 'Dusty rose, lavender and powder blue. Muted, cool shades make your skin look rested.',
+      },
+      {
+        title: 'Autumn: warm and deep',
+        body: 'Terracotta, olive and camel. Earthy tones bring out the warmth so common in Mediterranean skin.',
+      },
+      {
+        title: 'Winter: cool and high-contrast',
+        body: 'Berry, icy pink and cobalt. Clear, saturated colours balance dark hair and eyes.',
+      },
+    ],
+  },
+  people: {
+    title: 'How people use Tonelle',
+    caption: 'Example user scenarios',
+  },
+  dock: {
+    note: 'Free · ~1 min · No sign-up',
   },
   how: {
     title: 'How it works',
@@ -704,5 +772,9 @@ export const en: SiteContent = {
     shareFailed: 'We couldn’t create the image. Please try again.',
     renderFailed: 'We couldn’t create this preview.',
     homeLink: 'Tonelle home',
+    analyzingTag: 'Analyzing…',
+    navResults: 'Results',
+    navLooks: 'Looks',
+    photoFrameLabel: 'Preview of the photo you chose',
   },
 };

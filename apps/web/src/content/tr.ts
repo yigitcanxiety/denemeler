@@ -31,6 +31,14 @@ export const tr: SiteContent = {
     faq: 'SSS',
     startCta: 'Ücretsiz dene',
     primaryNavLabel: 'Ana menü',
+    menu: 'Menü',
+    closeMenu: 'Menüyü kapat',
+    menuTitle: 'Menü',
+  },
+  preloader: {
+    label: 'Tonelle yükleniyor',
+    skip: 'Geç',
+    seasons: ['İlkbahar', 'Yaz', 'Sonbahar', 'Kış'],
   },
   hero: {
     eyebrow: 'Yapay zekâ ile renk ve makyaj analizi',
@@ -42,7 +50,67 @@ export const tr: SiteContent = {
     trustPoints: ['Fotoğrafın asla saklanmaz', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
     storesLabel: 'Telefonunda da',
     illustrationLabel:
-      'İllüstrasyon: aynı yüzün, renklerine uygun yumuşak bir makyaj görünümünden önceki ve sonraki hâli; AI ile oluşturuldu etiketiyle.',
+      'İllüstrasyon: çizgi hâlinde bir yüz; dudak, yanak ve göz kapaklarında renklerine uygun makyaj tonlarını gösteren sıcaklık haritası.',
+    analyzingTag: 'Analiz ediliyor…',
+    notes: [
+      '/Alt tonunu, ten derinliğini ve kontrastını tek bir selfie’den okuyan yapay zekâ',
+      'Dudak, allık ve far tonların; sana yakışan görünümler kendi yüzünde.',
+    ],
+  },
+  story: {
+    title: 'Selfie’den kişisel rehbere',
+    subtitle: 'Dört adım, yaklaşık bir dakika.',
+    steps: [
+      {
+        title: 'Bir selfie çek',
+        body: 'Yumuşak gün ışığına dön, filtreyi kapat. Oval kılavuz yüzünü doğru konumlandırmana yardım eder.',
+        screen: 'Selfie',
+      },
+      {
+        title: 'Yüzün taranır',
+        body: 'Yapay zekâ alt tonunu, ten derinliğini ve saç–göz kontrastını okur. Fotoğrafın analizden hemen sonra silinir.',
+        screen: 'Tarama',
+      },
+      {
+        title: 'Renk sezonun belirlenir',
+        body: '12 sezondan sana en uygun olanı, en iyi renklerini ve kaçınman gerekenleri görürsün.',
+        screen: 'Sezon',
+      },
+      {
+        title: 'Görünümler yüzünde',
+        body: 'Doğal, ofis, glam ya da gece makyajlarını kendi fotoğrafında dene; tonlar ve adım adım rehberle.',
+        screen: 'Görünüm',
+      },
+    ],
+  },
+  sphere: {
+    eyebrow: '/Dört aile, on iki sezon',
+    title: 'Her sezonun kendi ışığı var',
+    steps: [
+      {
+        title: 'İlkbahar: sıcak ve berrak',
+        body: 'Mercan, şeftali ve tereyağı sarısı. Altın alt tonlu, taze ve canlı renkler yüzünü aydınlatır.',
+      },
+      {
+        title: 'Yaz: serin ve yumuşak',
+        body: 'Gül kurusu, lavanta ve pudra mavisi. Tozlu, serin tonlar cildini dinlendirilmiş gösterir.',
+      },
+      {
+        title: 'Sonbahar: sıcak ve derin',
+        body: 'Kiremit, zeytin yeşili ve deve tüyü. Toprak tonları Akdeniz tenlerinde çok sık görülen sıcaklığı ortaya çıkarır.',
+      },
+      {
+        title: 'Kış: serin ve kontrastlı',
+        body: 'Mürdüm, buz pembesi ve kobalt. Net, doygun renkler koyu saç ve göz kontrastını dengeler.',
+      },
+    ],
+  },
+  people: {
+    title: 'Tonelle’i nasıl kullanıyorlar',
+    caption: 'Örnek kullanıcı senaryoları',
+  },
+  dock: {
+    note: 'Ücretsiz · ~1 dk · Üyelik yok',
   },
   how: {
     title: 'Nasıl çalışır?',
@@ -698,5 +766,9 @@ export const tr: SiteContent = {
     shareFailed: 'Görsel oluşturulamadı. Lütfen tekrar dene.',
     renderFailed: 'Bu önizleme oluşturulamadı.',
     homeLink: 'Tonelle ana sayfa',
+    analyzingTag: 'Analiz ediliyor…',
+    navResults: 'Sonuçlar',
+    navLooks: 'Görünümler',
+    photoFrameLabel: 'Seçtiğin fotoğrafın önizlemesi',
   },
 };

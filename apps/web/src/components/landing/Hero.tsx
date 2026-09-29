@@ -1,91 +1,140 @@
-import { SEASONS, localized, t, type Locale } from '@tonelle/shared';
-import { ArrowRight, Check, ShieldCheck } from 'lucide-react';
-import { StoreBadges } from '@/components/site/StoreBadges';
-import { ButtonLink } from '@/components/ui';
+import type { Locale } from '@tonelle/shared';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import type { CSSProperties } from 'react';
+import { GiantWordmark } from '@/components/lab/GiantWordmark';
+import { HeatFace } from '@/components/lab/HeatFace';
+import { AccentCircle, AccentTag, ConnectorBar, ConstructionGrid, NumberTag } from '@/components/lab/primitives';
 import type { SiteContent } from '@/content';
-import { BeforeAfter } from './BeforeAfter';
 
-export function Hero({ locale, content }: { locale: Locale; content: SiteContent }) {
-  const season = SEASONS.soft_autumn;
-  const { hero } = content;
+const d = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
+
+/** The hero object: line-art face with breathing heat-map makeup, crosshair, scan line and tag. */
+export function HeroObject({ label, tag, className }: { label: string; tag: string; className?: string }) {
   return (
-    <section aria-labelledby="hero-title" className="relative overflow-hidden px-4 pt-8 pb-16 sm:px-6 sm:pt-14 lg:pb-24">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[40rem] w-[60rem] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,#fae6e6,transparent)] opacity-80"
-      />
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-        <div className="tonelle-enter text-center lg:text-left">
-          <p className="inline-flex items-center gap-2 rounded-pill border border-blush-200 bg-surface-raised/70 px-3.5 py-1.5 text-sm font-medium text-accent-hover">
-            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
-            {hero.eyebrow}
-          </p>
-          <h1 id="hero-title" className="mt-5 text-[2.6rem] leading-[1.05] text-ink sm:text-6xl lg:text-[4.1rem]">
-            {hero.title}
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-ink-muted lg:mx-0">{hero.subtitle}</p>
-
-          <div className="mt-8 flex flex-col items-center gap-3 lg:items-start">
-            <ButtonLink
-              href={`/${locale}/analyze`}
-              size="lg"
-              className="w-full max-w-sm sm:w-auto"
-              icon={<ArrowRight aria-hidden className="order-last size-5" />}
-            >
-              {hero.cta}
-            </ButtonLink>
-            <p className="text-sm text-ink-muted">{hero.ctaNote}</p>
+    <figure role="img" aria-label={label} className={className}>
+      <div className="relative aspect-square w-full">
+        <svg aria-hidden viewBox="0 0 100 100" className="intro-draw absolute inset-0 size-full overflow-visible">
+          <circle className="draw" cx="50" cy="50" r="49.6" fill="none" stroke="var(--color-line-strong)" strokeWidth="1" vectorEffect="non-scaling-stroke" pathLength={1} style={d(500)} />
+          <circle className="draw" cx="50" cy="50" r="33" fill="none" stroke="var(--color-line)" strokeWidth="1" vectorEffect="non-scaling-stroke" pathLength={1} style={d(700)} />
+          <path className="draw" d="M50 -6V106" stroke="var(--color-line-strong)" strokeWidth="1" vectorEffect="non-scaling-stroke" pathLength={1} style={d(600)} />
+          <path className="draw" d="M-6 50H106" stroke="var(--color-line)" strokeWidth="1" vectorEffect="non-scaling-stroke" pathLength={1} style={d(650)} />
+        </svg>
+        <div
+          aria-hidden
+          className="intro-fade absolute inset-[3%] rounded-full"
+          style={{ background: 'radial-gradient(circle at 50% 55%, rgb(243 178 122 / 0.28), rgb(224 119 94 / 0.10) 45%, transparent 70%)', ...d(300) }}
+        />
+        <HeatFace id="hero-face" className="intro absolute inset-x-[10%] top-[4%] h-[96%] w-[80%]" style={d(250)} />
+        {/* scan line, clipped to the circle */}
+        <div aria-hidden className="absolute inset-[2%] overflow-hidden rounded-full">
+          <div className="scanline h-full w-full">
+            <div className="h-px w-full bg-accent/70" />
+            <div className="h-10 w-full bg-gradient-to-b from-accent/15 to-transparent" />
           </div>
-
-          <ul className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-ink lg:justify-start">
-            {hero.trustPoints.map((point, i) => (
-              <li key={point} className="inline-flex items-center gap-1.5">
-                {i === 0 ? (
-                  <ShieldCheck aria-hidden className="size-4 text-success" />
-                ) : (
-                  <Check aria-hidden className="size-4 text-accent" />
-                )}
-                {point}
-              </li>
-            ))}
-          </ul>
-
-          <StoreBadges labels={content.stores} className="mt-8 justify-center lg:justify-start" />
         </div>
-
-        <div className="relative mx-auto w-full max-w-[26rem]">
-          <BeforeAfter
-            beforeLabel={t(locale, 'look.before')}
-            afterLabel={t(locale, 'look.after')}
-            aiLabel={t(locale, 'common.aiGenerated')}
-            description={hero.illustrationLabel}
-          />
-          {/* Floating result card */}
-          <div
-            aria-hidden
-            className="tonelle-float absolute -bottom-6 -left-3 w-52 rounded-2xl border border-border/70 bg-surface-raised/95 p-3.5 shadow-lift backdrop-blur sm:-left-10"
-          >
-            <p className="text-[0.7rem] font-medium tracking-wide text-ink-muted uppercase">
-              {t(locale, 'results.yourSeason')}
-            </p>
-            <p className="font-display text-lg text-ink">{localized(season.name, locale)}</p>
-            <div className="mt-2 flex gap-1">
-              {season.palette.slice(0, 6).map((c) => (
-                <span key={c} className="size-5 rounded-full ring-1 ring-black/5" style={{ backgroundColor: c }} />
-              ))}
-            </div>
-          </div>
-          <div
-            aria-hidden
-            className="absolute top-16 -right-2 rounded-2xl border border-border/70 bg-surface-raised/95 px-3.5 py-2.5 shadow-card sm:-right-8"
-          >
-            <p className="text-[0.7rem] text-ink-muted">{t(locale, 'results.undertoneTitle')}</p>
-            <p className="text-sm font-semibold text-ink">
-              {t(locale, 'results.undertone.warm')} · {t(locale, 'results.undertone.olive')}
-            </p>
-          </div>
+        <div className="intro absolute top-[43%] left-1/2 -translate-x-1/2" style={d(900)}>
+          <AccentTag blink>{tag}</AccentTag>
         </div>
       </div>
+    </figure>
+  );
+}
+
+export function Hero({ locale, content }: { locale: Locale; content: SiteContent }) {
+  const { hero } = content;
+  return (
+    <section id="hero" aria-labelledby="hero-title" className="relative overflow-hidden pt-[76px] sm:pt-[84px]">
+      <ConstructionGrid enter="intro" rows={['calc(100% - 1px)']} />
+
+      {/* LCP: the wordmark is plain text, animated with CSS only. */}
+      <div className="relative px-2 pt-2 sm:px-4 lg:pt-4">
+        <GiantWordmark enter="intro" delay={120} />
+      </div>
+      <span aria-hidden className="hline intro-grow-x" style={d(400)} />
+
+      <div className="shell relative grid gap-y-8 pt-6 pb-10 lg:grid-cols-12 lg:gap-x-6 lg:pt-10 lg:pb-16">
+        {/* Copy */}
+        <div className="relative z-10 lg:col-span-4 lg:pt-4">
+          <p className="intro mono-caps flex items-center gap-2 text-ink-muted" style={d(250)}>
+            <span aria-hidden className="size-1.5 bg-accent" />
+            {hero.eyebrow}
+          </p>
+          <h1 id="hero-title" className="intro mt-4 text-[clamp(2.1rem,7.4vw,3.6rem)] text-ink" style={d(320)}>
+            {hero.title}
+          </h1>
+          <p className="intro mono mt-5 max-w-[40ch] text-ink-muted" style={d(420)}>
+            {hero.subtitle}
+          </p>
+          <div className="intro mt-7 hidden flex-col items-start gap-3 lg:flex" style={d(520)}>
+            <HeroCta locale={locale} label={hero.cta} />
+            <p className="mono text-[12px] text-ink-muted">{hero.ctaNote}</p>
+          </div>
+        </div>
+
+        {/* Object with connector bars (full-bleed on small screens) */}
+        <div className="relative lg:col-span-4 lg:col-start-5">
+          <div className="relative mx-auto w-[min(66vw,400px)] lg:w-full">
+            <AccentCircle
+              enter="intro"
+              delay={350}
+              className="top-1/2 left-1/2 w-[150vw] max-w-none -translate-x-1/2 -translate-y-1/2 lg:w-[88vw] lg:max-w-[1300px]"
+            />
+            <HeroObject label={hero.illustrationLabel} tag={hero.analyzingTag} className="relative" />
+          </div>
+          <div className="pointer-events-none absolute top-1/2 -translate-y-1/2 lg:hidden" style={{ left: 'calc(50% - 50vw)', width: 'calc(50vw - min(33vw, 200px) + 2px)' }}>
+            <ConnectorBar from="left" delay={700} />
+          </div>
+          <div className="pointer-events-none absolute top-1/2 -translate-y-1/2 lg:hidden" style={{ right: 'calc(50% - 50vw)', width: 'calc(50vw - min(33vw, 200px) + 2px)' }}>
+            <ConnectorBar from="right" delay={760} />
+          </div>
+        </div>
+
+        {/* Annotations (desktop) */}
+        <div className="relative hidden lg:col-span-4 lg:col-start-9 lg:block">
+          <div className="intro relative mt-6 border border-accent bg-paper/70 p-5" style={d(900)}>
+            <NumberTag n={1} />
+            <p className="mono mt-8 max-w-[34ch] text-ink">{hero.notes[0]}</p>
+          </div>
+          <div className="relative mt-10 -mr-10 h-[22px]">
+            <ConnectorBar from="right" delay={1000} className="absolute inset-y-0 right-0 left-[-72%]" />
+          </div>
+          <div className="intro mt-10 p-5" style={d(1100)}>
+            <NumberTag n={2} />
+            <p className="mono mt-8 max-w-[34ch] text-ink">{hero.notes[1]}</p>
+          </div>
+        </div>
+
+        {/* CTA (mobile / tablet) */}
+        <div className="intro flex flex-col items-center gap-3 text-center lg:hidden" style={d(600)}>
+          <HeroCta locale={locale} label={hero.cta} className="w-full max-w-sm justify-between" />
+          <p className="mono text-[12px] text-ink-muted">{hero.ctaNote}</p>
+        </div>
+
+        <ul className="intro mono flex flex-wrap gap-x-5 gap-y-1 text-[12px] text-ink-muted lg:col-span-12" style={d(700)}>
+          {hero.trustPoints.map((p, i) => (
+            <li key={p} className="flex items-center gap-2">
+              <span aria-hidden className="text-ink-subtle">{String(i + 1).padStart(2, '0')}</span>
+              {p}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div id="hero-end" aria-hidden className="h-px" />
     </section>
+  );
+}
+
+function HeroCta({ locale, label, className }: { locale: Locale; label: string; className?: string }) {
+  return (
+    <Link
+      href={`/${locale}/analyze`}
+      className={`press inline-flex h-14 items-center gap-4 rounded-pill bg-ink pr-2 pl-6 text-base font-medium text-ink-inverse hover:bg-ink-soft ${className ?? ''}`}
+    >
+      {label}
+      <span className="grid size-10 place-items-center rounded-full bg-accent text-accent-contrast">
+        <ArrowRight aria-hidden className="size-4" />
+      </span>
+    </Link>
   );
 }

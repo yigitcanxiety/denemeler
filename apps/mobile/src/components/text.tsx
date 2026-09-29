@@ -10,7 +10,7 @@ export interface AppTextProps extends TextProps {
   align?: 'left' | 'center' | 'right';
 }
 
-/** Themed text. Display variants use Fraunces, body variants Inter (system fallback). */
+/** Themed text. Inter Tight for display/body, JetBrains Mono for annotations (system fallback). */
 export function AppText({ variant = 'body', color, align, style, ...rest }: AppTextProps) {
   return (
     <Text

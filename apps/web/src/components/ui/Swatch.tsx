@@ -1,89 +1,92 @@
 'use client';
 
 import clsx from 'clsx';
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
+import { luminance } from '@/lib/heat';
 
-type SwatchProps = {
-  color: string;
-  size?: 'sm' | 'md' | 'lg';
-  /** Accessible name; the hex code is appended. */
-  label?: string;
-  /** Show a copy-to-clipboard button with this tooltip text. */
-  copyLabel?: string;
-  copiedLabel?: string;
-  showHex?: boolean;
-  crossed?: boolean;
-  className?: string;
-};
-
-const SIZES = { sm: 'size-7', md: 'size-11', lg: 'size-14' } as const;
-
-export function Swatch({
-  color,
-  size = 'md',
+/**
+ * Segmented swatch bar (DESIGN §5 "palette as a segmented swatch bar"). Each segment is a
+ * button that copies its hex code; the hex codes are printed under the bar from `sm` up and
+ * the last copied code is announced in a polite live region.
+ */
+export function SwatchBar({
+  colors,
   label,
   copyLabel,
   copiedLabel,
-  showHex = false,
   crossed = false,
+  tone = 'ink',
   className,
-}: SwatchProps) {
-  const [copied, setCopied] = useState(false);
-  const hex = color.toUpperCase();
-  const name = label ? `${label} ${hex}` : hex;
-
-  const dot = (
-    <span
-      aria-hidden
-      className={clsx(
-        'relative block shrink-0 rounded-full ring-1 ring-black/5 ring-inset shadow-soft',
-        SIZES[size],
-        crossed &&
-          'after:absolute after:inset-0 after:m-auto after:h-[2px] after:w-[120%] after:-translate-x-[8%] after:rotate-45 after:rounded after:bg-surface-raised/90',
-      )}
-      style={{ backgroundColor: color }}
-    />
-  );
-
-  const body = (
-    <>
-      {dot}
-      {showHex && <span className="font-mono text-[0.7rem] tracking-tight text-ink-muted">{copied ? copiedLabel : hex}</span>}
-    </>
-  );
-
-  if (!copyLabel) {
-    return (
-      <span role="img" aria-label={name} className={clsx('inline-flex flex-col items-center gap-1', className)}>
-        {body}
-      </span>
-    );
-  }
-
+}: {
+  colors: string[];
+  label: string;
+  copyLabel: string;
+  copiedLabel: string;
+  crossed?: boolean;
+  /** Surface the bar sits on (for the hex text colour). */
+  tone?: 'ink' | 'paper';
+  className?: string;
+}) {
+  const [copied, setCopied] = useState<string | null>(null);
   return (
-    <button
-      type="button"
-      title={copyLabel}
-      aria-label={`${copyLabel}: ${name}`}
-      className={clsx(
-        'inline-flex flex-col items-center gap-1 rounded-md p-0.5 transition-transform hover:-translate-y-0.5',
-        className,
-      )}
-      onClick={() => {
-        void navigator.clipboard?.writeText(hex).then(
-          () => {
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1200);
-          },
-          () => undefined,
-        );
-      }}
-    >
-      {body}
-    </button>
+    <div className={className}>
+      <ul aria-label={label} className="flex gap-[3px]">
+        {colors.map((c, i) => {
+          const hex = c.toUpperCase();
+          const dark = luminance(c) < 0.35;
+          return (
+            <li key={`${c}-${i}`} className="min-w-0 flex-1">
+              <button
+                type="button"
+                title={`${copyLabel}: ${hex}`}
+                aria-label={`${copyLabel}: ${label} ${hex}`}
+                onClick={() => {
+                  void navigator.clipboard?.writeText(hex).then(
+                    () => {
+                      setCopied(hex);
+                      window.setTimeout(() => setCopied((v) => (v === hex ? null : v)), 1600);
+                    },
+                    () => undefined,
+                  );
+                }}
+                className="group flex w-full flex-col gap-1.5 text-left"
+              >
+                <span
+                  className={clsx(
+                    'relative block h-14 w-full overflow-hidden transition-transform duration-200 group-hover:-translate-y-0.5 motion-reduce:transform-none',
+                    i === 0 && 'rounded-l-[10px]',
+                    i === colors.length - 1 && 'rounded-r-[10px]',
+                  )}
+                  style={{ backgroundColor: c }}
+                >
+                  {crossed && (
+                    <span
+                      aria-hidden
+                      className={clsx('absolute top-1/2 left-1/2 h-px w-[160%] -translate-x-1/2 -rotate-[58deg]', dark ? 'bg-white/80' : 'bg-[#231816]/70')}
+                    />
+                  )}
+                  {copied === hex && (
+                    <span aria-hidden className={clsx('absolute inset-0 grid place-items-center font-mono text-[10px]', dark ? 'text-white' : 'text-[#231816]')}>
+                      ✓
+                    </span>
+                  )}
+                </span>
+                <span
+                  className={clsx(
+                    'hidden truncate font-mono text-[10.5px] sm:block',
+                    tone === 'ink' ? 'text-ink-inverse-muted' : 'text-ink-muted',
+                  )}
+                >
+                  {hex}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p aria-live="polite" className={clsx('mt-2 min-h-4 font-mono text-[11px]', tone === 'ink' ? 'text-ink-inverse-muted' : 'text-ink-muted')}>
+        {copied ? `${copiedLabel}: ${copied}` : ''}
+      </p>
+    </div>
   );
-}
-
-export function SwatchRow({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={clsx('flex flex-wrap gap-2.5', className)}>{children}</div>;
 }

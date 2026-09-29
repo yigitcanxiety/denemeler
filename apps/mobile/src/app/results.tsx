@@ -1,20 +1,29 @@
 import { LOOKS } from '@tonelle/shared';
 import { Redirect, router } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
+import { Icon } from '@/components/icon';
+import { Chip, MonoLabel } from '@/components/labels';
+import { PressableScale, Reveal } from '@/components/motion';
+import { BottomNav } from '@/components/pill-segmented';
 import { Screen } from '@/components/screen';
 import { SeasonCard } from '@/components/season-card';
+import { Card, CardPair, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
-import { Card, Chip, SectionTitle, SwatchRow } from '@/components/ui';
+import { Rule, SectionTitle, SwatchBar } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import { lookShades, lookSummary, resolveRecommendedLooks } from '@/lib/looks';
 import { completeQuiz } from '@/lib/quiz';
-import { traitChips } from '@/lib/results';
+import { traitChips, type TraitChip } from '@/lib/results';
+import { indexLabel, uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
-import { colors, palette, radii, spacing } from '@/theme';
+import { colors, fonts, spacing } from '@/theme';
+
+type Tab = 'results' | 'looks';
 
 export default function ResultsScreen() {
   const t = useT();
@@ -23,162 +32,221 @@ export default function ResultsScreen() {
   const analysis = useAppStore((s) => s.analysis);
   const serverLookIds = useAppStore((s) => s.recommendedLookIds);
   const quiz = useAppStore((s) => s.quiz);
+  const [tab, setTab] = useState<Tab>('results');
 
   if (!analysis) return <Redirect href="/" />;
   if (!premium) return <Redirect href="/teaser" />;
 
+  const copy = uiCopy(locale);
   const lookIds = resolveRecommendedLooks(analysis, serverLookIds, completeQuiz(quiz));
   const qualityIssues = analysis.qualityIssues;
+  const chips = traitChips(analysis, t);
+  const byId = (id: TraitChip['id']) => chips.find((c) => c.id === id)!;
 
   return (
     <Screen
-      header={
-        <TopBar
-          onBack={() => router.dismissTo('/')}
-          backLabel={t('common.back')}
-          title={t('results.title')}
-          right={
-            <Pressable onPress={() => router.push('/settings')} accessibilityRole="button" hitSlop={10}>
-              <AppText variant="caption" color={colors.inkMuted}>
-                {t('settings.title')}
-              </AppText>
-            </Pressable>
-          }
+      footer={
+        <BottomNav<Tab>
+          left={{ icon: 'share', label: t('share.title'), onPress: () => router.push('/share') }}
+          right={{ icon: 'settings', label: t('settings.title'), onPress: () => router.push('/settings') }}
+          options={[
+            { key: 'results', label: copy.navResults },
+            { key: 'looks', label: copy.navLooks },
+          ]}
+          value={tab}
+          onChange={setTab}
         />
       }
     >
-      <SeasonCard analysis={analysis} locale={locale} />
-
-      <View style={styles.chips}>
-        {traitChips(analysis, t).map((chip) => (
-          <Chip key={chip.id} label={chip.label} value={chip.value} />
-        ))}
-      </View>
-
-      <Card>
-        <SectionTitle>{t('results.summaryTitle')}</SectionTitle>
-        <AppText variant="body">{analysis.summary}</AppText>
-      </Card>
-
-      {qualityIssues.length ? (
-        <View style={styles.quality}>
-          {qualityIssues.map((issue) => (
-            <AppText key={issue} variant="caption" color={colors.warning}>
-              {t(`camera.qualityIssues.${issue}`)}
+      <CardStack>
+        <TopBar onBack={() => router.dismissTo('/')} backLabel={t('common.back')} chip={copy.premium} />
+        {tab === 'results' ? (
+          <SeasonCard analysis={analysis} locale={locale} />
+        ) : (
+          <Card style={styles.looksHead}>
+            <MonoLabel color={colors.onInkMuted} slash>
+              {copy.navLooks}
+            </MonoLabel>
+            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
+              {t('results.looksTitle')}
             </AppText>
-          ))}
-        </View>
-      ) : null}
+          </Card>
+        )}
+      </CardStack>
 
-      <Card>
-        <SectionTitle>{t('results.bestColors')}</SectionTitle>
-        <SwatchRow colors={analysis.bestColors} size={48} showHex />
-        <View style={styles.divider} />
-        <AppText variant="label">{t('results.avoidColors')}</AppText>
-        <SwatchRow colors={analysis.avoidColors} size={34} />
-      </Card>
+      {tab === 'results' ? (
+        <>
+          <Reveal delay={200}>
+            <CardStack joined={false}>
+              <CardPair
+                left={<Metric chip={byId('undertone')} index={0} />}
+                right={<Metric chip={byId('contrast')} index={1} />}
+              />
+              <CardPair
+                left={<Metric chip={byId('skinDepth')} index={2} />}
+                right={<Metric chip={byId('faceShape')} index={3} />}
+              />
+            </CardStack>
+          </Reveal>
 
-      <Card>
-        <SectionTitle>{t('results.foundationTitle')}</SectionTitle>
-        <AppText variant="body">{t('results.foundationUndertone', { label: analysis.foundation.undertoneLabel })}</AppText>
-        <AppText variant="body">{t('results.foundationRange', { range: analysis.foundation.shadeRange })}</AppText>
-      </Card>
-
-      <Card>
-        <ShadeRow title={t('results.lipTitle')} colors={analysis.lip} />
-        <ShadeRow title={t('results.blushTitle')} colors={analysis.blush} />
-        <ShadeRow title={t('results.eyeshadowTitle')} colors={analysis.eyeshadow} />
-      </Card>
-
-      <SectionTitle>{t('results.looksTitle')}</SectionTitle>
-      {lookIds.map((id) => {
-        const look = lookSummary(id, locale);
-        const shades = lookShades(analysis, LOOKS[id]);
-        return (
-          <Pressable
-            key={id}
-            onPress={() => router.push({ pathname: '/look/[id]', params: { id } })}
-            accessibilityRole="button"
-            accessibilityLabel={`${look.name}. ${t('results.seeLook')}`}
-            style={({ pressed }) => [styles.lookCard, pressed && styles.lookPressed]}
-          >
-            <View style={styles.lookSwatches}>
-              {[...shades.lip.slice(0, 1), ...shades.blush.slice(0, 1), ...shades.eyeshadow.slice(0, 1)].map(
-                (hex, i) => (
-                  <View key={`${hex}-${i}`} style={[styles.lookDot, { backgroundColor: hex }]} />
-                ),
-              )}
-            </View>
-            <View style={styles.lookText}>
-              <AppText variant="heading">{look.name}</AppText>
-              <AppText variant="bodyMuted" numberOfLines={2}>
-                {look.description}
+          <Card tone="light" style={styles.eyeRow}>
+            <View>
+              <MonoLabel>{`${indexLabel(4)} · ${byId('eyeShape').label}`}</MonoLabel>
+              <AppText variant="heading" style={styles.eyeValue}>
+                {byId('eyeShape').value}
               </AppText>
-              <View style={styles.tags}>
-                {look.occasions.map((o) => (
-                  <View key={o} style={styles.tag}>
-                    <AppText variant="caption" color={colors.inkMuted}>
-                      {t(`look.occasionTag.${o}`)}
-                    </AppText>
+            </View>
+            <Chip label={copy.ai} tone="ink" />
+          </Card>
+
+          <Card tone="light" style={styles.gap}>
+            <SectionTitle>{t('results.summaryTitle')}</SectionTitle>
+            <AppText variant="body">{analysis.summary}</AppText>
+          </Card>
+
+          {qualityIssues.length ? (
+            <View style={styles.quality}>
+              {qualityIssues.map((issue) => (
+                <AppText key={issue} variant="mono" color={colors.warning} style={styles.qualityText}>
+                  {t(`camera.qualityIssues.${issue}`)}
+                </AppText>
+              ))}
+            </View>
+          ) : null}
+
+          <CardStack>
+            <Card style={styles.gap}>
+              <SectionTitle onInk>{t('results.bestColors')}</SectionTitle>
+              <SwatchBar colors={analysis.bestColors} height={64} showHex onInk />
+            </Card>
+            <Card style={styles.gap}>
+              <MonoLabel color={colors.onInkMuted}>{t('results.avoidColors')}</MonoLabel>
+              <SwatchBar colors={analysis.avoidColors} height={24} onInk />
+            </Card>
+            <Card style={styles.gap}>
+              <SectionTitle onInk>{t('results.foundationTitle')}</SectionTitle>
+              <AppText variant="mono" color={colors.onInkMuted}>
+                {t('results.foundationUndertone', { label: analysis.foundation.undertoneLabel })}
+              </AppText>
+              <AppText variant="mono" color={colors.accentSoft}>
+                {t('results.foundationRange', { range: analysis.foundation.shadeRange })}
+              </AppText>
+              <Rule onInk style={styles.rule} />
+              <ShadeRow title={t('results.lipTitle')} colors={analysis.lip} />
+              <ShadeRow title={t('results.blushTitle')} colors={analysis.blush} />
+              <ShadeRow title={t('results.eyeshadowTitle')} colors={analysis.eyeshadow} />
+            </Card>
+          </CardStack>
+
+          <Button label={t('results.newAnalysis')} variant="secondary" onPress={() => router.push('/camera')} icon="refresh" />
+        </>
+      ) : (
+        <CardStack>
+          {lookIds.map((id, i) => {
+            const look = lookSummary(id, locale);
+            const shades = lookShades(analysis, LOOKS[id]);
+            return (
+              <Reveal key={id} delay={100 + i * 80}>
+                <PressableScale
+                  onPress={() => router.push({ pathname: '/look/[id]', params: { id } })}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${look.name}. ${t('results.seeLook')}`}
+                  pressedScale={0.985}
+                  style={styles.lookCard}
+                >
+                  <View style={styles.lookTags}>
+                    <Chip label={copy.ai} tone="soft" />
+                    {look.occasions.map((o) => (
+                      <Chip key={o} label={t(`look.occasionTag.${o}`)} tone="onInk" />
+                    ))}
                   </View>
-                ))}
-              </View>
-              <AppText variant="label" color={colors.accent}>
-                {t('results.seeLook')} →
-              </AppText>
-            </View>
-          </Pressable>
-        );
-      })}
+                  <AppText variant="heading" color={colors.onInk} style={styles.lookName}>
+                    {look.name}
+                  </AppText>
+                  <AppText variant="body" color={colors.onInkMuted} numberOfLines={2} style={styles.lookDesc}>
+                    {look.description}
+                  </AppText>
+                  <SwatchBar
+                    colors={[...shades.lip.slice(0, 2), ...shades.blush.slice(0, 2), ...shades.eyeshadow.slice(0, 2)]}
+                    height={22}
+                    onInk
+                  />
+                  <View style={styles.seeRow}>
+                    <MonoLabel color={colors.accentSoft}>{t('results.seeLook')}</MonoLabel>
+                    <Icon name="arrow" size={16} color={colors.accentSoft} />
+                  </View>
+                </PressableScale>
+              </Reveal>
+            );
+          })}
+        </CardStack>
+      )}
 
-      <Button label={t('share.title')} variant="inverse" onPress={() => router.push('/share')} />
-      <Button label={t('results.newAnalysis')} variant="secondary" onPress={() => router.push('/camera')} />
-
-      <AppText variant="caption" align="center">
+      <MonoLabel caps={false} style={styles.center}>
         {t('results.savedOnDevice')}
-      </AppText>
-      <AppText variant="caption" align="center">
+      </MonoLabel>
+      <AppText variant="monoSmall" align="center" style={styles.disclaimer}>
         {t('results.disclaimer')}
       </AppText>
     </Screen>
   );
 }
 
+function Metric({ chip, index }: { chip: TraitChip; index: number }) {
+  return (
+    <Card style={styles.metric} padded={false}>
+      <AppText variant="label" color={colors.onInk}>
+        {chip.label}
+      </AppText>
+      <AppText variant="monoSmall" color={colors.onInkSubtle}>
+        {indexLabel(index)}
+      </AppText>
+      <View style={styles.flex} />
+      <AppText
+        variant="numeral"
+        color={colors.accentSoft}
+        style={styles.metricValue}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+      >
+        {chip.value}
+      </AppText>
+    </Card>
+  );
+}
+
 function ShadeRow({ title, colors: hexes }: { title: string; colors: string[] }) {
   return (
     <View style={styles.shadeRow}>
-      <AppText variant="label">{title}</AppText>
-      <SwatchRow colors={hexes} size={38} />
+      <MonoLabel color={colors.onInkMuted}>{title}</MonoLabel>
+      <SwatchBar colors={hexes} height={30} onInk />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  flex: { flex: 1 },
+  center: { textAlign: 'center' },
+  gap: { gap: spacing.md },
+  looksHead: { gap: spacing.sm },
+  metric: { flex: 1, minHeight: 132, paddingHorizontal: 20, paddingTop: 18, paddingBottom: 16, gap: 2 },
+  metricValue: { fontSize: 30, lineHeight: 34, letterSpacing: -1 },
+  eyeRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  eyeValue: { marginTop: 4 },
   quality: { gap: spacing.xs },
-  divider: { height: 1, backgroundColor: colors.border, marginVertical: spacing.xs },
+  qualityText: { fontSize: 12, lineHeight: 17 },
+  rule: { marginVertical: spacing.xs },
   shadeRow: { gap: spacing.sm },
   lookCard: {
-    flexDirection: 'row',
-    gap: spacing.lg,
-    padding: spacing.lg,
-    borderRadius: radii.card,
-    backgroundColor: colors.surfaceRaised,
-    borderWidth: 1,
-    borderColor: colors.border,
+    backgroundColor: colors.ink,
+    borderRadius: 24,
+    paddingHorizontal: 22,
+    paddingVertical: 20,
+    gap: spacing.sm,
   },
-  lookPressed: { backgroundColor: colors.surfaceSunken },
-  lookSwatches: {
-    width: 64,
-    borderRadius: radii.lg,
-    backgroundColor: palette.blush[50],
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: spacing.md,
-  },
-  lookDot: { width: 26, height: 26, borderRadius: 13, borderWidth: 1, borderColor: 'rgba(43,33,36,0.08)' },
-  lookText: { flex: 1, gap: 4 },
-  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginVertical: 2 },
-  tag: { paddingHorizontal: spacing.sm, paddingVertical: 2, borderRadius: radii.pill, backgroundColor: colors.surfaceSunken },
+  lookTags: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
+  lookName: { fontSize: 24, lineHeight: 28, marginTop: 4, fontFamily: fonts.medium },
+  lookDesc: { fontSize: 14.5, lineHeight: 21 },
+  seeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  disclaimer: { paddingHorizontal: spacing.md },
 });

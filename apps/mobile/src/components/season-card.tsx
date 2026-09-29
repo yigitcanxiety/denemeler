@@ -1,57 +1,73 @@
 import type { FaceAnalysis, Locale } from '@tonelle/shared';
-import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 
 import { useT } from '@/hooks/use-i18n';
 import { confidencePercent, seasonText } from '@/lib/results';
-import { colors, palette, radii, shadows, spacing } from '@/theme';
+import { colors, spacing } from '@/theme';
 
+import { BigNumber } from './big-number';
+import { FitWordmark } from './fit-wordmark';
+import { Chip, MonoLabel } from './labels';
+import { SegmentedProgress } from './segmented-progress';
+import { Card } from './stack';
 import { AppText } from './text';
-import { SwatchRow } from './ui';
+import { SwatchBar } from './ui';
 
+/**
+ * Results hero: dark card with the season in huge type, then the BRIK "79% ||||||" row showing the
+ * model's season confidence (never a beauty score).
+ */
 export function SeasonCard({
   analysis,
   locale,
-  showPalette = true,
+  showPalette = false,
   showDescription = true,
+  chip,
 }: {
   analysis: FaceAnalysis;
   locale: Locale;
   showPalette?: boolean;
   showDescription?: boolean;
+  chip?: string;
 }) {
   const t = useT();
   const season = seasonText(analysis, locale);
+  const percent = confidencePercent(analysis);
   return (
-    <View style={styles.shadow}>
-      <LinearGradient
-        colors={[palette.blush[100], palette.nude[100], colors.surfaceRaised]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.card}
-      >
-        <AppText variant="overline">{t('results.yourSeason')}</AppText>
-        <AppText variant="display" accessibilityRole="header">
-          {season.name}
+    <Card style={styles.card}>
+      <View style={styles.head}>
+        <MonoLabel color={colors.onInkMuted} slash>
+          {t('results.yourSeason')}
+        </MonoLabel>
+        {chip ? <Chip label={chip} tone="soft" /> : null}
+      </View>
+      <FitWordmark lines={season.name.split(' ')} color={colors.onInk} maxSize={78} delay={150} />
+      <View style={styles.meter}>
+        <BigNumber value={percent} suffix="%" size={48} color={colors.accentSoft} delay={300} />
+        <SegmentedProgress
+          value={percent / 100}
+          onInk
+          segments={16}
+          height={34}
+          style={styles.flex}
+          label={t('results.confidence', { percent })}
+        />
+      </View>
+      <MonoLabel color={colors.onInkSubtle}>{t('results.confidence', { percent })}</MonoLabel>
+      {showDescription ? (
+        <AppText variant="body" color={colors.onInkMuted} style={styles.desc}>
+          {season.description}
         </AppText>
-        <AppText variant="caption" color={colors.inkMuted}>
-          {t('results.confidence', { percent: confidencePercent(analysis) })}
-        </AppText>
-        {showDescription ? <AppText variant="bodyMuted">{season.description}</AppText> : null}
-        {showPalette ? <SwatchRow colors={season.palette} size={30} /> : null}
-      </LinearGradient>
-    </View>
+      ) : null}
+      {showPalette ? <SwatchBar colors={[...season.palette]} height={28} onInk /> : null}
+    </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  shadow: { borderRadius: radii.card, ...shadows.card },
-  card: {
-    borderRadius: radii.card,
-    padding: spacing.xl,
-    gap: spacing.sm,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
+  card: { gap: spacing.md, paddingTop: 22, paddingBottom: 24 },
+  head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm },
+  meter: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginTop: spacing.sm },
+  flex: { flex: 1 },
+  desc: { fontSize: 15, lineHeight: 22 },
 });

@@ -21,27 +21,36 @@ export function DraftComment({ text }: { text: string }) {
   return <span hidden dangerouslySetInnerHTML={{ __html: `<!-- DRAFT: ${text.replace(/--/g, '—')} -->` }} />;
 }
 
+/** "3. Heading" → ["03", "Heading"]; headings without a number keep an empty tag. */
+export function splitHeading(heading: string): [string, string] {
+  const m = /^(\d+)\.\s*(.*)$/.exec(heading);
+  return m ? [m[1]!.padStart(2, '0'), m[2]!] : ['', heading];
+}
+
 function Block({ block }: { block: LegalBlock }) {
   if (typeof block === 'string') return <p>{block}</p>;
   if ('list' in block) {
     return (
-      <ul className="list-disc space-y-2 pl-5 marker:text-blush-400">
+      <ul className="space-y-2.5">
         {block.list.map((item) => (
-          <li key={item}>{item}</li>
+          <li key={item} className="relative pl-5">
+            <span aria-hidden className="absolute top-[0.62em] left-0 size-1.5 bg-accent" />
+            {item}
+          </li>
         ))}
       </ul>
     );
   }
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
+    <div className="overflow-x-auto border-t border-line-strong">
       <table className="w-full text-left text-[0.95rem]">
-        <tbody className="divide-y divide-border">
+        <tbody>
           {block.rows.map(([a, b]) => (
-            <tr key={a} className="align-top">
-              <th scope="row" className="w-2/5 bg-surface-sunken/60 p-3.5 font-medium text-ink sm:p-4">
+            <tr key={a} className="border-b border-line-strong align-top">
+              <th scope="row" className="mono w-2/5 py-3.5 pr-4 font-medium text-ink">
                 {a}
               </th>
-              <td className="p-3.5 text-ink-muted sm:p-4">{b}</td>
+              <td className="py-3.5 text-ink-muted">{b}</td>
             </tr>
           ))}
         </tbody>
@@ -67,57 +76,69 @@ export function LegalShell({
 }) {
   const others = legalLinks(locale).filter((l) => !l.href.endsWith(path));
   return (
-    <main id="main" className="px-4 py-12 sm:px-6 sm:py-16">
+    <main id="main" className="relative pt-[104px] pb-16 sm:pt-[128px] sm:pb-24">
       <DraftComment text={content.legalCommon.draftNotice} />
-      <article className="mx-auto max-w-3xl">
-        <header className="border-b border-border pb-8">
-          <Link href={`/${locale}`} className="text-sm text-ink-muted hover:text-ink hover:underline">
-            ← {content.legalCommon.backHome}
-          </Link>
-          <h1 className="mt-5 text-4xl text-ink sm:text-5xl">{title}</h1>
-          <p className="mt-3 text-sm text-ink-muted">
-            <time dateTime={LEGAL_LAST_UPDATED}>
-              {content.legalCommon.lastUpdated.replace('{date}', formatLegalDate(locale))}
-            </time>
-          </p>
-        </header>
+      <div className="shell">
+        <article className="mx-auto max-w-[68ch] lg:max-w-none">
+          <header className="border-b border-line-strong pb-8 lg:grid lg:grid-cols-12 lg:gap-6">
+            <div className="lg:col-span-9">
+              <Link href={`/${locale}`} className="mono inline-flex min-h-11 items-center text-ink-muted hover:text-ink hover:underline">
+                ← {content.legalCommon.backHome}
+              </Link>
+              <h1 className="mt-4 text-[clamp(2.3rem,8vw,5rem)] text-ink">{title}</h1>
+            </div>
+            <p className="mono mt-5 text-ink-muted lg:col-span-3 lg:mt-0 lg:self-end lg:text-right">
+              <time dateTime={LEGAL_LAST_UPDATED}>
+                {content.legalCommon.lastUpdated.replace('{date}', formatLegalDate(locale))}
+              </time>
+            </p>
+          </header>
 
-        {toc && toc.length > 3 && (
-          <nav aria-labelledby="toc-title" className="mt-8 rounded-card bg-surface-sunken/60 p-5 sm:p-6">
-            <h2 id="toc-title" className="font-sans text-sm font-semibold tracking-wide text-ink uppercase">
-              {content.legalCommon.tocTitle}
-            </h2>
-            <ol className="mt-3 grid gap-1.5 text-[0.95rem] sm:grid-cols-2">
-              {toc.map((s) => (
-                <li key={s.id}>
-                  <a href={`#${s.id}`} className="text-ink-muted hover:text-accent hover:underline">
-                    {s.heading}
-                  </a>
+          <div className="lg:grid lg:grid-cols-12 lg:gap-6">
+            {toc && toc.length > 3 && (
+              <nav aria-labelledby="toc-title" className="mt-8 border-b border-line-strong pb-8 lg:col-span-3 lg:border-b-0">
+                <div className="lg:sticky lg:top-28">
+                  <h2 id="toc-title" className="mono-caps text-ink-muted">
+                    {content.legalCommon.tocTitle}
+                  </h2>
+                  <ol className="mt-3 grid gap-0.5">
+                    {toc.map((s) => {
+                      const [num, text] = splitHeading(s.heading);
+                      return (
+                        <li key={s.id}>
+                          <a href={`#${s.id}`} className="mono flex min-h-9 items-baseline gap-3 py-1 text-ink hover:text-accent">
+                            <span className="w-5 shrink-0 text-ink-subtle">{num}</span>
+                            <span className="hover:underline">{text}</span>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              </nav>
+            )}
+
+            <div className="mt-10 max-w-[68ch] space-y-5 text-[1.02rem] leading-relaxed text-ink-muted lg:col-span-8 lg:col-start-5">
+              {children}
+            </div>
+          </div>
+
+          <footer className="mt-16 lg:grid lg:grid-cols-12 lg:gap-6">
+            <div className="border-t border-line-strong pt-8 lg:col-span-8 lg:col-start-5">
+            <h2 className="mono-caps text-ink-muted">{content.legalCommon.otherDocs}</h2>
+            <ul className="mt-4 flex flex-wrap gap-2">
+              {others.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="press mono inline-flex h-11 items-center rounded-pill px-4 text-ink ring-1 ring-line-strong hover:bg-ink hover:text-ink-inverse">
+                    {l.label}
+                  </Link>
                 </li>
               ))}
-            </ol>
-          </nav>
-        )}
-
-        <div className="mt-10 space-y-5 text-[1.02rem] leading-relaxed text-ink-muted">{children}</div>
-
-        <footer className="mt-14 border-t border-border pt-8">
-          <h2 className="font-sans text-sm font-semibold tracking-wide text-ink uppercase">{content.legalCommon.otherDocs}</h2>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {others.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className="inline-block rounded-pill border border-border bg-surface-raised px-3.5 py-1.5 text-sm text-ink hover:border-border-strong"
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-8 text-xs text-ink-subtle">{content.legalCommon.draftNotice}</p>
-        </footer>
-      </article>
+            </ul>
+            <p className="mono mt-8 text-[12px] text-ink-muted">{content.legalCommon.draftNotice}</p>
+          </footer>
+        </article>
+      </div>
     </main>
   );
 }
@@ -127,20 +148,29 @@ export function LegalDocumentView({ locale, doc, path }: { locale: Locale; doc: 
   return (
     <LegalShell locale={locale} content={content} title={doc.title} path={path} toc={doc.sections}>
       {doc.intro.map((p) => (
-        <p key={p} className="text-lg text-ink">
+        <p key={p} className="text-[1.15rem] leading-relaxed text-ink">
           {p}
         </p>
       ))}
-      {doc.sections.map((section) => (
-        <section key={section.id} id={section.id} aria-labelledby={`${section.id}-h`} className="scroll-mt-24 space-y-4 pt-6">
-          <h2 id={`${section.id}-h`} className="text-2xl text-ink">
-            {section.heading}
-          </h2>
-          {section.blocks.map((block, i) => (
-            <Block key={i} block={block} />
-          ))}
-        </section>
-      ))}
+      {doc.sections.map((section) => {
+        const [num, text] = splitHeading(section.heading);
+        return (
+          <section key={section.id} id={section.id} aria-labelledby={`${section.id}-h`} className="scroll-mt-28 space-y-4 border-t border-line pt-8 first-of-type:mt-10">
+            <h2 id={`${section.id}-h`} className="flex items-baseline gap-3 text-[1.6rem] leading-tight tracking-[-0.035em] text-ink">
+              {num && (
+                <span className="mono shrink-0 translate-y-[-0.2em] bg-ink px-1.5 py-1 text-[12px] leading-none tracking-normal text-paper">
+                  <span className="sr-only">{num}. </span>
+                  <span aria-hidden>§{num}</span>
+                </span>
+              )}
+              <span>{text}</span>
+            </h2>
+            {section.blocks.map((block, i) => (
+              <Block key={i} block={block} />
+            ))}
+          </section>
+        );
+      })}
     </LegalShell>
   );
 }

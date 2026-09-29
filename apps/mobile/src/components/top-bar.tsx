@@ -1,7 +1,10 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import type { ReactNode } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, spacing } from '@/theme';
+import { colors, radii } from '@/theme';
 
+import { IconButton } from './button';
+import { Chip } from './labels';
 import { AppText } from './text';
 
 export interface TopBarProps {
@@ -9,66 +12,78 @@ export interface TopBarProps {
   backLabel?: string;
   onClose?: () => void;
   closeLabel?: string;
+  /** Replaces the wordmark with a screen title. */
   title?: string;
-  right?: React.ReactNode;
+  /** Small accent-soft chip on the right (e.g. "2/5", "PREMIUM"). */
+  chip?: string;
+  right?: ReactNode;
+  /** `ink` = dark card (default); `clear` = transparent bar on paper. */
+  tone?: 'ink' | 'clear';
 }
 
-/** Minimal navigation bar with text/glyph buttons (no icon font dependency). */
-export function TopBar({ onBack, backLabel = 'Back', onClose, closeLabel = 'Close', title, right }: TopBarProps) {
+/** BRIK top bar card: dark rounded card with the wordmark (or title) and a pale chip. */
+export function TopBar({
+  onBack,
+  backLabel = 'Back',
+  onClose,
+  closeLabel = 'Close',
+  title,
+  chip,
+  right,
+  tone = 'ink',
+}: TopBarProps) {
+  const dark = tone === 'ink';
   return (
-    <View style={styles.bar}>
-      <View style={styles.side}>
-        {onBack ? (
-          <Pressable
-            onPress={onBack}
-            accessibilityRole="button"
-            accessibilityLabel={backLabel}
-            hitSlop={12}
-            style={styles.iconButton}
-          >
-            <AppText variant="title" color={colors.ink} style={styles.glyph}>
-              ‹
-            </AppText>
-          </Pressable>
-        ) : null}
-      </View>
+    <View style={[styles.bar, dark ? styles.dark : null]}>
+      {onBack ? (
+        <IconButton icon="back" label={backLabel} onPress={onBack} size={38} tone={dark ? 'glass' : 'light'} style={dark ? styles.btnDark : undefined} />
+      ) : null}
       <View style={styles.center}>
         {title ? (
-          <AppText variant="label" align="center" numberOfLines={1}>
+          <AppText variant="label" color={dark ? colors.onInk : colors.ink} numberOfLines={1} accessibilityRole="header">
             {title}
           </AppText>
-        ) : null}
+        ) : (
+          <Wordmark color={dark ? colors.onInk : colors.ink} />
+        )}
       </View>
-      <View style={[styles.side, styles.right]}>
-        {right}
-        {onClose ? (
-          <Pressable
-            onPress={onClose}
-            accessibilityRole="button"
-            accessibilityLabel={closeLabel}
-            hitSlop={12}
-            style={styles.iconButton}
-          >
-            <AppText variant="heading" color={colors.inkMuted}>
-              ✕
-            </AppText>
-          </Pressable>
-        ) : null}
-      </View>
+      {chip ? <Chip label={chip} tone={dark ? 'soft' : 'ink'} /> : null}
+      {right}
+      {onClose ? (
+        <IconButton icon="close" label={closeLabel} onPress={onClose} size={38} tone={dark ? 'glass' : 'light'} style={dark ? styles.btnDark : undefined} />
+      ) : null}
+    </View>
+  );
+}
+
+/** Small "Tonelle" logotype with an accent registration dot. */
+export function Wordmark({ color = colors.onInk, size = 21 }: { color?: string; size?: number }) {
+  return (
+    <View style={styles.wordmark} accessible accessibilityLabel="Tonelle">
+      <AppText
+        variant="heading"
+        color={color}
+        style={{ fontSize: size, lineHeight: size * 1.1, letterSpacing: -size * 0.05 }}
+      >
+        Tonelle
+      </AppText>
+      <View style={[styles.dot, { width: size * 0.26, height: size * 0.26, borderRadius: size * 0.13 }]} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   bar: {
-    height: 52,
+    minHeight: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.md,
+    gap: 10,
+    paddingHorizontal: 12,
+    borderRadius: radii.card,
   },
-  side: { minWidth: 72, flexDirection: 'row', alignItems: 'center' },
-  right: { justifyContent: 'flex-end' },
-  center: { flex: 1, alignItems: 'center' },
-  iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  glyph: { fontSize: 34, lineHeight: 38, marginTop: -4 },
+  dark: { backgroundColor: colors.ink, paddingLeft: 12, paddingRight: 14 },
+  btnDark: { backgroundColor: colors.inkSoft },
+  center: { flex: 1, paddingLeft: 6 },
+  wordmark: { flexDirection: 'row', alignItems: 'flex-start' },
+  dot: { backgroundColor: colors.accent, marginLeft: 2, marginTop: 3 },
 });

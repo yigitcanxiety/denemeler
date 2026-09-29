@@ -1,51 +1,65 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { Button } from '@/components/button';
+import { Connector } from '@/components/connector';
+import { FitWordmark } from '@/components/fit-wordmark';
+import { HeatFace } from '@/components/heat-face';
+import { Icon } from '@/components/icon';
+import { Chip, MonoLabel, NumberTag } from '@/components/labels';
+import { PressableScale, Reveal } from '@/components/motion';
 import { Screen } from '@/components/screen';
+import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
-import { useT } from '@/hooks/use-i18n';
+import { Wordmark } from '@/components/top-bar';
+import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
+import { indexLabel, uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
-import { colors, palette, radii, spacing } from '@/theme';
+import { colors, GUTTER, radii, spacing } from '@/theme';
 
 const SLIDES = [
-  { title: 'onboarding.slide1Title', body: 'onboarding.slide1Body', swatch: palette.blush[300] },
-  { title: 'onboarding.slide2Title', body: 'onboarding.slide2Body', swatch: palette.nude[400] },
-  { title: 'onboarding.slide3Title', body: 'onboarding.slide3Body', swatch: palette.blush[500] },
+  { title: 'onboarding.slide1Title', body: 'onboarding.slide1Body' },
+  { title: 'onboarding.slide2Title', body: 'onboarding.slide2Body' },
+  { title: 'onboarding.slide3Title', body: 'onboarding.slide3Body' },
 ] as const;
 
 export default function WelcomeScreen() {
   const t = useT();
+  const locale = useLocale();
   const premium = usePremium();
+  const { width } = useWindowDimensions();
   const hasAnalysis = useAppStore((s) => s.analysis !== null);
   const consented = useAppStore((s) => s.consentAt !== null);
 
   const start = () => router.push(consented ? '/quiz' : '/consent');
+  const faceW = Math.min(width * 0.56, 240);
+  const connectorW = (width - faceW) / 2 - GUTTER + 12;
 
   return (
     <Screen
+      grid="accent"
       header={
         <View style={styles.header}>
-          <AppText variant="heading" color={colors.accent}>
-            {t('common.appName')}
-          </AppText>
-          <Pressable
+          <View style={styles.logoBox}>
+            <Wordmark color={colors.ink} size={19} />
+          </View>
+          <PressableScale
             onPress={() => router.push('/settings')}
             accessibilityRole="button"
             accessibilityLabel={t('settings.title')}
-            hitSlop={10}
+            style={styles.menuBox}
           >
-            <AppText variant="label" color={colors.inkMuted}>
+            <Icon name="settings" size={16} color={colors.ink} />
+            <AppText variant="label" style={styles.menuText}>
               {t('settings.title')}
             </AppText>
-          </Pressable>
+          </PressableScale>
         </View>
       }
       footer={
         <>
-          <Button label={t('onboarding.getStarted')} onPress={start} />
+          <Button label={t('onboarding.getStarted')} onPress={start} icon="arrow" />
           {hasAnalysis ? (
             <Button
               label={t('results.title')}
@@ -53,95 +67,94 @@ export default function WelcomeScreen() {
               onPress={() => router.push(premium ? '/results' : '/teaser')}
             />
           ) : (
-            <Button
-              label={t('onboarding.alreadySubscribed')}
-              variant="ghost"
-              onPress={() => router.push('/settings')}
-            />
+            <Button label={t('onboarding.alreadySubscribed')} variant="ghost" compact onPress={() => router.push('/settings')} />
           )}
         </>
       }
     >
-      <LinearGradient
-        colors={[palette.blush[100], palette.nude[100]]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.hero}
-      >
-        <View style={styles.heroOrbs} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-          {[palette.nude[300], palette.blush[300], palette.nude[500], palette.blush[500], palette.nude[700]].map(
-            (c) => (
-              <View key={c} style={[styles.orb, { backgroundColor: c }]} />
-            ),
-          )}
+      <FitWordmark lines={['TONELLE']} accessibilityLabel={t('common.appName')} style={styles.wordmark} />
+
+      <Reveal delay={350} style={styles.subline}>
+        <MonoLabel slash caps={false} color={colors.ink} size={12.5}>
+          {t('common.tagline')}
+        </MonoLabel>
+        <Chip label={uiCopy(locale).free} tone="ink" />
+      </Reveal>
+
+      <View style={styles.hero}>
+        <View style={[styles.connector, styles.connectorLeft]}>
+          <Connector side="left" width={connectorW} delay={700} />
         </View>
-        <AppText variant="overline">{t('common.tagline')}</AppText>
-        <AppText variant="display" accessibilityRole="header">
+        <HeatFace width={faceW} scanning scanLabel={uiCopy(locale).analyzingTag} />
+        <View style={[styles.connector, styles.connectorRight]}>
+          <Connector side="right" width={connectorW} delay={820} />
+        </View>
+      </View>
+
+      <Reveal delay={500} style={styles.intro}>
+        <AppText variant="title" accessibilityRole="header">
           {t('onboarding.welcomeTitle')}
         </AppText>
         <AppText variant="bodyMuted">{t('onboarding.welcomeSubtitle')}</AppText>
         <View style={styles.pills}>
-          <View style={styles.pill}>
-            <AppText variant="caption" color={colors.ink}>
-              {t('onboarding.takesAMinute')}
-            </AppText>
-          </View>
-          <View style={styles.pill}>
-            <AppText variant="caption" color={colors.ink}>
-              {t('common.privacyBadge')}
-            </AppText>
-          </View>
+          <Chip label={t('onboarding.takesAMinute')} tone="outline" caps={false} />
+          <Chip label={t('common.privacyBadge')} tone="outline" caps={false} />
         </View>
-      </LinearGradient>
+      </Reveal>
 
-      {SLIDES.map((slide, index) => (
-        <View key={slide.title} style={styles.slide}>
-          <View style={[styles.slideIndex, { backgroundColor: slide.swatch }]}>
-            <AppText variant="label" color={colors.accentContrast}>
-              {index + 1}
-            </AppText>
-          </View>
-          <View style={styles.slideText}>
-            <AppText variant="label">{t(slide.title)}</AppText>
-            <AppText variant="bodyMuted">{t(slide.body)}</AppText>
-          </View>
-        </View>
-      ))}
+      <Reveal delay={650}>
+        <CardStack>
+          {SLIDES.map((slide, index) => (
+            <Card key={slide.title} style={styles.slide}>
+              <NumberTag label={indexLabel(index)} tone="light" />
+              <View style={styles.slideText}>
+                <AppText variant="label" color={colors.onInk} style={styles.slideTitle}>
+                  {t(slide.title)}
+                </AppText>
+                <AppText variant="body" color={colors.onInkMuted} style={styles.slideBody}>
+                  {t(slide.body)}
+                </AppText>
+              </View>
+            </Card>
+          ))}
+        </CardStack>
+      </Reveal>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  logoBox: {
+    backgroundColor: colors.paperRaised,
+    borderRadius: radii.md,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.line,
+  },
+  menuBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
+    gap: 8,
+    minHeight: 44,
+    backgroundColor: colors.paperRaised,
+    borderRadius: radii.md,
+    paddingHorizontal: 14,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.line,
   },
-  hero: {
-    borderRadius: radii.card,
-    padding: spacing.xl,
-    gap: spacing.md,
-    marginTop: spacing.sm,
-  },
-  heroOrbs: { flexDirection: 'row', marginBottom: spacing.sm },
-  orb: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    marginRight: -8,
-    borderWidth: 2,
-    borderColor: colors.surface,
-  },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.xs },
-  pill: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: 6,
-    borderRadius: radii.pill,
-    backgroundColor: 'rgba(255,255,255,0.7)',
-  },
+  menuText: { fontSize: 14 },
+  wordmark: { marginTop: spacing.sm },
+  subline: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm, marginTop: -4 },
+  hero: { alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.md, marginHorizontal: -GUTTER },
+  connector: { position: 'absolute', top: '52%' },
+  connectorLeft: { left: 0 },
+  connectorRight: { right: 0 },
+  intro: { gap: spacing.md },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   slide: { flexDirection: 'row', gap: spacing.lg, alignItems: 'flex-start' },
-  slideIndex: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  slideText: { flex: 1, gap: 2 },
+  slideText: { flex: 1, gap: 4 },
+  slideTitle: { fontSize: 17 },
+  slideBody: { fontSize: 14.5, lineHeight: 21 },
 });

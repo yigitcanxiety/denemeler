@@ -1,24 +1,36 @@
-import { Plus } from 'lucide-react';
 import type { SiteContent } from '@/content';
-import { Section } from './Section';
 
 export function Faq({ content }: { content: SiteContent }) {
   return (
-    <Section id="faq" title={content.faq.title} subtitle={content.faq.subtitle} className="bg-surface-sunken/50">
-      <div className="mx-auto max-w-3xl divide-y divide-border rounded-card border border-border/70 bg-surface-raised shadow-soft">
-        {content.faq.items.map((item) => (
-          <details key={item.q} className="group px-5 sm:px-7">
-            <summary className="flex cursor-pointer items-center justify-between gap-4 py-5 text-left font-semibold text-ink">
-              <h3 className="font-sans text-base sm:text-lg">{item.q}</h3>
-              <Plus
-                aria-hidden
-                className="size-5 shrink-0 text-accent transition-transform duration-200 group-open:rotate-45"
-              />
-            </summary>
-            <p className="pb-5 leading-relaxed text-ink-muted">{item.a}</p>
-          </details>
-        ))}
+    <section id="faq" aria-labelledby="faq-title" className="relative border-t border-line-strong py-20 sm:py-28">
+      <div className="shell grid gap-10 lg:grid-cols-12">
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28" data-reveal>
+            <h2 id="faq-title" className="text-[clamp(2.4rem,8vw,5rem)] text-ink">
+              {content.faq.title}
+            </h2>
+            <p className="mono mt-5 max-w-[34ch] text-ink-muted">{content.faq.subtitle}</p>
+          </div>
+        </div>
+        <div className="border-t border-line-strong lg:col-span-8">
+          {content.faq.items.map((item, i) => (
+            <details key={item.q} className="group border-b border-line-strong">
+              <summary className="flex min-h-16 cursor-pointer items-start gap-4 py-5 text-left">
+                <span className="mono-caps mt-1.5 w-10 shrink-0 text-ink-muted">Q.{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="flex-1 text-[1.2rem] leading-tight font-medium tracking-[-0.03em] text-ink sm:text-[1.45rem]">{item.q}</h3>
+                <span
+                  aria-hidden
+                  className="relative mt-1 grid size-7 shrink-0 place-items-center bg-ink text-ink-inverse transition-colors group-open:bg-accent"
+                >
+                  <span className="absolute h-px w-3 bg-current" />
+                  <span className="absolute h-3 w-px bg-current transition-transform duration-200 group-open:scale-y-0" />
+                </span>
+              </summary>
+              <p className="mono max-w-[64ch] pb-6 pl-14 text-ink-muted">{item.a}</p>
+            </details>
+          ))}
+        </div>
       </div>
-    </Section>
+    </section>
   );
 }

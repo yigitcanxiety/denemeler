@@ -2,7 +2,6 @@
 
 import { LOCALES, t, type Locale } from '@tonelle/shared';
 import clsx from 'clsx';
-import { Globe } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LOCALE_COOKIE } from '@/lib/locale';
@@ -18,16 +17,26 @@ export function LanguageSwitcher({
   locale,
   className,
   compact = false,
+  tone = 'paper',
+  onNavigate,
 }: {
   locale: Locale;
   className?: string;
   /** Show language codes (TR / EN) instead of names. */
   compact?: boolean;
+  tone?: 'paper' | 'ink';
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname() ?? `/${locale}`;
   return (
-    <nav aria-label={t(locale, 'language.label')} className={clsx('flex items-center gap-1 text-sm', className)}>
-      {!compact && <Globe aria-hidden className="size-4 text-ink-subtle" />}
+    <nav
+      aria-label={t(locale, 'language.label')}
+      className={clsx(
+        'inline-flex items-center gap-0.5 rounded-[12px] border p-0.5 font-mono text-[12px]',
+        tone === 'paper' ? 'border-line-strong' : 'border-white/20',
+        className,
+      )}
+    >
       {LOCALES.map((l) => {
         const active = l === locale;
         return (
@@ -39,10 +48,17 @@ export function LanguageSwitcher({
             aria-current={active ? 'true' : undefined}
             onClick={() => {
               document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
+              onNavigate?.();
             }}
             className={clsx(
-              'rounded-pill px-2.5 py-1 transition-colors',
-              active ? 'bg-surface-sunken font-semibold text-ink' : 'text-ink-muted hover:text-ink',
+              'press grid h-10 min-w-11 place-items-center rounded-[10px] px-3 tracking-[0.04em] uppercase',
+              active
+                ? tone === 'paper'
+                  ? 'bg-ink text-ink-inverse'
+                  : 'bg-ink-inverse text-[#231816]'
+                : tone === 'paper'
+                  ? 'text-ink-muted hover:text-ink'
+                  : 'text-ink-inverse-muted hover:text-ink-inverse',
             )}
           >
             {compact ? (

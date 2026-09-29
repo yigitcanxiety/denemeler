@@ -1,64 +1,70 @@
 /**
- * Tonelle design tokens for React Native.
- * Mirrors apps/web/src/styles/tokens.css — keep both in sync.
+ * Tonelle design tokens for React Native — Design Language v2 ("Editorial Lab").
+ * Source of truth: docs/DESIGN.md §2. Mirrors apps/web/src/styles/tokens.css — keep both in sync.
  */
-
-export const palette = {
-  nude: {
-    50: '#fdf9f6',
-    100: '#f9f0ea',
-    200: '#f2e2d7',
-    300: '#e8cfbf',
-    400: '#d9b39c',
-    500: '#c4957b',
-    600: '#a7775e',
-    700: '#835b47',
-  },
-  blush: {
-    50: '#fdf5f5',
-    100: '#fae6e6',
-    200: '#f4cfd0',
-    300: '#eaaeb1',
-    400: '#dc8a8f',
-    500: '#c96a71',
-    600: '#ae5159',
-    700: '#8c3f46',
-  },
-} as const;
+import type { TextStyle } from 'react-native';
+import { Easing } from 'react-native-reanimated';
 
 export const colors = {
-  ink: '#2b2124',
-  inkMuted: '#6b5a5e',
-  inkSubtle: '#9a8a8d',
-  inkInverse: '#fdf9f6',
+  /* Canvas */
+  paper: '#E6DED7',
+  paperRaised: '#EFE9E3',
+  paperSunken: '#D9D0C8',
+  line: 'rgba(35,24,22,0.14)',
+  lineStrong: 'rgba(35,24,22,0.28)',
 
-  surface: '#fdf9f6',
-  surfaceRaised: '#ffffff',
-  surfaceSunken: '#f6ece6',
-  surfaceInverse: '#2b2124',
-  border: '#ecdcd3',
-  borderStrong: '#d9c2b6',
+  /* Ink (text, dark cards, primary buttons) */
+  ink: '#231816',
+  inkSoft: '#3A2A27',
+  inkMuted: '#6E605B',
+  inkSubtle: '#9A8C86',
 
-  accent: '#b85c64',
-  accentHover: '#a24c54',
-  accentSoft: '#f6dfe0',
-  accentContrast: '#ffffff',
-  focus: '#c96a71',
-  success: '#4f8a6b',
-  warning: '#c08a3e',
-  danger: '#b3413f',
+  /* Text on dark (ink / night) surfaces */
+  onInk: '#EFE9E3',
+  onInkMuted: 'rgba(239,233,227,0.64)',
+  onInkSubtle: 'rgba(239,233,227,0.42)',
+  inkLine: 'rgba(239,233,227,0.14)',
+
+  /* Accent: lines, markers, tags, focus. Never large fills. */
+  accent: '#C8354A',
+  accentSoft: '#F2C9CB',
+  accentSoftDim: 'rgba(242,201,203,0.18)',
+  accentContrast: '#FFFFFF',
+
+  /* Dark section */
+  night: '#161010',
+  nightLine: 'rgba(242,201,203,0.12)',
+
+  /* States */
+  success: '#3F7D5C',
+  warning: '#B7791F',
+  danger: '#B42335',
+
+  scrim: 'rgba(22,16,16,0.55)',
 } as const;
 
-/** rem-based web radii converted at 16px. */
+/** "Makeup glow" heat-map ramp (deep berry → champagne). */
+export const heat = ['#7A1F2B', '#C8354A', '#E0775E', '#F3B27A', '#FBE3C6'] as const;
+
+/** Heat-map blob palettes per season family (DESIGN.md §2, dark sphere section). */
+export const seasonHeat = {
+  spring: ['#E8604C', '#F59A6B', '#F7C873', '#FBE3C6', '#F3B27A'],
+  summer: ['#C0587A', '#D98FB0', '#A99AD6', '#9DBEE0', '#EAD6E6'],
+  autumn: ['#A5482A', '#C8743A', '#7E7B3A', '#C9A06A', '#E7C9A0'],
+  winter: ['#7A1F4B', '#C8356E', '#F2C9DB', '#2F4FB0', '#E9EEF8'],
+} as const;
+export type SeasonFamilyKey = keyof typeof seasonHeat;
+
 export const radii = {
   sm: 8,
   md: 14,
-  lg: 20,
   card: 24,
-  pill: 9999,
+  xl: 32,
+  pill: 999,
 } as const;
 
 export const spacing = {
+  xxs: 2,
   xs: 4,
   sm: 8,
   md: 12,
@@ -68,60 +74,61 @@ export const spacing = {
   xxxl: 48,
 } as const;
 
-/** Warm-tinted shadows approximating --shadow-soft / --shadow-card / --shadow-lift. */
-export const shadows = {
-  soft: {
-    shadowColor: '#5c3a32',
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-  },
-  card: {
-    shadowColor: '#5c3a32',
-    shadowOpacity: 0.1,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 4,
-  },
-  lift: {
-    shadowColor: '#5c3a32',
-    shadowOpacity: 0.16,
-    shadowRadius: 40,
-    shadowOffset: { width: 0, height: 18 },
-    elevation: 8,
-  },
-} as const;
+/** Page gutter (BRIK cards sit close to the screen edge). */
+export const GUTTER = 12;
+/** Gap between stacked cards; necks bridge it. */
+export const STACK_GAP = 10;
 
 /**
  * Font family names registered with expo-font in app/_layout.tsx. If fonts fail to load the
- * app still renders with system fonts (see `useAppFonts`).
+ * app still renders with system fonts.
  */
 export const fonts = {
-  display: 'Fraunces_500Medium',
-  displayBold: 'Fraunces_600SemiBold',
-  body: 'Inter_400Regular',
-  bodyMedium: 'Inter_500Medium',
-  bodySemiBold: 'Inter_600SemiBold',
+  light: 'InterTight_300Light',
+  body: 'InterTight_400Regular',
+  medium: 'InterTight_500Medium',
+  display: 'InterTight_600SemiBold',
+  mono: 'JetBrainsMono_400Regular',
+  monoMedium: 'JetBrainsMono_500Medium',
 } as const;
 
 export const typography = {
-  display: { fontFamily: fonts.display, fontSize: 34, lineHeight: 40, color: colors.ink, letterSpacing: -0.4 },
-  title: { fontFamily: fonts.display, fontSize: 26, lineHeight: 32, color: colors.ink, letterSpacing: -0.2 },
-  heading: { fontFamily: fonts.displayBold, fontSize: 20, lineHeight: 26, color: colors.ink },
-  body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 24, color: colors.ink },
+  /** Giant grotesk (season names, hero). Size is usually overridden/fitted. */
+  display: { fontFamily: fonts.display, fontSize: 44, lineHeight: 44, letterSpacing: -2.2, color: colors.ink },
+  title: { fontFamily: fonts.display, fontSize: 30, lineHeight: 31, letterSpacing: -1.2, color: colors.ink },
+  heading: { fontFamily: fonts.medium, fontSize: 21, lineHeight: 24, letterSpacing: -0.5, color: colors.ink },
+  body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 23, color: colors.ink },
   bodyMuted: { fontFamily: fonts.body, fontSize: 15, lineHeight: 22, color: colors.inkMuted },
-  label: { fontFamily: fonts.bodySemiBold, fontSize: 15, lineHeight: 20, color: colors.ink },
-  caption: { fontFamily: fonts.body, fontSize: 13, lineHeight: 18, color: colors.inkSubtle },
-  overline: {
-    fontFamily: fonts.bodySemiBold,
-    fontSize: 12,
-    lineHeight: 16,
-    letterSpacing: 1.2,
-    textTransform: 'uppercase' as const,
-    color: colors.accent,
+  label: { fontFamily: fonts.medium, fontSize: 15, lineHeight: 20, letterSpacing: -0.1, color: colors.ink },
+  caption: { fontFamily: fonts.body, fontSize: 14, lineHeight: 19, color: colors.inkMuted },
+  /** Monospace annotation (JetBrains Mono 12–15). */
+  mono: { fontFamily: fonts.mono, fontSize: 13, lineHeight: 17.5, color: colors.ink },
+  monoSmall: { fontFamily: fonts.mono, fontSize: 11, lineHeight: 15, color: colors.inkMuted },
+  monoLabel: { fontFamily: fonts.monoMedium, fontSize: 11, lineHeight: 14, letterSpacing: 0.6, color: colors.ink },
+  /** BRIK big light numerals. */
+  numeral: {
+    fontFamily: fonts.light,
+    fontSize: 56,
+    lineHeight: 58,
+    letterSpacing: -2,
+    color: colors.onInk,
+    fontVariant: ['tabular-nums'],
   },
+  overline: { fontFamily: fonts.monoMedium, fontSize: 11, lineHeight: 14, letterSpacing: 0.8, color: colors.inkMuted },
+} satisfies Record<string, TextStyle>;
+
+/** Motion tokens (DESIGN.md §3). */
+export const motion = {
+  spring: { damping: 18, stiffness: 180, mass: 1 },
+  springSoft: { damping: 20, stiffness: 120, mass: 1 },
+  /** cubic-bezier(0.22, 1, 0.36, 1) */
+  outExpo: Easing.bezier(0.22, 1, 0.36, 1),
+  reveal: 700,
+  ui: 220,
+  /** Reduced motion: opacity fades only, ≤150 ms. */
+  reducedFade: 150,
+  pressScale: 0.97,
 } as const;
 
-export const theme = { palette, colors, radii, spacing, shadows, fonts, typography } as const;
+export const theme = { colors, heat, seasonHeat, radii, spacing, fonts, typography, motion } as const;
 export type Theme = typeof theme;

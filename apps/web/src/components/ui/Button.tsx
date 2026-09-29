@@ -2,7 +2,15 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'inverse';
+/**
+ * primary  – ink pill (the main CTA on paper)
+ * secondary – outlined pill on paper
+ * soft     – accent-soft pill (primary CTA on dark cards)
+ * ghost    – text button
+ * inverse  – light pill on dark surfaces
+ * danger   – destructive
+ */
+export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'inverse' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface StyleProps {
@@ -12,27 +20,25 @@ interface StyleProps {
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary:
-    'bg-accent text-accent-contrast shadow-soft hover:bg-accent-hover active:translate-y-px disabled:bg-blush-300',
-  secondary:
-    'bg-surface-raised text-ink border border-border-strong hover:border-ink-subtle hover:bg-nude-50 disabled:text-ink-subtle',
-  soft: 'bg-accent-soft text-accent-hover hover:bg-blush-200 disabled:text-ink-subtle',
-  ghost: 'text-ink-muted hover:text-ink hover:bg-surface-sunken disabled:text-ink-subtle',
-  inverse: 'bg-surface-raised text-ink shadow-soft hover:bg-nude-50',
+  primary: 'bg-ink text-ink-inverse hover:bg-ink-soft disabled:bg-ink-subtle',
+  secondary: 'text-ink ring-1 ring-inset ring-ink/70 hover:bg-ink hover:text-ink-inverse disabled:text-ink-subtle disabled:ring-line-strong',
+  soft: 'bg-accent-soft text-[#231816] hover:bg-white disabled:opacity-60',
+  ghost: 'text-ink-muted hover:text-ink hover:bg-ink/5 disabled:text-ink-subtle',
+  inverse: 'bg-ink-inverse text-[#231816] hover:bg-white',
+  danger: 'bg-danger text-white hover:bg-danger/90',
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 text-sm gap-1.5',
-  md: 'h-11 px-5 text-[0.95rem] gap-2',
+  sm: 'h-11 px-4 text-sm gap-1.5',
+  md: 'h-12 px-5 text-[0.95rem] gap-2',
   lg: 'h-14 px-7 text-base gap-2.5',
 };
 
 export function buttonClasses({ variant = 'primary', size = 'md', fullWidth = false }: StyleProps = {}): string {
   return clsx(
-    'inline-flex select-none items-center justify-center whitespace-nowrap rounded-pill font-semibold',
-    'transition-[background-color,border-color,color,transform,box-shadow] duration-200',
+    'press inline-flex select-none items-center justify-center whitespace-nowrap rounded-pill font-medium tracking-[-0.01em]',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
-    'disabled:cursor-not-allowed disabled:shadow-none',
+    'disabled:cursor-not-allowed',
     VARIANTS[variant],
     SIZES[size],
     fullWidth && 'w-full',
@@ -61,11 +67,7 @@ export function Button({
       aria-busy={loading || undefined}
       {...rest}
     >
-      {loading ? (
-        <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />
-      ) : (
-        icon
-      )}
+      {loading ? <span aria-hidden className="spin size-4 rounded-full border-2 border-current border-r-transparent" /> : icon}
       {children}
     </button>
   );

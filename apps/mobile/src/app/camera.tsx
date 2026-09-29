@@ -1,20 +1,25 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useRef, useState } from 'react';
 import { Image, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button } from '@/components/button';
+import { Button, IconButton } from '@/components/button';
 import { FaceGuide } from '@/components/face-guide';
+import { Icon } from '@/components/icon';
+import { Chip, MonoLabel } from '@/components/labels';
+import { PressableScale } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
+import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
 import { useT } from '@/hooks/use-i18n';
 import { deleteTempFile, preparePhoto } from '@/services/photo';
 import { useAppStore, type SessionPhoto } from '@/store/app-store';
-import { colors, radii, spacing } from '@/theme';
+import { colors, GUTTER, radii, spacing } from '@/theme';
 
 const HINTS = [
   'camera.hintLight',
@@ -90,15 +95,15 @@ export default function CameraScreen() {
   if (preview) {
     return (
       <Screen
-        header={<TopBar onBack={() => setPreview(null)} backLabel={t('camera.retake')} />}
+        scroll={false}
         footer={
           <>
-            <Button label={t('camera.usePhoto')} onPress={usePhoto} />
+            <Button label={t('camera.usePhoto')} onPress={usePhoto} icon="arrow" />
             <Button label={t('camera.retake')} variant="secondary" onPress={() => setPreview(null)} />
           </>
         }
-        scroll={false}
       >
+        <TopBar onBack={() => setPreview(null)} backLabel={t('camera.retake')} chip={t('common.privacyBadge')} />
         <View style={styles.previewWrap}>
           <Image
             source={{ uri: preview.dataUrl }}
@@ -108,10 +113,10 @@ export default function CameraScreen() {
             accessible
             accessibilityLabel={t('camera.title')}
           />
+          <View style={[StyleSheet.absoluteFill, styles.centerAll]} pointerEvents="none">
+            <FaceGuide width={180} height={236} tone="light" />
+          </View>
         </View>
-        <AppText variant="caption" align="center">
-          {t('common.privacyBadge')}
-        </AppText>
       </Screen>
     );
   }
@@ -121,7 +126,6 @@ export default function CameraScreen() {
     const blocked = permission && !permission.canAskAgain;
     return (
       <Screen
-        header={<TopBar onBack={() => router.back()} backLabel={t('common.back')} />}
         footer={
           <>
             {permission === null ? null : blocked ? (
@@ -129,18 +133,27 @@ export default function CameraScreen() {
             ) : (
               <Button label={t('camera.permissionButton')} onPress={() => void requestPermission()} />
             )}
-            <Button label={t('camera.upload')} variant="secondary" onPress={() => void pick()} loading={busy} />
+            <Button label={t('camera.upload')} variant="secondary" onPress={() => void pick()} loading={busy} icon="upload" />
           </>
         }
       >
+        <CardStack>
+          <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('camera.title')} />
+          <Card style={styles.permission}>
+            <AppText variant="title" color={colors.onInk} accessibilityRole="header">
+              {t('camera.permissionTitle')}
+            </AppText>
+            <AppText variant="body" color={colors.onInkMuted}>
+              {blocked ? t('camera.permissionDenied') : t('camera.permissionBody')}
+            </AppText>
+            <MonoLabel color={colors.onInkSubtle} caps={false}>
+              {t('camera.fileTypes')}
+            </MonoLabel>
+          </Card>
+        </CardStack>
         <View style={styles.permissionArt}>
-          <FaceGuide width={160} height={210} />
+          <FaceGuide width={150} height={198} />
         </View>
-        <AppText variant="title" accessibilityRole="header">
-          {t('camera.permissionTitle')}
-        </AppText>
-        <AppText variant="bodyMuted">{blocked ? t('camera.permissionDenied') : t('camera.permissionBody')}</AppText>
-        <AppText variant="caption">{t('camera.fileTypes')}</AppText>
         {error ? <Notice tone="error" message={error} /> : null}
       </Screen>
     );
@@ -149,6 +162,7 @@ export default function CameraScreen() {
   /* ---------- Live camera ---------- */
   return (
     <View style={styles.cameraRoot}>
+      <StatusBar style="light" />
       <CameraView
         ref={cameraRef}
         style={StyleSheet.absoluteFill}
@@ -163,21 +177,24 @@ export default function CameraScreen() {
         <FaceGuide overlay />
       </View>
       <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom']}>
-        <TopBar onClose={() => router.back()} closeLabel={t('common.close')} />
+        <View style={styles.topRow}>
+          <IconButton icon="close" label={t('common.close')} onPress={() => router.back()} tone="glass" size={44} />
+          <Chip label={t('camera.title')} tone="soft" />
+        </View>
         <View style={styles.topHints}>
-          <AppText variant="label" color={colors.inkInverse} align="center">
+          <AppText variant="label" color={colors.onInk} align="center">
             {t('camera.frameHint')}
           </AppText>
-          <AppText variant="caption" color={colors.inkInverse} align="center">
+          <MonoLabel color={colors.onInkMuted} caps={false} style={styles.center}>
             {t('camera.hintLight')}
-          </AppText>
+          </MonoLabel>
         </View>
         <View style={styles.flex} />
         <View style={styles.bottom}>
           <View style={styles.hintList}>
             {HINTS.slice(1).map((key) => (
               <View key={key} style={styles.hintPill}>
-                <AppText variant="caption" color={colors.inkInverse}>
+                <AppText variant="monoSmall" color={colors.onInk}>
                   {t(key)}
                 </AppText>
               </View>
@@ -185,17 +202,20 @@ export default function CameraScreen() {
           </View>
           {error ? <Notice tone="error" message={error} /> : null}
           <View style={styles.controls}>
-            <Pressable
+            <PressableScale
               onPress={() => void pick()}
               accessibilityRole="button"
               accessibilityLabel={t('camera.upload')}
               style={styles.sideButton}
               hitSlop={8}
             >
-              <AppText variant="caption" color={colors.inkInverse} align="center">
+              <View style={styles.sideIcon}>
+                <Icon name="upload" size={20} color={colors.onInk} />
+              </View>
+              <AppText variant="monoSmall" color={colors.onInk} align="center" numberOfLines={2}>
                 {t('camera.upload')}
               </AppText>
-            </Pressable>
+            </PressableScale>
             <Pressable
               onPress={() => void capture()}
               disabled={!cameraReady || busy}
@@ -204,14 +224,16 @@ export default function CameraScreen() {
               accessibilityState={{ disabled: !cameraReady || busy, busy }}
               style={({ pressed }) => [styles.shutter, (pressed || busy) && styles.shutterPressed]}
             >
-              <View style={styles.shutterInner} />
+              <View style={styles.shutterInner}>
+                <View style={styles.shutterDot} />
+              </View>
             </Pressable>
             <View style={styles.sideButton} />
           </View>
           {Platform.OS === 'android' ? null : (
-            <AppText variant="caption" color={colors.inkInverse} align="center">
+            <MonoLabel color={colors.onInkMuted} caps={false} style={styles.center}>
               {t('common.privacyBadge')}
-            </AppText>
+            </MonoLabel>
           )}
         </View>
       </SafeAreaView>
@@ -221,36 +243,65 @@ export default function CameraScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  cameraRoot: { flex: 1, backgroundColor: '#000' },
+  center: { textAlign: 'center' },
+  centerAll: { alignItems: 'center', justifyContent: 'center' },
+  cameraRoot: { flex: 1, backgroundColor: colors.night },
   cameraUi: { flex: 1 },
-  topHints: { alignItems: 'center', gap: 4, paddingHorizontal: spacing.xl },
-  bottom: { paddingHorizontal: spacing.xl, paddingBottom: spacing.lg, gap: spacing.md },
-  hintList: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs, justifyContent: 'center' },
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: GUTTER + 4,
+    paddingTop: spacing.xs,
+  },
+  topHints: { alignItems: 'center', gap: 4, paddingHorizontal: spacing.xl, marginTop: spacing.md },
+  bottom: { paddingHorizontal: GUTTER + 4, paddingBottom: spacing.lg, gap: spacing.md },
+  hintList: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, justifyContent: 'center' },
   hintPill: {
-    paddingHorizontal: spacing.md,
+    paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: radii.pill,
-    backgroundColor: 'rgba(43,33,36,0.55)',
+    borderRadius: radii.sm,
+    backgroundColor: 'rgba(22,16,16,0.6)',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(239,233,227,0.2)',
   },
   controls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sideButton: { width: 84, minHeight: 44, justifyContent: 'center' },
+  sideButton: { width: 84, minHeight: 44, alignItems: 'center', justifyContent: 'center', gap: 4 },
+  sideIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(22,16,16,0.55)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   shutter: {
-    width: 78,
-    height: 78,
-    borderRadius: 39,
-    borderWidth: 4,
-    borderColor: colors.inkInverse,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 1.5,
+    borderColor: colors.onInk,
     alignItems: 'center',
     justifyContent: 'center',
   },
   shutterPressed: { opacity: 0.6 },
-  shutterInner: { width: 60, height: 60, borderRadius: 30, backgroundColor: colors.accent },
+  shutterInner: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: colors.onInk,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shutterDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.accent },
   previewWrap: {
     flex: 1,
+    marginTop: spacing.sm,
     borderRadius: radii.card,
     overflow: 'hidden',
-    backgroundColor: colors.surfaceSunken,
+    backgroundColor: colors.ink,
   },
   previewImage: { width: '100%', height: '100%' },
-  permissionArt: { alignItems: 'center', paddingVertical: spacing.xl },
+  permission: { gap: spacing.md },
+  permissionArt: { alignItems: 'center', paddingVertical: spacing.lg },
 });

@@ -1,10 +1,19 @@
-import { ActivityIndicator, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { colors, radii, shadows, spacing } from '@/theme';
+import { colors, fonts, radii, spacing } from '@/theme';
 
+import { Icon, type IconName } from './icon';
+import { PressableScale } from './motion';
 import { AppText } from './text';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'inverse';
+/**
+ * - primary: full-width ink pill (the one CTA per screen)
+ * - secondary: hairline outline pill on paper
+ * - ghost: quiet text button
+ * - soft: accent-soft pill, for actions inside dark cards
+ * - onInk: hairline outline pill inside dark cards
+ */
+type Variant = 'primary' | 'secondary' | 'ghost' | 'soft' | 'onInk';
 
 export interface ButtonProps {
   label: string;
@@ -15,13 +24,15 @@ export interface ButtonProps {
   style?: StyleProp<ViewStyle>;
   accessibilityHint?: string;
   compact?: boolean;
+  icon?: IconName;
 }
 
-const VARIANTS: Record<Variant, { bg: string; fg: string; border: string; pressed: string }> = {
-  primary: { bg: colors.accent, fg: colors.accentContrast, border: colors.accent, pressed: colors.accentHover },
-  secondary: { bg: colors.surfaceRaised, fg: colors.ink, border: colors.borderStrong, pressed: colors.surfaceSunken },
-  ghost: { bg: 'transparent', fg: colors.accent, border: 'transparent', pressed: colors.accentSoft },
-  inverse: { bg: colors.surfaceInverse, fg: colors.inkInverse, border: colors.surfaceInverse, pressed: '#3d3034' },
+const VARIANTS: Record<Variant, { bg: string; fg: string; border: string }> = {
+  primary: { bg: colors.ink, fg: colors.onInk, border: colors.ink },
+  secondary: { bg: 'transparent', fg: colors.ink, border: colors.lineStrong },
+  ghost: { bg: 'transparent', fg: colors.inkMuted, border: 'transparent' },
+  soft: { bg: colors.accentSoft, fg: colors.ink, border: colors.accentSoft },
+  onInk: { bg: 'transparent', fg: colors.onInk, border: colors.inkLine },
 };
 
 export function Button({
@@ -33,39 +44,81 @@ export function Button({
   style,
   accessibilityHint,
   compact,
+  icon,
 }: ButtonProps) {
   const v = VARIANTS[variant];
   const inactive = disabled || loading;
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: !!inactive, busy: !!loading }}
       disabled={inactive}
       onPress={onPress}
-      style={({ pressed }) => [
+      style={[
         styles.base,
         compact && styles.compact,
-        { backgroundColor: pressed ? v.pressed : v.bg, borderColor: v.border },
-        variant === 'primary' && !inactive && shadows.soft,
+        { backgroundColor: v.bg, borderColor: v.border },
         inactive && styles.disabled,
         style,
       ]}
     >
       <View style={styles.row}>
         {loading ? <ActivityIndicator color={v.fg} style={styles.spinner} /> : null}
-        <AppText variant="label" color={v.fg} align="center">
+        <AppText variant="label" color={v.fg} align="center" style={[styles.label, compact && styles.labelCompact]}>
           {label}
         </AppText>
+        {icon && !loading ? (
+          <View style={styles.icon}>
+            <Icon name={icon} size={18} color={v.fg} />
+          </View>
+        ) : null}
       </View>
-    </Pressable>
+    </PressableScale>
+  );
+}
+
+/** Round ink icon button (BRIK nav flank / top bar). 48 px, ≥44 px tap target. */
+export function IconButton({
+  icon,
+  label,
+  onPress,
+  tone = 'ink',
+  size = 48,
+  style,
+}: {
+  icon: IconName;
+  label: string;
+  onPress?: () => void;
+  tone?: 'ink' | 'light' | 'glass';
+  size?: number;
+  style?: StyleProp<ViewStyle>;
+}) {
+  const bg = tone === 'ink' ? colors.ink : tone === 'light' ? colors.paperRaised : 'rgba(22,16,16,0.45)';
+  const fg = tone === 'light' ? colors.ink : colors.onInk;
+  return (
+    <PressableScale
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      hitSlop={size < 44 ? (44 - size) / 2 : 0}
+      pressedScale={0.92}
+      style={[
+        styles.iconButton,
+        { width: size, height: size, borderRadius: size / 2, backgroundColor: bg },
+        tone === 'light' && styles.iconLight,
+        style,
+      ]}
+    >
+      <Icon name={icon} size={Math.round(size * 0.42)} color={fg} />
+    </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 54,
+    minHeight: 56,
     paddingHorizontal: spacing.xl,
     borderRadius: radii.pill,
     borderWidth: 1,
@@ -74,6 +127,11 @@ const styles = StyleSheet.create({
   },
   compact: { minHeight: 44, paddingHorizontal: spacing.lg },
   row: { flexDirection: 'row', alignItems: 'center' },
+  label: { fontFamily: fonts.medium, fontSize: 16 },
+  labelCompact: { fontSize: 14 },
   spinner: { marginRight: spacing.sm },
-  disabled: { opacity: 0.5 },
+  icon: { marginLeft: spacing.sm },
+  disabled: { opacity: 0.4 },
+  iconButton: { alignItems: 'center', justifyContent: 'center' },
+  iconLight: { borderWidth: StyleSheet.hairlineWidth, borderColor: colors.line },
 });

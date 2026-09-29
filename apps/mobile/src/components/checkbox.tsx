@@ -1,7 +1,9 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { colors, radii, spacing } from '@/theme';
 
+import { Icon } from './icon';
+import { PressableScale } from './motion';
 import { AppText } from './text';
 
 export interface CheckboxProps {
@@ -10,27 +12,24 @@ export interface CheckboxProps {
   label: string;
 }
 
-/** Explicit, unchecked-by-default consent checkbox. */
+/** Explicit, unchecked-by-default consent checkbox (light card, ink square when ticked). */
 export function Checkbox({ checked, onChange, label }: CheckboxProps) {
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="checkbox"
       accessibilityState={{ checked }}
       accessibilityLabel={label}
       onPress={() => onChange(!checked)}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+      pressedScale={0.985}
+      style={[styles.row, checked && styles.rowChecked]}
     >
       <View style={[styles.box, checked && styles.boxChecked]}>
-        {checked ? (
-          <AppText variant="label" color={colors.accentContrast} style={styles.tick}>
-            ✓
-          </AppText>
-        ) : null}
+        {checked ? <Icon name="check" size={16} color={colors.accentSoft} strokeWidth={2.2} /> : null}
       </View>
       <AppText variant="body" style={styles.label}>
         {label}
       </AppText>
-    </Pressable>
+    </PressableScale>
   );
 }
 
@@ -40,24 +39,22 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: spacing.md,
     padding: spacing.lg,
-    borderRadius: radii.lg,
-    backgroundColor: colors.surfaceRaised,
+    borderRadius: radii.card,
+    backgroundColor: colors.paperRaised,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.line,
   },
-  pressed: { backgroundColor: colors.surfaceSunken },
+  rowChecked: { borderColor: colors.ink },
   box: {
     width: 26,
     height: 26,
-    borderRadius: radii.sm,
+    borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: colors.borderStrong,
+    borderColor: colors.lineStrong,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceRaised,
     marginTop: 1,
   },
-  boxChecked: { backgroundColor: colors.accent, borderColor: colors.accent },
-  tick: { fontSize: 16, lineHeight: 18 },
-  label: { flex: 1, fontSize: 15, lineHeight: 22 },
+  boxChecked: { backgroundColor: colors.ink, borderColor: colors.ink },
+  label: { flex: 1, fontSize: 14.5, lineHeight: 21 },
 });

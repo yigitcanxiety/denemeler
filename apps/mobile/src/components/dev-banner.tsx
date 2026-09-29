@@ -8,10 +8,10 @@ import { AppText } from './text';
 export function DevBanner({ detail }: { detail?: string }) {
   return (
     <View style={styles.banner} accessibilityRole="alert">
-      <AppText variant="label" color={colors.accentContrast}>
+      <AppText variant="monoLabel" color={colors.accentContrast}>
         DEV PURCHASES
       </AppText>
-      <AppText variant="caption" color={colors.accentContrast}>
+      <AppText variant="mono" color={colors.accentContrast} style={styles.detail}>
         {detail ?? 'RevenueCat keys are not set. Purchases unlock locally and no payment is made.'}
       </AppText>
     </View>
@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.warning,
     borderRadius: radii.md,
     padding: spacing.md,
-    gap: 2,
+    gap: 4,
   },
+  detail: { fontSize: 11.5, lineHeight: 16 },
 });

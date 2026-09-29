@@ -43,7 +43,7 @@ export function StoreBadge({
       rel="noopener noreferrer"
       aria-label={`${top} ${bottom}`}
       className={clsx(
-        'inline-flex h-12 items-center gap-2.5 rounded-lg bg-surface-inverse px-4 text-ink-inverse shadow-soft transition-transform hover:-translate-y-0.5',
+        'press inline-flex h-12 items-center gap-2.5 rounded-[12px] border border-white/35 bg-black px-4 text-white hover:border-white/70',
         className,
       )}
     >

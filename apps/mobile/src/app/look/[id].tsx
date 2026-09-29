@@ -1,24 +1,29 @@
 import { LOOKS } from '@tonelle/shared';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
+import { HeatFace } from '@/components/heat-face';
+import { Chip, MonoLabel, NumberTag } from '@/components/labels';
+import { Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
+import { PillSegmented } from '@/components/pill-segmented';
 import { Screen } from '@/components/screen';
+import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
-import { Badge, Card, SectionTitle, SwatchRow } from '@/components/ui';
+import { Rule, SectionTitle, SwatchBar } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { errorKeyFor } from '@/lib/api';
 import { isLookId, localizedSteps, lookShades, lookSummary } from '@/lib/looks';
+import { indexLabel, uiCopy } from '@/lib/ui-copy';
 import { api } from '@/services/api';
 import { useAppStore } from '@/store/app-store';
-import { colors, palette, radii, spacing } from '@/theme';
+import { colors, heat, radii, spacing } from '@/theme';
 
-const IMAGE_HEIGHT = 420;
+const IMAGE_HEIGHT = 440;
 
 export default function LookDetailScreen() {
   const t = useT();
@@ -44,6 +49,14 @@ export default function LookDetailScreen() {
   const summary = lookSummary(id, locale);
   const steps = localizedSteps(look, locale);
   const shades = lookShades(analysis, look);
+  const copy = uiCopy(locale);
+  const facePalette = [
+    shades.lip[0] ?? heat[0],
+    shades.lip[1] ?? shades.lip[0] ?? heat[1],
+    shades.blush[0] ?? heat[2],
+    shades.eyeshadow[0] ?? heat[3],
+    heat[4],
+  ];
 
   const render = async () => {
     if (!photo) {
@@ -70,60 +83,64 @@ export default function LookDetailScreen() {
   };
 
   return (
-    <Screen header={<TopBar onBack={() => router.back()} backLabel={t('common.back')} title={summary.name} />}>
-      <View style={styles.imageFrame}>
-        {loading ? (
-          <Skeleton label={t('look.rendering')} hint={t('look.renderingHint')} />
-        ) : rendered ? (
-          <>
-            <Image
-              source={{ uri: showBefore && photo ? photo.dataUrl : rendered }}
-              style={styles.image}
-              resizeMode="cover"
-              accessibilityIgnoresInvertColors
-              accessible
-              accessibilityLabel={`${summary.name}. ${t('common.aiGeneratedNote')}`}
-            />
-            {!showBefore ? (
-              <View style={styles.aiLabel}>
-                <Badge label={t('common.aiGenerated')} tone="ink" />
-              </View>
-            ) : null}
-            {photo ? (
-              <View style={styles.toggle} accessibilityRole="tablist">
-                {(['before', 'after'] as const).map((side) => {
-                  const active = side === 'before' ? showBefore : !showBefore;
-                  return (
-                    <Pressable
-                      key={side}
-                      onPress={() => setShowBefore(side === 'before')}
-                      accessibilityRole="tab"
-                      accessibilityState={{ selected: active }}
-                      style={[styles.toggleItem, active && styles.toggleActive]}
-                    >
-                      <AppText variant="caption" color={active ? colors.accentContrast : colors.ink}>
-                        {t(side === 'before' ? 'look.before' : 'look.after')}
-                      </AppText>
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ) : null}
-          </>
-        ) : (
-          <View style={styles.placeholder}>
-            <SwatchRow colors={[...shades.lip, ...shades.blush].slice(0, 4)} size={40} />
-            <AppText variant="bodyMuted" align="center">
-              {summary.description}
-            </AppText>
-          </View>
-        )}
-      </View>
+    <Screen>
+      <CardStack>
+        <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={summary.name} />
+        <Card padded={false} style={styles.imageFrame}>
+          {loading ? (
+            <View style={styles.center} accessibilityRole="progressbar" accessibilityLabel={t('look.rendering')}>
+              <HeatFace width={200} palette={facePalette} stroke={colors.onInk} scanning scanLabel={copy.analyzingTag} />
+              <AppText variant="label" color={colors.onInk} align="center">
+                {t('look.rendering')}
+              </AppText>
+              <MonoLabel caps={false} color={colors.onInkMuted}>
+                {t('look.renderingHint')}
+              </MonoLabel>
+            </View>
+          ) : rendered ? (
+            <>
+              <Image
+                source={{ uri: showBefore && photo ? photo.dataUrl : rendered }}
+                style={styles.image}
+                resizeMode="cover"
+                accessibilityIgnoresInvertColors
+                accessible
+                accessibilityLabel={`${summary.name}. ${t('common.aiGeneratedNote')}`}
+              />
+              {!showBefore ? (
+                <View style={styles.aiLabel}>
+                  <Chip label={t('common.aiGenerated')} tone="soft" />
+                </View>
+              ) : null}
+              {photo ? (
+                <View style={styles.toggle}>
+                  <PillSegmented
+                    options={[
+                      { key: 'before', label: t('look.before') },
+                      { key: 'after', label: t('look.after') },
+                    ]}
+                    value={showBefore ? 'before' : 'after'}
+                    onChange={(k) => setShowBefore(k === 'before')}
+                    height={46}
+                  />
+                </View>
+              ) : null}
+            </>
+          ) : (
+            <View style={styles.center}>
+              <HeatFace width={210} palette={facePalette} stroke={colors.onInk} />
+              <AppText variant="body" color={colors.onInkMuted} align="center" style={styles.placeholderText}>
+                {summary.description}
+              </AppText>
+            </View>
+          )}
+        </Card>
+      </CardStack>
 
       {rendered && !loading ? (
-        <AppText variant="caption" align="center">
+        <MonoLabel caps={false} style={styles.centerText}>
           {t('common.aiGeneratedNote')}
-        </AppText>
+        </MonoLabel>
       ) : null}
 
       {errorKey ? <Notice tone="error" message={t(errorKey)} /> : null}
@@ -133,126 +150,73 @@ export default function LookDetailScreen() {
         onPress={() => void render()}
         loading={loading}
         variant={rendered ? 'secondary' : 'primary'}
+        icon="spark"
       />
       {!photo ? (
-        <AppText variant="caption" align="center">
+        <MonoLabel caps={false} style={styles.centerText}>
           {t('common.privacyBadge')}
-        </AppText>
+        </MonoLabel>
       ) : null}
       {rendered ? (
         <Button
           label={t('look.shareLook')}
-          variant="inverse"
           onPress={() => router.push({ pathname: '/share', params: { lookId: id } })}
+          icon="share"
         />
       ) : null}
 
       <View style={styles.meta}>
         {summary.occasions.map((o) => (
-          <Badge key={o} label={t(`look.occasionTag.${o}`)} />
+          <Chip key={o} label={t(`look.occasionTag.${o}`)} tone="outline" />
         ))}
-        <Badge label={t(`look.intensity.${summary.intensity}`)} tone="ink" />
-        <Badge label={t(`look.level.${summary.level}`)} tone="ink" />
+        <Chip label={t(`look.intensity.${summary.intensity}`)} tone="ink" />
+        <Chip label={t(`look.level.${summary.level}`)} tone="ink" />
       </View>
 
-      <Card>
-        <SectionTitle>{t('look.shadesTitle')}</SectionTitle>
-        <AppText variant="label">{t('results.lipTitle')}</AppText>
-        <SwatchRow colors={shades.lip} size={36} />
-        <AppText variant="label">{t('results.blushTitle')}</AppText>
-        <SwatchRow colors={shades.blush} size={36} />
-        <AppText variant="label">{t('results.eyeshadowTitle')}</AppText>
-        <SwatchRow colors={shades.eyeshadow} size={36} />
+      <Card style={styles.shades}>
+        <SectionTitle onInk>{t('look.shadesTitle')}</SectionTitle>
+        <MonoLabel color={colors.onInkMuted}>{t('results.lipTitle')}</MonoLabel>
+        <SwatchBar colors={shades.lip} height={30} onInk showHex />
+        <MonoLabel color={colors.onInkMuted}>{t('results.blushTitle')}</MonoLabel>
+        <SwatchBar colors={shades.blush} height={30} onInk showHex />
+        <MonoLabel color={colors.onInkMuted}>{t('results.eyeshadowTitle')}</MonoLabel>
+        <SwatchBar colors={shades.eyeshadow} height={30} onInk showHex />
       </Card>
 
       <SectionTitle>{t('look.stepsTitle')}</SectionTitle>
-      {steps.map((step) => (
-        <View key={step.number} style={styles.step}>
-          <View style={styles.stepNumber}>
-            <AppText variant="label" color={colors.accent}>
-              {step.number}
-            </AppText>
-          </View>
-          <View style={styles.stepText}>
-            <AppText variant="caption" color={colors.inkMuted}>
-              {t('look.stepLabel', { number: step.number })}
-            </AppText>
-            <AppText variant="label">{step.title}</AppText>
-            <AppText variant="bodyMuted">{step.body}</AppText>
-          </View>
-        </View>
-      ))}
+      <View>
+        {steps.map((step, i) => (
+          <Reveal key={step.number} delay={80 * i}>
+            {i > 0 ? <Rule style={styles.rule} /> : null}
+            <View style={styles.step}>
+              <NumberTag label={indexLabel(step.number - 1)} />
+              <View style={styles.stepText}>
+                <MonoLabel>{t('look.stepLabel', { number: step.number })}</MonoLabel>
+                <AppText variant="label" style={styles.stepTitle}>
+                  {step.title}
+                </AppText>
+                <AppText variant="bodyMuted">{step.body}</AppText>
+              </View>
+            </View>
+          </Reveal>
+        ))}
+      </View>
     </Screen>
   );
 }
 
-/** Pulsing placeholder while the look renders (static with reduce motion). */
-function Skeleton({ label, hint }: { label: string; hint: string }) {
-  const reduced = useReducedMotion();
-  const [pulse] = useState(() => new Animated.Value(0.5));
-  useEffect(() => {
-    if (reduced) return;
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulse, { toValue: 1, duration: 900, useNativeDriver: true }),
-        Animated.timing(pulse, { toValue: 0.5, duration: 900, useNativeDriver: true }),
-      ]),
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [reduced, pulse]);
-  return (
-    <View style={styles.skeletonWrap} accessibilityRole="progressbar" accessibilityLabel={label}>
-      <Animated.View style={[StyleSheet.absoluteFill, styles.skeleton, { opacity: pulse }]} />
-      <AppText variant="label" align="center">
-        {label}
-      </AppText>
-      <AppText variant="caption" align="center">
-        {hint}
-      </AppText>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
-  imageFrame: {
-    height: IMAGE_HEIGHT,
-    borderRadius: radii.card,
-    overflow: 'hidden',
-    backgroundColor: colors.surfaceSunken,
-  },
+  imageFrame: { height: IMAGE_HEIGHT },
   image: { width: '100%', height: '100%' },
-  aiLabel: { position: 'absolute', top: spacing.md, left: spacing.md },
-  toggle: {
-    position: 'absolute',
-    bottom: spacing.md,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    backgroundColor: 'rgba(253,249,246,0.9)',
-    borderRadius: radii.pill,
-    padding: 3,
-  },
-  toggleItem: { paddingHorizontal: spacing.lg, paddingVertical: 6, borderRadius: radii.pill },
-  toggleActive: { backgroundColor: colors.accent },
-  placeholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.lg,
-    padding: spacing.xl,
-    backgroundColor: palette.blush[50],
-  },
-  skeletonWrap: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.sm, padding: spacing.xl },
-  skeleton: { backgroundColor: palette.blush[100] },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md, padding: spacing.xl },
+  centerText: { textAlign: 'center' },
+  placeholderText: { fontSize: 15, lineHeight: 22 },
+  aiLabel: { position: 'absolute', top: spacing.lg, left: spacing.lg },
+  toggle: { position: 'absolute', bottom: spacing.lg, left: spacing.xxxl, right: spacing.xxxl },
   meta: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  shades: { gap: spacing.sm, borderRadius: radii.card },
+  rule: { marginVertical: spacing.md },
   step: { flexDirection: 'row', gap: spacing.md },
-  stepNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: colors.accentSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepText: { flex: 1, gap: 2 },
+  stepText: { flex: 1, gap: 4 },
+  stepTitle: { fontSize: 17 },
 });

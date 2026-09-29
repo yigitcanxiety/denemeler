@@ -6,18 +6,23 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
+import { Icon } from '@/components/icon';
+import { Chip, MonoLabel } from '@/components/labels';
 import { Notice } from '@/components/notice';
+import { PillSegmented } from '@/components/pill-segmented';
 import { Screen } from '@/components/screen';
+import { Card, CardStack } from '@/components/stack';
 import { AppText } from '@/components/text';
 import { TopBar } from '@/components/top-bar';
-import { Card, SectionTitle } from '@/components/ui';
+import { Rule, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import type { LegalPage } from '@/lib/config';
+import { indexLabel, uiCopy } from '@/lib/ui-copy';
 import { isDevPurchases, manageSubscriptions, restorePurchases, switchUser } from '@/purchases/purchases';
 import { openLegal } from '@/services/legal';
 import { useAppStore } from '@/store/app-store';
-import { colors, radii, spacing } from '@/theme';
+import { colors, spacing } from '@/theme';
 
 const LEGAL: { page: LegalPage; key: 'legal.privacy' | 'legal.kvkk' | 'legal.consent' | 'legal.terms' }[] = [
   { page: 'privacy', key: 'legal.privacy' },
@@ -69,117 +74,115 @@ export default function SettingsScreen() {
   };
 
   return (
-    <Screen header={<TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('settings.title')} />}>
-      <Card>
-        <SectionTitle>{t('settings.language')}</SectionTitle>
-        <View style={styles.segment} accessibilityRole="radiogroup">
-          {LOCALES.map((code: Locale) => {
-            const active = code === locale;
-            return (
-              <Pressable
-                key={code}
-                onPress={() => setLocale(code)}
-                accessibilityRole="radio"
-                accessibilityState={{ selected: active, checked: active }}
-                style={[styles.segmentItem, active && styles.segmentActive]}
-              >
-                <AppText variant="label" color={active ? colors.accentContrast : colors.ink} align="center">
-                  {t(`language.${code}`)}
-                </AppText>
-              </Pressable>
-            );
-          })}
-        </View>
-      </Card>
-
-      <Card>
-        <SectionTitle>{t('settings.subscription')}</SectionTitle>
-        <AppText variant="body" color={premium ? colors.success : colors.inkMuted}>
-          {premium ? t('settings.premiumActive') : t('settings.premiumInactive')}
-        </AppText>
-        <Button
-          label={restoring ? t('paywall.restoring') : t('settings.restorePurchases')}
-          variant="secondary"
-          onPress={() => void restore()}
-          loading={restoring}
-          compact
-        />
-        {!isDevPurchases && premium ? (
+    <Screen>
+      <CardStack>
+        <TopBar onBack={() => router.back()} backLabel={t('common.back')} title={t('settings.title')} />
+        <Card style={styles.gap}>
+          <SectionTitle onInk index="01">
+            {t('settings.language')}
+          </SectionTitle>
+          <PillSegmented<Locale>
+            role="radiogroup"
+            options={LOCALES.map((code: Locale) => ({ key: code, label: t(`language.${code}`) }))}
+            value={locale}
+            onChange={setLocale}
+            style={styles.langTrack}
+          />
+        </Card>
+        <Card style={styles.gap}>
+          <View style={styles.row}>
+            <SectionTitle onInk index="02">
+              {t('settings.subscription')}
+            </SectionTitle>
+          </View>
+          <View style={styles.row}>
+            <AppText variant="body" color={premium ? colors.onInk : colors.onInkMuted} style={styles.flex}>
+              {premium ? t('settings.premiumActive') : t('settings.premiumInactive')}
+            </AppText>
+            {premium ? <Chip label={uiCopy(locale).premium} tone="soft" /> : null}
+          </View>
           <Button
-            label={t('settings.manageSubscription')}
-            variant="ghost"
-            onPress={() => void manageSubscriptions()}
+            label={restoring ? t('paywall.restoring') : t('settings.restorePurchases')}
+            variant="onInk"
+            onPress={() => void restore()}
+            loading={restoring}
             compact
           />
-        ) : null}
-        {isDevPurchases ? (
-          <>
-            <DevBanner />
-            {premium ? (
-              <Button label="DEV: reset local premium" variant="ghost" onPress={() => setDevEntitlement(false)} compact />
-            ) : null}
-          </>
-        ) : null}
-      </Card>
+          {!isDevPurchases && premium ? (
+            <Button
+              label={t('settings.manageSubscription')}
+              variant="soft"
+              onPress={() => void manageSubscriptions()}
+              compact
+            />
+          ) : null}
+          {isDevPurchases ? (
+            <>
+              <DevBanner />
+              {premium ? (
+                <Button label="DEV: reset local premium" variant="onInk" onPress={() => setDevEntitlement(false)} compact />
+              ) : null}
+            </>
+          ) : null}
+        </Card>
+      </CardStack>
 
       {message ? <Notice tone={message.tone} message={message.text} /> : null}
 
-      <Card>
-        <SectionTitle>{t('settings.privacySection')}</SectionTitle>
+      <Card tone="light" style={styles.gap}>
+        <SectionTitle index="03">{t('settings.privacySection')}</SectionTitle>
         <AppText variant="bodyMuted">{t('common.privacyBadge')}</AppText>
         <Button label={t('settings.deleteData')} variant="secondary" onPress={confirmDelete} compact />
       </Card>
 
-      <Card>
-        <SectionTitle>{t('settings.legalSection')}</SectionTitle>
-        {LEGAL.map((item) => (
-          <Pressable
-            key={item.page}
-            onPress={() => void openLegal(locale, item.page)}
-            accessibilityRole="link"
-            style={({ pressed }) => [styles.linkRow, pressed && styles.linkPressed]}
-          >
-            <AppText variant="body">{t(item.key)}</AppText>
-            <AppText variant="body" color={colors.inkSubtle}>
-              ↗
-            </AppText>
-          </Pressable>
-        ))}
-        <AppText variant="caption">{t('legal.aiDisclosure')}</AppText>
+      <Card tone="light" style={styles.gap}>
+        <SectionTitle index="04">{t('settings.legalSection')}</SectionTitle>
+        <View>
+          {LEGAL.map((item, i) => (
+            <View key={item.page}>
+              {i > 0 ? <Rule /> : null}
+              <Pressable
+                onPress={() => void openLegal(locale, item.page)}
+                accessibilityRole="link"
+                style={({ pressed }) => [styles.linkRow, pressed && styles.linkPressed]}
+              >
+                <AppText variant="mono" color={colors.inkSubtle} style={styles.linkIndex}>
+                  {indexLabel(i)}
+                </AppText>
+                <AppText variant="body" style={styles.flex}>
+                  {t(item.key)}
+                </AppText>
+                <Icon name="external" size={16} color={colors.accent} />
+              </Pressable>
+            </View>
+          ))}
+        </View>
+        <MonoLabel caps={false}>{t('legal.aiDisclosure')}</MonoLabel>
       </Card>
 
       <View style={styles.about}>
-        <AppText variant="caption" align="center">
+        <MonoLabel caps={false} style={styles.center}>
           {t('settings.version', { version })}
-        </AppText>
-        <AppText variant="caption" align="center">
+        </MonoLabel>
+        <MonoLabel caps={false} style={styles.center}>
           {t('settings.publisher')}
-        </AppText>
-        <AppText variant="caption" align="center">
+        </MonoLabel>
+        <MonoLabel caps={false} style={styles.center}>
           {t('legal.copyright', { year: new Date().getFullYear() })}
-        </AppText>
+        </MonoLabel>
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  segment: {
-    flexDirection: 'row',
-    backgroundColor: colors.surfaceSunken,
-    borderRadius: radii.pill,
-    padding: 4,
-  },
-  segmentItem: { flex: 1, paddingVertical: 10, borderRadius: radii.pill },
-  segmentActive: { backgroundColor: colors.accent },
-  linkRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
+  flex: { flex: 1 },
+  center: { textAlign: 'center' },
+  gap: { gap: spacing.md },
+  row: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  langTrack: { backgroundColor: colors.inkSoft },
+  linkRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 48 },
+  linkIndex: { width: 22, fontSize: 12 },
   linkPressed: { opacity: 0.6 },
   about: { gap: 2, paddingVertical: spacing.lg },
 });
