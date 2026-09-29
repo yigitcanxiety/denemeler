@@ -1,54 +1,17 @@
 'use client';
 
-import clsx from 'clsx';
-import { Check, EyeOff, Lock, Smartphone, Sparkles } from 'lucide-react';
-import { useId, type ReactNode } from 'react';
-import { Button, Card } from '@/components/ui';
+import { ArrowRight } from 'lucide-react';
+import { NumberTag } from '@/components/lab/primitives';
+import { Button } from '@/components/ui';
 import type { StepProps } from '../types';
-
-function Checkbox({
-  checked,
-  onChange,
-  children,
-  invalid,
-}: {
-  checked: boolean;
-  onChange: (value: boolean) => void;
-  children: ReactNode;
-  invalid: boolean;
-}) {
-  const id = useId();
-  return (
-    <div
-      className={clsx(
-        'flex gap-3 rounded-2xl border p-4 transition-colors',
-        checked ? 'border-accent bg-accent-soft/50' : invalid ? 'border-danger/60 bg-surface-raised' : 'border-border bg-surface-raised',
-      )}
-    >
-      <span className="relative mt-0.5 grid size-6 shrink-0 place-items-center">
-        <input
-          id={id}
-          type="checkbox"
-          checked={checked}
-          onChange={(e) => onChange(e.target.checked)}
-          aria-invalid={invalid && !checked ? true : undefined}
-          className="peer size-6 cursor-pointer appearance-none rounded-md border-2 border-border-strong bg-surface-raised transition-colors checked:border-accent checked:bg-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        />
-        <Check aria-hidden className="pointer-events-none absolute size-4 text-white opacity-0 peer-checked:opacity-100" />
-      </span>
-      <label htmlFor={id} className="cursor-pointer text-[0.95rem] leading-snug text-ink">
-        {children}
-      </label>
-    </div>
-  );
-}
+import { DarkCheckbox, Eyebrow, Note, delay } from '../ui';
 
 export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
   const points = [
-    { icon: Sparkles, text: tt('consent.pointProcessing') },
-    { icon: EyeOff, text: tt('consent.pointNoStorage') },
-    { icon: Smartphone, text: tt('consent.pointOnDevice') },
-    { icon: Lock, text: tt('consent.pointNoScoring') },
+    tt('consent.pointProcessing'),
+    tt('consent.pointNoStorage'),
+    tt('consent.pointOnDevice'),
+    tt('consent.pointNoScoring'),
   ];
   const [before, after] = copy.consentTermsCheckbox.split('{terms}');
   const legalLink = (path: string, label: string) => (
@@ -56,39 +19,40 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
       href={`/${locale}/${path}`}
       target="_blank"
       rel="noopener"
-      className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
+      className="text-accent-soft underline decoration-accent-soft/50 underline-offset-[3px] hover:decoration-accent-soft"
     >
       {label}
     </a>
   );
-  const showHint = state.consentAttempted && !(state.consent.explicit && state.consent.terms);
+  const ready = state.consent.explicit && state.consent.terms;
+  const showHint = state.consentAttempted && !ready;
 
   return (
-    <div className="tonelle-enter">
-      <h1 className="text-3xl text-ink sm:text-4xl">{tt('consent.title')}</h1>
-      <p className="mt-3 text-ink-muted">{tt('consent.intro')}</p>
+    <div className="flex flex-col gap-[10px]">
+      <section className="enter ink-card neck-top p-6" style={delay(40)}>
+        <Eyebrow n="01">KVKK · GDPR</Eyebrow>
+        <h1 className="mt-5 text-[clamp(2rem,9vw,2.6rem)] text-ink-inverse">{tt('consent.title')}</h1>
+        <p className="mt-3 text-[0.98rem] leading-relaxed text-ink-inverse-muted">{tt('consent.intro')}</p>
+        <ol className="mt-6 grid gap-3 border-t border-white/10 pt-5">
+          {points.map((text, i) => (
+            <li key={text} className="flex gap-3">
+              <NumberTag n={i + 1} tone="light" className="size-6 text-[11px]" />
+              <span className="mono pt-[3px] text-ink-inverse">{text}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-      <ul className="mt-6 space-y-3">
-        {points.map(({ icon: Icon, text }) => (
-          <li key={text} className="flex gap-3 text-[0.95rem] leading-relaxed text-ink">
-            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent-soft text-accent">
-              <Icon aria-hidden className="size-4" />
-            </span>
-            <span className="pt-1">{text}</span>
-          </li>
-        ))}
-      </ul>
-
-      <fieldset className="mt-8 space-y-3">
+      <fieldset className="enter ink-card neck-top space-y-2.5 p-4 sm:p-5" style={delay(120)}>
         <legend className="sr-only">{tt('consent.title')}</legend>
-        <Checkbox
+        <DarkCheckbox
           checked={state.consent.explicit}
           invalid={state.consentAttempted}
           onChange={(value) => dispatch({ type: 'SET_CONSENT', field: 'explicit', value })}
         >
           {tt('consent.explicitConsentCheckbox')}
-        </Checkbox>
-        <Checkbox
+        </DarkCheckbox>
+        <DarkCheckbox
           checked={state.consent.terms}
           invalid={state.consentAttempted}
           onChange={(value) => dispatch({ type: 'SET_CONSENT', field: 'terms', value })}
@@ -96,35 +60,39 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
           {before}
           {legalLink('terms', copy.consentTermsLink)}
           {after}
-        </Checkbox>
+        </DarkCheckbox>
+        <p className="mono flex flex-wrap gap-x-4 gap-y-2 px-1 pt-2 text-[12px]">
+          {legalLink('consent', tt('consent.readConsent'))}
+          {legalLink('kvkk', tt('consent.readKvkk'))}
+          {legalLink('privacy', tt('consent.readPrivacy'))}
+        </p>
       </fieldset>
 
-      <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        {legalLink('consent', tt('consent.readConsent'))}
-        {legalLink('kvkk', tt('consent.readKvkk'))}
-        {legalLink('privacy', tt('consent.readPrivacy'))}
-      </p>
-
-      <div aria-live="polite" className="min-h-6">
-        {showHint && <p className="mt-4 text-sm font-medium text-danger">{tt('consent.requiredHint')}</p>}
+      <div aria-live="polite">
+        {showHint && (
+          <Note tone="danger" className="mt-1">
+            {tt('consent.requiredHint')}
+          </Note>
+        )}
       </div>
 
       {state.consentDeclined && (
-        <Card tone="sunken" padding="sm" className="mt-4" role="status">
+        <div role="status" className="rounded-card bg-paper-raised p-5">
           <p className="font-semibold text-ink">{tt('consent.declinedTitle')}</p>
           <p className="mt-1 text-sm text-ink-muted">{tt('consent.declinedBody')}</p>
-        </Card>
+        </div>
       )}
 
-      <div className="mt-6 flex flex-col gap-2">
+      <div className="enter mt-2 flex flex-col gap-1.5" style={delay(200)}>
         <Button
           size="lg"
           fullWidth
           onClick={() => dispatch({ type: 'ACCEPT_CONSENT' })}
-          aria-disabled={!(state.consent.explicit && state.consent.terms)}
-          className={clsx(!(state.consent.explicit && state.consent.terms) && 'opacity-60')}
+          aria-disabled={!ready}
+          className={ready ? 'justify-between' : 'justify-between opacity-55'}
         >
           {tt('consent.accept')}
+          <ArrowRight aria-hidden className="size-5" />
         </Button>
         <Button variant="ghost" fullWidth onClick={() => dispatch({ type: 'DECLINE_CONSENT' })}>
           {tt('consent.decline')}

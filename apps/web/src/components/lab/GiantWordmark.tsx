@@ -28,12 +28,12 @@ export function GiantWordmark({
         aria-label="Tonelle"
         role="img"
         className={clsx(
-          'block text-[calc(100cqw*0.2445)] leading-[0.8] font-semibold tracking-[-0.055em] whitespace-nowrap select-none',
+          'block text-[calc(100cqw*0.259)] leading-[0.8] font-semibold tracking-[-0.055em] whitespace-nowrap select-none',
           tone === 'ink' ? 'text-ink' : 'text-paper',
           enter === 'intro' && 'wm-intro',
         )}
         data-wm={enter === 'scroll' ? '' : undefined}
-        style={{ '--d': `${delay}ms`, marginLeft: '-0.045em' } as CSSProperties}
+        style={{ '--d': `${delay}ms`, marginLeft: '-0.03em' } as CSSProperties}
       >
         {WORD.split('').map((ch, i) => (
           <span key={i} aria-hidden className="wm-letter" style={{ '--i': i } as CSSProperties}>

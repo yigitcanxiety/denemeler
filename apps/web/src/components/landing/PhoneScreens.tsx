@@ -1,5 +1,4 @@
 import { LOOKS, SEASONS, localized, t, type Locale } from '@tonelle/shared';
-import clsx from 'clsx';
 import type { ReactNode } from 'react';
 import { AccentTag, PaletteBar } from '@/components/lab/primitives';
 import { LANDING_IMAGES } from '@/config/company';

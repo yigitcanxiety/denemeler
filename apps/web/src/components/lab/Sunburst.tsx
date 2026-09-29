@@ -31,6 +31,7 @@ export function Sunburst({
   children,
   labelClassName,
   axisMarkers = true,
+  rotateSides = false,
 }: {
   labels?: SunburstLabel[];
   /** Inner circle radius in viewBox units (the whole burst is 200 units wide). */
@@ -43,6 +44,8 @@ export function Sunburst({
   children?: ReactNode;
   labelClassName?: string;
   axisMarkers?: boolean;
+  /** Run the E/W labels vertically along the axis (narrow screens: no horizontal overflow). */
+  rotateSides?: boolean;
 }) {
   const rays = Array.from({ length: lines }, (_, i) => {
     const angle = (i * 360) / lines;
@@ -124,6 +127,7 @@ export function Sunburst({
         const tx = sx > 0.3 ? '0%' : sx < -0.3 ? '-100%' : '-50%';
         const ty = cy > 0.3 ? '-100%' : cy < -0.3 ? '0%' : '-50%';
         const pad = 6;
+        const vertical = rotateSides && Math.abs(sx) > 0.9;
         return (
           <span
             key={label.text}
@@ -135,9 +139,11 @@ export function Sunburst({
             data-reveal={enter === 'scroll' ? 'fade' : undefined}
             style={
               {
-                left: `${50 + sx * radius}%`,
+                left: `${50 + sx * (vertical ? radius + 1 : radius)}%`,
                 top: `${50 - cy * radius}%`,
-                transform: `translate(calc(${tx} + ${sx > 0.3 ? pad : sx < -0.3 ? -pad : 0}px), calc(${ty} + ${cy > 0.3 ? -pad : cy < -0.3 ? pad : 0}px))`,
+                transform: vertical
+                  ? `translate(-50%, -50%) rotate(${sx > 0 ? 90 : -90}deg) translateY(${-pad - 4}px)`
+                  : `translate(calc(${tx} + ${sx > 0.3 ? pad : sx < -0.3 ? -pad : 0}px), calc(${ty} + ${cy > 0.3 ? -pad : cy < -0.3 ? pad : 0}px))`,
                 '--d': `${delay + 500 + i * 120}ms`,
               } as CSSProperties
             }

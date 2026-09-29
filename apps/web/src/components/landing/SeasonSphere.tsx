@@ -51,7 +51,7 @@ export function SeasonSphere({
         </div>
         <AccentCircle className="top-1/2 left-1/2 w-[150vw] -translate-x-1/2 -translate-y-1/2 lg:w-[92vw]" />
 
-        <div className="shell relative flex h-full flex-col pt-[84px] pb-6 lg:grid lg:grid-cols-12 lg:items-center lg:gap-6 lg:pt-[96px]">
+        <div className="shell relative flex h-full flex-col pt-[84px] pb-[92px] lg:grid lg:grid-cols-12 lg:items-center lg:gap-6 lg:pt-[96px]">
           <div className="lg:col-span-4 lg:self-stretch lg:pt-6">
             <p className="mono-caps text-ink-muted">{eyebrow}</p>
             <h2 id="sphere-title" className="mt-2 text-[clamp(1.7rem,5.6vw,3.4rem)] text-ink">

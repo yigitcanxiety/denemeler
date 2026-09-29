@@ -71,7 +71,6 @@ export function Preloader({ seasons, label, skip }: { seasons: string[]; label: 
       cancelAnimationFrame(frame);
       window.removeEventListener('keydown', onKey);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per mount
   }, [active]);
 
   if (!active || phase === 'done') return null;

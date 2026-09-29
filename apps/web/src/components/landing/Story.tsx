@@ -45,7 +45,7 @@ export function Story({
         <AccentCircle tone="line" className="top-1/2 left-[4%] hidden w-[26vw] -translate-y-1/2 lg:block" />
         <AccentCircle tone="line" className="top-1/2 right-[4%] hidden w-[26vw] -translate-y-1/2 lg:block" />
 
-        <div className="shell relative flex h-full flex-col pt-[84px] pb-5 lg:pt-[108px] lg:pb-8">
+        <div className="shell relative flex h-full flex-col pt-[84px] pb-[92px] lg:pt-[108px] lg:pb-[100px]">
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="mono-caps text-ink-muted">
@@ -60,8 +60,8 @@ export function Story({
 
           <div className="relative mt-4 flex min-h-0 flex-1 flex-col items-center lg:mt-2 lg:justify-center">
             {/* Phone */}
-            <div className="relative h-full max-h-[min(52svh,470px)] min-h-[260px] lg:max-h-[min(66svh,640px)]">
-              <PhoneFrame className="h-full">
+            <div className="relative flex h-full min-h-[240px] w-full justify-center rounded-card bg-paper-raised/70 py-4 ring-1 ring-line-strong ring-inset lg:bg-transparent lg:py-0 lg:ring-0">
+              <PhoneFrame className="h-full max-h-[470px] lg:max-h-[min(64svh,620px)]">
                 {screens.map((screen, i) => (
                   <div
                     key={i}
@@ -75,6 +75,9 @@ export function Story({
                   </div>
                 ))}
               </PhoneFrame>
+              <span aria-hidden className="mono-caps absolute top-4 left-4 text-ink-muted lg:hidden">
+                {String(step + 1).padStart(2, '0')}
+              </span>
             </div>
 
             {/* Desktop annotation cards */}

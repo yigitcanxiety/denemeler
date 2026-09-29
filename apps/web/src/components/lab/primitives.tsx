@@ -174,7 +174,7 @@ export function AccentTag({ children, className, blink = false }: { children: Re
   return (
     <span
       className={clsx(
-        'inline-flex items-center gap-1.5 bg-accent px-2 py-[3px] font-mono text-[10.5px] leading-none tracking-[0.06em] text-accent-contrast uppercase',
+        'inline-flex items-center gap-1.5 bg-accent px-2 py-[3px] font-mono text-[10.5px] leading-none tracking-[0.06em] whitespace-nowrap text-accent-contrast uppercase',
         className,
       )}
     >

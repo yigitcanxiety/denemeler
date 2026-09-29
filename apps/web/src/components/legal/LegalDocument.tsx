@@ -125,17 +125,18 @@ export function LegalShell({
 
           <footer className="mt-16 lg:grid lg:grid-cols-12 lg:gap-6">
             <div className="border-t border-line-strong pt-8 lg:col-span-8 lg:col-start-5">
-            <h2 className="mono-caps text-ink-muted">{content.legalCommon.otherDocs}</h2>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {others.map((l) => (
-                <li key={l.href}>
-                  <Link href={l.href} className="press mono inline-flex h-11 items-center rounded-pill px-4 text-ink ring-1 ring-line-strong hover:bg-ink hover:text-ink-inverse">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <p className="mono mt-8 text-[12px] text-ink-muted">{content.legalCommon.draftNotice}</p>
+              <h2 className="mono-caps text-ink-muted">{content.legalCommon.otherDocs}</h2>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {others.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} className="press mono inline-flex h-11 items-center rounded-pill px-4 text-ink ring-1 ring-line-strong hover:bg-ink hover:text-ink-inverse">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <p className="mono mt-8 text-[12px] text-ink-muted">{content.legalCommon.draftNotice}</p>
+            </div>
           </footer>
         </article>
       </div>

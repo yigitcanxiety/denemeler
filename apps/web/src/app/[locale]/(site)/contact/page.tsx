@@ -33,29 +33,29 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
           return (
             <li
               key={card.kind}
-              className={`rounded-card border border-border/70 bg-surface-raised p-6 shadow-soft ${card.kind === 'company' ? 'sm:col-span-2' : ''}`}
+              className={`rounded-card bg-paper-raised p-6 ${card.kind === 'company' ? 'sm:col-span-2' : ''}`}
             >
-              <span className="grid size-11 place-items-center rounded-2xl bg-accent-soft text-accent">
+              <span className="grid size-10 place-items-center rounded-[10px] bg-ink text-ink-inverse">
                 <Icon aria-hidden className="size-5" />
               </span>
-              <h2 className="mt-4 text-xl text-ink">{card.title}</h2>
+              <h2 className="mt-5 text-[1.4rem] tracking-[-0.03em] text-ink">{card.title}</h2>
               <p className="mt-2 text-[0.95rem]">{card.body}</p>
               {email && (
-                <a href={`mailto:${email}`} className="mt-3 inline-block font-semibold text-accent hover:underline">
+                <a href={`mailto:${email}`} className="mono mt-3 inline-flex min-h-11 items-center text-ink underline decoration-accent underline-offset-4 hover:decoration-2">
                   {email}
                 </a>
               )}
               {card.kind === 'company' && (
-                <dl className="mt-4 grid gap-x-6 gap-y-2 text-[0.95rem] sm:grid-cols-[auto_1fr]">
-                  <dt className="font-medium text-ink">{contact.addressLabel}</dt>
+                <dl className="mt-5 grid gap-x-6 gap-y-2 border-t border-line-strong pt-4 text-[0.95rem] sm:grid-cols-[auto_1fr]">
+                  <dt className="mono-caps pt-[3px] text-ink">{contact.addressLabel}</dt>
                   <dd>
                     {COMPANY.legalName}, {COMPANY.address}
                   </dd>
-                  <dt className="font-medium text-ink">{contact.registrationLabel}</dt>
+                  <dt className="mono-caps pt-[3px] text-ink">{contact.registrationLabel}</dt>
                   <dd>{COMPANY.registrationNumber}</dd>
-                  <dt className="font-medium text-ink">{contact.kepLabel}</dt>
+                  <dt className="mono-caps pt-[3px] text-ink">{contact.kepLabel}</dt>
                   <dd>{COMPANY.kepAddress}</dd>
-                  <dt className="font-medium text-ink">{contact.representativeLabel}</dt>
+                  <dt className="mono-caps pt-[3px] text-ink">{contact.representativeLabel}</dt>
                   <dd>{COMPANY.turkeyRepresentative}</dd>
                 </dl>
               )}
@@ -63,7 +63,7 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
           );
         })}
       </ul>
-      <p className="text-sm">{contact.responseTime}</p>
+      <p className="mono text-[12px]">{contact.responseTime}</p>
     </LegalShell>
   );
 }

@@ -8,9 +8,10 @@ import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react';
  * soft     – accent-soft pill (primary CTA on dark cards)
  * ghost    – text button
  * inverse  – light pill on dark surfaces
+ * outline-inverse – outlined pill on dark cards
  * danger   – destructive
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'inverse' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'inverse' | 'outline-inverse' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface StyleProps {
@@ -25,6 +26,7 @@ const VARIANTS: Record<ButtonVariant, string> = {
   soft: 'bg-accent-soft text-[#231816] hover:bg-white disabled:opacity-60',
   ghost: 'text-ink-muted hover:text-ink hover:bg-ink/5 disabled:text-ink-subtle',
   inverse: 'bg-ink-inverse text-[#231816] hover:bg-white',
+  'outline-inverse': 'text-ink-inverse ring-1 ring-inset ring-white/25 hover:bg-white/10 disabled:opacity-60',
   danger: 'bg-danger text-white hover:bg-danger/90',
 };
 

@@ -655,8 +655,13 @@ html.js:not(.no-io) [data-grow]:not([data-inview]) {
     animation: t-fade 150ms ease both !important;
     animation-delay: 0ms !important;
   }
-  .intro-draw .draw {
+  .intro-draw .draw,
+  .play-draw .draw {
     animation: none !important;
+  }
+  .play-fade {
+    animation: t-fade 150ms ease both !important;
+    animation-delay: 0ms !important;
   }
   .breathe,
   .shift,

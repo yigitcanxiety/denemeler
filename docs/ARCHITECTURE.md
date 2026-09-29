@@ -98,7 +98,7 @@ Routes (locale prefix, default `tr`, `en` available; `/` redirects by Accept-Lan
 - `/[locale]/privacy`, `/[locale]/kvkk` (aydınlatma metni), `/[locale]/consent` (açık rıza metni), `/[locale]/terms`, `/[locale]/contact`
 - Web payment is not live yet: the web paywall shows plans and routes to the app stores (env URLs). Keep a `PaymentProvider` seam for Paddle/Stripe later.
 
-Design: soft nude/rose palette, serif display headings, generous whitespace, mobile-first. Tokens in `apps/web/src/styles/tokens.css` and mirrored in `apps/mobile/src/theme.ts`.
+Design: see docs/DESIGN.md (v2 "Editorial Lab"). Tokens in `apps/web/src/styles/tokens.css`, mirrored in `apps/mobile/src/theme.ts`.
 
 ## Mobile (apps/mobile)
 

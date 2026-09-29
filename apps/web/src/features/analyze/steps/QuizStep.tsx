@@ -3,9 +3,10 @@
 import clsx from 'clsx';
 import { ArrowLeft, Check } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { Button, Progress } from '@/components/ui';
+import { SegmentedProgress } from '@/components/lab/primitives';
 import { QUIZ_KEYS, QUIZ_OPTIONS } from '../machine';
 import type { StepProps } from '../types';
+import { RoundButton, delay } from '../ui';
 
 export function QuizStep({ state, dispatch, copy, tt }: StepProps) {
   const key = QUIZ_KEYS[state.quizIndex] ?? QUIZ_KEYS[0];
@@ -20,27 +21,49 @@ export function QuizStep({ state, dispatch, copy, tt }: StepProps) {
   }, [key]);
 
   return (
-    <div>
-      <div className="flex items-center justify-between gap-4">
-        <Button variant="ghost" size="sm" onClick={() => dispatch({ type: 'QUIZ_BACK' })} icon={<ArrowLeft aria-hidden className="size-4" />}>
-          {tt('common.back')}
-        </Button>
-        <span className="text-sm font-medium text-ink-muted">{tt('quiz.progress', { current, total })}</span>
-        <Button variant="ghost" size="sm" onClick={() => dispatch({ type: 'SKIP_QUIZ' })}>
-          {tt('common.skip')}
-        </Button>
+    <div className="flex flex-col gap-[10px]">
+      {/* Progress card: back · QUESTION 02/05 · skip, then |||||||| */}
+      <div className="ink-card neck-top px-3 pt-3 pb-4">
+        <div className="flex items-center justify-between gap-2">
+          <RoundButton tone="glass" label={tt('common.back')} onClick={() => dispatch({ type: 'QUIZ_BACK' })}>
+            <ArrowLeft aria-hidden className="size-4" />
+          </RoundButton>
+          <p className="mono-caps text-ink-inverse-muted">
+            {copy.quizLabel}{' '}
+            <span className="text-ink-inverse tabular-nums">
+              {String(current).padStart(2, '0')}/{String(total).padStart(2, '0')}
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={() => dispatch({ type: 'SKIP_QUIZ' })}
+            className="press mono-caps h-11 rounded-pill px-4 text-ink-inverse-muted hover:bg-white/10 hover:text-ink-inverse"
+          >
+            {tt('common.skip')}
+          </button>
+        </div>
+        <SegmentedProgress
+          value={current}
+          max={total}
+          segments={20}
+          label={`${copy.quizLabel}: ${tt('common.stepOf', { current, total })}`}
+          className="mt-3 px-2"
+        />
       </div>
-      <Progress value={current} max={total} label={`${copy.quizLabel}: ${tt('common.stepOf', { current, total })}`} className="mt-3" />
 
-      <div key={key} className="tonelle-enter mt-8">
-        {state.quizIndex === 0 && <p className="text-sm font-semibold text-accent">{tt('quiz.title')}</p>}
-        <h1 ref={headingRef} tabIndex={-1} className="mt-1 text-3xl text-ink outline-none sm:text-4xl">
+      <section key={key} className="enter ink-card neck-top p-6" style={delay(60)}>
+        {state.quizIndex === 0 && <p className="mono-caps text-accent-soft">{tt('quiz.title')}</p>}
+        <h1
+          ref={headingRef}
+          tabIndex={-1}
+          className={clsx('text-[clamp(1.9rem,8.4vw,2.5rem)] text-ink-inverse outline-none', state.quizIndex === 0 && 'mt-3')}
+        >
           {tt(`quiz.${key}.question`)}
         </h1>
-        <p className="mt-2 text-ink-muted">{tt(`quiz.${key}.hint`)}</p>
+        <p className="mono mt-3 text-ink-inverse-muted">{tt(`quiz.${key}.hint`)}</p>
 
-        <div role="radiogroup" aria-label={tt(`quiz.${key}.question`)} className="mt-6 grid gap-2.5">
-          {QUIZ_OPTIONS[key].map((option) => {
+        <div role="radiogroup" aria-label={tt(`quiz.${key}.question`)} className="mt-7 grid gap-2">
+          {QUIZ_OPTIONS[key].map((option, i) => {
             const active = selected === option;
             return (
               <button
@@ -50,27 +73,31 @@ export function QuizStep({ state, dispatch, copy, tt }: StepProps) {
                 aria-checked={active}
                 onClick={() => dispatch({ type: 'ANSWER', key, value: option })}
                 className={clsx(
-                  'flex min-h-14 items-center justify-between rounded-2xl border px-5 py-3.5 text-left text-base font-medium transition-all',
-                  active
-                    ? 'border-accent bg-accent-soft text-ink shadow-soft'
-                    : 'border-border bg-surface-raised text-ink hover:border-border-strong hover:bg-nude-50 active:scale-[0.99]',
+                  'press enter flex min-h-14 items-center justify-between gap-3 rounded-pill pr-2.5 pl-5 text-left text-[1.02rem] font-medium',
+                  active ? 'bg-accent-soft text-[#231816]' : 'bg-paper-raised text-[#231816] hover:bg-white',
                 )}
+                style={delay(120 + i * 40)}
               >
-                {tt(`quiz.${key}.options.${option}` as Parameters<typeof tt>[0])}
+                <span className="flex items-center gap-3">
+                  <span aria-hidden className="mono w-5 text-[11px] text-[#9A8C86]">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  {tt(`quiz.${key}.options.${option}` as Parameters<typeof tt>[0])}
+                </span>
                 <span
                   aria-hidden
                   className={clsx(
-                    'grid size-6 place-items-center rounded-full border-2 transition-colors',
-                    active ? 'border-accent bg-accent text-white' : 'border-border-strong',
+                    'grid size-9 shrink-0 place-items-center rounded-full transition-colors',
+                    active ? 'bg-[#231816] text-accent-soft' : 'ring-1 ring-[#231816]/15 ring-inset',
                   )}
                 >
-                  {active && <Check className="size-3.5" />}
+                  {active && <Check className="size-4" strokeWidth={2.5} />}
                 </span>
               </button>
             );
           })}
         </div>
-      </div>
+      </section>
     </div>
   );
 }

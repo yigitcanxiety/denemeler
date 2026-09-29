@@ -3,9 +3,13 @@
 import { createTranslator, type Locale } from '@tonelle/shared';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
+import { Chip } from '@/components/lab/primitives';
+import { LanguageSwitcher } from '@/components/site/LanguageSwitcher';
+import { Logo } from '@/components/site/Logo';
 import { apiClient, type ApiClient } from '@/lib/api-client';
 import { clearAllData, clearAnalysis, loadAnalysis, saveAnalysis } from '@/lib/storage';
-import { completeQuiz, flowReducer, initialState, type FlowEvent } from './machine';
+import { completeQuiz, flowReducer, initialState, type FlowEvent, type FlowState } from './machine';
 import { ConsentStep } from './steps/ConsentStep';
 import { PaywallStep } from './steps/PaywallStep';
 import { QuizStep } from './steps/QuizStep';
@@ -14,6 +18,10 @@ import { ScanningStep } from './steps/ScanningStep';
 import { SelfieStep } from './steps/SelfieStep';
 import { TeaserStep } from './steps/TeaserStep';
 import type { AnalyzeCopy, StoreCopy } from './types';
+import { Note } from './ui';
+
+/** Position of each step in the free part of the flow (chip `2/5`); paid steps show PREMIUM. */
+const STEP_NUMBER: Partial<Record<FlowState['step'], number>> = { consent: 1, quiz: 2, selfie: 3, scanning: 4, teaser: 5 };
 
 const noopSubscribe = () => () => undefined;
 
@@ -104,20 +112,43 @@ export function AnalyzeFlow({
   const stepProps = { locale, state, dispatch: send, copy, tt };
   const wide = state.step === 'results';
 
+  const n = STEP_NUMBER[state.step];
+
   return (
-    <div className={clsx('mx-auto w-full px-4 pt-6 pb-16 sm:px-6 sm:pt-10', wide ? 'max-w-5xl' : 'max-w-lg')}>
+    <div className={clsx('relative mx-auto w-full px-3 pt-3 pb-16 sm:px-6 sm:pt-6', wide ? 'max-w-5xl' : 'max-w-[34rem]')}>
+      {/* BRIK top bar card: wordmark + step chip */}
+      <header className="ink-card flex h-16 items-center justify-between gap-3 pr-2.5 pl-5">
+        <Link href={`/${locale}`} aria-label={copy.homeLink} className="rounded-md">
+          <Logo inverse className="text-[1.25rem]" />
+        </Link>
+        <div className="flex items-center gap-2">
+          {n ? (
+            <Chip tone="soft">
+              <span aria-hidden>{`${n}/5`}</span>
+              <span className="sr-only">{tt('common.stepOf', { current: n, total: 5 })}</span>
+            </Chip>
+          ) : (
+            <Chip tone="soft">Premium</Chip>
+          )}
+          <LanguageSwitcher locale={locale} compact tone="ink" className="border-0" />
+        </div>
+      </header>
       <div aria-live="polite">
         {notice && (
-          <p className="mb-6 rounded-2xl bg-success/10 px-4 py-3 text-sm font-medium text-success">{notice}</p>
+          <Note tone="success" className="mt-3">
+            {notice}
+          </Note>
         )}
       </div>
-      {state.step === 'consent' && <ConsentStep {...stepProps} />}
-      {state.step === 'quiz' && <QuizStep {...stepProps} />}
-      {state.step === 'selfie' && <SelfieStep {...stepProps} />}
-      {state.step === 'scanning' && <ScanningStep {...stepProps} />}
-      {state.step === 'teaser' && <TeaserStep {...stepProps} />}
-      {state.step === 'paywall' && <PaywallStep {...stepProps} stores={stores} demoAllowed={demoAllowed} />}
-      {state.step === 'results' && <ResultsStep {...stepProps} client={client} />}
+      <div className="mt-[10px]">
+        {state.step === 'consent' && <ConsentStep {...stepProps} />}
+        {state.step === 'quiz' && <QuizStep {...stepProps} />}
+        {state.step === 'selfie' && <SelfieStep {...stepProps} />}
+        {state.step === 'scanning' && <ScanningStep {...stepProps} />}
+        {state.step === 'teaser' && <TeaserStep {...stepProps} />}
+        {state.step === 'paywall' && <PaywallStep {...stepProps} stores={stores} demoAllowed={demoAllowed} />}
+        {state.step === 'results' && <ResultsStep {...stepProps} client={client} />}
+      </div>
     </div>
   );
 }
