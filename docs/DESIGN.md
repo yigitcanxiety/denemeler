@@ -1,139 +1,149 @@
-# Tonelle Design Language v2 ("Editorial Lab")
+# Tonelle Design Language v3 ("Aura")
 
-Inspired by two references the founder supplied (Neurotrace web concept, BRIK mobile concept), adapted to Tonelle's makeup/colour world. Both web and mobile MUST follow this file. If you change a token, change it in `apps/web/src/styles/tokens.css` AND `apps/mobile/src/theme.ts`.
+Approved by the founder on 2026-09-29. Replaces v2 ("Editorial Lab"), which was rejected. Reference prototype: `docs/design/prototype-v3.html`. Its screenshots are in the lead's scratchpad; the faces in it are temporary reference crops and must NOT ship.
 
-## 1. What we took from the references
+It is built from two references:
+- **Features and flow** follow the Glamour app (competitor), from the founder's screen recording.
+- **Visual language** follows the Aura concept on Dribbble: white surfaces, lavender, a high-contrast serif display, floating data chips on a real face photo, radar and bar charts, "% fit" product badges.
 
-**From the web reference (Neurotrace):**
-- Warm light-grey "paper" canvas with faint grain.
-- Hairline construction grid: vertical and horizontal lines, and big circle/arc outlines like a technical drawing.
-- A single hot accent colour, used ONLY for lines, markers and small tags.
-- A gigantic tight-tracked grotesk wordmark that runs edge to edge.
-- Heavy grotesk headlines. Monospace annotations ("/AI that…") with black numbered square tags `01` `02`.
-- Floating header: logo in a pale rounded box on the left; `Menu` + a dark primary pill on the right.
-- A sticky dark bottom dock holding the store CTA.
-- A single centred "hero object" with a heat-map glow.
-- A radial sunburst preloader with a `000%` counter.
-- A dark section with a glass sphere whose object changes colour per step.
-- Scroll-driven phone mockup with annotation cards linked to it by accent lines.
-- Testimonial columns in monospace.
+If you change a token, change it in both `apps/web/src/styles/tokens.css` and `apps/mobile/src/theme.ts`.
 
-**From the mobile reference (BRIK):**
-- Stacked dark rounded cards on a light phone background, joined by little "pinched/notched" necks, so the stack reads as one continuous organic shape.
-- A pale accent used for chips and progress.
-- Big light-weight numerals.
-- Segmented bar progress indicators (`||||||||`).
-- A pill segmented bottom navigation flanked by round icon buttons.
-- Small uppercase chips such as `3H 41M LEFT`.
-- A countdown or timer in huge pale digits.
-- Calm, springy motion.
+## 1. Scope of v1 (founder decision)
 
-## 2. Tonelle adaptation: tokens
+v1 includes exactly two features:
+1. **Renk analizi** (colour analysis):
+   - selfie tips
+   - selfie capture or upload
+   - "Harika selfie!" confirmation
+   - scan
+   - locked result, then paywall
+   - full result: season, palette, colour-profile radar, bars, undertone/contrast/face-shape/skin-colour cards
+2. **Makyaj denemesi** (makeup try-on): the looks rendered on the user's own face with a before/after slider, look chips, and shade cards with "% uyum" badges.
 
-Colour (warm, makeup-toned rather than cold grey/red):
+**Not in v1:** skin analysis, the beauty assistant chat, a shop or cart. Do not show them. Do not show "coming soon" teasers either.
+
+## 2. Tokens
 
 | Token | Hex | Use |
 |---|---|---|
-| `paper` | `#E6DED7` | page canvas (warm greige) |
-| `paper-raised` | `#EFE9E3` | header box, light cards |
-| `paper-sunken` | `#D9D0C8` | wells, inputs |
-| `line` | `rgba(35,24,22,0.14)` | hairline grid |
-| `line-strong` | `rgba(35,24,22,0.28)` | circles/arcs |
-| `ink` | `#231816` | text, dark cards, primary buttons (espresso) |
-| `ink-soft` | `#3A2A27` | dark card hover/secondary |
-| `ink-muted` | `#6E605B` | secondary text |
-| `ink-subtle` | `#9A8C86` | captions |
-| `accent` | `#C8354A` | "lipstick" red: lines, markers, tags, focus. Never large fills |
-| `accent-soft` | `#F2C9CB` | pale blush: chips/progress on dark cards (BRIK lavender → blush) |
-| `accent-contrast` | `#FFFFFF` | text on accent |
-| `night` | `#161010` | dark section canvas |
-| `night-line` | `rgba(242,201,203,0.12)` | grid on dark |
-| `success` `#3F7D5C`, `warning` `#B7791F`, `danger` `#B42335` | | states |
+| `board` | `#E9E5FB` | lavender page/section backdrops, marketing only |
+| `paper` | `#FFFFFF` | app surface |
+| `mist` | `#F6F4FE` | tinted wells, chips, secondary cards |
+| `ink` | `#17141F` | text, dark phone chrome |
+| `muted` | `#6B6679` | secondary text (AA on white) |
+| `line` | `#E6E2F3` | hairlines, card borders |
+| `violet` | `#7457F5` | primary buttons, progress, selected state, radar |
+| `violet-2` | `#8E75FF` | gradient partner for FAB/lock button |
+| `violet-soft` | `#EDE8FF` | selected fills, soft badges |
+| `rose` | `#E4718A` | makeup accent: try-on card, makeup chips |
+| `rose-soft` | `#FCE9EE` | makeup wells |
+| `mint` / `mint-ink` | `#CFF3D6` / `#1E7A3A` | "% uyum" ≥ 90, success |
+| `butter` / `butter-ink` | `#FFE9A8` / `#8A6400` | "% uyum" 75–89 |
+| `rose` pill | `#FCE9EE` / `#B23E5A` | "% uyum" < 75, warnings |
 
-Heat-map gradient (the "makeup glow", replaces the brain heat map): radial blobs mixing `#7A1F2B` (deep berry) → `#C8354A` → `#E0775E` (terracotta) → `#F3B27A` (peach) → `#FBE3C6` (champagne), with soft blur. In the dark sphere section the blobs cycle through season palettes (spring: coral/peach/warm yellow; summer: rose/lavender/powder blue; autumn: terracotta/olive/camel; winter: berry/icy pink/cobalt).
+Chart bar colours, as in Aura: warmth `#F29A5E`, contrast `#6C9BEF`, softness `#D983E6`, depth `#5B6BF0`.
 
 Typography:
-- Display / UI: **Inter Tight** (Google). Display weight 600, letter-spacing −0.04em to −0.06em, line-height 0.9 for the giant wordmark and 0.95–1.0 for headlines.
-- Monospace annotations, labels, numbers-in-tags: **JetBrains Mono** 400/500, 12–15 px, line-height 1.35.
-- Body: Inter Tight 400, 16–17 px.
-- Big numerals (BRIK-style): Inter Tight 300, huge (48–120 px), tabular-nums.
-- Fraunces is retired.
+- Display: **Gloock** (Google), weight 400. Used for headings, the wordmark "Tonelle", big numbers such as prices and %.
+- UI and body: **Plus Jakarta Sans** 400/500/600/700.
+- No monospace. Remove Inter Tight and JetBrains Mono.
+- Scale (mobile): display 26–32, h2 22–25, section 18, body 15, small 12.5, caption 10–11.
+- Web hero headline: up to 64 px.
 
-Shape:
-- Radii: `sm 8`, `md 14`, `card 24`, `xl 32`, `pill 999`.
-- Dark stacked cards use radius 24. Where two cards stack vertically with a 8–10 px gap, draw a "neck": a small rounded bridge that makes them look pinched together. Web uses an SVG/CSS pseudo-element; mobile uses an absolutely positioned View with concave corners, or an SVG from react-native-svg.
-- Numbered tag: 28×28 black square, mono 12 px white text `01`.
-- Connector bar (from the reference): a thin 1 px accent line ending in a small filled accent rectangle "plug", with a 22 px accent square containing `ıll` glyph bars.
+Shape and depth:
+- Radii: phone-level cards 22, cards 16–18, chips and pills 999, buttons 999 with 48 px height.
+- Shadows are soft and violet-tinted, e.g. `0 10px 24px -12px #7457F5` under primary buttons.
+- Floating chips on photos: white at 92% opacity with a backdrop blur, radius 12, a small shadow.
+- Iconography is simple line icons, stroke 1.75, e.g. lucide on web and react-native-svg equivalents on mobile. No emoji in production UI.
 
-Grain: an SVG feTurbulence noise overlay at 3–5 % opacity on `paper` and `night` (web only; skip on mobile).
+## 3. Screens (mobile app AND web /analyze flow share these)
 
-## 3. Motion system
+Numbers refer to the prototype.
 
-Principles: precise, technical, calm. Ease `cubic-bezier(0.22, 1, 0.36, 1)` (out-expo-ish) for reveals, spring for UI (mobile: damping 18, stiffness 180). Durations 400–900 ms for reveals, 180–240 ms for UI. **`prefers-reduced-motion` / OS reduce-motion: no transforms or loops; opacity fades ≤150 ms only.** Animate only transform, opacity and stroke-dashoffset. No layout thrash; 60 fps on a mid-range phone.
+1. **Ana sayfa (Bugün):**
+   - top bar with the "Tonelle" serif wordmark and a round settings/menu icon button
+   - chip `✦ KENDİNİ KEŞFET`
+   - serif headline "Yapay Zekâ ile Yüz Taraması, Anında Sonuç" and a short lead
+   - hero portrait in a rounded card, with floating chips (Alt ton, Renk sezonu, a small uyum ring) and a gradient `✦ Tonelle` FAB
+   - two feature cards: Renk Analizi (violet-soft) and Makyaj Denemesi (rose-soft)
+   - if a result exists, a "Son analizin" card with season and palette
+2. **Selfie ipuçları ("En iyi açını yakala"):** a tips well (light, no makeup, hair off face, no filter); "İdeal selfie" row of 3 thumbs with a green outline and ✓; "Kaçınılması gerekenler" row of 3 dimmed thumbs with a red outline and reason chips (Karanlık, Filtre, Açılı); CTA "Selfie çek veya yükle".
+3. **Capture:**
+   - Mobile: expo-camera with a circular face guide and a violet ring. Web: upload or webcam.
+   - Then **"Harika görünüyorsun"**: the photo in a circle with a violet ring, a `✓ Harika selfie!` chip, a ghost button "Başka selfie seç", and the primary "Analizi başlat".
+   - Quality problems from the API (`qualityIssues`) show as a warning chip with a retake CTA.
+4. **Tarama:** chip `✦ ANALİZ SÜRÜYOR`, serif "Renklerini okuyoruz", the photo in a circle inside a progress ring (0→100 over the request), face-mesh dots/lines overlay, a moving soft violet scan band, a big serif %, and a step checklist (done ✓, current in violet, pending grey). The steps come from the `analyzing.*` copy.
+5. **Kilitli sonuç:**
+   - a `1/6` pill plus a segmented step bar and a close button
+   - avatar photo with a double ring
+   - "Senin renk sezonun" with the season name blurred
+   - gradient lock button "Sonuçlarını aç"
+   - 2×2 locked cards (Cilt alt tonu, Kontrast, Yüz şekli, Cilt rengi) with placeholder bars
+   - primary CTA "3 gün ücretsiz dene ✦" and the fine print (price, cancel anytime, Gizlilik · Geri yükle · Kullanım şartları)
+6. **Ödeme ekranı:**
+   - a close button (triggers the exit offer), "Geri yükle"
+   - serif title, a checklist of benefits (colour analysis + makeup try-on only)
+   - plan cards: Yıllık selected by default with an "En avantajlı · %X" badge and big serif weekly-equivalent price; Haftalık with intro price; Tek rapor
+   - primary CTA and the legal fine print
+   - Prices come from shared PRICING/RevenueCat.
+7. **Renk sonucu (Sonuçlar tab):**
+   - a gradient season card (serif season name + palette swatches)
+   - the colour-profile **radar** from `colorProfile(analysis)` with `PROFILE_AXIS_LABELS`
+   - 3 coloured **bars** (Sıcaklık, Kontrast, Yumuşaklık)
+   - a 2×2 trait card grid (alt ton, kontrast, yüz şekli, göz şekli)
+   - "En iyi renklerin" and "Kaçınman gerekenler" swatches
+   - foundation guidance
+   - a shades section (lip/blush/eyeshadow) where each swatch card shows a "% uyum" pill from `shadeMatch(hex, analysis)`
+   - share button
+8. **Makyaj denemesi:**
+   - back title and horizontally scrollable look chips (from LOOKS; selected = ink pill)
+   - a before/after **draggable slider** over the user's photo and the rendered look (`/api/render-look`), with "Önce" and "Sonra" labels and an `✦ AI ile oluşturuldu` pill
+   - loading shows a shimmer over the photo
+   - "Bu görünüm için tonların": 3 shade cards with "% uyum" pills and a colour tube
+   - the look's steps in an accordion
+   - Premium-gated; locked users see the paywall.
+9. **Tab bar (mobile):** Bugün · Sonuçlar · centre round scan button (starts a new analysis) · Profil (settings, language, restore, delete data, legal). The "Asistan" tab is out of v1.
 
-Signature animations (web; mobile equivalents in §5):
-1. **Preloader (first visit per session, ≤2.2 s, skippable, never blocks LCP content for bots):**
-   - Radial sunburst lines draw outward from a circle (stroke-dashoffset, staggered).
-   - The four season labels `İLKBAHAR · YAZ · SONBAHAR · KIŞ` type in at N/E/S/W.
-   - A dark pill bottom-left counts `000%` → `100%` in mono (leading zeros dimmed).
-   - Then the circle scales into the hero's heat-map object, and the preloader fades.
-2. **Wordmark reveal:** giant `TONELLE` letters slide up from a clip mask, staggered 40 ms, and span the full viewport width (`font-size` computed so the word fits 100% width at every breakpoint).
-3. **Construction lines:** grid lines fade/scale in; the big accent circle draws via stroke-dashoffset; connector bars slide in from the screen edges toward the hero object.
-4. **Hero object:** a line-art face (single-weight strokes, like the reference head/hand drawings) with heat-map makeup blobs on lips, cheeks and eyelids that slowly breathe (scale 0.97↔1.03, hue shift within the palette). A small accent tag `ANALİZ EDİLİYOR…` / `ANALYZING…` with a moving scan line crosses the face.
-5. **Scroll story (sticky):** a phone mockup centred and pinned. As the user scrolls, the screen content changes: selfie → scan → season result → look on face. Numbered annotation cards `01 02 03` appear left and right, connected to the phone by accent lines that draw in. On mobile widths the phone is not pinned side-by-side: it becomes a full-width sticky card, with annotations stacked beneath and crossfading.
-6. **Dark sphere section:** a glass sphere (radial gradients, specular highlight ellipse, an orbit ring) holds the heat-map blob. Per scroll step the blob recolours through the 4 season palettes, and a side panel with a mono title + body swaps text.
-7. **Mono typewriter** for short annotations (character reveal, 12 ms/char, only once when in view).
-8. **Sticky bottom dock:** a dark rounded dock with the store badge(s) / primary CTA. It slides up after the hero and hides near the footer.
-9. **Micro-interactions:**
-   - Buttons press to 0.97.
-   - Segmented progress bars fill bar by bar.
-   - Big numerals count up.
-   - Cards enter with an 8 px rise plus fade, staggered.
+The share card (1080×1920) uses a white/lavender background, the serif season name, the palette, the portrait in a rounded frame if available, the wordmark, and "AI ile oluşturuldu".
 
-## 4. Web page structure (landing)
+## 4. Web landing (Aura tablet screen as the model)
 
-Mobile-first. Everything must work at 360–430 px width first, then scale up. Order:
-1. Header: logo box and `Menu` / `Ücretsiz dene` pill.
-2. Hero:
-   - Giant wordmark.
-   - Mono subline.
-   - Heat-map face object with connector bars.
-   - Primary CTA and "free analysis · ~1 min · no sign-up".
-3. Sticky phone scroll story (4 steps).
-4. "Made for Mediterranean skin tones": sunburst of the 12 seasons around the face.
-5. Dark sphere section (season palettes).
-6. Looks catalogue: horizontal snap-scroll of dark BRIK-style cards with notched stacking.
-7. How people use Tonelle: 3 mono columns. **Use clearly illustrative personas** (line-art avatars, labelled "Örnek senaryo"/"Example scenario"). No fake photos, no fabricated testimonials presented as real.
-8. Pricing: dark stacked cards, yearly highlighted, big numerals.
-9. FAQ: mono question labels.
-10. Footer: the giant wordmark again.
+- Header: serif wordmark, nav (Nasıl çalışır, Makyaj denemesi, Fiyatlar, SSS), language switch, violet pill "✦ Analizi başlat".
+- Hero: centred chip, big serif headline, lead, store badges plus a CTA, and a large portrait with floating data chips. On desktop, text cards sit left and right of the portrait, as in Aura.
+- "Önce / Sonra": a before/after slider section, with the explanation text on one side and shade cards with "% uyum" on the other.
+- 3 steps (selfie → analiz → yüzünde dene), each as a card with a small UI snippet.
+- Colour-profile section with a radar and a palette.
+- Looks gallery: cards with a portrait and the look name.
+- Testimonials: keep the existing data in `content/testimonials.ts` (placeholders, with the small "Örnek kullanıcı senaryoları" caption), restyled as Aura review cards with name, stars, a short quote and an avatar.
+- Pricing: the plan cards from the app.
+- FAQ accordion, then the footer.
+- Remove the preloader, grid lines, giant wordmark, mono type, dark sphere section and sticky dock from v2.
+- A simple mobile sticky CTA bar is OK.
 
-Plus the sticky dock throughout.
+## 5. Photography
 
-Legal pages: same header/footer, paper canvas, mono section numbers, generous reading width (68ch), no heavy decoration.
+Real, natural-looking portraits are central to this look. Until the founder uploads the approved AI portraits, reference these files:
+- `apps/web/public/images/portrait-hero.jpg`, `portrait-2.jpg`, `portrait-3.jpg`, `portrait-after.jpg`
+- `apps/mobile/assets/images/portrait-hero.jpg`, `portrait-2.jpg`, `portrait-3.jpg`
 
-## 5. App / flow screens (web `/analyze` and Expo app share this look)
+Commit neutral placeholder images at those paths: soft lavender/peach gradient JPGs with a subtle silhouette, generated locally. They will be replaced by the real files without code changes. Never use third-party photos. Dimmed "kaçınılacak" examples reuse the same portraits with CSS/RN filters.
 
-- Canvas `paper`. Content lives in stacked dark `ink` cards with notch necks (BRIK). Light cards are used for secondary info.
-- Top bar card: wordmark + small accent-soft chip (e.g. step `2/5` or `PREMIUM`).
-- Quiz: one question per dark card; options as full-width light pills. Segmented bar progress (`||||||` 20 segments) at the top.
-- Camera/selfie: oval guide made of dashed hairlines plus a crosshair; the accent corner ticks.
-- **Analyzing:** the sunburst preloader from §3.1, wrapped around the user's photo in a circle. Counter `000%→100%`, rotating mono status lines, `ANALİZ EDİLİYOR…` accent tag, scan line.
-- Teaser: season name in giant grotesk; palette and looks blurred under a frosted card.
-- Paywall: stacked dark cards per plan. The selected plan gets the accent-soft outline and chip (`EN AVANTAJLI`). Big light numerals for price. The primary CTA is a full-width ink pill. Legal text in mono 11 px.
-- Results:
-  - Hero card with the season in huge type.
-  - Metric cards in pairs joined by necks: `Alt ton / Sıcak`, `Kontrast / Düşük` (BRIK "Best score / Reaction speed" layout).
-  - Palette as a segmented swatch bar.
-  - Look cards with an "AI" accent-soft chip.
-- Bottom navigation (mobile app): pill segmented control `SONUÇLAR | GÖRÜNÜMLER` flanked by round ink icon buttons (share, settings).
-- Share card (1080×1920): paper canvas, grid lines, giant season name, heat-map blob, palette bar, mono caption, wordmark, "AI ile oluşturuldu".
+## 6. Motion
 
-## 6. Accessibility & performance guardrails
-- Contrast:
-  - Body text on paper must be ≥ 4.5:1: `ink-muted` on `paper` passes; `ink-subtle` is for ≥ 14 px captions only.
-  - Accent red is never used for body text.
-- Focus: a 2 px accent outline with a 2 px offset.
-- Tap targets ≥ 44 px.
-- Web: LCP element = the wordmark (text, not an image). The preloader must not delay it for crawlers or users with reduced motion. JS for animations < 25 kB gz beyond what's already shipped (prefer CSS + IntersectionObserver + rAF; a small library like `motion` is allowed if needed).
-- Mobile: use react-native-reanimated for continuous animations (already in the dependency tree via expo-router; add it explicitly if needed) and react-native-svg for lines/sunburst.
+Calm and quick:
+- screen transitions: 250 ms fade + 8 px rise
+- button press: scale to 0.98
+- the scan band loops (2.6 s)
+- the progress ring and % count smoothly
+- radar polygon grows from the centre (600 ms)
+- bars fill (500 ms, staggered)
+- the before/after slider follows the finger
+
+Respect reduced motion: no loops, fades only.
+
+## 7. Quality bars
+
+- WCAG AA contrast. Violet on white is used only for large or bold text and buttons.
+- 44 px tap targets, visible focus rings (2 px violet, with offset).
+- No horizontal scroll at 360 px.
+- No beauty scoring anywhere. "% uyum" is only about shade/season fit.

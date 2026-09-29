@@ -1,0 +1,410 @@
+<title>Tonelle Tasarım Taslağı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: lavender presentation board; a feature map, then a row of phone screens that wraps (desktop) and stacks (phone). Single light look by design. */
+:root{
+  color-scheme: light;
+  --board:#E9E5FB;        /* lavender board behind the phones (Aura) */
+  --paper:#FFFFFF;        /* app surface */
+  --mist:#F6F4FE;         /* tinted wells, chips */
+  --ink:#17141F;          /* text */
+  --muted:#6B6679;        /* secondary text */
+  --line:#E6E2F3;         /* hairlines */
+  --violet:#7457F5;       /* primary action (Aura) */
+  --violet-soft:#EDE8FF;
+  --rose:#E4718A;         /* Tonelle makeup accent */
+  --rose-soft:#FCE9EE;
+  --mint:#CFF3D6; --mint-ink:#1E7A3A;
+  --butter:#FFE9A8; --butter-ink:#8A6400;
+  --display:"Gloock", "Georgia", "Times New Roman", serif;
+  --body:"Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--board);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;margin:0;padding-inline:16px;padding-block:32px 64px}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3,.serif{font-family:var(--display);font-weight:400;letter-spacing:-.01em;text-wrap:balance;margin:0}
+header.intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:end}
+header.intro h1{font-size:clamp(40px,6vw,72px);line-height:.98}
+header.intro p{margin:0;color:var(--muted);max-width:60ch}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);background:var(--paper);border-radius:999px;padding:6px 12px;width:max-content}
+.map{background:var(--paper);border-radius:28px;padding:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.map{grid-template-columns:1fr}}
+.map h2{grid-column:1/-1;font-size:28px}
+.feat{background:var(--mist);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.feat b{font-size:15px}
+.feat span{font-size:13px;color:var(--muted)}
+.feat .src{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--violet)}
+.note{font-size:13px;color:var(--muted);max-width:70ch}
+
+/* phone board */
+.screens{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:36px 24px;justify-items:center}
+figure{margin:0;display:flex;flex-direction:column;gap:12px;align-items:center;width:100%;max-width:340px}
+figcaption{text-align:center;display:flex;flex-direction:column;gap:2px}
+figcaption b{font-size:14px}
+figcaption span{font-size:12.5px;color:var(--muted)}
+.phone{width:100%;max-width:340px;aspect-ratio:340/720;background:var(--ink);border-radius:46px;padding:9px;box-shadow:0 30px 60px -30px rgba(40,20,110,.45)}
+.scr{position:relative;width:100%;height:100%;background:var(--paper);border-radius:38px;overflow:hidden;display:flex;flex-direction:column}
+.status{height:40px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 22px;font-size:12px;font-weight:600}
+.island{width:90px;height:24px;border-radius:14px;background:var(--ink)}
+.body{flex:1;overflow:hidden;padding:4px 16px 0;display:flex;flex-direction:column;gap:12px;min-height:0}
+.topbar{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--display);font-size:24px;letter-spacing:-.02em}
+.ib{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--mist);color:var(--violet)}
+.ib.solid{background:var(--violet);color:#fff}
+.back{display:flex;align-items:center;gap:6px;font-family:var(--display);font-size:22px}
+.back svg{flex:none}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:var(--mist);border:1px solid var(--line);border-radius:999px;padding:4px 10px;width:max-content}
+.lead{font-size:12.5px;color:var(--muted);margin:0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:999px;background:var(--violet);color:#fff;font-weight:600;font-size:14.5px;border:0;width:100%;box-shadow:0 10px 24px -12px var(--violet)}
+.btn.ghost{background:var(--paper);color:var(--violet);border:1.5px solid var(--violet-soft);box-shadow:none}
+.foot{padding:10px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:none}
+.fine{font-size:10px;color:var(--muted);text-align:center;line-height:1.4}
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;padding:8px 10px 18px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);text-align:center}
+.tabbar div{display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabbar .on{color:var(--ink);font-weight:600}
+.tabbar .scan{width:52px;height:52px;border-radius:50%;background:var(--paper);box-shadow:0 8px 20px -6px rgba(116,87,245,.45);display:grid;place-items:center;color:var(--violet);margin:-26px auto 0}
+.photo{position:relative;border-radius:22px;overflow:hidden;background:var(--mist)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover}
+.float{position:absolute;background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border-radius:12px;padding:6px 9px;font-size:9.5px;box-shadow:0 6px 16px -8px rgba(23,20,31,.35);display:flex;flex-direction:column;gap:2px}
+.float b{font-size:10px}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:600;border-radius:999px;padding:2px 7px;width:max-content}
+.pill.mint{background:var(--mint);color:var(--mint-ink)}
+.pill.violet{background:var(--violet-soft);color:var(--violet)}
+.pill.butter{background:var(--butter);color:var(--butter-ink)}
+.pill.rose{background:var(--rose-soft);color:#B23E5A}
+.fab{position:absolute;right:14px;bottom:14px;height:36px;padding:0 14px;border-radius:999px;background:linear-gradient(135deg,#8E75FF,var(--violet));color:#fff;font-family:var(--display);font-size:16px;display:flex;align-items:center;gap:6px;box-shadow:0 10px 24px -8px var(--violet)}
+.cards{display:flex;gap:10px;overflow:hidden}
+.fc{flex:none;width:118px;border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:6px;background:var(--mist)}
+.fc .ico{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:var(--paper);color:var(--violet)}
+.fc b{font-size:12px;line-height:1.25}
+.fc span{font-size:10px;color:var(--muted);line-height:1.3}
+.sec{font-family:var(--display);font-size:18px}
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.row .dot{width:28px;height:28px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:14px}
+.row b{font-size:12.5px;display:block}
+.row span{font-size:10.5px;color:var(--muted)}
+.row .radio{margin-left:auto;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.row.sel{border-color:var(--violet);background:var(--violet-soft)}
+.row.sel .radio{border:5px solid var(--violet)}
+.thumbs{display:flex;gap:8px}
+.th{flex:1;aspect-ratio:3/4;border-radius:12px;overflow:hidden;position:relative}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th.good{outline:2.5px solid #44C06A;outline-offset:-2.5px}
+.th.bad{outline:2.5px solid #F08A8A;outline-offset:-2.5px}
+.th.bad img{filter:brightness(.55) saturate(.6) blur(1.2px)}
+.th .tag{position:absolute;left:5px;bottom:5px}
+.tips{background:var(--mist);border-radius:16px;padding:12px;font-size:11.5px;display:flex;flex-direction:column;gap:5px}
+.tips b{font-size:12.5px}
+/* scan */
+.scanwrap{position:relative;margin:4px auto 0;width:220px;height:220px}
+.ring{position:absolute;inset:0}
+.scanface{position:absolute;inset:16px;border-radius:50%;overflow:hidden}
+.scanface img{width:100%;height:100%;object-fit:cover}
+.scanline{position:absolute;left:0;right:0;height:40px;background:linear-gradient(180deg,rgba(116,87,245,0),rgba(116,87,245,.35),rgba(116,87,245,0));animation:scan 2.6s ease-in-out infinite}
+@keyframes scan{0%{top:-20%}50%{top:80%}100%{top:-20%}}
+.mesh{position:absolute;inset:0}
+.pct{font-family:var(--display);font-size:44px;text-align:center;line-height:1}
+.steps{display:flex;flex-direction:column;gap:7px;font-size:12px}
+.steps div{display:flex;gap:8px;align-items:center;color:var(--muted)}
+.steps .done{color:var(--ink)}
+.steps .now{color:var(--violet);font-weight:600}
+.steps i{width:16px;height:16px;border-radius:50%;flex:none;display:grid;place-items:center;font-style:normal;font-size:10px;background:var(--mist)}
+.steps .done i{background:var(--violet);color:#fff}
+/* locked result */
+.prog{display:flex;align-items:center;gap:8px}
+.prog .n{font-size:10px;font-weight:700;color:#fff;background:var(--violet);border-radius:999px;padding:2px 8px}
+.prog .bars{display:flex;gap:4px;flex:1}
+.prog .bars i{height:4px;border-radius:2px;background:var(--line);flex:1}
+.prog .bars i.on{background:var(--violet)}
+.avatar{width:96px;height:96px;border-radius:50%;overflow:hidden;margin:4px auto 0;box-shadow:0 0 0 4px var(--paper),0 0 0 7px var(--violet-soft)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.lock{margin:0 auto;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#9B86FF,var(--violet));color:#fff;border-radius:14px;padding:10px 22px;font-weight:600;font-size:13px}
+.blurtxt{filter:blur(5px);user-select:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lc{border:1px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;text-align:center}
+.lc .bar{height:8px;width:80%;border-radius:4px;background:var(--violet-soft)}
+/* paywall */
+.plan{border:1.5px solid var(--line);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:10px;position:relative}
+.plan.sel{border-color:var(--violet);background:var(--violet-soft)}
+.plan .radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);flex:none}
+.plan.sel .radio{border:5px solid var(--violet)}
+.plan b{display:block;font-size:13px}
+.plan span{font-size:10.5px;color:var(--muted)}
+.plan .price{margin-left:auto;text-align:right;font-family:var(--display);font-size:20px;line-height:1}
+.plan .price small{display:block;font-family:var(--body);font-size:9.5px;color:var(--muted)}
+.plan .badge{position:absolute;top:-9px;right:14px}
+.checks{display:flex;flex-direction:column;gap:6px;font-size:12px}
+.checks div{display:flex;gap:8px;align-items:center}
+.checks i{width:18px;height:18px;border-radius:50%;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center;font-style:normal;font-size:11px;flex:none}
+/* results */
+.season{border-radius:22px;padding:14px;background:linear-gradient(160deg,#F8E4D8,#EFD8E6 60%,#E6E0FA);display:flex;flex-direction:column;gap:8px}
+.season h3{font-size:30px;line-height:1}
+.sw{display:flex;gap:5px}
+.sw i{flex:1;height:26px;border-radius:8px}
+.radar{display:grid;place-items:center}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;font-size:12px}
+.bar .tr{grid-column:1/2;height:7px;border-radius:4px;background:var(--mist);overflow:hidden}
+.bar .tr i{display:block;height:100%;border-radius:4px}
+.bar em{font-style:normal;font-family:var(--display);font-size:16px;grid-row:1/3;grid-column:2}
+/* try-on */
+.ba{position:relative;height:250px;border-radius:22px;overflow:hidden}
+.ba img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ba .after{clip-path:inset(0 0 0 50%);filter:saturate(1.25) contrast(1.05)}
+.ba .after-tint{position:absolute;inset:0;clip-path:inset(0 0 0 50%);background:radial-gradient(40% 18% at 60% 74%,rgba(200,60,90,.28),transparent 70%),radial-gradient(22% 14% at 74% 56%,rgba(230,110,120,.22),transparent 70%);mix-blend-mode:multiply}
+.ba .div{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff}
+.ba .knob{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11px;color:var(--violet);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.ba .lbl{position:absolute;top:10px;font-size:10px;font-weight:600;background:rgba(255,255,255,.9);border-radius:999px;padding:3px 9px}
+.looks{display:flex;gap:6px;overflow:hidden}
+.looks span{flex:none;font-size:11.5px;font-weight:600;border-radius:999px;padding:6px 12px;background:var(--mist);border:1px solid var(--line)}
+.looks span.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.prod{display:flex;gap:8px}
+.pc{flex:1;border:1px solid var(--line);border-radius:16px;padding:8px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.pc .tube{height:54px;border-radius:10px;display:grid;place-items:center}
+.pc .tube i{width:18px;height:40px;border-radius:5px 5px 3px 3px}
+.pc b{font-size:11px;line-height:1.2}
+.pc span{font-size:9.5px;color:var(--muted)}
+/* age wheel */
+.wheel{position:relative;width:210px;height:210px;margin:6px auto;border-radius:50%;background:radial-gradient(circle,var(--violet-soft) 0,var(--mist) 70%);display:grid;place-items:center}
+.wheel .nums{display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--display);color:var(--muted);font-size:15px}
+.wheel .nums .cur{font-size:34px;color:var(--ink);background:var(--paper);border-radius:14px;padding:0 20px}
+.wheel .nums .f{opacity:.35;font-size:12px}
+/* chat */
+.msg{max-width:84%;border-radius:18px;padding:9px 12px;font-size:12px;line-height:1.45}
+.msg.ai{background:var(--mist);border-top-left-radius:6px}
+.msg.me{align-self:flex-end;background:var(--violet);color:#fff;border-top-right-radius:6px}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.sugg span{font-size:10.5px;border:1px solid var(--violet-soft);color:var(--violet);border-radius:999px;padding:4px 10px;background:var(--paper)}
+.composer{flex:none;margin:0 14px 18px;height:44px;border-radius:999px;border:1px solid var(--line);display:flex;align-items:center;padding:0 6px 0 16px;font-size:12px;color:var(--muted);justify-content:space-between}
+.composer .ib{width:32px;height:32px}
+.bot{display:flex;gap:8px;align-items:flex-start}
+.bot .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#B9A8FF,var(--violet));flex:none}
+@media (max-width:720px){header.intro{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.scanline{animation:none;top:40%}}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <span class="eyebrow">Tasarım taslağı · v3</span>
+      <h1>Tonelle, Aura görünümüyle</h1>
+    </div>
+    <p>Glamour'daki akış ve özellikler, Aura'nın beyaz, lavanta ve serif başlıklı diliyle. Makyajla ilgili ekranlarda Tonelle'in gül rengi vurgusu var. Bu sayfa kod değil, onay için hazırlanmış ekran taslağıdır. Yüz fotoğrafları referans görsellerden geçici olarak alındı.</p>
+  </header>
+
+  <section class="map" aria-labelledby="map-h">
+    <h2 id="map-h">Özellik haritası</h2>
+    <div class="feat"><span class="src">Glamour'dan</span><b>Renk analizi</b><span>İpuçları → selfie → tarama → kilitli sonuç → 3 gün ücretsiz deneme.</span></div>
+    <div class="feat"><span class="src">Glamour'dan</span><b>Cilt analizi</b><span>Yaş çarkı, cilt tipi, bütçe, 3 açıdan fotoğraf (ön, sol, sağ).</span></div>
+    <div class="feat"><span class="src">Glamour'dan</span><b>Güzellik asistanı</b><span>Sohbet eden yapay zekâ. Space Bunny'nin en iyi kullanılacağı yer.</span></div>
+    <div class="feat"><span class="src">Tonelle'e özel</span><b>Makyaj denemesi</b><span>Seçilen görünüm kullanıcının kendi yüzünde, önce/sonra kaydırıcıyla.</span></div>
+    <div class="feat"><span class="src">Aura'dan</span><b>Uyum skorlu ürünler</b><span>Önerilen ton ve ürünlerde %95 uyum rozeti, Türk markaları.</span></div>
+    <div class="feat"><span class="src">Aura'dan</span><b>Radar ve çubuk grafikler</b><span>Renk profili radarı, cilt metrikleri çubukları. Güzellik puanı yok.</span></div>
+  </section>
+
+  <section class="screens" aria-label="Ekranlar">
+
+    <!-- 1 HOME -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body">
+          <div class="topbar"><span class="logo">Tonelle</span><div style="display:flex;gap:8px"><span class="ib">♡</span><span class="ib solid">≡</span></div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center">
+            <span class="chip">✦ Kendini keşfet</span>
+            <h2 style="font-size:25px;line-height:1.08">Yapay Zekâ ile Yüz Taraması, Anında Sonuç</h2>
+            <p class="lead">Sana yakışan renkleri ve makyajı kendi yüzünde gör.</p>
+          </div>
+          <div class="photo" style="height:250px;background:linear-gradient(180deg,#fff,#F3F0FF)">
+            <img src="../../apps/web/public/images/portrait-hero.jpg" alt="Örnek yüz" style="object-position:50% 30%">
+            <div class="float" style="left:8px;top:26px"><span>Alt ton</span><b>Sıcak · Zeytin</b><span class="pill mint">%88 güven</span></div>
+            <div class="float" style="right:8px;top:60px"><span>Renk sezonu</span><b>Yumuşak Sonbahar</b></div>
+            <div class="float" style="left:8px;bottom:18px;align-items:center"><span>Uyum</span>
+              <svg width="34" height="34" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="14" fill="none" stroke="#EDE8FF" stroke-width="4"/><circle cx="18" cy="18" r="14" fill="none" stroke="#7457F5" stroke-width="4" stroke-dasharray="66 88" stroke-linecap="round" transform="rotate(-90 18 18)"/><text x="18" y="21" text-anchor="middle" font-size="8" font-weight="700" fill="#17141F">%75</text></svg></div>
+            <div class="fab">✦ Tonelle</div>
+          </div>
+          <div class="cards">
+            <div class="fc" style="background:var(--violet-soft)"><span class="ico">◐</span><b>Renk Analizi</b><span>Sezonunu ve paletini bul</span></div>
+            <div class="fc" style="background:var(--rose-soft)"><span class="ico" style="color:var(--rose)">✦</span><b>Makyaj Denemesi</b><span>Yüzünde dene</span></div>
+            <div class="fc"><span class="ico">◌</span><b>Cilt Analizi</b><span>Bakım rutini</span></div>
+          </div>
+        </div>
+        <div class="tabbar"><div class="on">☀<span>Bugün</span></div><div>▦<span>Sonuçlar</span></div><div><span class="scan">◎</span></div><div>✉<span>Asistan</span></div><div>◯<span>Profil</span></div></div>
+      </div></div>
+      <figcaption><b>1 · Ana sayfa</b><span>Glamour'daki özellik kartları, Aura'nın yüz ve yüzen etiket düzeni</span></figcaption>
+    </figure>
+
+    <!-- 2 TIPS -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body">
+          <div class="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="#17141F" stroke-width="2" stroke-linecap="round"/></svg>En iyi açını yakala</div>
+          <div class="tips"><b>Doğru sonuç için</b>
+            <span>☀ Gün ışığında, pencereye dönük çek</span>
+            <span>◌ Makyajsız ya da çok hafif makyajlı ol</span>
+            <span>↺ Saçların yüzünü kapatmasın</span>
+            <span>▢ Filtre ve güzellik modu kapalı olsun</span></div>
+          <div class="sec">İdeal selfie</div>
+          <div class="thumbs"><div class="th good"><img src="../../apps/web/public/images/portrait-hero.jpg" alt=""><span class="tag pill mint">✓</span></div><div class="th good"><img src="../../apps/web/public/images/portrait-hero.jpg" alt="" style="object-position:50% 20%"><span class="tag pill mint">✓</span></div><div class="th good"><img src="../../apps/web/public/images/portrait-hero.jpg" alt=""><span class="tag pill mint">✓</span></div></div>
+          <div class="sec">Kaçınılması gerekenler</div>
+          <div class="thumbs"><div class="th bad"><img src="../../apps/web/public/images/portrait-hero.jpg" alt=""><span class="tag pill rose">Karanlık</span></div><div class="th bad"><img src="../../apps/web/public/images/portrait-hero.jpg" alt="" style="object-position:50% 20%"><span class="tag pill rose">Filtre</span></div><div class="th bad"><img src="../../apps/web/public/images/portrait-hero.jpg" alt=""><span class="tag pill rose">Açılı</span></div></div>
+        </div>
+        <div class="foot"><button class="btn" type="button">◎ Selfie çek veya yükle</button></div>
+      </div></div>
+      <figcaption><b>2 · Selfie ipuçları</b><span>Glamour'daki "İdeal / Kaçınılacak" örnekleri</span></figcaption>
+    </figure>
+
+    <!-- 3 SCAN -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:14px">
+          <div style="text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center"><span class="chip">✦ Analiz sürüyor</span><h2 style="font-size:24px">Renklerini okuyoruz</h2></div>
+          <div class="scanwrap">
+            <svg class="ring" viewBox="0 0 220 220" aria-hidden="true"><circle cx="110" cy="110" r="104" fill="none" stroke="#EDE8FF" stroke-width="6"/><circle cx="110" cy="110" r="104" fill="none" stroke="#7457F5" stroke-width="6" stroke-linecap="round" stroke-dasharray="418 653" transform="rotate(-90 110 110)"/></svg>
+            <div class="scanface"><img src="../../apps/web/public/images/portrait-hero.jpg" alt="Taranan yüz" style="object-position:50% 35%"><div class="scanline"></div>
+              <svg class="mesh" viewBox="0 0 188 188" aria-hidden="true" fill="#fff"><g opacity=".9"><circle cx="68" cy="82" r="2"/><circle cx="120" cy="82" r="2"/><circle cx="94" cy="104" r="2"/><circle cx="80" cy="128" r="2"/><circle cx="108" cy="128" r="2"/><circle cx="94" cy="60" r="2"/><circle cx="56" cy="104" r="1.6"/><circle cx="132" cy="104" r="1.6"/></g><g stroke="#fff" stroke-width=".7" opacity=".55" fill="none"><path d="M68 82 94 60 120 82 94 104Z M56 104 68 82 M132 104 120 82 M80 128 94 104 108 128Z M56 104 80 128 M132 104 108 128"/></g></svg></div>
+          </div>
+          <div class="pct">%64</div>
+          <div class="steps"><div class="done"><i>✓</i>Yüz hatları bulundu</div><div class="done"><i>✓</i>Işık dengelendi</div><div class="now"><i>•</i>Alt ton okunuyor…</div><div><i></i>Kontrast ölçülüyor</div><div><i></i>Renk sezonu belirleniyor</div></div>
+        </div>
+      </div></div>
+      <figcaption><b>3 · Tarama</b><span>Aura'nın yüz ağı + Glamour'un halka ilerlemesi</span></figcaption>
+    </figure>
+
+    <!-- 4 LOCKED -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:12px">
+          <div class="prog"><span class="n">1/6</span><span class="bars"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></span><span class="ib" style="width:26px;height:26px">✕</span></div>
+          <div class="avatar"><img src="../../apps/web/public/images/portrait-hero.jpg" alt="" style="object-position:50% 35%"></div>
+          <div style="text-align:center"><span class="lead">Senin renk sezonun</span><h2 style="font-size:26px" class="blurtxt">Yumuşak Sonbahar</h2></div>
+          <div class="lock">🔒 Sonuçlarını aç</div>
+          <div class="grid2">
+            <div class="lc"><span>◐</span>Cilt alt tonu<span class="bar"></span></div>
+            <div class="lc"><span>◑</span>Kontrast<span class="bar"></span></div>
+            <div class="lc"><span>◇</span>Yüz şekli<span class="bar"></span></div>
+            <div class="lc"><span>✺</span>Cilt rengi<span class="bar"></span></div>
+          </div>
+        </div>
+        <div class="foot"><button class="btn" type="button">3 gün ücretsiz dene ✦</button><div class="fine">Sonra haftalık ₺129,99 · İstediğin zaman iptal et<br>Gizlilik · Geri yükle · Kullanım şartları</div></div>
+      </div></div>
+      <figcaption><b>4 · Kilitli sonuç</b><span>Glamour'un en çok satan anı: sonuç var ama bulanık</span></figcaption>
+    </figure>
+
+    <!-- 5 PAYWALL -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:12px">
+          <div class="topbar"><span class="ib" style="width:28px;height:28px">✕</span><span class="lead">Geri yükle</span></div>
+          <h2 style="font-size:26px;line-height:1.08">Tam raporun ve makyaj denemen hazır</h2>
+          <div class="checks"><div><i>✓</i>Renk sezonu ve kişisel palet</div><div><i>✓</i>Yüzünde 8 makyaj görünümü</div><div><i>✓</i>Fondöten, ruj ve allık tonların</div><div><i>✓</i>Sınırsız güzellik asistanı</div></div>
+          <div class="plan sel"><span class="badge pill violet">En avantajlı · %88</span><span class="radio"></span><div><b>Yıllık</b><span>3 gün ücretsiz, sonra ₺799,99/yıl</span></div><div class="price">₺15,38<small>haftalık</small></div></div>
+          <div class="plan"><span class="radio"></span><div><b>Haftalık</b><span>İlk hafta ₺39,99</span></div><div class="price">₺129,99<small>haftalık</small></div></div>
+          <div class="plan"><span class="radio"></span><div><b>Tek rapor</b><span>Abonelik yok</span></div><div class="price">₺199<small>bir kez</small></div></div>
+        </div>
+        <div class="foot"><button class="btn" type="button">Ücretsiz denemeyi başlat</button><div class="fine">Deneme bitmeden iptal edersen ücret alınmaz.</div></div>
+      </div></div>
+      <figcaption><b>5 · Ödeme ekranı</b><span>Aura'nın sade kart düzeni, bizim fiyat stratejimiz</span></figcaption>
+    </figure>
+
+    <!-- 6 RESULTS -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:12px">
+          <div class="topbar"><span class="logo" style="font-size:20px">Sonuçların</span><span class="ib">↗</span></div>
+          <div class="season"><span class="chip" style="background:rgba(255,255,255,.7)">Renk sezonun</span><h3>Yumuşak Sonbahar</h3>
+            <div class="sw"><i style="background:#B98A6B"></i><i style="background:#C06F52"></i><i style="background:#A8A77A"></i><i style="background:#7E8B5A"></i><i style="background:#5E8A86"></i><i style="background:#D19C95"></i></div></div>
+          <div class="radar"><svg id="radar" width="100%" height="170" viewBox="-30 0 290 170" style="max-width:290px" aria-label="Renk profili"></svg></div>
+          <div class="bars">
+            <div class="bar"><span>Sıcaklık</span><em>72</em><span class="tr"><i style="width:72%;background:#F29A5E"></i></span></div>
+            <div class="bar"><span>Kontrast</span><em>38</em><span class="tr"><i style="width:38%;background:#6C9BEF"></i></span></div>
+            <div class="bar"><span>Yumuşaklık</span><em>81</em><span class="tr"><i style="width:81%;background:#D983E6"></i></span></div>
+          </div>
+        </div>
+        <div class="tabbar"><div>☀<span>Bugün</span></div><div class="on">▦<span>Sonuçlar</span></div><div><span class="scan">◎</span></div><div>✉<span>Asistan</span></div><div>◯<span>Profil</span></div></div>
+      </div></div>
+      <figcaption><b>6 · Renk sonucu</b><span>Aura'nın radar ve renkli çubukları, puanlama değil profil</span></figcaption>
+    </figure>
+
+    <!-- 7 TRY-ON -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:12px">
+          <div class="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="#17141F" stroke-width="2" stroke-linecap="round"/></svg>Makyaj denemesi</div>
+          <div class="looks"><span class="on">Soft glam</span><span>Günlük</span><span>Ofis</span><span>Gece</span><span>Gelin</span></div>
+          <div class="ba"><img src="../../apps/web/public/images/portrait-hero.jpg" alt="Önce" style="object-position:50% 35%"><img class="after" src="../../apps/web/public/images/portrait-hero.jpg" alt="Sonra" style="object-position:50% 35%"><span class="after-tint"></span><span class="div"></span><span class="knob">‹ ›</span><span class="lbl" style="left:10px">Önce</span><span class="lbl" style="right:10px">Sonra</span><span class="pill violet" style="position:absolute;right:10px;bottom:10px">✦ AI ile oluşturuldu</span></div>
+          <div class="sec">Bu görünüm için tonların</div>
+          <div class="prod">
+            <div class="pc"><span class="pill mint">%95 uyum</span><div class="tube" style="background:var(--rose-soft)"><i style="background:#B8566A"></i></div><b>Mat ruj · Gül kurusu</b><span>#B8566A</span></div>
+            <div class="pc"><span class="pill butter">%88 uyum</span><div class="tube" style="background:#FBEDE6"><i style="background:#D98C78"></i></div><b>Allık · Şeftali</b><span>#D98C78</span></div>
+            <div class="pc"><span class="pill mint">%92 uyum</span><div class="tube" style="background:#F6EEE6"><i style="background:#C9A07C"></i></div><b>Fondöten · W3</b><span>Sıcak bej</span></div>
+          </div>
+        </div>
+      </div></div>
+      <figcaption><b>7 · Makyaj denemesi</b><span>Tonelle'in farkı: yüzünde önce/sonra + uyum skorlu tonlar</span></figcaption>
+    </figure>
+
+    <!-- 8 SKIN QUIZ -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:10px">
+          <div class="back"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="#17141F" stroke-width="2" stroke-linecap="round"/></svg>Cilt analizi</div>
+          <div class="prog"><span class="n">2/4</span><span class="bars"><i class="on"></i><i class="on"></i><i></i><i></i></span></div>
+          <div class="wheel"><div class="nums"><span class="f">24</span><span>25</span><span class="cur">26</span><span>27</span><span class="f">28</span></div></div>
+          <div class="sec" style="text-align:center">Cilt tipin</div>
+          <div class="list">
+            <div class="row"><span class="dot" style="background:#E8F7EC">◌</span><div><b>Normal</b><span>Dengeli, sorunsuz</span></div><span class="radio"></span></div>
+            <div class="row sel"><span class="dot" style="background:#FFF3D6">◐</span><div><b>Karma</b><span>T bölgesi yağlı, yanaklar kuru</span></div><span class="radio"></span></div>
+            <div class="row"><span class="dot" style="background:#FCE9EE">◍</span><div><b>Hassas</b><span>Kolay kızarır</span></div><span class="radio"></span></div>
+          </div>
+        </div>
+        <div class="foot"><button class="btn" type="button">Devam et →</button></div>
+      </div></div>
+      <figcaption><b>8 · Cilt analizi soruları</b><span>Glamour'daki yaş çarkı ve cilt tipi, Aura stilinde</span></figcaption>
+    </figure>
+
+    <!-- 9 CHAT -->
+    <figure>
+      <div class="phone"><div class="scr">
+        <div class="status"><span>9:41</span><span class="island"></span><span>●●● ▮</span></div>
+        <div class="body" style="gap:10px">
+          <div class="topbar"><span class="logo" style="font-size:20px">Güzellik asistanı</span><span class="ib">✕</span></div>
+          <div class="bot"><span class="av"></span><div class="msg ai">Merhaba! Ben Tonelle. Yumuşak Sonbahar paletine göre sana ruj, allık ya da kıyafet rengi önerebilirim.</div></div>
+          <div class="msg me">Bu akşam düğüne gidiyorum, hangi ruj?</div>
+          <div class="bot"><span class="av"></span><div class="msg ai">Sıcak alt tonun için gül kurusu ya da tarçın tonları çok iyi durur. Mat bir formül akşam boyunca kalır. İşte paletine en uyan üç ton:</div></div>
+          <div class="sw" style="padding-left:34px"><i style="background:#B8566A"></i><i style="background:#A0493D"></i><i style="background:#C27A6A"></i></div>
+          <div class="sugg" style="padding-left:34px"><span>Göz makyajı önerisi</span><span>Bu tonları yüzümde dene</span><span>Hangi fondöten?</span></div>
+        </div>
+        <div class="composer"><span>Güzellikle ilgili bir şey sor…</span><span class="ib solid">↑</span></div>
+      </div></div>
+      <figcaption><b>9 · Güzellik asistanı</b><span>Glamour'daki "Bilge" sohbeti, Aura'nın öneri çipleriyle</span></figcaption>
+    </figure>
+  </section>
+
+  <p class="note">Yüz fotoğrafları gönderdiğin Aura referansından geçici olarak kırpıldı; gerçek uygulamada izinli çekim ya da yapay zekâyla üretilmiş kendi görsellerimiz kullanılacak. Makyaj önizlemesindeki "sonra" yarısı gerçek bir model çıktısı değil, taslak için basit bir renk efekti.</p>
+</div>
+
+<script>
+(function(){
+  var svg=document.getElementById('radar'); if(!svg) return;
+  var labels=['Sıcaklık','Derinlik','Kontrast','Canlılık','Yumuşaklık','Açıklık'], vals=[72,55,38,46,81,60];
+  var cx=115, cy=86, R=62, n=labels.length, NS='http://www.w3.org/2000/svg';
+  function pt(i,r){var a=-Math.PI/2+i*2*Math.PI/n;return [cx+r*Math.cos(a), cy+r*Math.sin(a)];}
+  function el(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e;}
+  [0.33,0.66,1].forEach(function(f){el('polygon',{points:labels.map(function(_,i){return pt(i,R*f).join(',')}).join(' '),fill:'none',stroke:'#E6E2F3','stroke-width':1});});
+  labels.forEach(function(_,i){var p=pt(i,R);el('line',{x1:cx,y1:cy,x2:p[0],y2:p[1],stroke:'#E6E2F3','stroke-width':1});});
+  el('polygon',{points:vals.map(function(v,i){return pt(i,R*v/100).join(',')}).join(' '),fill:'rgba(116,87,245,.28)',stroke:'#7457F5','stroke-width':1.5});
+  vals.forEach(function(v,i){var p=pt(i,R*v/100);el('circle',{cx:p[0],cy:p[1],r:2.5,fill:'#7457F5'});});
+  labels.forEach(function(l,i){var p=pt(i,R+14);var t=el('text',{x:p[0],y:p[1]+3,'text-anchor':Math.abs(p[0]-cx)<5?'middle':(p[0]>cx?'start':'end'),'font-size':'9','fill':'#6B6679','font-family':'Plus Jakarta Sans, sans-serif'});t.textContent=l+' '+vals[i];});
+})();
+</script>
