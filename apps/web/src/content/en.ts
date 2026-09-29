@@ -147,7 +147,7 @@ export const en: SiteContent = {
     items: [
       {
         q: 'Do you store my photo?',
-        a: 'No. Your selfie is sent securely to our AI provider only to create your analysis (and, with Premium, the makeup previews). It is processed in memory and discarded as soon as the request finishes. It is never saved on our servers and never used to train AI models. Your results are stored only on your device.',
+        a: 'No. Your selfie is sent securely to our AI provider only to create your analysis (and, with Premium, the makeup previews). We process it in memory and discard it as soon as the request finishes (if our AI provider needs a temporary copy, it is deleted automatically within 3 days). It is never saved on our servers and never used to train AI models. Your results are stored only on your device.',
       },
       {
         q: 'How accurate is the analysis?',
@@ -307,6 +307,7 @@ export const en: SiteContent = {
                 ['OpenRouter, Inc. (USA)', 'Routes your photo and questionnaire answers to the AI vision model that performs the analysis.'],
                 ['AI model provider reached through OpenRouter (e.g. Google LLC)', 'Performs the analysis of your photo.'],
                 ['Google LLC (Gemini API) or Features & Labels, Inc. (fal.ai) (USA)', 'Generates makeup previews on your photo (Premium only).'],
+                ['Kie.ai (AI API provider)', 'Where enabled, routes your photo to the AI models (Google Gemini / Nano Banana) for the analysis and makeup previews. For this, your photo is held in Kie.ai’s temporary file storage and deleted automatically within 3 days.'],
                 ['RevenueCat, Inc. (USA)', 'Manages subscription status linked to your anonymous app user ID.'],
               ],
             },
@@ -327,7 +328,7 @@ export const en: SiteContent = {
           blocks: [
             {
               rows: [
-                ['Facial image', 'Not stored. Discarded when the analysis or preview request ends.'],
+                ['Facial image', 'Not stored by us. Discarded when the analysis or preview request ends. Where Kie.ai is used, its temporary copy is deleted automatically within 3 days.'],
                 ['Analysis results', 'Only on your device, until you delete them.'],
                 ['Technical logs (without photos)', 'Up to 30 days, unless needed longer to investigate a security incident.'],
                 ['Rate-limiting counters (IP address or app user ID)', 'Up to 1 hour.'],
@@ -461,7 +462,7 @@ export const en: SiteContent = {
           id: 'transfer',
           heading: '5. Transfer of personal data (including abroad, Art. 9)',
           blocks: [
-            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis (OpenRouter, Inc. and the model provider it routes to, e.g. Google LLC, USA), AI image generation (Google LLC or Features & Labels, Inc. / fal.ai, USA) and subscription management (RevenueCat, Inc., USA). Payments are processed by Apple Inc. and Google LLC.',
+            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis (OpenRouter, Inc. and the model provider it routes to, e.g. Google LLC, USA), AI image generation (Google LLC or Features & Labels, Inc. / fal.ai, USA), an AI API provider (Kie.ai) and subscription management (RevenueCat, Inc., USA). Payments are processed by Apple Inc. and Google LLC.',
             'Transfers abroad are carried out in accordance with KVKK Article 9: primarily on the basis of standard contracts announced by the Personal Data Protection Board and notified to the Authority within five business days of signature (Art. 9(4)). Where such safeguards cannot be applied, data is transferred only occasionally and with your explicit consent (Art. 9(6)(a)).',
             'Personal data may also be shared with authorised public institutions where required by law.',
           ],
@@ -524,7 +525,7 @@ export const en: SiteContent = {
           id: 'transfer',
           heading: '2. Transfer abroad',
           blocks: [
-            'I understand that, to perform the analysis, my photo and questionnaire answers are sent to AI service providers located abroad (OpenRouter, Inc. and the model provider it routes to, Google LLC or Features & Labels, Inc. / fal.ai, USA) and that hosting is provided by Vercel Inc. These transfers are primarily based on standard contracts / Standard Contractual Clauses. Where such safeguards cannot be applied, I consent to the occasional transfer of my data abroad for these purposes (KVKK Art. 9(6)(a)).',
+            'I understand that, to perform the analysis, my photo and questionnaire answers are sent to AI service providers located abroad (OpenRouter, Inc. and the model provider it routes to, Google LLC, Features & Labels, Inc. / fal.ai, USA, or Kie.ai) and that hosting is provided by Vercel Inc. These transfers are primarily based on standard contracts / Standard Contractual Clauses. Where such safeguards cannot be applied, I consent to the occasional transfer of my data abroad for these purposes (KVKK Art. 9(6)(a)).',
           ],
         },
         {

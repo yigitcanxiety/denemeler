@@ -22,12 +22,18 @@ export interface OpenRouterOptions {
   appTitle?: string;
   timeoutMs?: number;
   totalBudgetMs?: number;
+  /** Chat endpoint for a model; defaults to OpenRouter. Kie.ai puts the model in the path. */
+  endpoint?: (model: string) => string;
+  /** Log label prefix, e.g. `openrouter` or `kie`. */
+  providerLabel?: string;
 }
 
 export interface AnalyzeFaceInput {
   imageDataUrl: string;
   locale: Locale;
   quiz?: QuizAnswers;
+  /** Hosted copy of the photo for providers that do not accept data URLs. */
+  imageUrl?: string;
 }
 
 export interface AnalyzeFaceResult {
@@ -76,10 +82,10 @@ async function callModel(
   timeoutMs: number,
 ): Promise<FaceAnalysis> {
   const prompt = buildAnalysisPrompt(input.locale, input.quiz);
-  const label = `openrouter(${model})`;
+  const label = `${options.providerLabel ?? 'openrouter'}(${model})`;
 
   const response = await fetchWithTimeout(
-    OPENROUTER_URL,
+    options.endpoint ? options.endpoint(model) : OPENROUTER_URL,
     {
       method: 'POST',
       headers: {
@@ -90,6 +96,7 @@ async function callModel(
       },
       body: JSON.stringify({
         model,
+        stream: false,
         temperature: 0.2,
         max_tokens: 1500,
         response_format: { type: 'json_object' },
@@ -99,7 +106,7 @@ async function callModel(
             role: 'user',
             content: [
               { type: 'text', text: prompt.user },
-              { type: 'image_url', image_url: { url: input.imageDataUrl } },
+              { type: 'image_url', image_url: { url: input.imageUrl ?? input.imageDataUrl } },
             ],
           },
         ],

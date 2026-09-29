@@ -3,7 +3,8 @@
  * Values are read on every call (cheap) so tests can stub `process.env` freely.
  */
 
-export type ImageProviderName = 'gemini' | 'fal';
+export type ImageProviderName = 'gemini' | 'fal' | 'kie';
+export type AnalysisProviderName = 'openrouter' | 'kie';
 
 export interface ServerConfig {
   /** `TONELLE_MOCK=1` forces every capability into mock mode. */
@@ -16,7 +17,10 @@ export interface ServerConfig {
     model: string;
     fallbackModel: string | undefined;
   };
+  /** OpenRouter when its key is set (Space Bunny), otherwise Kie.ai when that key is set. */
+  analysisProvider: AnalysisProviderName;
   imageProvider: ImageProviderName;
+  kie: { apiKey: string | undefined; analysisModel: string; imageModel: string };
   gemini: { apiKey: string | undefined; model: string };
   fal: { apiKey: string | undefined; model: string };
   revenueCatSecretKey: string | undefined;
@@ -25,6 +29,8 @@ export interface ServerConfig {
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
 export const DEFAULT_GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
 export const DEFAULT_FAL_IMAGE_MODEL = 'fal-ai/nano-banana/edit';
+export const DEFAULT_KIE_ANALYSIS_MODEL = 'gemini-3-flash';
+export const DEFAULT_KIE_IMAGE_MODEL = 'google/nano-banana-edit';
 export const DEFAULT_SITE_URL = 'https://tonelle.app';
 const DEFAULT_MOCK_DELAY_MS = 600;
 
@@ -45,18 +51,34 @@ function truthy(value: string | undefined): boolean {
 export function getServerConfig(env: Env = process.env): ServerConfig {
   const provider = read(env, 'IMAGE_PROVIDER')?.toLowerCase();
   const delay = Number(read(env, 'TONELLE_MOCK_DELAY_MS'));
+  const openRouterKey = read(env, 'OPENROUTER_API_KEY');
+  const kieKey = read(env, 'KIE_API_KEY');
+  const geminiKey = read(env, 'GEMINI_API_KEY');
+  // Without an explicit IMAGE_PROVIDER, use Kie.ai when it is the only image key configured.
+  const imageProvider: ImageProviderName =
+    provider === 'fal' || provider === 'kie' || provider === 'gemini'
+      ? provider
+      : kieKey && !geminiKey
+        ? 'kie'
+        : 'gemini';
   return {
     mockForced: truthy(read(env, 'TONELLE_MOCK')),
     mockDelayMs: Number.isFinite(delay) && delay >= 0 ? delay : DEFAULT_MOCK_DELAY_MS,
     siteUrl: read(env, 'NEXT_PUBLIC_SITE_URL') ?? DEFAULT_SITE_URL,
     openRouter: {
-      apiKey: read(env, 'OPENROUTER_API_KEY'),
+      apiKey: openRouterKey,
       model: read(env, 'ANALYSIS_MODEL') ?? DEFAULT_ANALYSIS_MODEL,
       fallbackModel: read(env, 'ANALYSIS_FALLBACK_MODEL'),
     },
-    imageProvider: provider === 'fal' ? 'fal' : 'gemini',
+    analysisProvider: !openRouterKey && kieKey ? 'kie' : 'openrouter',
+    imageProvider,
+    kie: {
+      apiKey: kieKey,
+      analysisModel: read(env, 'KIE_ANALYSIS_MODEL') ?? DEFAULT_KIE_ANALYSIS_MODEL,
+      imageModel: read(env, 'KIE_IMAGE_MODEL') ?? DEFAULT_KIE_IMAGE_MODEL,
+    },
     gemini: {
-      apiKey: read(env, 'GEMINI_API_KEY'),
+      apiKey: geminiKey,
       model: read(env, 'GEMINI_IMAGE_MODEL') ?? DEFAULT_GEMINI_IMAGE_MODEL,
     },
     fal: {
@@ -67,14 +89,14 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
   };
 }
 
-/** Analysis is mocked when forced or when no OpenRouter key is configured. */
+/** Analysis is mocked when forced or when neither OpenRouter nor Kie.ai has a key. */
 export function isAnalysisMock(config: ServerConfig): boolean {
-  return config.mockForced || !config.openRouter.apiKey;
+  return config.mockForced || (!config.openRouter.apiKey && !config.kie.apiKey);
 }
 
 /** Rendering is mocked when forced or when the selected image provider has no key. */
 export function isRenderMock(config: ServerConfig): boolean {
   if (config.mockForced) return true;
-  const key = config.imageProvider === 'fal' ? config.fal.apiKey : config.gemini.apiKey;
+  const key = { fal: config.fal.apiKey, kie: config.kie.apiKey, gemini: config.gemini.apiKey }[config.imageProvider];
   return !key;
 }

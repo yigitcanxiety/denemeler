@@ -2,6 +2,7 @@ import { parseImageDataUrl } from '@tonelle/shared';
 import type { ServerConfig } from './env';
 import { ProviderError } from './errors';
 import { fetchWithTimeout, readProviderJson } from './fetch';
+import { KieImageProvider } from './kie';
 
 /** Applies a text-described edit to an image. Input and output are base64 data URLs. */
 export interface ImageProvider {
@@ -153,6 +154,9 @@ export async function downloadAsDataUrl(url: string, timeoutMs: number, label: s
 
 /** Returns the configured provider, or null when its key is missing (→ mock mode). */
 export function createImageProvider(config: ServerConfig): ImageProvider | null {
+  if (config.imageProvider === 'kie') {
+    return config.kie.apiKey ? new KieImageProvider(config.kie.apiKey, config.kie.imageModel) : null;
+  }
   if (config.imageProvider === 'fal') {
     return config.fal.apiKey ? new FalImageProvider(config.fal.apiKey, config.fal.model) : null;
   }

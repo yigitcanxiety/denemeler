@@ -13,6 +13,7 @@ import { getServerConfig, isAnalysisMock, isRenderMock } from './env';
 import { HttpError } from './errors';
 import { clientIp, errorResponse, handleError, jsonResponse, parseJsonBody, rateLimitedResponse, sleep } from './http';
 import { createImageProvider } from './image-providers';
+import { kieChatUrl, uploadToKie } from './kie';
 import { analyzeFace } from './openrouter';
 import { analyzeRateLimiter, renderRateLimiter } from './rate-limit';
 import { checkEntitlement } from './revenuecat';
@@ -35,14 +36,18 @@ export async function handleAnalyze(request: Request): Promise<Response> {
       return jsonResponse(response);
     }
 
+    const viaKie = config.analysisProvider === 'kie';
+    const kieKey = config.kie.apiKey as string;
     const { analysis } = await analyzeFace(
-      { imageDataUrl: image, locale, quiz },
-      {
-        apiKey: config.openRouter.apiKey as string,
-        model: config.openRouter.model,
-        fallbackModel: config.openRouter.fallbackModel,
-        siteUrl: config.siteUrl,
-      },
+      { imageDataUrl: image, locale, quiz, imageUrl: viaKie ? await uploadToKie(kieKey, image) : undefined },
+      viaKie
+        ? { apiKey: kieKey, model: config.kie.analysisModel, siteUrl: config.siteUrl, endpoint: kieChatUrl, providerLabel: 'kie' }
+        : {
+            apiKey: config.openRouter.apiKey as string,
+            model: config.openRouter.model,
+            fallbackModel: config.openRouter.fallbackModel,
+            siteUrl: config.siteUrl,
+          },
     );
     // analyzeFace throws NoFaceError for faceDetected=false; keep a guard for safety.
     if (!analysis.faceDetected) return errorResponse('no_face', 'No face was detected in the photo.');

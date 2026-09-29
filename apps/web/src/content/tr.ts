@@ -147,7 +147,7 @@ export const tr: SiteContent = {
     items: [
       {
         q: 'Fotoğrafımı saklıyor musunuz?',
-        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Bellekte işlenir ve istek biter bitmez silinir. Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
+        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Biz onu bellekte işler ve istek biter bitmez sileriz (yapay zekâ sağlayıcımız geçici bir kopyaya ihtiyaç duyarsa, bu kopya en geç 3 gün içinde otomatik olarak silinir). Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
       },
       {
         q: 'Analiz ne kadar doğru?',
@@ -301,6 +301,7 @@ export const tr: SiteContent = {
                 ['OpenRouter, Inc. (ABD)', 'Fotoğrafını ve soru cevaplarını analizi yapan yapay zekâ görüntü modeline yönlendirir.'],
                 ['OpenRouter üzerinden erişilen model sağlayıcı (ör. Google LLC)', 'Fotoğrafının analizini yapar.'],
                 ['Google LLC (Gemini API) veya Features & Labels, Inc. (fal.ai) (ABD)', 'Fotoğrafında makyaj önizlemeleri oluşturur (yalnızca Premium).'],
+                ['Kie.ai (yapay zekâ API sağlayıcısı)', 'Kullanıldığında fotoğrafını analiz ve makyaj önizlemeleri için yapay zekâ modellerine (Google Gemini / Nano Banana) iletir. Bunun için fotoğrafın Kie.ai’nin geçici dosya deposunda tutulur ve en geç 3 gün içinde otomatik olarak silinir.'],
                 ['RevenueCat, Inc. (ABD)', 'Anonim kullanıcı kimliğinle bağlantılı abonelik durumunu yönetir.'],
               ],
             },
@@ -321,7 +322,7 @@ export const tr: SiteContent = {
           blocks: [
             {
               rows: [
-                ['Yüz görüntüsü', 'Saklanmaz. Analiz veya önizleme isteği bittiğinde silinir.'],
+                ['Yüz görüntüsü', 'Tarafımızca saklanmaz. Analiz veya önizleme isteği bittiğinde silinir. Kie.ai kullanıldığında onun geçici kopyası en geç 3 gün içinde otomatik olarak silinir.'],
                 ['Analiz sonuçları', 'Yalnızca cihazında, sen silene kadar.'],
                 ['Teknik kayıtlar (fotoğraf içermez)', 'Bir güvenlik olayının incelenmesi gerekmedikçe en fazla 30 gün.'],
                 ['Kullanım sınırı sayaçları (IP adresi veya kullanıcı kimliği)', 'En fazla 1 saat.'],
@@ -455,7 +456,7 @@ export const tr: SiteContent = {
           id: 'transfer',
           heading: '5. Kişisel verilerin aktarılması (yurt dışına aktarım, md. 9)',
           blocks: [
-            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, ör. Google LLC, ABD), yapay zekâ ile görsel oluşturma (Google LLC veya Features & Labels, Inc. / fal.ai, ABD) ve abonelik yönetimi (RevenueCat, Inc., ABD). Ödemeler Apple Inc. ve Google LLC tarafından işlenir.',
+            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, ör. Google LLC, ABD), yapay zekâ ile görsel oluşturma (Google LLC veya Features & Labels, Inc. / fal.ai, ABD), yapay zekâ API sağlayıcısı (Kie.ai) ve abonelik yönetimi (RevenueCat, Inc., ABD). Ödemeler Apple Inc. ve Google LLC tarafından işlenir.',
             'Yurt dışına aktarımlar KVKK’nın 9. maddesine uygun olarak; öncelikle Kişisel Verileri Koruma Kurulu tarafından ilan edilen standart sözleşmelere dayanılarak ve sözleşmenin imzalanmasından itibaren beş iş günü içinde Kuruma bildirilmesi suretiyle (md. 9/4) gerçekleştirilir. Bu güvencelerin uygulanamadığı hâllerde veriler yalnızca arızi olarak ve açık rızana dayanılarak aktarılır (md. 9/6-a).',
             'Kişisel verilerin, kanunen yetkili kamu kurum ve kuruluşlarıyla, talep hâlinde ve mevzuatın izin verdiği ölçüde paylaşılabilir.',
           ],
@@ -517,7 +518,7 @@ export const tr: SiteContent = {
           id: 'transfer',
           heading: '2. Yurt dışına aktarım',
           blocks: [
-            'Analizin yapılabilmesi için fotoğrafımın ve soru cevaplarımın yurt dışında bulunan yapay zekâ hizmet sağlayıcılarına (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, Google LLC veya Features & Labels, Inc. / fal.ai, ABD) gönderildiğini ve barındırma hizmetinin Vercel Inc. tarafından sağlandığını biliyorum. Bu aktarımlar öncelikle standart sözleşmelere dayanır. Bu güvencelerin uygulanamadığı hâllerde verilerimin bu amaçlarla arızi olarak yurt dışına aktarılmasına açık rıza veriyorum (KVKK md. 9/6-a).',
+            'Analizin yapılabilmesi için fotoğrafımın ve soru cevaplarımın yurt dışında bulunan yapay zekâ hizmet sağlayıcılarına (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, Google LLC, Features & Labels, Inc. / fal.ai, ABD veya Kie.ai) gönderildiğini ve barındırma hizmetinin Vercel Inc. tarafından sağlandığını biliyorum. Bu aktarımlar öncelikle standart sözleşmelere dayanır. Bu güvencelerin uygulanamadığı hâllerde verilerimin bu amaçlarla arızi olarak yurt dışına aktarılmasına açık rıza veriyorum (KVKK md. 9/6-a).',
           ],
         },
         {

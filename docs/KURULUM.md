@@ -19,6 +19,7 @@ Bunları bana ilet, ben ortam değişkenlerine eklerim. **Anahtarları asla koda
 | Değişken | Nereden | Ne için |
 |---|---|---|
 | `OPENROUTER_API_KEY` | openrouter.ai → Keys | Selfie analizi (Space Bunny, yedek Gemini Flash) |
+| `KIE_API_KEY` | kie.ai → API Key ✅ **alındı** | Tek anahtarla analiz (Gemini 3 Flash) + makyaj görseli (Nano Banana). OpenRouter anahtarı varsa analiz Space Bunny ile yapılır. Not: fotoğraf Kie'nin geçici deposunda en geç 3 gün tutulur (gizlilik metnine eklendi). |
 | `GEMINI_API_KEY` | aistudio.google.com → API key (faturalandırma açık) | Makyajı yüze uygulama (Nano Banana) |
 | `REVENUECAT_SECRET_KEY` | RevenueCat → Project → API keys → Secret key | Sunucuda premium doğrulama |
 | `EXPO_PUBLIC_RC_IOS_KEY` / `EXPO_PUBLIC_RC_ANDROID_KEY` | RevenueCat → Public app-specific keys | Mobil ödeme ekranı |

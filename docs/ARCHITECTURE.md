@@ -19,7 +19,7 @@ There is no separate backend service. The Next.js app on Vercel (EU region `fra1
 
 ## Core principles
 
-1. **We do not train or host models.** Analysis = a vision LLM via OpenRouter (model id from env). Rendering = an image-editing model (Gemini image or fal.ai) via env.
+1. **We do not train or host models.** Analysis = a vision LLM via OpenRouter (model id from env). Rendering = an image-editing model (Gemini image, fal.ai or Kie.ai Nano Banana) via env. With only `KIE_API_KEY`, both analysis and rendering go through Kie.ai.
 2. **We never store selfies.** Photos arrive in the request body, are forwarded to the AI provider, and are dropped when the request ends. No DB, no bucket, no logs of image bytes. Analysis results live on the client (localStorage / AsyncStorage).
 3. **Mock mode.** When the relevant API key is missing (or `TONELLE_MOCK=1`), endpoints return deterministic fixture data so the whole product runs locally and in CI with zero keys.
 4. **Rendering costs money, so it is paid-only.** `/api/render-look` requires a verified entitlement (except in mock mode).
@@ -78,7 +78,10 @@ Server env (`apps/web/.env.example`):
 OPENROUTER_API_KEY=
 ANALYSIS_MODEL=stealth/space-bunny-alpha      # swap to e.g. google/gemini-2.5-flash without code changes
 ANALYSIS_FALLBACK_MODEL=google/gemini-2.5-flash
-IMAGE_PROVIDER=gemini                          # gemini | fal
+KIE_API_KEY=                                   # Kie.ai: analysis fallback when no OpenRouter key + renders
+KIE_ANALYSIS_MODEL=gemini-3-flash
+KIE_IMAGE_MODEL=google/nano-banana-edit
+IMAGE_PROVIDER=                                # gemini | fal | kie (empty: kie if only KIE_API_KEY is set)
 GEMINI_API_KEY=
 GEMINI_IMAGE_MODEL=gemini-2.5-flash-image
 FAL_KEY=
