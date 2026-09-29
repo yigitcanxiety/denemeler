@@ -58,8 +58,9 @@ export const tr: Dictionary = {
     pointOnDevice: 'Sonuçların yalnızca bu cihazda saklanır. Dilediğin zaman Ayarlar’dan silebilirsin.',
     pointNoScoring: 'Görünüşünü asla puanlamayız. Tonelle sadece sana neyin yakıştığını söyler.',
     ageCheckbox: '16 yaşından büyüğüm.',
+    termsCheckbox: '16 yaşından büyüğüm ve Kullanım Koşulları’nı kabul ediyorum.',
     explicitConsentCheckbox:
-      'Yüz fotoğrafımın renk ve makyaj analizi amacıyla, Açık Rıza Metni’nde açıklandığı şekilde işlenmesine açık rızamı veriyorum.',
+      'Yüz fotoğrafımın renk ve makyaj analizi amacıyla işlenmesine ve bu amaçla yurt dışındaki yapay zekâ hizmet sağlayıcılarımıza aktarılmasına, Açık Rıza Metni’nde açıklandığı şekilde açık rızamı veriyorum.',
     readKvkk: 'KVKK Aydınlatma Metni',
     readConsent: 'Açık Rıza Metni',
     readPrivacy: 'Gizlilik Politikası',

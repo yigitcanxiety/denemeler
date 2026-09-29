@@ -59,8 +59,9 @@ export const en = {
     pointOnDevice: 'Your results are saved only on this device. You can delete them at any time in Settings.',
     pointNoScoring: 'We never rate your appearance. Tonelle only tells you what suits you.',
     ageCheckbox: 'I am 16 or older.',
+    termsCheckbox: 'I am 16 or older and I accept the Terms of Use.',
     explicitConsentCheckbox:
-      'I give my explicit consent to the processing of my facial image for colour and makeup analysis, as described in the Explicit Consent Text.',
+      'I give my explicit consent to the processing of my facial image for colour and makeup analysis, and to its transfer abroad to our AI service providers for this purpose, as described in the Explicit Consent Text.',
     readKvkk: 'Privacy notice (KVKK)',
     readConsent: 'Explicit Consent Text',
     readPrivacy: 'Privacy Policy',

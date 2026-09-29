@@ -87,9 +87,7 @@ export default function ConsentScreen() {
       </View>
 
       <Checkbox checked={faceConsent} onChange={setFaceConsent} label={t('consent.explicitConsentCheckbox')} />
-      {/* TODO(shared): a dedicated "I accept the Terms of Use" string (e.g. consent.termsCheckbox) would
-          make this box explicit about the Terms; the Terms link above is shown alongside meanwhile. */}
-      <Checkbox checked={ageTerms} onChange={setAgeTerms} label={t('consent.ageCheckbox')} />
+      <Checkbox checked={ageTerms} onChange={setAgeTerms} label={t('consent.termsCheckbox')} />
 
       {declined ? (
         <View style={styles.declined}>
