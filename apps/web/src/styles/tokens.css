@@ -1,0 +1,69 @@
+/*
+ * Tonelle design tokens. Mirrored in apps/mobile/src/theme.ts — keep both in sync.
+ * Declared as Tailwind v4 theme variables, so each token is both a CSS custom property
+ * on :root (e.g. var(--color-accent)) and a utility (e.g. bg-accent, rounded-card, shadow-soft).
+ */
+
+@theme static {
+  /* Palette: nude */
+  --color-nude-50: #fdf9f6;
+  --color-nude-100: #f9f0ea;
+  --color-nude-200: #f2e2d7;
+  --color-nude-300: #e8cfbf;
+  --color-nude-400: #d9b39c;
+  --color-nude-500: #c4957b;
+  --color-nude-600: #a7775e;
+  --color-nude-700: #835b47;
+
+  /* Palette: blush (rose) */
+  --color-blush-50: #fdf5f5;
+  --color-blush-100: #fae6e6;
+  --color-blush-200: #f4cfd0;
+  --color-blush-300: #eaaeb1;
+  --color-blush-400: #dc8a8f;
+  --color-blush-500: #c96a71;
+  --color-blush-600: #ae5159;
+  --color-blush-700: #8c3f46;
+
+  /* Semantic: text */
+  --color-ink: #2b2124;
+  --color-ink-muted: #6b5a5e;
+  --color-ink-subtle: #9a8a8d;
+  --color-ink-inverse: #fdf9f6;
+
+  /* Semantic: surfaces */
+  --color-surface: #fdf9f6;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f6ece6;
+  --color-surface-inverse: #2b2124;
+  --color-border: #ecdcd3;
+  --color-border-strong: #d9c2b6;
+
+  /* Semantic: accent & states */
+  --color-accent: #b85c64;
+  --color-accent-hover: #a24c54;
+  --color-accent-soft: #f6dfe0;
+  --color-accent-contrast: #ffffff;
+  --color-focus: #c96a71;
+  --color-success: #4f8a6b;
+  --color-warning: #c08a3e;
+  --color-danger: #b3413f;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+
+  /* Shadows (warm-tinted) */
+  --shadow-soft: 0 1px 2px rgb(92 58 50 / 0.06), 0 4px 16px rgb(92 58 50 / 0.06);
+  --shadow-card: 0 2px 6px rgb(92 58 50 / 0.06), 0 12px 32px rgb(92 58 50 / 0.08);
+  --shadow-lift: 0 8px 24px rgb(92 58 50 / 0.12), 0 24px 64px rgb(92 58 50 / 0.12);
+}
+
+@theme inline {
+  /* Fonts: variables are provided by next/font in app/[locale]/layout.tsx */
+  --font-display: var(--font-fraunces), 'Iowan Old Style', Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
