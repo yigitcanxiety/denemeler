@@ -3,15 +3,14 @@ import Link from 'next/link';
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from 'react';
 
 /**
- * primary  – ink pill (the main CTA on paper)
- * secondary – outlined pill on paper
- * soft     – accent-soft pill (primary CTA on dark cards)
- * ghost    – text button
- * inverse  – light pill on dark surfaces
- * outline-inverse – outlined pill on dark cards
- * danger   – destructive
+ * primary   – violet pill with a soft violet shadow (the main CTA)
+ * secondary – white pill with a violet-soft border and violet text
+ * soft      – mist pill
+ * ghost     – text button
+ * dark      – ink pill
+ * danger    – destructive
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'inverse' | 'outline-inverse' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'soft' | 'ghost' | 'dark' | 'danger';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface StyleProps {
@@ -21,24 +20,23 @@ interface StyleProps {
 }
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  primary: 'bg-ink text-ink-inverse hover:bg-ink-soft disabled:bg-ink-subtle',
-  secondary: 'text-ink ring-1 ring-inset ring-ink/70 hover:bg-ink hover:text-ink-inverse disabled:text-ink-subtle disabled:ring-line-strong',
-  soft: 'bg-accent-soft text-[#231816] hover:bg-white disabled:opacity-60',
-  ghost: 'text-ink-muted hover:text-ink hover:bg-ink/5 disabled:text-ink-subtle',
-  inverse: 'bg-ink-inverse text-[#231816] hover:bg-white',
-  'outline-inverse': 'text-ink-inverse ring-1 ring-inset ring-white/25 hover:bg-white/10 disabled:opacity-60',
+  primary: 'bg-violet text-white shadow-violet hover:bg-[#6446ec] disabled:bg-violet/50 disabled:shadow-none',
+  secondary: 'bg-paper text-violet ring-[1.5px] ring-inset ring-violet-soft hover:ring-violet/40 hover:bg-mist disabled:text-muted',
+  soft: 'bg-mist text-ink ring-1 ring-inset ring-line hover:bg-violet-soft disabled:opacity-60',
+  ghost: 'text-muted hover:text-ink hover:bg-mist disabled:opacity-60',
+  dark: 'bg-ink text-white hover:bg-[#2a2535]',
   danger: 'bg-danger text-white hover:bg-danger/90',
 };
 
 const SIZES: Record<ButtonSize, string> = {
-  sm: 'h-11 px-4 text-sm gap-1.5',
-  md: 'h-12 px-5 text-[0.95rem] gap-2',
-  lg: 'h-14 px-7 text-base gap-2.5',
+  sm: 'h-11 px-4 text-[14px] gap-1.5',
+  md: 'h-12 px-5 text-[14.5px] gap-2',
+  lg: 'h-[52px] px-6 text-[15px] gap-2',
 };
 
 export function buttonClasses({ variant = 'primary', size = 'md', fullWidth = false }: StyleProps = {}): string {
   return clsx(
-    'press inline-flex select-none items-center justify-center whitespace-nowrap rounded-pill font-medium tracking-[-0.01em]',
+    'press inline-flex select-none items-center justify-center whitespace-nowrap rounded-pill font-semibold',
     'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
     'disabled:cursor-not-allowed',
     VARIANTS[variant],

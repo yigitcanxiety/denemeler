@@ -1,30 +1,26 @@
 'use client';
 
 import clsx from 'clsx';
-import { ArrowLeft, ArrowRight, Camera, ImageUp, RefreshCw, ShieldCheck, X } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type DragEvent, type ReactNode } from 'react';
-import { HeatFace } from '@/components/lab/HeatFace';
+import { Brush, Camera, Check, ImageUp, RefreshCw, ScanFace, ShieldCheck, Sparkles, Sun, TriangleAlert, X } from 'lucide-react';
+import Image from 'next/image';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type DragEvent } from 'react';
 import { Button } from '@/components/ui';
 import { drawToJpeg, isAcceptedImageFile, prepareImageFile } from '@/lib/image';
 import type { StepProps } from '../types';
-import { Note, OvalGuide, RoundButton, delay } from '../ui';
+import { Note, RingPhoto, ScreenTitle } from '../ui';
 
 const noopSubscribe = () => () => undefined;
 
 type CameraStatus = 'off' | 'starting' | 'live' | 'error';
 
-/** The 4:5 viewfinder frame inside the dark card. */
-function Frame({ children, label, className }: { children: ReactNode; label?: string; className?: string }) {
-  return (
-    <div
-      role={label ? 'region' : undefined}
-      aria-label={label}
-      className={clsx('relative mx-auto aspect-[4/5] w-full overflow-hidden rounded-[18px] bg-[#1a1210]', className)}
-    >
-      {children}
-    </div>
-  );
-}
+const EXAMPLES = ['/images/portrait-hero.jpg', '/images/portrait-2.jpg', '/images/portrait-3.jpg'] as const;
+
+/** CSS treatments that turn the example portraits into "avoid" examples (DESIGN §5). */
+const AVOID_STYLES: CSSProperties[] = [
+  { filter: 'brightness(0.42) saturate(0.6)' },
+  { filter: 'saturate(1.9) hue-rotate(-20deg) contrast(1.15) brightness(1.05)' },
+  { transform: 'rotate(-16deg) scale(1.45) translate(12%, 6%)', filter: 'brightness(0.85)' },
+];
 
 function CameraCapture({
   onCapture,
@@ -88,13 +84,25 @@ function CameraCapture({
   };
 
   return (
-    <div>
-      <Frame label={copy.cameraGuideLabel}>
+    <div className="flex flex-col gap-5">
+      <div role="region" aria-label={copy.cameraGuideLabel} className="relative mx-auto aspect-[4/5] w-full overflow-hidden rounded-panel bg-ink">
         <video ref={videoRef} playsInline muted className={clsx('size-full object-cover', facing === 'user' && '-scale-x-100')} />
-        <OvalGuide />
-        <p className="mono-caps absolute inset-x-0 top-4 text-center text-ink-inverse">{tt('camera.frameHint')}</p>
+        {/* Circular face guide with a violet ring */}
+        <svg aria-hidden viewBox="0 0 100 125" preserveAspectRatio="xMidYMid slice" className="pointer-events-none absolute inset-0 size-full">
+          <defs>
+            <mask id="cam-guide">
+              <rect width="100" height="125" fill="white" />
+              <circle cx="50" cy="56" r="34" fill="black" />
+            </mask>
+          </defs>
+          <rect width="100" height="125" fill="rgb(23 20 31 / 0.45)" mask="url(#cam-guide)" />
+          <circle cx="50" cy="56" r="34" fill="none" stroke="#7457F5" strokeWidth="1.2" />
+        </svg>
+        <p className="float-chip absolute inset-x-0 top-4 mx-auto w-max max-w-[90%] rounded-pill px-3 py-1.5 text-center text-[12px] font-semibold text-ink">
+          {tt('camera.frameHint')}
+        </p>
         {status === 'starting' && (
-          <p role="status" className="mono absolute inset-0 grid place-items-center text-ink-inverse-muted">
+          <p role="status" className="absolute inset-0 grid place-items-center text-[14px] text-white/80">
             {copy.cameraStarting}
           </p>
         )}
@@ -102,32 +110,37 @@ function CameraCapture({
           type="button"
           onClick={onClose}
           aria-label={copy.cameraClose}
-          className="press absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-black/45 text-white backdrop-blur hover:bg-black/65"
+          className="press absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-white/90 text-ink"
         >
-          <X aria-hidden className="size-5" />
+          <X aria-hidden className="size-5" strokeWidth={1.75} />
         </button>
-      </Frame>
-      <div className="mt-4 flex items-center justify-between gap-3 px-1">
-        <RoundButton tone="glass" label={tt('camera.switchCamera')} onClick={() => setFacing((f) => (f === 'user' ? 'environment' : 'user'))}>
-          <RefreshCw aria-hidden className="size-4" />
-        </RoundButton>
+      </div>
+      <div className="flex items-center justify-between gap-3 px-2">
+        <button
+          type="button"
+          onClick={() => setFacing((f) => (f === 'user' ? 'environment' : 'user'))}
+          aria-label={tt('camera.switchCamera')}
+          className="press grid size-12 place-items-center rounded-full bg-mist text-ink hover:bg-violet-soft"
+        >
+          <RefreshCw aria-hidden className="size-5" strokeWidth={1.75} />
+        </button>
         <button
           type="button"
           onClick={capture}
           disabled={status !== 'live'}
           aria-label={tt('camera.capture')}
-          className="press grid size-[72px] place-items-center rounded-full ring-2 ring-accent-soft/70 disabled:opacity-40"
+          className="press grid size-[76px] place-items-center rounded-full ring-[3px] ring-violet disabled:opacity-40"
         >
-          <span className="size-[58px] rounded-full bg-accent-soft" />
+          <span className="violet-gradient size-[60px] rounded-full shadow-violet" />
         </button>
-        <span className="size-11" aria-hidden />
+        <span className="size-12" aria-hidden />
       </div>
     </div>
   );
 }
 
 export function SelfieStep({ state, dispatch, copy, tt }: StepProps) {
-  const [mode, setMode] = useState<'choose' | 'camera'>('choose');
+  const [mode, setMode] = useState<'tips' | 'camera'>('tips');
   const [busy, setBusy] = useState(false);
   const [dragging, setDragging] = useState(false);
   const cameraSupported = useSyncExternalStore(
@@ -158,7 +171,7 @@ export function SelfieStep({ state, dispatch, copy, tt }: StepProps) {
   const onCameraError = useCallback(
     (key: 'camera.permissionDenied' | 'errors.cameraUnavailable') => {
       dispatch({ type: 'SELFIE_ERROR', errorKey: key });
-      setMode('choose');
+      setMode('tips');
     },
     [dispatch],
   );
@@ -169,141 +182,177 @@ export function SelfieStep({ state, dispatch, copy, tt }: StepProps) {
     void handleFile(event.dataTransfer.files[0]);
   };
 
-  const tips = [
-    tt('camera.hintLight'),
-    tt('camera.hintNoMakeup'),
-    tt('camera.hintNoFilter'),
-    tt('camera.hintGlasses'),
-    tt('camera.hintStraight'),
-  ];
-
   const error = state.errorKey && (
     <Note role="alert" tone="danger">
       {tt(state.errorKey)}
     </Note>
   );
 
-  return (
-    <div className="flex flex-col gap-[10px]">
-      <section className="enter ink-card neck-top p-6" style={delay(40)}>
-        <div className="flex items-start justify-between gap-3">
-          <h1 className="text-[clamp(1.9rem,8.4vw,2.5rem)] text-ink-inverse">{tt('camera.title')}</h1>
-          <RoundButton tone="glass" label={tt('common.back')} onClick={() => dispatch({ type: 'QUIZ_BACK' })} className="-mt-1 -mr-2">
-            <ArrowLeft aria-hidden className="size-4" />
-          </RoundButton>
+  const privacy = (
+    <p className="flex items-center justify-center gap-1.5 text-center text-[12.5px] text-muted">
+      <ShieldCheck aria-hidden className="size-4 shrink-0 text-mint-ink" strokeWidth={1.75} />
+      {tt('common.privacyBadge')}
+    </p>
+  );
+
+  const fileInput = (
+    <input
+      ref={inputRef}
+      type="file"
+      accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+      className="sr-only"
+      tabIndex={-1}
+      aria-hidden
+      onChange={(e) => void handleFile(e.target.files?.[0])}
+    />
+  );
+
+  /* ---------- "Harika görünüyorsun" confirmation ---------- */
+  if (state.photo) {
+    return (
+      <div className="flex flex-col items-center gap-6 text-center">
+        <ScreenTitle title={copy.confirmTitle} className="w-full text-center [&_h1]:text-center" />
+        <div className="relative mt-2">
+          <RingPhoto src={state.photo} alt={copy.photoFrameLabel} size={236} />
+          {state.photoTooDark ? (
+            <span className="absolute -bottom-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-pill bg-butter px-3 py-1.5 text-[12.5px] font-bold whitespace-nowrap text-butter-ink shadow-float">
+              <TriangleAlert aria-hidden className="size-3.5" strokeWidth={2.25} />
+              {tt('camera.qualityIssues.low_light').split('.')[0]}
+            </span>
+          ) : (
+            <span className="absolute -bottom-3 left-1/2 inline-flex -translate-x-1/2 items-center gap-1.5 rounded-pill bg-mint px-3 py-1.5 text-[12.5px] font-bold whitespace-nowrap text-mint-ink shadow-float">
+              <Check aria-hidden className="size-3.5" strokeWidth={3} />
+              {copy.confirmChip}
+            </span>
+          )}
         </div>
-        <p className="mono mt-3 text-ink-inverse-muted">{tt('camera.subtitle')}</p>
+        <div role="status" className="w-full text-left empty:hidden">
+          {state.photoTooDark && <Note tone="warning">{tt('camera.tooDark')}</Note>}
+        </div>
+        {error && <div className="w-full text-left">{error}</div>}
+        <div className="mt-4 flex w-full flex-col gap-2">
+          <Button size="lg" fullWidth onClick={() => dispatch({ type: 'START_ANALYSIS' })} icon={<Sparkles aria-hidden className="size-4" strokeWidth={2} />}>
+            {copy.selfieAnalyze}
+          </Button>
+          <Button variant="secondary" size="lg" fullWidth onClick={() => dispatch({ type: 'CLEAR_PHOTO' })}>
+            {copy.confirmOther}
+          </Button>
+        </div>
+        {privacy}
+      </div>
+    );
+  }
+
+  /* ---------- Camera ---------- */
+  if (mode === 'camera') {
+    return (
+      <div className="flex flex-col gap-5">
+        <ScreenTitle title={tt('camera.title')} backLabel={tt('common.back')} onBack={() => setMode('tips')} />
+        <CameraCapture
+          copy={copy}
+          tt={tt}
+          onClose={() => setMode('tips')}
+          onError={onCameraError}
+          onCapture={(dataUrl, tooDark) => {
+            dispatch({ type: 'SET_PHOTO', dataUrl, tooDark });
+            setMode('tips');
+          }}
+        />
+        {privacy}
+      </div>
+    );
+  }
+
+  /* ---------- "En iyi açını yakala" tips ---------- */
+  const tips = [
+    { icon: Sun, text: tt('camera.hintLight') },
+    { icon: Brush, text: tt('camera.hintNoMakeup') },
+    { icon: ScanFace, text: tt('camera.hintGlasses') },
+    { icon: Sparkles, text: tt('camera.hintNoFilter') },
+  ];
+  const avoid = [copy.tipsAvoidDark, copy.tipsAvoidFilter, copy.tipsAvoidAngle];
+
+  return (
+    <div
+      className={clsx('flex flex-col gap-5 rounded-panel transition-shadow', dragging && 'shadow-[0_0_0_2px_var(--color-violet)]')}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setDragging(true);
+      }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+    >
+      <ScreenTitle title={copy.tipsTitle} backLabel={tt('common.back')} onBack={() => dispatch({ type: 'QUIZ_BACK' })} />
+
+      <section aria-labelledby="tips-well" className="rounded-card bg-mist p-4">
+        <h2 id="tips-well" className="font-sans text-[14px] font-bold text-ink" style={{ fontFamily: 'var(--font-sans)' }}>
+          {copy.tipsWellTitle}
+        </h2>
+        <ul className="mt-2.5 flex flex-col gap-2">
+          {tips.map(({ icon: Icon, text }) => (
+            <li key={text} className="flex gap-2.5 text-[13.5px] text-ink">
+              <Icon aria-hidden className="mt-0.5 size-4 shrink-0 text-violet" strokeWidth={1.75} />
+              {text}
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {state.photo ? (
-        <>
-          <section className="enter ink-card neck-top p-3" style={delay(100)}>
-            <Frame>
-              {/* eslint-disable-next-line @next/next/no-img-element -- local data URL preview */}
-              <img src={state.photo} alt={copy.photoFrameLabel} className="size-full object-cover" />
-              <OvalGuide />
-            </Frame>
-          </section>
-          {state.photoTooDark ? (
-            <Note role="status" tone="warning">
-              {tt('camera.tooDark')}
-            </Note>
-          ) : (
-            <Note role="status" tone="success">
-              {copy.selfieReady}
-            </Note>
-          )}
-          {error}
-          <div className="mt-1 flex flex-col gap-1.5">
-            <Button size="lg" fullWidth className="justify-between" onClick={() => dispatch({ type: 'START_ANALYSIS' })}>
-              {copy.selfieAnalyze}
-              <ArrowRight aria-hidden className="size-5" />
-            </Button>
-            <Button variant="ghost" fullWidth onClick={() => dispatch({ type: 'CLEAR_PHOTO' })} icon={<RefreshCw aria-hidden className="size-4" />}>
-              {tt('camera.retake')}
-            </Button>
-          </div>
-        </>
-      ) : mode === 'camera' ? (
-        <section className="ink-card neck-top p-3 pb-4">
-          <CameraCapture
-            copy={copy}
-            tt={tt}
-            onClose={() => setMode('choose')}
-            onError={onCameraError}
-            onCapture={(dataUrl, tooDark) => {
-              dispatch({ type: 'SET_PHOTO', dataUrl, tooDark });
-              setMode('choose');
-            }}
-          />
-        </section>
-      ) : (
-        <>
-          <section
-            className={clsx('enter ink-card neck-top p-3 pb-5 transition-shadow', dragging && 'shadow-[inset_0_0_0_2px_var(--color-accent-soft)]')}
-            style={delay(100)}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragging(true);
-            }}
-            onDragLeave={() => setDragging(false)}
-            onDrop={onDrop}
-          >
-            <Frame className="max-h-[52vh] max-w-[calc(52vh*0.8)]">
-              <HeatFace id="selfie-ghost" tone="night" showBody={false} animated={false} className="absolute inset-x-[18%] top-[12%] h-[70%] w-[64%] opacity-50" />
-              <OvalGuide dim={false} />
-              <p className="mono-caps absolute inset-x-0 bottom-4 text-center text-ink-inverse-muted">{tt('camera.frameHint')}</p>
-            </Frame>
-            <div className="mt-4 flex flex-col gap-2 px-1">
-              {cameraSupported && (
-                <Button variant="soft" size="lg" fullWidth onClick={() => setMode('camera')} icon={<Camera aria-hidden className="size-5" />}>
-                  {tt('camera.useCamera')}
-                </Button>
-              )}
-              <Button
-                size="lg"
-                fullWidth
-                variant={cameraSupported ? 'outline-inverse' : 'soft'}
-                loading={busy}
-                onClick={() => inputRef.current?.click()}
-                icon={<ImageUp aria-hidden className="size-5" />}
-              >
-                {busy ? copy.selfiePreparing : tt('camera.upload')}
-              </Button>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-                className="sr-only"
-                tabIndex={-1}
-                aria-hidden
-                onChange={(e) => void handleFile(e.target.files?.[0])}
-              />
-              <p className="mono mt-1 hidden text-center text-[12px] text-ink-inverse-muted sm:block">{copy.selfieDrop}</p>
-              <p className="mono text-center text-[11px] text-ink-inverse-muted">{tt('camera.fileTypes')}</p>
-            </div>
-          </section>
-          {error}
-          <section className="enter rounded-card bg-paper-raised p-5" style={delay(160)}>
-            <h2 className="mono-caps text-ink-muted">{copy.selfieTipsTitle}</h2>
-            <ol className="mt-3 grid gap-2">
-              {tips.map((text, i) => (
-                <li key={text} className="mono flex gap-3 text-ink">
-                  <span aria-hidden className="text-ink-subtle">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  {text}
-                </li>
-              ))}
-            </ol>
-          </section>
-        </>
-      )}
+      <section aria-labelledby="tips-ideal">
+        <h2 id="tips-ideal" className="text-[1.25rem] text-ink">
+          {copy.tipsIdealTitle}
+        </h2>
+        <ul className="mt-3 grid grid-cols-3 gap-2.5">
+          {EXAMPLES.map((src) => (
+            <li key={src} className="relative aspect-[3/4] overflow-hidden rounded-[14px] bg-mist" style={{ outline: '2.5px solid #44C06A', outlineOffset: '-2.5px' }}>
+              <Image src={src} alt={copy.tipsExampleAlt} fill sizes="(min-width: 480px) 150px, 30vw" className="object-cover" />
+              <span className="absolute bottom-2 left-2 grid size-6 place-items-center rounded-full bg-[#44C06A] text-white">
+                <Check aria-hidden className="size-3.5" strokeWidth={3} />
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-      <p className="mono mt-3 flex items-center justify-center gap-1.5 text-center text-[11.5px] text-ink-muted">
-        <ShieldCheck aria-hidden className="size-4 shrink-0 text-success" />
-        {tt('common.privacyBadge')}
-      </p>
+      <section aria-labelledby="tips-avoid">
+        <h2 id="tips-avoid" className="text-[1.25rem] text-ink">
+          {copy.tipsAvoidTitle}
+        </h2>
+        <ul className="mt-3 grid grid-cols-3 gap-2.5">
+          {EXAMPLES.map((src, i) => (
+            <li key={src} className="relative aspect-[3/4] overflow-hidden rounded-[14px] bg-mist" style={{ outline: '2.5px solid #F08A8A', outlineOffset: '-2.5px' }}>
+              <Image src={src} alt="" fill sizes="(min-width: 480px) 150px, 30vw" className="object-cover" style={AVOID_STYLES[i]} />
+              <span className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-pill bg-rose-soft px-2 py-0.5 text-[11px] font-bold text-rose-ink">
+                <X aria-hidden className="size-3" strokeWidth={3} />
+                {avoid[i]}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {error}
+
+      <div className="flex flex-col gap-2">
+        <Button
+          size="lg"
+          fullWidth
+          loading={busy}
+          onClick={() => inputRef.current?.click()}
+          icon={<ImageUp aria-hidden className="size-5" strokeWidth={1.75} />}
+        >
+          {busy ? copy.selfiePreparing : copy.tipsCta}
+        </Button>
+        {cameraSupported && (
+          <Button variant="secondary" size="lg" fullWidth onClick={() => setMode('camera')} icon={<Camera aria-hidden className="size-5" strokeWidth={1.75} />}>
+            {tt('camera.useCamera')}
+          </Button>
+        )}
+        {fileInput}
+        <p className="mt-1 hidden text-center text-[12.5px] text-muted sm:block">{copy.selfieDrop}</p>
+        <p className="text-center text-[12px] text-muted">{tt('camera.fileTypes')}</p>
+      </div>
+      {privacy}
     </div>
   );
 }

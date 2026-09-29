@@ -1,232 +1,199 @@
 'use client';
 
-import { LOOKS, SEASONS, localized, type FaceAnalysis, type LookId, type TranslationKey } from '@tonelle/shared';
+import { LOOKS, SEASONS, localized, shadeMatch, type FaceAnalysis, type LookId, type TranslationKey } from '@tonelle/shared';
 import clsx from 'clsx';
-import { Camera, ChevronDown, RefreshCw, Share2, Trash2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { HeatFace } from '@/components/lab/HeatFace';
-import { Chip, PaletteBar } from '@/components/lab/primitives';
-import { Button, Modal, SwatchBar } from '@/components/ui';
+import { Camera, ChevronDown, Contrast, Eye, RefreshCw, ScanFace, Share2, Sun, Trash2 } from 'lucide-react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { BeforeAfter, Button, FitPill, Modal, ProfileBars, Radar, ShadeTube, SwatchBar } from '@/components/ui';
 import { apiClient, errorMessageKey, type ApiClient } from '@/lib/api-client';
-import { heatFrom } from '@/lib/heat';
+import { profileView } from '@/lib/profile-view';
 import { getAppUserId } from '@/lib/storage';
 import type { StepProps } from '../types';
-import { Eyebrow, RoundButton, delay } from '../ui';
+import { delay } from '../ui';
 import { ShareCardDialog } from './ShareCard';
 
 /** Settled render results; a look without an entry is pending (queued or in flight). */
 type RenderState = { status: 'done'; image: string } | { status: 'error'; messageKey: TranslationKey };
 type LookRenderState = RenderState | { status: 'pending' };
+type Tab = 'color' | 'tryon';
 
-function Swatches({ title, colors, tt, crossed }: { title: string; colors: string[]; tt: StepProps['tt']; crossed?: boolean }) {
+function Panel({ title, children, className, aside }: { title?: string; children: ReactNode; className?: string; aside?: ReactNode }) {
   return (
-    <div>
-      <h3 className="mono-caps text-ink-inverse-muted">{title}</h3>
-      <SwatchBar
-        className="mt-3"
-        colors={colors}
-        label={title}
-        copyLabel={tt('results.copyHex')}
-        copiedLabel={tt('results.copied')}
-        crossed={crossed}
-      />
-    </div>
+    <section className={clsx('rounded-panel bg-paper p-5 ring-1 ring-line ring-inset sm:p-6', className)}>
+      {title && (
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-[1.3rem] text-ink">{title}</h2>
+          {aside}
+        </div>
+      )}
+      {children}
+    </section>
   );
 }
 
-/** BRIK "Best score / Reaction speed" metric card. */
-function Metric({ label, value, neck, className }: { label: string; value: string; neck?: 'top' | 'left'; className?: string }) {
+/** Shade card with a "% uyum" pill (DESIGN §3.7). */
+function ShadeCard({ hex, label, analysis, fitLabel }: { hex: string; label?: string; analysis: FaceAnalysis; fitLabel: string }) {
   return (
-    <div className={clsx('ink-card flex min-h-[8.5rem] flex-col justify-between p-5', neck === 'top' && 'neck-top', neck === 'left' && 'neck-left', className)}>
-      <p className="text-[0.95rem] leading-tight text-ink-inverse">{label}</p>
-      <p className="mt-4 text-[clamp(1.5rem,6.6vw,2rem)] leading-none font-light tracking-[-0.035em] text-accent-soft">{value}</p>
-    </div>
+    <li className="flex min-w-0 flex-col gap-2 rounded-card bg-paper p-2 ring-1 ring-line ring-inset sm:p-2.5">
+      <FitPill value={shadeMatch(hex, analysis)} template={fitLabel} className="max-w-full px-1.5 text-[10px] sm:px-2 sm:text-[11px]" />
+      <ShadeTube color={hex} />
+      <span className="min-w-0 px-0.5">
+        {label && <span className="block truncate text-[12.5px] font-semibold text-ink">{label}</span>}
+        <span className="block text-[11px] text-muted">{hex.toUpperCase()}</span>
+      </span>
+    </li>
   );
 }
 
-function LookCard({
-  lookId,
-  index,
-  state: render,
-  photo,
+function TryOn({
   analysis,
+  lookIds,
+  selected,
+  onSelect,
+  render,
+  photo,
   onRetry,
   onNewSelfie,
   copy,
   tt,
   locale,
 }: {
-  lookId: LookId;
-  index: number;
-  state: LookRenderState;
-  photo: string | null;
   analysis: FaceAnalysis;
+  lookIds: LookId[];
+  selected: LookId;
+  onSelect: (id: LookId) => void;
+  render: LookRenderState;
+  photo: string | null;
   onRetry: () => void;
   onNewSelfie: () => void;
 } & Pick<StepProps, 'copy' | 'tt' | 'locale'>) {
-  const look = LOOKS[lookId];
-  const [showBefore, setShowBefore] = useState(false);
-  const shades = [
-    analysis.lip[index % analysis.lip.length],
-    analysis.blush[index % analysis.blush.length],
-    analysis.eyeshadow[index % analysis.eyeshadow.length],
-  ].filter((c): c is string => Boolean(c));
+  const index = Math.max(0, lookIds.indexOf(selected));
+  const look = LOOKS[selected];
+  const shades: { hex: string; label: string }[] = [
+    { hex: analysis.lip[index % analysis.lip.length], label: tt('results.lipTitle') },
+    { hex: analysis.blush[index % analysis.blush.length], label: tt('results.blushTitle') },
+    { hex: analysis.eyeshadow[index % analysis.eyeshadow.length], label: tt('results.eyeshadowTitle') },
+  ].filter((s): s is { hex: string; label: string } => Boolean(s.hex));
 
   return (
-    <article className="ink-card flex flex-col p-3">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-night">
-        {!photo ? (
-          <div className="flex size-full flex-col items-center justify-center gap-4 p-6 text-center">
-            <HeatFace id={`look-empty-${index}`} tone="night" showBody={false} animated={false} palette={heatFrom(shades)} className="h-[42%] w-auto opacity-80" />
-            <p className="mono text-[12px] text-ink-inverse-muted">{copy.resultsPhotoNeeded}</p>
-            <Button size="sm" variant="soft" onClick={onNewSelfie} icon={<Camera aria-hidden className="size-4" />}>
-              {copy.resultsNewSelfie}
-            </Button>
-          </div>
-        ) : render.status === 'done' ? (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element -- generated data URL */}
-            <img
-              src={showBefore ? photo : render.image}
-              alt={showBefore ? tt('look.before') : `${localized(look.name, locale)} (${tt('common.aiGenerated')})`}
-              className="size-full object-cover"
-            />
-            {!showBefore && (
-              <Chip tone="soft" className="absolute bottom-3 left-3">
-                AI · {tt('common.aiGenerated')}
-              </Chip>
-            )}
-            <div className="mono-caps absolute top-3 right-3 flex rounded-pill bg-ink/70 p-1 text-ink-inverse backdrop-blur">
-              <button
-                type="button"
-                aria-pressed={showBefore}
-                onClick={() => setShowBefore(true)}
-                className={clsx('h-9 rounded-pill px-3', showBefore && 'bg-accent-soft text-[#231816]')}
-              >
-                {tt('look.before')}
-              </button>
-              <button
-                type="button"
-                aria-pressed={!showBefore}
-                onClick={() => setShowBefore(false)}
-                className={clsx('h-9 rounded-pill px-3', !showBefore && 'bg-accent-soft text-[#231816]')}
-              >
-                {tt('look.after')}
-              </button>
-            </div>
-          </>
-        ) : render.status === 'error' ? (
-          <div className="flex size-full flex-col items-center justify-center gap-3 p-6 text-center">
-            <p className="font-medium text-ink-inverse">{copy.renderFailed}</p>
-            <p className="mono text-[12px] text-ink-inverse-muted">{tt(render.messageKey)}</p>
-            <Button size="sm" variant="soft" onClick={onRetry} icon={<RefreshCw aria-hidden className="size-4" />}>
-              {tt('common.retry')}
-            </Button>
-          </div>
-        ) : (
-          <div className="relative size-full">
-            {/* eslint-disable-next-line @next/next/no-img-element -- local preview */}
-            <img src={photo} alt="" className="size-full object-cover opacity-40 blur-[3px]" />
-            <div aria-hidden className="shimmer absolute inset-0" />
-            <div role="status" className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-6 text-center">
-              <span aria-hidden className="spin size-8 rounded-full border-2 border-accent-soft border-r-transparent" />
-              <p className="mt-1 font-medium text-ink-inverse">{tt('look.rendering')}</p>
-              <p className="mono text-[12px] text-ink-inverse-muted">{tt('look.renderingHint')}</p>
-            </div>
-          </div>
-        )}
+    <div className="flex flex-col gap-5">
+      <div role="radiogroup" aria-label={copy.tryOnLooksLabel} className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:flex-wrap sm:px-0">
+        {lookIds.map((id) => {
+          const active = id === selected;
+          return (
+            <button
+              key={id}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => onSelect(id)}
+              className={clsx(
+                'press h-10 shrink-0 rounded-pill px-4 text-[13.5px] font-semibold whitespace-nowrap',
+                active ? 'bg-ink text-white' : 'bg-mist text-ink ring-1 ring-line ring-inset hover:bg-violet-soft',
+              )}
+            >
+              {localized(LOOKS[id].name, locale)}
+            </button>
+          );
+        })}
       </div>
-      <div className="flex flex-1 flex-col px-3 pt-5 pb-3">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="text-[1.5rem] text-ink-inverse">{localized(look.name, locale)}</h3>
-          <Chip tone="soft" className="mt-1">
-            AI
-          </Chip>
-        </div>
-        <p className="mono mt-2 text-ink-inverse-muted">{localized(look.description, locale)}</p>
-        <div className="mt-4 flex flex-wrap gap-1.5 text-ink-inverse-muted">
-          {look.occasions.map((o) => (
-            <Chip key={o} tone="line">
-              {tt(`look.occasionTag.${o}`)}
-            </Chip>
-          ))}
-          <Chip tone="line" className="text-accent-soft">
-            {tt(`look.level.${look.level}`)}
-          </Chip>
-        </div>
-        <div className="mt-5">
-          <p className="mono-caps text-ink-inverse-muted">{tt('look.shadesTitle')}</p>
-          <PaletteBar colors={shades} height="h-8" className="mt-2" />
-        </div>
-        <details className="group mt-5 rounded-[16px] bg-white/[0.05]">
-          <summary className="mono-caps flex min-h-11 cursor-pointer items-center justify-between px-4 text-ink-inverse">
-            {tt('look.stepsTitle')}
-            <ChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
-          </summary>
-          <ol className="space-y-3 px-4 pb-4">
-            {look.steps.map((step, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="mono grid size-6 shrink-0 place-items-center bg-accent-soft text-[11px] text-[#231816]">
-                  {String(i + 1).padStart(2, '0')}
+
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,420px)_1fr] lg:items-start">
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded-xl bg-mist">
+          {!photo ? (
+            <div className="flex size-full flex-col items-center justify-center gap-4 bg-[linear-gradient(160deg,#F8E4D8,#EFD8E6_55%,#E6E0FA)] p-6 text-center">
+              <span className="grid size-14 place-items-center rounded-full bg-paper text-violet">
+                <Camera aria-hidden className="size-6" strokeWidth={1.75} />
+              </span>
+              <p className="max-w-[30ch] text-[14px] text-ink">{copy.resultsPhotoNeeded}</p>
+              <Button size="sm" onClick={onNewSelfie} icon={<Camera aria-hidden className="size-4" />}>
+                {copy.resultsNewSelfie}
+              </Button>
+            </div>
+          ) : render.status === 'done' ? (
+            <BeforeAfter
+              className="size-full"
+              beforeLabel={tt('look.before')}
+              afterLabel={tt('look.after')}
+              sliderLabel={copy.tryOnSliderLabel}
+              // eslint-disable-next-line @next/next/no-img-element -- in-memory data URL
+              before={<img src={photo} alt={tt('look.before')} className="size-full object-cover" draggable={false} />}
+              after={
+                // eslint-disable-next-line @next/next/no-img-element -- generated data URL
+                <img src={render.image} alt={`${localized(look.name, locale)} (${tt('common.aiGenerated')})`} className="size-full object-cover" draggable={false} />
+              }
+            >
+              <span className="float-chip pointer-events-none absolute right-3 bottom-3 rounded-pill px-2.5 py-1 text-[11px] font-semibold text-violet">
+                ✦ {tt('common.aiGenerated')}
+              </span>
+            </BeforeAfter>
+          ) : render.status === 'error' ? (
+            <div className="flex size-full flex-col items-center justify-center gap-3 p-6 text-center">
+              <p className="font-semibold text-ink">{copy.renderFailed}</p>
+              <p className="text-[13px] text-muted">{tt(render.messageKey)}</p>
+              <Button size="sm" variant="secondary" onClick={onRetry} icon={<RefreshCw aria-hidden className="size-4" />}>
+                {tt('common.retry')}
+              </Button>
+            </div>
+          ) : (
+            <div className="shimmer relative size-full">
+              {/* eslint-disable-next-line @next/next/no-img-element -- local preview */}
+              <img src={photo} alt="" className="size-full object-cover opacity-70 blur-[2px]" />
+              <div role="status" className="absolute inset-x-3 bottom-3 flex items-center gap-3 rounded-card bg-paper/92 p-3 text-left backdrop-blur">
+                <span aria-hidden className="spin size-6 shrink-0 rounded-full border-2 border-violet border-r-transparent" />
+                <span>
+                  <span className="block text-[13.5px] font-semibold text-ink">{tt('look.rendering')}</span>
+                  <span className="block text-[12px] text-muted">{tt('look.renderingHint')}</span>
                 </span>
-                <div>
-                  <p className="font-medium text-ink-inverse">{localized(step.title, locale)}</p>
-                  <p className="mono mt-1 text-[12.5px] text-ink-inverse-muted">{localized(step.body, locale)}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </details>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-5">
+          <div>
+            <h2 className="text-[1.6rem] text-ink">{localized(look.name, locale)}</h2>
+            <p className="mt-1.5 text-[14.5px] text-muted">{localized(look.description, locale)}</p>
+            <ul className="mt-3 flex flex-wrap gap-1.5">
+              {look.occasions.map((o) => (
+                <li key={o} className="rounded-pill bg-rose-soft px-2.5 py-1 text-[12px] font-semibold text-rose-ink">
+                  {tt(`look.occasionTag.${o}`)}
+                </li>
+              ))}
+              <li className="rounded-pill bg-mist px-2.5 py-1 text-[12px] font-semibold text-ink">{tt(`look.level.${look.level}`)}</li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-[1.15rem] text-ink">{copy.tryOnShadesTitle}</h3>
+            <ul className="mt-3 grid grid-cols-3 gap-2.5">
+              {shades.map((s) => (
+                <ShadeCard key={`${s.label}-${s.hex}`} hex={s.hex} label={s.label} analysis={analysis} fitLabel={copy.fitLabel} />
+              ))}
+            </ul>
+          </div>
+
+          <details className="group rounded-card bg-mist">
+            <summary className="flex min-h-12 cursor-pointer items-center justify-between px-4 text-[14.5px] font-semibold text-ink">
+              {tt('look.stepsTitle')}
+              <ChevronDown aria-hidden className="size-4 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+            </summary>
+            <ol className="space-y-3 px-4 pb-4">
+              {look.steps.map((step, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-violet text-[11.5px] font-bold text-white">{i + 1}</span>
+                  <div>
+                    <p className="text-[14px] font-semibold text-ink">{localized(step.title, locale)}</p>
+                    <p className="mt-0.5 text-[13px] text-muted">{localized(step.body, locale)}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </details>
+          <p className="text-[12px] text-muted">{tt('common.aiGeneratedNote')}</p>
+        </div>
       </div>
-    </article>
-  );
-}
-
-/** BRIK bottom navigation: round ink buttons flanking a pill segmented control. */
-function ResultsNav({
-  copy,
-  tt,
-  onShare,
-  onStartOver,
-}: Pick<StepProps, 'copy' | 'tt'> & { onShare: () => void; onStartOver: () => void }) {
-  const [active, setActive] = useState<'results' | 'looks'>('results');
-  useEffect(() => {
-    const looks = document.getElementById('looks');
-    if (!looks || typeof IntersectionObserver === 'undefined') return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry) setActive(entry.boundingClientRect.top < window.innerHeight * 0.6 ? 'looks' : 'results');
-    }, { threshold: [0, 0.2, 0.5, 1], rootMargin: '0px 0px -40% 0px' });
-    io.observe(looks);
-    return () => io.disconnect();
-  }, []);
-
-  const item = (id: 'results' | 'looks', href: string, label: string) => (
-    <a
-      href={href}
-      aria-current={active === id ? 'true' : undefined}
-      onClick={() => setActive(id)}
-      className={clsx(
-        'mono-caps grid h-11 flex-1 place-items-center rounded-pill px-3 transition-colors',
-        active === id ? 'bg-accent-soft text-[#231816]' : 'text-ink-inverse hover:text-accent-soft',
-      )}
-    >
-      {label}
-    </a>
-  );
-
-  return (
-    <nav aria-label={tt('results.title')} className="sticky bottom-3 z-20 mx-auto mt-4 flex w-full max-w-sm items-center gap-2">
-      <RoundButton label={copy.resultsShareCta} onClick={onShare} className="size-12 shadow-lift">
-        <Share2 aria-hidden className="size-4" />
-      </RoundButton>
-      <div className="flex flex-1 rounded-pill bg-ink p-0.5 shadow-lift">
-        {item('results', '#results-top', copy.navResults)}
-        {item('looks', '#looks', copy.navLooks)}
-      </div>
-      <RoundButton label={copy.resultsStartOver} onClick={onStartOver} className="size-12 shadow-lift">
-        <RefreshCw aria-hidden className="size-4" />
-      </RoundButton>
-    </nav>
+    </div>
   );
 }
 
@@ -242,18 +209,22 @@ export function ResultsStep({
   const [renders, setRenders] = useState<Partial<Record<LookId, RenderState>>>({});
   const [shareOpen, setShareOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [tab, setTab] = useState<Tab>('color');
+  const [selectedLook, setSelectedLook] = useState<LookId | null>(null);
   const photo = state.photo;
 
   const inFlight = useRef<LookId | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const lookIds = result?.recommendedLookIds ?? [];
+  const selected = selectedLook ?? lookIds[0] ?? null;
 
   // Abort a pending render when leaving the results screen.
   useEffect(() => () => controllerRef.current?.abort(), []);
 
-  // Render looks one at a time (cost + rate limits), only while we still hold the photo.
+  // Render looks one at a time (cost + rate limits), the selected one first, only while we still hold the photo.
   useEffect(() => {
     if (!result || !photo || !state.unlocked || inFlight.current) return;
-    const next = result.recommendedLookIds.find((id) => !renders[id]);
+    const next = selected && !renders[selected] ? selected : result.recommendedLookIds.find((id) => !renders[id]);
     if (!next) return;
     const controller = new AbortController();
     controllerRef.current = controller;
@@ -273,125 +244,180 @@ export function ResultsStep({
           return copy;
         });
       });
-  }, [result, photo, state.unlocked, renders, client, locale]);
+  }, [result, photo, state.unlocked, renders, client, locale, selected]);
 
   if (!result) return null;
   const { analysis } = result;
   const season = SEASONS[analysis.season];
-  const heat = heatFrom([analysis.lip[0] ?? '#C8354A', analysis.blush[0] ?? '#E0775E', analysis.eyeshadow[0] ?? '#F3B27A']);
+  const { axes, bars } = profileView(analysis, locale);
 
-  const pairs: [TranslationKey, string][][] = [
-    [
-      ['results.undertoneTitle', tt(`results.undertone.${analysis.undertone}`)],
-      ['results.contrastTitle', tt(`results.contrast.${analysis.contrast}`)],
-    ],
-    [
-      ['results.skinDepthTitle', tt(`results.skinDepth.${analysis.skinDepth}`)],
-      ['results.faceShapeTitle', tt(`results.faceShape.${analysis.faceShape}`)],
-    ],
-    [
-      ['results.eyeShapeTitle', tt(`results.eyeShape.${analysis.eyeShape}`)],
-      ['results.yourSeason', tt('results.confidence', { percent: Math.round(analysis.seasonConfidence * 100) })],
-    ],
+  const traits = [
+    { icon: Sun, label: tt('results.undertoneTitle'), value: tt(`results.undertone.${analysis.undertone}`) },
+    { icon: Contrast, label: tt('results.contrastTitle'), value: tt(`results.contrast.${analysis.contrast}`) },
+    { icon: ScanFace, label: tt('results.faceShapeTitle'), value: tt(`results.faceShape.${analysis.faceShape}`) },
+    { icon: Eye, label: tt('results.eyeShapeTitle'), value: tt(`results.eyeShape.${analysis.eyeShape}`) },
+  ];
+
+  const shadeGroups: [string, string[]][] = [
+    [tt('results.lipTitle'), analysis.lip],
+    [tt('results.blushTitle'), analysis.blush],
+    [tt('results.eyeshadowTitle'), analysis.eyeshadow],
+  ];
+
+  const tabs: [Tab, string][] = [
+    ['color', copy.navResults],
+    ['tryon', copy.navLooks],
   ];
 
   return (
     <div id="results-top" className="scroll-mt-4">
-      <div className="grid gap-[10px] lg:grid-cols-12">
-        {/* Hero: season in huge type */}
-        <section className="enter ink-card neck-top relative overflow-hidden p-6 sm:p-8 lg:col-span-7" style={delay(40)}>
-          <Eyebrow n="07">{tt('results.title')}</Eyebrow>
-          <div className="relative mt-6 grid grid-cols-[1fr_auto] items-end gap-4">
-            <div className="min-w-0">
-              <p className="mono-caps text-ink-inverse-muted">{tt('results.yourSeason')}</p>
-              <h1 className="mt-2 text-[clamp(2.8rem,13vw,5.4rem)] leading-[0.88] tracking-[-0.055em] text-ink-inverse [overflow-wrap:anywhere]">
-                {localized(season.name, locale)}
-              </h1>
-            </div>
-            <HeatFace id="results-face" tone="night" showBody={false} palette={heat} className="h-28 w-auto sm:h-36" />
-          </div>
-          <p className="mt-6 max-w-[52ch] leading-relaxed text-ink-inverse-muted">{localized(season.description, locale)}</p>
-          <PaletteBar colors={season.palette} height="h-3" className="mt-6" />
-          <p className="mono mt-4 flex items-center gap-2 text-[11.5px] text-ink-inverse-muted">
-            <span aria-hidden className="size-1.5 shrink-0 bg-accent-soft" />
-            {tt('results.savedOnDevice')}
-          </p>
-        </section>
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-[clamp(1.8rem,7vw,2.4rem)] text-ink">{tt('results.title')}</h1>
+        <button
+          type="button"
+          onClick={() => setShareOpen(true)}
+          aria-label={copy.resultsShareCta}
+          className="press grid size-11 shrink-0 place-items-center rounded-full bg-violet-soft text-violet hover:bg-violet hover:text-white"
+        >
+          <Share2 aria-hidden className="size-[18px]" strokeWidth={1.75} />
+        </button>
+      </div>
 
-        {/* Metric cards in pairs joined by necks */}
-        <div className="flex flex-col gap-[10px] lg:col-span-5">
-          {pairs.map((row, r) => (
-            <div key={r} className="enter grid grid-cols-2 gap-[10px]" style={delay(100 + r * 60)}>
-              {row.map(([label, value], c) => (
-                <Metric
-                  key={label}
-                  label={tt(label)}
-                  value={value}
-                  neck={c === 1 ? 'left' : r === 0 ? 'top' : undefined}
-                  className={clsx(c === 0 && r === 0 && 'lg:neck-none', 'lg:min-h-0 lg:flex-1')}
+      <div role="tablist" aria-label={tt('results.title')} className="mt-4 grid grid-cols-2 gap-1 rounded-pill bg-mist p-1 ring-1 ring-line ring-inset sm:inline-grid sm:w-auto">
+        {tabs.map(([id, label]) => (
+          <button
+            key={id}
+            id={`tab-${id}`}
+            type="button"
+            role="tab"
+            aria-selected={tab === id}
+            aria-controls={`panel-${id}`}
+            onClick={() => setTab(id)}
+            className={clsx(
+              'press h-11 rounded-pill px-5 text-[14px] font-semibold whitespace-nowrap',
+              tab === id ? 'bg-paper text-ink shadow-[0_1px_4px_rgb(23_20_31/0.12)]' : 'text-muted hover:text-ink',
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'color' ? (
+        <div id="panel-color" role="tabpanel" aria-labelledby="tab-color" className="enter mt-5 flex flex-col gap-4">
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="flex flex-col gap-4">
+              {/* Season card */}
+              <section className="rounded-panel bg-[linear-gradient(160deg,#F8E4D8,#EFD8E6_60%,#E6E0FA)] p-5 sm:p-6">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="caps rounded-pill bg-paper/80 px-2.5 py-1 text-ink">{copy.resultsSeasonChip}</span>
+                  <span className="rounded-pill bg-paper/80 px-2.5 py-1 text-[11.5px] font-bold text-violet">
+                    {tt('results.confidence', { percent: Math.round(analysis.seasonConfidence * 100) })}
+                  </span>
+                </div>
+                <h2 className="mt-3 text-[clamp(2rem,8.6vw,2.6rem)] leading-none text-ink [overflow-wrap:anywhere]">{localized(season.name, locale)}</h2>
+                <p className="mt-3 text-[14.5px] text-ink/80">{localized(season.description, locale)}</p>
+                <div role="img" aria-label={tt('results.bestColors')} className="mt-4 flex gap-1.5">
+                  {season.palette.map((c) => (
+                    <i key={c} className="block h-8 flex-1 rounded-[9px]" style={{ backgroundColor: c }} />
+                  ))}
+                </div>
+                <p className="mt-3 text-[12px] text-ink/60">{tt('results.savedOnDevice')}</p>
+              </section>
+
+              <Panel title={copy.resultsProfileTitle}>
+                <Radar axes={axes} label={copy.resultsProfileTitle} className="mx-auto max-w-[360px]" />
+                <ProfileBars items={bars} className="mt-2" />
+              </Panel>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <section aria-labelledby="traits-title">
+                <h2 id="traits-title" className="sr-only">
+                  {copy.resultsTraitsTitle}
+                </h2>
+                <ul className="grid grid-cols-2 gap-3">
+                  {traits.map(({ icon: Icon, label, value }, i) => (
+                    <li key={label} className="enter flex flex-col gap-2 rounded-card bg-mist p-4" style={delay(60 + i * 50)}>
+                      <span className="grid size-9 place-items-center rounded-full bg-paper text-violet">
+                        <Icon aria-hidden className="size-4" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-[12.5px] text-muted">{label}</span>
+                      <span className="serif text-[1.25rem] leading-tight text-ink">{value}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <Panel title={tt('results.summaryTitle')}>
+                <p className="text-[15px] leading-relaxed text-ink">{analysis.summary}</p>
+                <p className="mt-4 border-t border-line pt-3 text-[12px] text-muted">{tt('results.disclaimer')}</p>
+              </Panel>
+
+              <Panel>
+                <h2 className="text-[1.15rem] text-ink">{tt('results.bestColors')}</h2>
+                <SwatchBar className="mt-3" colors={analysis.bestColors} label={tt('results.bestColors')} copyLabel={tt('results.copyHex')} copiedLabel={tt('results.copied')} />
+                <h2 className="mt-3 text-[1.15rem] text-ink">{tt('results.avoidColors')}</h2>
+                <SwatchBar
+                  className="mt-3"
+                  colors={analysis.avoidColors}
+                  label={tt('results.avoidColors')}
+                  copyLabel={tt('results.copyHex')}
+                  copiedLabel={tt('results.copied')}
+                  crossed
                 />
+              </Panel>
+
+              <Panel title={tt('results.foundationTitle')}>
+                <p className="serif text-[1.25rem] leading-snug text-ink">{tt('results.foundationUndertone', { label: analysis.foundation.undertoneLabel })}</p>
+                <p className="serif mt-1 text-[1.25rem] leading-snug text-violet">{tt('results.foundationRange', { range: analysis.foundation.shadeRange })}</p>
+                <p className="mt-3 text-[13px] text-muted">{copy.resultsFoundationHint}</p>
+              </Panel>
+            </div>
+          </div>
+
+          <Panel title={copy.resultsShadesTitle}>
+            <div className="flex flex-col gap-5">
+              {shadeGroups.map(([title, colors]) => (
+                <div key={title}>
+                  <h3 className="text-[14px] font-semibold text-ink" style={{ fontFamily: 'var(--font-sans)' }}>
+                    {title}
+                  </h3>
+                  <ul className="mt-2.5 grid grid-cols-4 gap-2 sm:gap-2.5 lg:grid-cols-6">
+                    {colors.map((hex) => (
+                      <ShadeCard key={hex} hex={hex} analysis={analysis} fitLabel={copy.fitLabel} />
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </Panel>
 
-      <div className="mt-[10px] grid gap-[10px] lg:grid-cols-12">
-        {/* Summary */}
-        <section className="enter rounded-card bg-paper-raised p-6 sm:p-8 lg:col-span-5" style={delay(160)}>
-          <h2 className="mono-caps text-ink-muted">{tt('results.summaryTitle')}</h2>
-          <p className="mt-4 text-[1.08rem] leading-relaxed text-ink">{analysis.summary}</p>
-          <p className="mono mt-6 border-t border-line-strong pt-4 text-[12px] text-ink-muted">{tt('results.disclaimer')}</p>
-        </section>
-
-        {/* Palette */}
-        <section className="enter ink-card space-y-7 p-6 sm:p-8 lg:col-span-7" style={delay(200)}>
-          <Swatches title={tt('results.bestColors')} colors={analysis.bestColors} tt={tt} />
-          <Swatches title={tt('results.avoidColors')} colors={analysis.avoidColors} tt={tt} crossed />
-        </section>
-      </div>
-
-      {/* Shades */}
-      <section className="enter ink-card neck-top mt-[10px] grid gap-8 p-6 sm:p-8 lg:grid-cols-12 lg:gap-6" style={delay(240)}>
-        <div className="lg:col-span-5">
-          <h2 className="mono-caps text-ink-inverse-muted">{tt('results.foundationTitle')}</h2>
-          <p className="mt-4 text-[1.6rem] leading-tight font-light tracking-[-0.03em] text-ink-inverse">
-            {tt('results.foundationUndertone', { label: analysis.foundation.undertoneLabel })}
-          </p>
-          <p className="mt-1 text-[1.6rem] leading-tight font-light tracking-[-0.03em] text-accent-soft">
-            {tt('results.foundationRange', { range: analysis.foundation.shadeRange })}
-          </p>
-          <p className="mono mt-4 text-[12px] text-ink-inverse-muted">{copy.resultsFoundationHint}</p>
+          <section className="flex flex-col items-start gap-4 rounded-panel bg-violet-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div>
+              <h2 className="text-[1.5rem] text-ink">{tt('share.title')}</h2>
+              <p className="mt-1 text-[14px] text-muted">{tt('share.subtitle')}</p>
+            </div>
+            <Button onClick={() => setShareOpen(true)} icon={<Share2 aria-hidden className="size-4" />}>
+              {copy.resultsShareCta}
+            </Button>
+          </section>
         </div>
-        <div className="space-y-6 lg:col-span-7">
-          <Swatches title={tt('results.lipTitle')} colors={analysis.lip} tt={tt} />
-          <Swatches title={tt('results.blushTitle')} colors={analysis.blush} tt={tt} />
-          <Swatches title={tt('results.eyeshadowTitle')} colors={analysis.eyeshadow} tt={tt} />
-        </div>
-      </section>
-
-      {/* Looks */}
-      <section id="looks" aria-labelledby="looks-title" className="scroll-mt-4 pt-14">
-        <div className="flex flex-wrap items-end justify-between gap-3 px-1">
-          <h2 id="looks-title" className="text-[clamp(2.2rem,9vw,3.6rem)] text-ink">
-            {tt('results.looksTitle')}
-          </h2>
-          <p className="mono text-[12px] text-ink-muted">{tt('common.aiGeneratedNote')}</p>
-        </div>
-        <div className="mt-6 grid gap-[10px] sm:grid-cols-2 lg:grid-cols-3">
-          {result.recommendedLookIds.map((id, i) => (
-            <LookCard
-              key={id}
-              lookId={id}
-              index={i}
-              state={renders[id] ?? { status: 'pending' }}
-              photo={photo}
+      ) : (
+        <div id="panel-tryon" role="tabpanel" aria-labelledby="tab-tryon" className="enter mt-5">
+          {selected && (
+            <TryOn
               analysis={analysis}
+              lookIds={lookIds}
+              selected={selected}
+              onSelect={setSelectedLook}
+              render={renders[selected] ?? { status: 'pending' }}
+              photo={photo}
               onRetry={() =>
                 setRenders((r) => {
-                  const copy = { ...r };
-                  delete copy[id];
-                  return copy;
+                  const next = { ...r };
+                  delete next[selected];
+                  return next;
                 })
               }
               onNewSelfie={() => dispatch({ type: 'NEW_SELFIE' })}
@@ -399,22 +425,11 @@ export function ResultsStep({
               tt={tt}
               locale={locale}
             />
-          ))}
+          )}
         </div>
-      </section>
+      )}
 
-      {/* Share */}
-      <section className="mt-14 flex flex-col items-start gap-5 rounded-card bg-paper-raised p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-        <div>
-          <h2 className="text-[1.9rem] text-ink">{tt('share.title')}</h2>
-          <p className="mono mt-2 text-ink-muted">{tt('share.subtitle')}</p>
-        </div>
-        <Button onClick={() => setShareOpen(true)} icon={<Share2 aria-hidden className="size-4" />}>
-          {copy.resultsShareCta}
-        </Button>
-      </section>
-
-      <div className="mt-6 flex flex-col gap-2 border-t border-line-strong pt-6 sm:flex-row">
+      <div className="mt-8 flex flex-col gap-2 border-t border-line pt-6 sm:flex-row">
         <Button variant="secondary" onClick={() => dispatch({ type: 'START_OVER' })} icon={<RefreshCw aria-hidden className="size-4" />}>
           {copy.resultsStartOver}
         </Button>
@@ -423,9 +438,7 @@ export function ResultsStep({
         </Button>
       </div>
 
-      <ResultsNav copy={copy} tt={tt} onShare={() => setShareOpen(true)} onStartOver={() => dispatch({ type: 'START_OVER' })} />
-
-      <ShareCardDialog open={shareOpen} onClose={() => setShareOpen(false)} locale={locale} analysis={analysis} copy={copy} tt={tt} />
+      <ShareCardDialog open={shareOpen} onClose={() => setShareOpen(false)} locale={locale} analysis={analysis} photo={photo} copy={copy} tt={tt} />
 
       <Modal
         open={confirmDelete}
@@ -434,7 +447,7 @@ export function ResultsStep({
         closeLabel={tt('common.close')}
         size="sm"
       >
-        <p className="text-ink-muted">{tt('settings.deleteDataBody')}</p>
+        <p className="text-[14.5px] text-muted">{tt('settings.deleteDataBody')}</p>
         <div className="mt-6 flex flex-col gap-2">
           <Button
             fullWidth

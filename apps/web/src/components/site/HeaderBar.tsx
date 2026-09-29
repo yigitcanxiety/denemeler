@@ -1,11 +1,9 @@
 'use client';
 
 import type { Locale } from '@tonelle/shared';
-import clsx from 'clsx';
-import { ArrowUpRight, X } from 'lucide-react';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { NumberTag } from '@/components/lab/primitives';
+import { useEffect, useRef, useState } from 'react';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
 
@@ -21,21 +19,10 @@ export interface HeaderLabels {
 
 type NavLink = { href: string; label: string };
 
-function MenuGlyph() {
-  return (
-    <svg aria-hidden viewBox="0 0 16 16" className="size-4">
-      <circle cx="4.5" cy="4.5" r="2.6" fill="currentColor" />
-      <circle cx="11.5" cy="4.5" r="2.6" fill="currentColor" opacity="0.45" />
-      <circle cx="4.5" cy="11.5" r="2.6" fill="currentColor" />
-      <circle cx="11.5" cy="11.5" r="2.6" fill="currentColor" />
-    </svg>
-  );
-}
-
 /**
- * Floating header: logo in a pale box on the left; `Menu` + dark primary pill on the right.
- * Turns dark over `[data-header-theme="night"]` sections. `Menu` opens a full-screen sheet
- * (native <dialog>: focus trap, Esc) with the navigation and the language switch.
+ * Aura header: serif wordmark, centred nav (desktop), language switch and a violet
+ * "✦ Analizi başlat" pill. On small screens a round violet button opens a full-screen
+ * menu (native <dialog>: focus trap, Esc).
  */
 export function HeaderBar({
   locale,
@@ -51,27 +38,7 @@ export function HeaderBar({
   ctaHref: string;
 }) {
   const [open, setOpen] = useState(false);
-  const [night, setNight] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-  // Header theme follows the section underneath it.
-  useEffect(() => {
-    const targets = document.querySelectorAll('[data-header-theme="night"]');
-    if (!targets.length || typeof IntersectionObserver === 'undefined') return;
-    const active = new Set<Element>();
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) active.add(e.target);
-          else active.delete(e.target);
-        }
-        setNight(active.size > 0);
-      },
-      { rootMargin: '0px 0px -94% 0px' },
-    );
-    targets.forEach((t) => io.observe(t));
-    return () => io.disconnect();
-  }, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -85,44 +52,47 @@ export function HeaderBar({
   }, [open]);
 
   const close = () => setOpen(false);
-  const box = night
-    ? 'bg-[#211918]/85 text-ink-inverse ring-1 ring-white/10'
-    : 'bg-paper-raised/85 text-ink ring-1 ring-line';
 
   return (
     <>
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-50">
-        <div className="shell flex items-start justify-between gap-2 pt-3 sm:pt-4">
-          <Link
-            href={`/${locale}`}
-            aria-label={labels.home}
-            className={clsx(
-              'press pointer-events-auto flex h-[52px] items-center rounded-[14px] px-4 backdrop-blur-md transition-colors',
-              box,
-            )}
-          >
-            <Logo inverse={night} />
+      <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/85 backdrop-blur-md">
+        <div className="shell flex h-16 items-center justify-between gap-3 lg:h-[72px]">
+          <Link href={`/${locale}`} aria-label={labels.home} className="press rounded-md">
+            <Logo />
           </Link>
-          <div className={clsx('pointer-events-auto flex items-center gap-1 rounded-[14px] p-1 backdrop-blur-md transition-colors', box)}>
+          <nav aria-label={labels.primaryNavLabel} className="hidden lg:block">
+            <ul className="flex items-center gap-1">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex h-10 items-center rounded-pill px-3.5 text-[14.5px] font-medium text-ink hover:bg-mist"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher locale={locale} compact className="hidden sm:inline-flex" />
+            <Link
+              href={ctaHref}
+              className="press hidden h-11 items-center gap-2 rounded-pill bg-violet px-5 text-[14.5px] font-semibold whitespace-nowrap text-white shadow-violet hover:bg-[#6446ec] sm:inline-flex"
+            >
+              <span aria-hidden>✦</span>
+              {labels.startCta}
+            </Link>
             <button
               type="button"
               onClick={() => setOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={open}
-              className="press flex h-11 min-w-11 items-center justify-center gap-2 rounded-[10px] px-3 text-[15px] font-medium hover:bg-current/5"
+              aria-label={labels.menu}
+              className="press grid size-11 place-items-center rounded-full bg-violet text-white shadow-violet lg:hidden"
             >
-              <MenuGlyph />
-              <span className="sr-only sm:not-sr-only">{labels.menu}</span>
+              <Menu aria-hidden className="size-5" strokeWidth={1.75} />
             </button>
-            <Link
-              href={ctaHref}
-              className={clsx(
-                'press flex h-11 items-center rounded-[10px] px-4 text-[15px] font-medium whitespace-nowrap',
-                night ? 'bg-ink-inverse text-[#231816] hover:bg-white' : 'bg-ink text-ink-inverse hover:bg-ink-soft',
-              )}
-            >
-              {labels.startCta}
-            </Link>
           </div>
         </div>
       </header>
@@ -136,73 +106,59 @@ export function HeaderBar({
           close();
         }}
       >
-        <div className="relative flex min-h-full flex-col">
-          <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="cgrid">
-              {Array.from({ length: 8 }, (_, i) => (
-                <i key={i} />
-              ))}
-            </div>
-          </div>
-          <div className="shell relative flex items-start justify-between gap-2 pt-3 sm:pt-4">
-            <Link
-              href={`/${locale}`}
-              aria-label={labels.home}
-              onClick={close}
-              className="press flex h-[52px] items-center rounded-[14px] bg-paper-raised px-4 ring-1 ring-line"
-            >
+        <div className="flex min-h-full flex-col">
+          <div className="shell flex h-16 items-center justify-between gap-2">
+            <Link href={`/${locale}`} aria-label={labels.home} onClick={close} className="rounded-md">
               <Logo />
             </Link>
             <button
               type="button"
               onClick={close}
-              className="press flex h-[52px] items-center gap-2 rounded-[14px] bg-ink px-4 text-[15px] font-medium text-ink-inverse"
+              aria-label={labels.closeMenu}
+              className="press grid size-11 place-items-center rounded-full bg-mist text-ink hover:bg-violet-soft"
             >
-              <X aria-hidden className="size-4" />
-              {labels.closeMenu}
+              <X aria-hidden className="size-5" strokeWidth={1.75} />
             </button>
           </div>
 
-          <div className="shell relative mt-10 grid flex-1 gap-10 pb-10 lg:mt-20 lg:grid-cols-[1.4fr_1fr]">
+          <div className="shell mt-6 flex flex-1 flex-col gap-8 pb-8">
             <nav aria-label={labels.primaryNavLabel}>
-              <ol className="border-t border-line-strong">
-                {links.map((link, i) => (
-                  <li key={link.href} className="menu-item border-b border-line-strong" style={{ '--i': i } as CSSProperties}>
+              <ul className="flex flex-col gap-2">
+                {links.map((link) => (
+                  <li key={link.href}>
                     <Link
                       href={link.href}
                       onClick={close}
-                      className="group flex min-h-16 items-center gap-4 py-3 text-[clamp(2rem,9vw,4.5rem)] leading-none font-semibold tracking-[-0.05em] text-ink"
+                      className="group flex min-h-16 items-center justify-between rounded-card bg-mist px-5 py-3"
                     >
-                      <NumberTag n={i + 1} className="group-hover:bg-accent" />
-                      <span className="flex-1">{link.label}</span>
-                      <ArrowUpRight aria-hidden className="size-6 text-ink-subtle transition-transform group-hover:translate-x-1 group-hover:text-accent" />
+                      <span className="serif text-[1.6rem] leading-none text-ink">{link.label}</span>
+                      <ArrowUpRight aria-hidden className="size-5 text-violet transition-transform group-hover:translate-x-0.5" strokeWidth={1.75} />
                     </Link>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </nav>
-            <div className="menu-item flex flex-col gap-8" style={{ '--i': links.length } as CSSProperties}>
-              <LanguageSwitcher locale={locale} compact={false} onNavigate={close} className="self-start" />
-              <div>
-                <p className="mono-caps text-ink-muted">{labels.legalTitle}</p>
-                <ul className="mt-3 grid gap-1">
-                  {legal.map((l) => (
-                    <li key={l.href}>
-                      <Link href={l.href} onClick={close} className="mono inline-flex min-h-9 items-center text-ink hover:text-accent hover:underline">
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <Link
-                href={ctaHref}
-                onClick={close}
-                className="press mt-auto flex h-14 items-center justify-center rounded-pill bg-ink px-6 text-base font-medium text-ink-inverse hover:bg-ink-soft"
-              >
-                {labels.startCta}
-              </Link>
+            <LanguageSwitcher locale={locale} onNavigate={close} className="self-start" />
+            <div>
+              <p className="caps text-muted">{labels.legalTitle}</p>
+              <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                {legal.map((l) => (
+                  <li key={l.href}>
+                    <Link href={l.href} onClick={close} className="inline-flex min-h-10 items-center text-[14px] text-ink hover:text-violet hover:underline">
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
+            <Link
+              href={ctaHref}
+              onClick={close}
+              className="press mt-auto flex h-[52px] items-center justify-center gap-2 rounded-pill bg-violet px-6 text-[15px] font-semibold text-white shadow-violet"
+            >
+              <span aria-hidden>✦</span>
+              {labels.startCta}
+            </Link>
           </div>
         </div>
       </dialog>

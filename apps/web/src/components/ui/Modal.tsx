@@ -14,8 +14,8 @@ type ModalProps = {
   /** Hide the title visually (still announced). */
   hideTitle?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  /** `ink` renders a dark BRIK card. */
-  tone?: 'paper' | 'ink';
+  /** `lavender` renders a soft gradient card (offers). */
+  tone?: 'paper' | 'lavender';
   className?: string;
 };
 
@@ -45,8 +45,8 @@ export function Modal({ open, onClose, title, closeLabel, children, hideTitle, s
         if (event.target === event.currentTarget) onClose();
       }}
       className={clsx(
-        'tonelle-dialog m-auto w-[calc(100%-2rem)] rounded-card p-0 shadow-lift',
-        tone === 'paper' ? 'bg-paper-raised text-ink' : 'bg-ink text-ink-inverse',
+        'tonelle-dialog m-auto w-[calc(100%-2rem)] rounded-panel p-0 text-ink shadow-lift',
+        tone === 'paper' ? 'bg-paper' : 'bg-[linear-gradient(160deg,#F8E4D8,#EFD8E6_55%,#E6E0FA)]',
         SIZES[size],
         className,
       )}
@@ -56,14 +56,11 @@ export function Modal({ open, onClose, title, closeLabel, children, hideTitle, s
           type="button"
           onClick={onClose}
           aria-label={closeLabel}
-          className={clsx(
-            'press absolute top-3 right-3 grid size-11 place-items-center rounded-full',
-            tone === 'paper' ? 'text-ink-muted hover:bg-ink/5 hover:text-ink' : 'text-ink-inverse-muted hover:bg-white/10 hover:text-ink-inverse',
-          )}
+          className="press absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-mist text-muted hover:bg-violet-soft hover:text-ink"
         >
           <X aria-hidden className="size-5" />
         </button>
-        <h2 id={titleId} className={clsx('pr-10 text-[1.7rem]', hideTitle && 'sr-only')}>
+        <h2 id={titleId} className={clsx('pr-12 text-[1.65rem]', hideTitle && 'sr-only')}>
           {title}
         </h2>
         <div className={clsx(!hideTitle && 'mt-3')}>{children}</div>

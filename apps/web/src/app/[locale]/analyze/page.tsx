@@ -21,21 +21,17 @@ export default async function AnalyzePage({ params }: PageProps<'/[locale]/analy
 
   return (
     <>
-      <main id="main" className="relative flex-1">
-        <div aria-hidden className="pointer-events-none fixed inset-0 opacity-70">
-          <div className="cgrid">
-            {Array.from({ length: 8 }, (_, i) => (
-              <i key={i} />
-            ))}
-          </div>
+      <main id="main" className="relative flex-1 bg-paper">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(60%_70%_at_50%_0%,#F1EDFD_0%,rgba(255,255,255,0)_100%)]" />
+        <div className="relative">
+          <AnalyzeFlow locale={locale} copy={content.analyze} stores={content.stores} />
         </div>
-        <AnalyzeFlow locale={locale} copy={content.analyze} stores={content.stores} />
       </main>
-      <footer className="relative border-t border-line-strong px-4 py-6">
-        <ul className="mono mx-auto flex max-w-5xl flex-wrap justify-center gap-x-5 gap-y-2 text-[12px] text-ink-muted">
+      <footer className="border-t border-line px-4 py-6">
+        <ul className="mx-auto flex max-w-5xl flex-wrap justify-center gap-x-5 gap-y-1 text-[12.5px] text-muted">
           {legalLinks(locale).map((l) => (
             <li key={l.href}>
-              <Link href={l.href} className="hover:text-ink hover:underline">
+              <Link href={l.href} className="inline-flex min-h-9 items-center hover:text-ink hover:underline">
                 {l.label}
               </Link>
             </li>

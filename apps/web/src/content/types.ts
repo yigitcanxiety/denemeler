@@ -43,12 +43,6 @@ export interface SiteContent {
     closeMenu: string;
     menuTitle: string;
   };
-  preloader: {
-    label: string;
-    skip: string;
-    /** Four season families, clockwise from the top (N, E, S, W). */
-    seasons: string[];
-  };
   hero: {
     eyebrow: string;
     title: string;
@@ -57,44 +51,57 @@ export interface SiteContent {
     ctaNote: string;
     trustPoints: string[];
     storesLabel: string;
-    illustrationLabel: string;
-    analyzingTag: string;
-    notes: string[];
+    portraitAlt: string;
+    undertoneChip: string;
+    seasonChip: string;
+    fitChip: string;
+    colorCard: { title: string; body: string };
+    makeupCard: { title: string; body: string; shade: string };
   };
-  story: {
-    title: string;
-    subtitle: string;
-    steps: { title: string; body: string; screen: string }[];
-  };
-  sphere: {
+  beforeAfter: {
     eyebrow: string;
     title: string;
-    steps: { title: string; body: string }[];
+    storyTitle: string;
+    body: string[];
+    shadesTitle: string;
+    beforeAlt: string;
+    afterAlt: string;
+    sliderLabel: string;
+    aiNote: string;
   };
   people: {
+    eyebrow: string;
     title: string;
     /** Small disclosure shown whenever placeholder testimonials are displayed. */
     caption: string;
+    starsLabel: string;
   };
   dock: {
     note: string;
   };
   how: {
+    eyebrow: string;
     title: string;
     subtitle: string;
     steps: { title: string; body: string }[];
+    snippetGood: string;
+    snippetScanning: string;
   };
   looks: {
+    eyebrow: string;
     title: string;
     subtitle: string;
     cta: string;
   };
-  tones: {
+  profile: {
     eyebrow: string;
     title: string;
     body: string;
     points: string[];
-    seasonsTitle: string;
+    radarTitle: string;
+    seasonLabel: string;
+    paletteTitle: string;
+    sampleNote: string;
   };
   privacy: {
     title: string;
@@ -103,12 +110,14 @@ export interface SiteContent {
     link: string;
   };
   pricing: {
+    eyebrow: string;
     title: string;
     subtitle: string;
     cta: string;
     note: string;
   };
   faq: {
+    eyebrow: string;
     title: string;
     subtitle: string;
     items: { q: string; a: string }[];
@@ -161,13 +170,33 @@ export interface SiteContent {
     quizLabel: string;
     selfieDrop: string;
     selfiePreparing: string;
-    selfieReady: string;
     selfieAnalyze: string;
-    selfieTipsTitle: string;
+    tipsTitle: string;
+    tipsWellTitle: string;
+    tipsIdealTitle: string;
+    tipsAvoidTitle: string;
+    tipsAvoidDark: string;
+    tipsAvoidFilter: string;
+    tipsAvoidAngle: string;
+    tipsExampleAlt: string;
+    tipsCta: string;
+    confirmTitle: string;
+    confirmChip: string;
+    confirmOther: string;
     cameraStarting: string;
     cameraClose: string;
     cameraGuideLabel: string;
     scanningLabel: string;
+    scanningChip: string;
+    scanningTitle: string;
+    lockedProgress: string;
+    lockedClose: string;
+    lockedSeasonLabel: string;
+    lockedUnlock: string;
+    lockedSkinColor: string;
+    lockedTrialCta: string;
+    lockedCta: string;
+    lockedFine: string;
     teaserHidden: string;
     paywallClose: string;
     paywallPlansLabel: string;
@@ -179,18 +208,24 @@ export interface SiteContent {
     notifySubject: string;
     demoUnlock: string;
     demoNote: string;
-    resultsLookLocked: string;
-    resultsUnlockCta: string;
     resultsPhotoNeeded: string;
     resultsNewSelfie: string;
     resultsStartOver: string;
     resultsFoundationHint: string;
     resultsShareCta: string;
+    resultsSeasonChip: string;
+    resultsProfileTitle: string;
+    resultsTraitsTitle: string;
+    resultsShadesTitle: string;
+    fitLabel: string;
+    tryOnTitle: string;
+    tryOnLooksLabel: string;
+    tryOnShadesTitle: string;
+    tryOnSliderLabel: string;
     shareClose: string;
     shareFailed: string;
     renderFailed: string;
     homeLink: string;
-    analyzingTag: string;
     navResults: string;
     navLooks: string;
     photoFrameLabel: string;

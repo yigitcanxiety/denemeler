@@ -1,4 +1,4 @@
-import { t, type Locale } from '@tonelle/shared';
+import type { Locale } from '@tonelle/shared';
 import type { SiteContent } from '@/content';
 import { HeaderBar } from './HeaderBar';
 import { legalLinks } from './SiteFooter';
@@ -7,10 +7,9 @@ export function SiteHeader({ locale, content }: { locale: Locale; content: SiteC
   const home = `/${locale}`;
   const links = [
     { href: `${home}#how`, label: content.nav.howItWorks },
-    { href: `${home}#looks`, label: content.nav.looks },
+    { href: `${home}#try-on`, label: content.nav.looks },
     { href: `${home}#pricing`, label: content.nav.pricing },
     { href: `${home}#faq`, label: content.nav.faq },
-    { href: `/${locale}/analyze`, label: t(locale, 'common.startAnalysis') },
   ];
   return (
     <HeaderBar

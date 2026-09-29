@@ -4,12 +4,11 @@ import { createTranslator, type Locale } from '@tonelle/shared';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { Chip } from '@/components/lab/primitives';
 import { LanguageSwitcher } from '@/components/site/LanguageSwitcher';
 import { Logo } from '@/components/site/Logo';
 import { apiClient, type ApiClient } from '@/lib/api-client';
 import { clearAllData, clearAnalysis, loadAnalysis, saveAnalysis } from '@/lib/storage';
-import { completeQuiz, flowReducer, initialState, type FlowEvent, type FlowState } from './machine';
+import { completeQuiz, flowReducer, initialState, type FlowEvent } from './machine';
 import { ConsentStep } from './steps/ConsentStep';
 import { PaywallStep } from './steps/PaywallStep';
 import { QuizStep } from './steps/QuizStep';
@@ -19,9 +18,6 @@ import { SelfieStep } from './steps/SelfieStep';
 import { TeaserStep } from './steps/TeaserStep';
 import type { AnalyzeCopy, StoreCopy } from './types';
 import { Note } from './ui';
-
-/** Position of each step in the free part of the flow (chip `2/5`); paid steps show PREMIUM. */
-const STEP_NUMBER: Partial<Record<FlowState['step'], number>> = { consent: 1, quiz: 2, selfie: 3, scanning: 4, teaser: 5 };
 
 const noopSubscribe = () => () => undefined;
 
@@ -112,35 +108,22 @@ export function AnalyzeFlow({
   const stepProps = { locale, state, dispatch: send, copy, tt };
   const wide = state.step === 'results';
 
-  const n = STEP_NUMBER[state.step];
-
   return (
-    <div className={clsx('relative mx-auto w-full px-3 pt-3 pb-16 sm:px-6 sm:pt-6', wide ? 'max-w-5xl' : 'max-w-[34rem]')}>
-      {/* BRIK top bar card: wordmark + step chip */}
-      <header className="ink-card flex h-16 items-center justify-between gap-3 pr-2.5 pl-5">
-        <Link href={`/${locale}`} aria-label={copy.homeLink} className="rounded-md">
-          <Logo inverse className="text-[1.25rem]" />
+    <div className={clsx('relative mx-auto w-full px-4 pb-16 sm:px-6', wide ? 'max-w-5xl' : 'max-w-[30rem]')}>
+      <header className="flex h-16 items-center justify-between gap-3">
+        <Link href={`/${locale}`} aria-label={copy.homeLink} className="press rounded-md">
+          <Logo />
         </Link>
-        <div className="flex items-center gap-2">
-          {n ? (
-            <Chip tone="soft">
-              <span aria-hidden>{`${n}/5`}</span>
-              <span className="sr-only">{tt('common.stepOf', { current: n, total: 5 })}</span>
-            </Chip>
-          ) : (
-            <Chip tone="soft">Premium</Chip>
-          )}
-          <LanguageSwitcher locale={locale} compact tone="ink" className="border-0" />
-        </div>
+        <LanguageSwitcher locale={locale} compact />
       </header>
       <div aria-live="polite">
         {notice && (
-          <Note tone="success" className="mt-3">
+          <Note tone="success" className="mb-3">
             {notice}
           </Note>
         )}
       </div>
-      <div className="mt-[10px]">
+      <div key={state.step} className="enter pt-2">
         {state.step === 'consent' && <ConsentStep {...stepProps} />}
         {state.step === 'quiz' && <QuizStep {...stepProps} />}
         {state.step === 'selfie' && <SelfieStep {...stepProps} />}

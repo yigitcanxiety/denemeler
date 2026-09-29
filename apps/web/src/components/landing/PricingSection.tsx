@@ -1,14 +1,12 @@
 import { t, type Locale } from '@tonelle/shared';
 import clsx from 'clsx';
-import { ArrowRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
-import { PriceNumeral } from '@/components/lab/PriceNumeral';
-import { Chip, ConstructionGrid } from '@/components/lab/primitives';
+import { SectionHeading, delay } from '@/components/ui';
 import type { SiteContent } from '@/content';
 import { getPlanDisplays } from '@/lib/pricing-display';
 
-/** Pricing as BRIK stacked dark cards (joined by necks) with big light numerals. */
+/** Pricing as the app's plan cards: yearly highlighted with a badge and a big serif price. */
 export function PricingSection({ locale, content }: { locale: Locale; content: SiteContent }) {
   const plans = getPlanDisplays(locale);
   const features = [
@@ -20,76 +18,58 @@ export function PricingSection({ locale, content }: { locale: Locale; content: S
   ];
 
   return (
-    <section id="pricing" aria-labelledby="pricing-title" className="relative overflow-hidden border-t border-line-strong py-20 sm:py-28">
-      <ConstructionGrid />
-      <div className="shell relative">
-        <div className="grid gap-6 lg:grid-cols-12 lg:items-end">
-          <h2 id="pricing-title" className="text-[clamp(2.4rem,8vw,5.2rem)] text-ink lg:col-span-7" data-reveal>
-            {content.pricing.title}
-          </h2>
-          <p className="mono max-w-[44ch] text-ink-muted lg:col-span-4 lg:col-start-9" data-reveal style={{ '--d': '100ms' } as CSSProperties}>
-            {content.pricing.subtitle}
-          </p>
-        </div>
-
-        <ul className="mt-12 flex flex-col gap-[10px] lg:grid lg:grid-cols-3">
+    <section id="pricing" aria-labelledby="pricing-title" className="scroll-mt-20 py-16 sm:py-24">
+      <div className="shell">
+        <SectionHeading id="pricing-title" eyebrow={content.pricing.eyebrow} title={content.pricing.title} lead={content.pricing.subtitle} />
+        <ul className="mx-auto mt-12 grid max-w-5xl gap-4 lg:grid-cols-3 lg:items-start">
           {plans.map((plan, i) => (
             <li
               key={plan.id}
               className={clsx(
-                'ink-card flex flex-col p-6 sm:p-7',
-                i > 0 && 'neck-top lg:neck-left',
-                plan.highlighted && 'shadow-[inset_0_0_0_2px_var(--color-accent-soft)]',
+                'relative flex flex-col rounded-panel p-6',
+                plan.highlighted ? 'bg-violet-soft ring-[1.5px] ring-violet ring-inset' : 'bg-paper ring-[1.5px] ring-line ring-inset',
               )}
               data-reveal
-              style={{ '--d': `${i * 90}ms` } as CSSProperties}
+              style={delay(i * 90)}
             >
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="mono-caps text-ink-inverse-muted">{plan.name}</h3>
-                {plan.badge && (
-                  <Chip tone="soft">
-                    {plan.badge}
-                    {plan.savings ? ` · ${plan.savings}` : ''}
-                  </Chip>
-                )}
-              </div>
-              <p className="mt-8 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <PriceNumeral
-                  amount={plan.plan.introAmount ?? plan.plan.amount}
-                  currency={plan.plan.currency}
-                  locale={locale}
-                  className="text-[clamp(3.2rem,13vw,5.4rem)] text-ink-inverse lg:text-[clamp(3rem,4.6vw,5rem)]"
-                />
-                {plan.introPrice && <s className="mono text-ink-inverse-muted">{plan.price}</s>}
+              {plan.badge && (
+                <span className="absolute -top-3 right-5 rounded-pill bg-violet px-3 py-1 text-[11.5px] font-bold text-white shadow-violet">
+                  {plan.badge}
+                  {plan.savings ? ` · ${plan.savings}` : ''}
+                </span>
+              )}
+              <h3 className="text-[1.35rem] text-ink">{plan.name}</h3>
+              <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+                <span className="serif text-[2.6rem] leading-none text-ink">{plan.introPrice ?? plan.price}</span>
+                {plan.introPrice && <s className="text-[14px] text-muted">{plan.price}</s>}
               </p>
-              <p className="mt-4 text-[1.05rem] leading-snug font-medium">{plan.headline}</p>
-              {plan.subline && <p className="mono mt-1 text-ink-inverse-muted">{plan.subline}</p>}
+              <p className="mt-3 text-[14.5px] font-semibold text-ink">{plan.headline}</p>
+              {plan.subline && <p className="mt-1 text-[13.5px] text-muted">{plan.subline}</p>}
               {plan.highlighted && (
-                <ul className="mt-6 space-y-2 border-t border-white/10 pt-5">
+                <ul className="mt-5 flex flex-col gap-2 border-t border-violet/15 pt-5">
                   {features.map((f) => (
-                    <li key={f} className="mono flex gap-2.5 text-ink-inverse">
-                      <span aria-hidden className="mt-[5px] size-1.5 shrink-0 bg-accent-soft" />
+                    <li key={f} className="flex gap-2.5 text-[14px] text-ink">
+                      <span className="mt-0.5 grid size-[18px] shrink-0 place-items-center rounded-full bg-paper text-violet">
+                        <Check aria-hidden className="size-3" strokeWidth={3} />
+                      </span>
                       {f}
                     </li>
                   ))}
                 </ul>
               )}
-              <div className="mt-auto pt-7">
-                <Link
-                  href={`/${locale}/analyze`}
-                  className={clsx(
-                    'press flex h-12 w-full items-center justify-between rounded-pill px-5 font-medium',
-                    plan.highlighted ? 'bg-accent-soft text-[#231816] hover:bg-white' : 'text-ink-inverse ring-1 ring-white/25 hover:bg-white/10',
-                  )}
-                >
-                  {content.pricing.cta}
-                  <ArrowRight aria-hidden className="size-4" />
-                </Link>
-              </div>
+              <Link
+                href={`/${locale}/analyze`}
+                className={clsx(
+                  'press mt-6 flex h-12 items-center justify-center rounded-pill px-5 text-[14.5px] font-semibold',
+                  plan.highlighted ? 'bg-violet text-white shadow-violet hover:bg-[#6446ec]' : 'bg-paper text-violet ring-[1.5px] ring-violet-soft ring-inset hover:bg-mist',
+                )}
+              >
+                {content.pricing.cta}
+              </Link>
             </li>
           ))}
         </ul>
-        <p className="mono mt-8 max-w-3xl text-[12px] text-ink-muted">{content.pricing.note}</p>
+        <p className="mx-auto mt-8 max-w-3xl text-center text-[12.5px] text-muted">{content.pricing.note}</p>
       </div>
     </section>
   );

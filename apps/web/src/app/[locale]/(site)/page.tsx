@@ -1,21 +1,16 @@
 import { PRICING, isLocale, regionForLocale, t } from '@tonelle/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 import { Faq } from '@/components/landing/Faq';
 import { Hero } from '@/components/landing/Hero';
+import { HowSteps } from '@/components/landing/HowSteps';
 import { LooksGallery } from '@/components/landing/LooksGallery';
-import { People } from '@/components/landing/People';
-import { phoneScreens } from '@/components/landing/PhoneScreens';
-import { Preloader } from '@/components/landing/Preloader';
 import { PricingSection } from '@/components/landing/PricingSection';
-import { PrivacyPromise } from '@/components/landing/PrivacyPromise';
-import { SeasonSphere } from '@/components/landing/SeasonSphere';
-import { SkinTones } from '@/components/landing/SkinTones';
-import { Story } from '@/components/landing/Story';
-import { StickyDock } from '@/components/site/StickyDock';
-import { StoreBadges } from '@/components/site/StoreBadges';
+import { PrivacyStrip } from '@/components/landing/PrivacyStrip';
+import { ProfileSection } from '@/components/landing/ProfileSection';
+import { Reviews } from '@/components/landing/Reviews';
+import { TryOnSection } from '@/components/landing/TryOnSection';
+import { MobileCta } from '@/components/site/MobileCta';
 import { COMPANY, SITE_URL, STORE_URLS } from '@/config/company';
 import { getContent } from '@/content';
 import { absoluteUrl, jsonLd, pageMetadata } from '@/lib/seo';
@@ -70,52 +65,21 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
     },
   ];
 
-  const hasStores = Boolean(STORE_URLS.appStore || STORE_URLS.playStore);
-
   return (
     <>
-      <Preloader seasons={content.preloader.seasons} label={content.preloader.label} skip={content.preloader.skip} />
       <main id="main">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(structuredData) }} />
         <Hero locale={locale} content={content} />
-        <Story
-          title={content.story.title}
-          subtitle={content.story.subtitle}
-          steps={content.story.steps}
-          screens={phoneScreens(locale, content.story.steps.map((s) => s.screen))}
-          progressLabel={content.story.title}
-        />
-        <SkinTones locale={locale} content={content} />
-        <SeasonSphere
-          eyebrow={content.sphere.eyebrow}
-          title={content.sphere.title}
-          steps={content.sphere.steps}
-          progressLabel={content.sphere.title}
-        />
+        <TryOnSection locale={locale} content={content} />
+        <HowSteps locale={locale} content={content} />
+        <ProfileSection locale={locale} content={content} />
         <LooksGallery locale={locale} content={content} />
-        <People locale={locale} content={content} />
+        <Reviews locale={locale} content={content} />
         <PricingSection locale={locale} content={content} />
-        <PrivacyPromise locale={locale} content={content} />
+        <PrivacyStrip locale={locale} content={content} />
         <Faq content={content} />
       </main>
-      <StickyDock showAfterId="hero-end" hideNearId="site-footer" label={content.hero.storesLabel}>
-        {hasStores ? (
-          <StoreBadges labels={content.stores} className="justify-center" />
-        ) : (
-          <Link
-            href={`/${locale}/analyze`}
-            className="press flex h-14 items-center justify-between gap-3 rounded-[14px] bg-paper-raised pr-2 pl-5 text-ink hover:bg-white"
-          >
-            <span className="flex flex-col leading-tight">
-              <span className="text-[15px] font-semibold tracking-[-0.02em]">{content.hero.cta}</span>
-              <span className="font-mono text-[11px] text-ink-muted">{content.dock.note}</span>
-            </span>
-            <span className="grid size-10 shrink-0 place-items-center rounded-[10px] bg-ink text-ink-inverse">
-              <ArrowRight aria-hidden className="size-4" />
-            </span>
-          </Link>
-        )}
-      </StickyDock>
+      <MobileCta href={`/${locale}/analyze`} label={content.hero.cta} note={content.dock.note} showAfterId="hero-end" hideNearId="site-footer" />
     </>
   );
 }

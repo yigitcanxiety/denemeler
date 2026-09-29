@@ -1,68 +1,65 @@
 /*
- * Tonelle design tokens — Design Language v2 "Editorial Lab" (docs/DESIGN.md §2).
+ * Tonelle design tokens — Design Language v3 "Aura" (docs/DESIGN.md §2).
  * Mirrored in apps/mobile/src/theme.ts — keep both in sync.
  * Declared as Tailwind v4 theme variables, so each token is both a CSS custom property
- * on :root (e.g. var(--color-accent)) and a utility (e.g. bg-paper, rounded-card, font-mono).
+ * on :root (e.g. var(--color-violet)) and a utility (e.g. bg-mist, text-muted, rounded-card).
  */
 
 @theme static {
-  /* Canvas */
-  --color-paper: #e6ded7;
-  --color-paper-raised: #efe9e3;
-  --color-paper-sunken: #d9d0c8;
-  --color-line: rgb(35 24 22 / 0.14);
-  --color-line-strong: rgb(35 24 22 / 0.28);
+  /* Surfaces */
+  --color-board: #e9e5fb;
+  --color-paper: #ffffff;
+  --color-mist: #f6f4fe;
+  --color-line: #e6e2f3;
 
-  /* Ink (espresso) */
-  --color-ink: #231816;
-  --color-ink-soft: #3a2a27;
-  --color-ink-muted: #6e605b;
-  --color-ink-subtle: #9a8c86;
-  /* Text on ink / night surfaces (web helper tokens) */
-  --color-ink-inverse: #f3ece6;
-  --color-ink-inverse-muted: #b9aba5;
+  /* Text */
+  --color-ink: #17141f;
+  --color-muted: #6b6679;
 
-  /* Accent ("lipstick"): lines, markers, tags, focus. Never large fills. */
-  --color-accent: #c8354a;
-  --color-accent-soft: #f2c9cb;
-  --color-accent-contrast: #ffffff;
-  --color-focus: #c8354a;
+  /* Primary */
+  --color-violet: #7457f5;
+  --color-violet-2: #8e75ff;
+  --color-violet-soft: #ede8ff;
+  --color-focus: #7457f5;
 
-  /* Night section */
-  --color-night: #161010;
-  --color-night-raised: #211918;
-  --color-night-line: rgb(242 201 203 / 0.12);
+  /* Makeup accent */
+  --color-rose: #e4718a;
+  --color-rose-soft: #fce9ee;
+  --color-rose-ink: #b23e5a;
 
-  /* States */
-  --color-success: #3f7d5c;
-  --color-warning: #b7791f;
-  --color-danger: #b42335;
+  /* Fit / state pills */
+  --color-mint: #cff3d6;
+  --color-mint-ink: #1e7a3a;
+  --color-butter: #ffe9a8;
+  --color-butter-ink: #8a6400;
+  --color-danger: #b23e5a;
 
-  /* Heat-map ("makeup glow") gradient */
-  --color-heat-berry: #7a1f2b;
-  --color-heat-red: #c8354a;
-  --color-heat-terracotta: #e0775e;
-  --color-heat-peach: #f3b27a;
-  --color-heat-champagne: #fbe3c6;
+  /* Chart bars (Aura) */
+  --color-chart-warmth: #f29a5e;
+  --color-chart-contrast: #6c9bef;
+  --color-chart-softness: #d983e6;
+  --color-chart-depth: #5b6bf0;
 
   /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-card: 24px;
-  --radius-xl: 32px;
+  --radius-sm: 10px;
+  --radius-chip: 12px;
+  --radius-card: 18px;
+  --radius-panel: 22px;
+  --radius-xl: 28px;
   --radius-pill: 999px;
 
-  /* Shadows (used sparingly: the language is flat + hairlines) */
-  --shadow-soft: 0 1px 2px rgb(35 24 22 / 0.06), 0 6px 18px rgb(35 24 22 / 0.06);
-  --shadow-lift: 0 10px 30px rgb(35 24 22 / 0.16), 0 30px 80px rgb(35 24 22 / 0.14);
+  /* Shadows: soft and violet-tinted */
+  --shadow-violet: 0 10px 24px -12px #7457f5;
+  --shadow-soft: 0 1px 2px rgb(23 20 31 / 0.04), 0 12px 32px -18px rgb(64 40 150 / 0.28);
+  --shadow-float: 0 6px 16px -8px rgb(23 20 31 / 0.35);
+  --shadow-lift: 0 30px 60px -30px rgb(40 20 110 / 0.45);
 
   /* Motion */
-  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
   /* Fonts: variables are provided by next/font in app/[locale]/layout.tsx */
-  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-gloock), Georgia, 'Times New Roman', serif;
 }

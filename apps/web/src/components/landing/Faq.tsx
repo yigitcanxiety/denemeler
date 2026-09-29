@@ -1,32 +1,28 @@
+import { Plus } from 'lucide-react';
+import { SectionHeading } from '@/components/ui';
 import type { SiteContent } from '@/content';
 
 export function Faq({ content }: { content: SiteContent }) {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="relative border-t border-line-strong py-20 sm:py-28">
-      <div className="shell grid gap-10 lg:grid-cols-12">
-        <div className="lg:col-span-4">
-          <div className="lg:sticky lg:top-28" data-reveal>
-            <h2 id="faq-title" className="text-[clamp(2.4rem,8vw,5rem)] text-ink">
-              {content.faq.title}
-            </h2>
-            <p className="mono mt-5 max-w-[34ch] text-ink-muted">{content.faq.subtitle}</p>
+    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20 py-16 sm:py-24">
+      <div className="shell grid gap-10 lg:grid-cols-[1fr_1.6fr]">
+        <div>
+          <div className="lg:sticky lg:top-28">
+            <SectionHeading id="faq-title" eyebrow={content.faq.eyebrow} title={content.faq.title} lead={content.faq.subtitle} align="left" />
           </div>
         </div>
-        <div className="border-t border-line-strong lg:col-span-8">
-          {content.faq.items.map((item, i) => (
-            <details key={item.q} className="group border-b border-line-strong">
-              <summary className="flex min-h-16 cursor-pointer items-start gap-4 py-5 text-left">
-                <span className="mono-caps mt-1.5 w-10 shrink-0 text-ink-muted">Q.{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="flex-1 text-[1.2rem] leading-tight font-medium tracking-[-0.03em] text-ink sm:text-[1.45rem]">{item.q}</h3>
-                <span
-                  aria-hidden
-                  className="relative mt-1 grid size-7 shrink-0 place-items-center bg-ink text-ink-inverse transition-colors group-open:bg-accent"
-                >
-                  <span className="absolute h-px w-3 bg-current" />
-                  <span className="absolute h-3 w-px bg-current transition-transform duration-200 group-open:scale-y-0" />
+        <div className="flex flex-col gap-2.5">
+          {content.faq.items.map((item) => (
+            <details key={item.q} className="group rounded-card bg-mist px-5 open:bg-paper open:shadow-soft open:ring-1 open:ring-line">
+              <summary className="flex min-h-16 cursor-pointer items-center gap-4 py-4 text-left">
+                <h3 className="flex-1 font-sans text-[15.5px] leading-snug font-semibold tracking-normal text-ink" style={{ fontFamily: 'var(--font-sans)' }}>
+                  {item.q}
+                </h3>
+                <span aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full bg-paper text-violet transition-transform duration-200 group-open:rotate-45 group-open:bg-violet-soft motion-reduce:transition-none">
+                  <Plus className="size-4" strokeWidth={2} />
                 </span>
               </summary>
-              <p className="mono max-w-[64ch] pb-6 pl-14 text-ink-muted">{item.a}</p>
+              <p className="max-w-[64ch] pb-5 text-[14.5px] leading-relaxed text-muted">{item.a}</p>
             </details>
           ))}
         </div>

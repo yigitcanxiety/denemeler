@@ -17,14 +17,12 @@ export function LanguageSwitcher({
   locale,
   className,
   compact = false,
-  tone = 'paper',
   onNavigate,
 }: {
   locale: Locale;
   className?: string;
   /** Show language codes (TR / EN) instead of names. */
   compact?: boolean;
-  tone?: 'paper' | 'ink';
   onNavigate?: () => void;
 }) {
   const pathname = usePathname() ?? `/${locale}`;
@@ -32,8 +30,7 @@ export function LanguageSwitcher({
     <nav
       aria-label={t(locale, 'language.label')}
       className={clsx(
-        'inline-flex items-center gap-0.5 rounded-[12px] border p-0.5 font-mono text-[12px]',
-        tone === 'paper' ? 'border-line-strong' : 'border-white/20',
+        'inline-flex items-center gap-0.5 rounded-pill bg-mist p-1 text-[12.5px] font-semibold ring-1 ring-line ring-inset',
         className,
       )}
     >
@@ -51,14 +48,8 @@ export function LanguageSwitcher({
               onNavigate?.();
             }}
             className={clsx(
-              'press grid h-10 min-w-11 place-items-center rounded-[10px] px-3 tracking-[0.04em] uppercase',
-              active
-                ? tone === 'paper'
-                  ? 'bg-ink text-ink-inverse'
-                  : 'bg-ink-inverse text-[#231816]'
-                : tone === 'paper'
-                  ? 'text-ink-muted hover:text-ink'
-                  : 'text-ink-inverse-muted hover:text-ink-inverse',
+              'press grid h-10 min-w-11 place-items-center rounded-pill px-3 tracking-[0.04em]',
+              active ? 'bg-paper text-ink shadow-[0_1px_3px_rgb(23_20_31/0.12)]' : 'text-muted hover:text-ink',
             )}
           >
             {compact ? (

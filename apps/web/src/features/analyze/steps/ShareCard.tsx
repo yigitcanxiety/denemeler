@@ -3,101 +3,74 @@
 import { SEASONS, localized, t, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { Download, Share2 } from 'lucide-react';
 import { forwardRef, useRef, useState } from 'react';
-import { GiantWordmark } from '@/components/lab/GiantWordmark';
-import { HeatFace } from '@/components/lab/HeatFace';
-import { Logo } from '@/components/site/Logo';
 import { Button, Modal } from '@/components/ui';
-import { heatFrom } from '@/lib/heat';
 import { SITE_URL } from '@/config/company';
 import type { AnalyzeCopy, Translate } from '../types';
 
 const CARD_W = 1080;
 const CARD_H = 1920;
 const PREVIEW_SCALE = 0.25;
+const BG = '#F6F4FE';
 
-/** 1080×1920 story card (DESIGN §5), rendered as DOM and exported with html-to-image. */
-export const SeasonShareCard = forwardRef<HTMLDivElement, { locale: Locale; analysis: FaceAnalysis }>(
-  function SeasonShareCard({ locale, analysis }, ref) {
+/** 1080×1920 story card (DESIGN §3): white/lavender, serif season name, palette, portrait, wordmark. */
+export const SeasonShareCard = forwardRef<HTMLDivElement, { locale: Locale; analysis: FaceAnalysis; photo?: string | null }>(
+  function SeasonShareCard({ locale, analysis, photo }, ref) {
     const season = SEASONS[analysis.season];
     const name = localized(season.name, locale);
     const colors = analysis.bestColors.slice(0, 8);
-    const heat = heatFrom([analysis.lip[0] ?? '#C8354A', analysis.blush[0] ?? '#E0775E', analysis.eyeshadow[0] ?? '#F3B27A']);
-    const cols = [90, 240, 390, 540, 690, 840, 990];
-    const mono = { fontFamily: 'var(--font-mono)' } as const;
+    const serif = { fontFamily: 'var(--font-display)' } as const;
     return (
       <div
         ref={ref}
-        style={{ width: CARD_W, height: CARD_H, backgroundColor: '#E6DED7', color: '#231816', fontFamily: 'var(--font-sans)' }}
+        style={{ width: CARD_W, height: CARD_H, background: `linear-gradient(180deg, #FFFFFF 0%, ${BG} 45%, #E9E5FB 100%)`, color: '#17141F', fontFamily: 'var(--font-sans)' }}
         className="relative overflow-hidden"
       >
-        {/* construction grid */}
-        {cols.map((x) => (
-          <span key={x} className="absolute top-0 bottom-0 w-px" style={{ left: x, backgroundColor: 'rgb(35 24 22 / 0.12)' }} />
-        ))}
-        {[200, 1000, 1370, 1590].map((y) => (
-          <span key={y} className="absolute right-0 left-0 h-px" style={{ top: y, backgroundColor: 'rgb(35 24 22 / 0.12)' }} />
-        ))}
-        {/* accent construction circle + connector line */}
-        <span className="absolute rounded-full" style={{ left: 540 - 400, top: 600 - 400, width: 800, height: 800, border: '2px solid #C8354A' }} />
-        <span className="absolute h-[2px]" style={{ left: 0, right: 0, top: 599, backgroundColor: '#C8354A', opacity: 0.9 }} />
-        <span className="absolute" style={{ left: 0, top: 590, width: 44, height: 20, backgroundColor: '#C8354A' }} />
-        <span className="absolute" style={{ right: 0, top: 590, width: 44, height: 20, backgroundColor: '#C8354A' }} />
-
         {/* header */}
-        <div className="absolute flex items-center justify-between" style={{ left: 90, right: 90, top: 84 }}>
-          <span className="flex items-center gap-4 rounded-[20px] px-7 py-5" style={{ backgroundColor: '#EFE9E3' }}>
-            <Logo className="text-[54px]" />
-          </span>
-          <span className="flex items-center gap-4 text-[28px] tracking-[0.06em] uppercase" style={mono}>
-            <span className="grid size-[56px] place-items-center text-[24px]" style={{ backgroundColor: '#231816', color: '#E6DED7' }}>
-              01
-            </span>
-            {t(locale, 'results.yourSeason')}
+        <div className="absolute flex items-center justify-between" style={{ left: 90, right: 90, top: 96 }}>
+          <span style={{ ...serif, fontSize: 64, letterSpacing: '-0.02em' }}>Tonelle</span>
+          <span className="rounded-full" style={{ background: '#EDE8FF', color: '#5A3FE0', fontSize: 28, fontWeight: 700, padding: '14px 28px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+            ✦ {t(locale, 'results.yourSeason')}
           </span>
         </div>
 
-        {/* heat-map face */}
-        <div className="absolute rounded-full" style={{ left: 540 - 320, top: 600 - 320, width: 640, height: 640, background: 'radial-gradient(circle at 50% 55%, rgb(243 178 122 / 0.35), rgb(224 119 94 / 0.12) 48%, transparent 70%)' }} />
-        <HeatFace id="share-face" palette={heat} animated={false} showBody={false} className="absolute" style={{ left: 540 - 240, top: 600 - 305, width: 480, height: 610 }} />
-        <span
-          className="absolute flex items-center gap-3 px-4 py-2 text-[26px] tracking-[0.06em] uppercase"
-          style={{ ...mono, left: 540, top: 872, transform: 'translateX(-50%)', backgroundColor: '#C8354A', color: '#fff' }}
+        {/* portrait / season gradient */}
+        <div
+          className="absolute overflow-hidden"
+          style={{ left: 190, top: 250, width: 700, height: 820, borderRadius: 64, background: 'linear-gradient(160deg,#F8E4D8,#EFD8E6 55%,#E6E0FA)', boxShadow: '0 60px 120px -60px rgba(40,20,110,.45)' }}
         >
-          <span className="size-3 rounded-full bg-white" />
-          {t(locale, 'common.aiGenerated')}
-        </span>
+          {photo && (
+            // eslint-disable-next-line @next/next/no-img-element -- in-memory data URL, exported locally
+            <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          )}
+          <span
+            className="absolute flex items-center"
+            style={{ right: 32, bottom: 32, gap: 12, background: 'rgba(255,255,255,.92)', color: '#7457F5', borderRadius: 999, padding: '14px 26px', fontSize: 26, fontWeight: 700 }}
+          >
+            ✦ {t(locale, 'common.aiGenerated')}
+          </span>
+        </div>
 
         {/* season */}
-        <div className="absolute" style={{ left: 84, right: 84, top: 1030 }}>
-          <p className="text-[30px] tracking-[0.02em]" style={mono}>
-            {t(locale, 'share.cardHeadline', { season: name })}
-          </p>
-          <h2 className="mt-6 font-semibold" style={{ fontSize: name.length > 14 ? 124 : 150, lineHeight: 0.88, letterSpacing: '-0.055em' }}>
-            {name}
-          </h2>
+        <div className="absolute text-center" style={{ left: 80, right: 80, top: 1140 }}>
+          <p style={{ fontSize: 34, color: '#6B6679' }}>{t(locale, 'share.cardHeadline', { season: name })}</p>
+          <h2 style={{ ...serif, marginTop: 20, fontSize: name.length > 14 ? 118 : 138, lineHeight: 1, letterSpacing: '-0.01em' }}>{name}</h2>
         </div>
 
         {/* palette */}
-        <div className="absolute" style={{ left: 90, right: 90, top: 1396 }}>
-          <p className="text-[26px] tracking-[0.06em] uppercase" style={{ ...mono, color: '#6E605B' }}>
+        <div className="absolute" style={{ left: 110, right: 110, top: 1500 }}>
+          <p className="text-center" style={{ fontSize: 26, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#6B6679' }}>
             {t(locale, 'share.cardPaletteLabel')}
           </p>
-          <div className="mt-6 flex gap-[8px] overflow-hidden rounded-[24px]" style={{ height: 92 }}>
+          <div className="flex" style={{ marginTop: 28, gap: 14 }}>
             {colors.map((c) => (
-              <span key={c} className="block flex-1" style={{ backgroundColor: c }} />
+              <span key={c} className="block flex-1" style={{ height: 110, borderRadius: 28, backgroundColor: c }} />
             ))}
           </div>
         </div>
 
-        {/* footer: giant wordmark + caption */}
-        <div className="absolute" style={{ left: 72, right: 72, bottom: 112 }}>
-          <GiantWordmark enter="none" />
-        </div>
-        <div className="absolute flex items-center justify-between" style={{ left: 90, right: 90, bottom: 40 }}>
-          <span className="text-[26px]" style={{ ...mono, color: '#6E605B' }}>
-            {t(locale, 'share.cardFooter')}
-          </span>
-          <span className="size-4 bg-[#C8354A]" />
+        {/* footer */}
+        <div className="absolute text-center" style={{ left: 90, right: 90, bottom: 80, fontSize: 28, color: '#6B6679' }}>
+          {t(locale, 'share.cardFooter')}
         </div>
       </div>
     );
@@ -109,6 +82,7 @@ export function ShareCardDialog({
   onClose,
   locale,
   analysis,
+  photo,
   copy,
   tt,
 }: {
@@ -116,6 +90,7 @@ export function ShareCardDialog({
   onClose: () => void;
   locale: Locale;
   analysis: FaceAnalysis;
+  photo?: string | null;
   copy: AnalyzeCopy;
   tt: Translate;
 }) {
@@ -131,7 +106,7 @@ export function ShareCardDialog({
     const node = cardRef.current;
     if (!node) throw new Error('Card not mounted');
     const { toBlob } = await import('html-to-image');
-    const options = { width: CARD_W, height: CARD_H, pixelRatio: 1, cacheBust: true, backgroundColor: '#E6DED7' };
+    const options = { width: CARD_W, height: CARD_H, pixelRatio: 1, cacheBust: true, backgroundColor: BG };
     let blob: Blob | null = null;
     try {
       blob = await toBlob(node, options);
@@ -185,20 +160,20 @@ export function ShareCardDialog({
 
   return (
     <Modal open={open} onClose={onClose} title={tt('share.title')} closeLabel={copy.shareClose}>
-      <p className="mono text-ink-muted">{tt('share.subtitle')}</p>
+      <p className="text-[14.5px] text-muted">{tt('share.subtitle')}</p>
       <div
-        className="mx-auto mt-5 overflow-hidden rounded-[18px] ring-1 ring-line-strong"
+        className="mx-auto mt-5 overflow-hidden rounded-[18px] ring-1 ring-line"
         style={{ width: CARD_W * PREVIEW_SCALE, height: CARD_H * PREVIEW_SCALE }}
       >
         {/* The transform lives on this wrapper so the exported node itself is unscaled. */}
         <div style={{ transform: `scale(${PREVIEW_SCALE})`, transformOrigin: 'top left', width: CARD_W, height: CARD_H }}>
-          <SeasonShareCard ref={cardRef} locale={locale} analysis={analysis} />
+          <SeasonShareCard ref={cardRef} locale={locale} analysis={analysis} photo={photo} />
         </div>
       </div>
       <div aria-live="polite" className="mt-3 min-h-5 text-center text-sm">
-        {busy && <span className="text-ink-muted">{tt('share.generating')}</span>}
+        {busy && <span className="text-muted">{tt('share.generating')}</span>}
         {!busy && error && <span className="text-danger">{copy.shareFailed}</span>}
-        {!busy && !error && status && <span className="text-success">{status}</span>}
+        {!busy && !error && status && <span className="text-mint-ink">{status}</span>}
       </div>
       <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <Button

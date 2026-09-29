@@ -4,11 +4,8 @@ import type { TranslationKey } from '@tonelle/shared';
 import clsx from 'clsx';
 import { Check, ShieldCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Sunburst } from '@/components/lab/Sunburst';
-import { AccentTag, SegmentedProgress } from '@/components/lab/primitives';
-import { Counter } from '@/components/landing/Preloader';
+import { Eyebrow, ProgressRing } from '@/components/ui';
 import type { StepProps } from '../types';
-import { Eyebrow, delay } from '../ui';
 
 const MESSAGES: TranslationKey[] = [
   'analyzing.stepFace',
@@ -22,7 +19,33 @@ const MESSAGES: TranslationKey[] = [
 /** Time constant of the counter: it approaches (never reaches) 100% until the result arrives. */
 const TAU_MS = 1500;
 
-export function ScanningStep({ state, copy, tt }: StepProps) {
+/** Face-mesh dots and lines over the photo (decorative). */
+function FaceMesh() {
+  const pts: [number, number][] = [
+    [50, 22],
+    [34, 40],
+    [66, 40],
+    [28, 55],
+    [72, 55],
+    [50, 52],
+    [40, 66],
+    [60, 66],
+    [50, 80],
+  ];
+  return (
+    <svg aria-hidden viewBox="0 0 100 100" className="pointer-events-none absolute inset-0 size-full">
+      <g fill="none" stroke="rgb(255 255 255 / 0.6)" strokeWidth="0.4">
+        <path d="M34 40 50 22 66 40 72 55 60 66 50 80 40 66 28 55Z" />
+        <path d="M34 40 50 52 66 40M40 66 50 52 60 66M28 55 50 52 72 55" />
+      </g>
+      {pts.map(([x, y]) => (
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="1.1" fill="#fff" />
+      ))}
+    </svg>
+  );
+}
+
+export function ScanningStep({ locale, state, copy, tt }: StepProps) {
   const [index, setIndex] = useState(0);
   const [slow, setSlow] = useState(false);
   const [percent, setPercent] = useState(0);
@@ -45,80 +68,58 @@ export function ScanningStep({ state, copy, tt }: StepProps) {
   }, []);
 
   const message = MESSAGES[index] ?? MESSAGES[0]!;
-  const labels = [
-    { text: tt('results.undertoneTitle'), angle: 0 },
-    { text: tt('results.contrastTitle'), angle: 90 },
-    { text: tt('results.skinDepthTitle'), angle: 180 },
-    { text: tt('results.faceShapeTitle'), angle: 270 },
-  ];
+  const shown = Math.round(percent);
 
   return (
-    <div className="flex flex-col gap-[10px]" aria-busy="true">
-      <section className="enter ink-card neck-top p-6" style={delay(40)}>
-        <Eyebrow n="04">{copy.scanningLabel}</Eyebrow>
-        <h1 className="mt-4 text-[clamp(1.9rem,8.4vw,2.5rem)] text-ink-inverse">{tt('analyzing.title')}</h1>
-      </section>
+    <div className="flex flex-col items-center gap-6 text-center" aria-busy="true">
+      <Eyebrow>{copy.scanningChip}</Eyebrow>
+      <h1 className="-mt-2 text-[clamp(1.7rem,7vw,2.2rem)] text-ink">{copy.scanningTitle}</h1>
 
-      {/* Sunburst wrapped around the user's photo */}
-      <div role="img" aria-label={copy.scanningLabel} className="relative mx-auto w-full max-w-[440px] overflow-x-clip px-6 py-6 sm:px-10">
-        <Sunburst labels={labels} inner={46} lines={84} enter="play" rotateSides labelClassName="text-[9.5px] sm:text-[11px]">
-          <div className="relative size-full overflow-hidden rounded-full bg-paper-sunken ring-1 ring-line-strong">
-            {state.photo && (
-              // eslint-disable-next-line @next/next/no-img-element -- in-memory data URL
-              <img src={state.photo} alt="" className="size-full object-cover" />
+      <ProgressRing value={percent} size={248} stroke={3.2} label={copy.scanningLabel}>
+        <div className="absolute inset-[14px] overflow-hidden rounded-full bg-mist">
+          {state.photo && (
+            // eslint-disable-next-line @next/next/no-img-element -- in-memory data URL
+            <img src={state.photo} alt="" className="size-full object-cover" />
+          )}
+          <FaceMesh />
+          <div aria-hidden className="scan-band" />
+        </div>
+      </ProgressRing>
+
+      <p aria-hidden className="serif text-[3rem] leading-none text-ink tabular-nums">
+        {locale === 'tr' ? `%${shown}` : `${shown}%`}
+      </p>
+
+      <ol className="flex w-full max-w-xs flex-col gap-2.5 text-left" aria-live="polite">
+        {MESSAGES.map((key, i) => (
+          <li
+            key={key}
+            className={clsx(
+              'flex items-center gap-2.5 text-[14px] transition-colors',
+              i < index ? 'text-ink' : i === index ? 'font-semibold text-violet' : 'text-muted',
             )}
-            <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,transparent_40%,rgb(22_16_16/0.35))]" />
-            <div aria-hidden className="absolute inset-0">
-              <div className="scanline h-full w-full">
-                <div className="h-px w-full bg-accent" />
-                <div className="h-12 w-full bg-gradient-to-b from-accent/25 to-transparent" />
-              </div>
-            </div>
-          </div>
-        </Sunburst>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <AccentTag blink>{copy.analyzingTag}</AccentTag>
-        </div>
-      </div>
-
-      <section className="enter ink-card p-6" style={delay(120)}>
-        <div className="flex items-end justify-between gap-4">
-          <p aria-hidden className="text-[clamp(3.4rem,17vw,4.6rem)] leading-[0.85] font-light tracking-[-0.05em] text-ink-inverse">
-            <Counter value={percent} className="font-light" />
-          </p>
-          <SegmentedProgress value={Math.round(percent)} max={100} segments={16} label={copy.scanningLabel} className="mb-1 h-9 w-[46%]" />
-        </div>
-        <ol className="mt-6 grid gap-2 border-t border-white/10 pt-5" aria-live="polite">
-          {MESSAGES.map((key, i) => (
-            <li
-              key={key}
+            aria-current={i === index ? 'step' : undefined}
+          >
+            <span
+              aria-hidden
               className={clsx(
-                'mono flex items-center gap-2.5 transition-opacity',
-                i < index ? 'text-ink-inverse-muted' : i === index ? 'text-ink-inverse' : 'text-ink-inverse-muted opacity-35',
+                'grid size-5 shrink-0 place-items-center rounded-full',
+                i < index ? 'bg-violet text-white' : i === index ? 'bg-violet-soft' : 'bg-mist',
               )}
-              aria-current={i === index ? 'step' : undefined}
             >
-              <span aria-hidden className="grid size-4 shrink-0 place-items-center">
-                {i < index ? (
-                  <Check className="size-3.5 text-accent-soft" strokeWidth={2.5} />
-                ) : i === index ? (
-                  <span className="blink size-2 bg-accent" />
-                ) : (
-                  <span className="size-1.5 bg-white/30" />
-                )}
-              </span>
-              {tt(key)}
-            </li>
-          ))}
-        </ol>
-        <p className="sr-only" role="status">
-          {tt(message)}
-        </p>
-        {slow && <p className="mono mt-4 text-ink-inverse-muted">{tt('analyzing.slow')}</p>}
-      </section>
+              {i < index ? <Check className="size-3" strokeWidth={3} /> : i === index ? <span className="pulse size-2 rounded-full bg-violet" /> : null}
+            </span>
+            {tt(key)}
+          </li>
+        ))}
+      </ol>
+      <p className="sr-only" role="status">
+        {tt(message)}
+      </p>
+      {slow && <p className="text-[13.5px] text-muted">{tt('analyzing.slow')}</p>}
 
-      <p className="mono mt-3 flex items-center justify-center gap-1.5 text-center text-[11.5px] text-ink-muted">
-        <ShieldCheck aria-hidden className="size-4 shrink-0 text-success" />
+      <p className="flex items-center justify-center gap-1.5 text-center text-[12.5px] text-muted">
+        <ShieldCheck aria-hidden className="size-4 shrink-0 text-mint-ink" strokeWidth={1.75} />
         {tt('analyzing.privacy')}
       </p>
     </div>

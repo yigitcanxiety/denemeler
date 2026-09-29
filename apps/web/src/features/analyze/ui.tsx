@@ -1,62 +1,85 @@
 'use client';
 
 import clsx from 'clsx';
-import { Check } from 'lucide-react';
-import { useId, type CSSProperties, type ReactNode } from 'react';
+import { Check, ChevronLeft } from 'lucide-react';
+import { useId, type ReactNode } from 'react';
 
-/** Stagger helper for `.enter` step animations. */
-export const delay = (ms: number) => ({ '--d': `${ms}ms` }) as CSSProperties;
+export { delay } from '@/components/ui/aura';
 
-/** Mono uppercase eyebrow used at the top of dark flow cards: `01 — PRIVACY`. */
-export function Eyebrow({ n, children, className }: { n?: string; children: ReactNode; className?: string }) {
+/** Round icon button (mist by default). */
+export function RoundButton({
+  label,
+  onClick,
+  children,
+  className,
+}: {
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <p className={clsx('mono-caps flex items-center gap-2 text-ink-inverse-muted', className)}>
-      {n && <span className="text-accent-soft">{n}</span>}
-      {n && <span aria-hidden className="h-px w-5 bg-white/25" />}
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={clsx('press grid size-11 shrink-0 place-items-center rounded-full bg-mist text-ink hover:bg-violet-soft', className)}
+    >
       {children}
-    </p>
+    </button>
   );
 }
 
-/**
- * Oval selfie guide (DESIGN §5): dashed hairline oval + crosshair + accent corner ticks.
- * Drawn in a 300×375 box (4:5) that stretches over the frame.
- */
-export function OvalGuide({ className, dim = true }: { className?: string; dim?: boolean }) {
-  const maskId = useId().replace(/:/g, '');
-  const ticks = [
-    'M28 60V28H60',
-    'M240 28H272V60',
-    'M272 315V347H240',
-    'M60 347H28V315',
-  ];
+/** "‹ Title" screen header used by the flow screens (serif title, optional back action). */
+export function ScreenTitle({
+  title,
+  backLabel,
+  onBack,
+  aside,
+  className,
+}: {
+  title: ReactNode;
+  backLabel?: string;
+  onBack?: () => void;
+  aside?: ReactNode;
+  className?: string;
+}) {
   return (
-    <svg viewBox="0 0 300 375" preserveAspectRatio="none" aria-hidden className={clsx('pointer-events-none absolute inset-0 size-full', className)}>
-      {dim && (
-        <>
-          <defs>
-            <mask id={maskId}>
-              <rect width="300" height="375" fill="white" />
-              <ellipse cx="150" cy="178" rx="96" ry="128" fill="black" />
-            </mask>
-          </defs>
-          <rect width="300" height="375" fill="rgb(22 16 16 / 0.42)" mask={`url(#${maskId})`} />
-        </>
+    <div className={clsx('flex items-center gap-2', className)}>
+      {onBack && backLabel && (
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label={backLabel}
+          className="press -ml-2 grid size-11 shrink-0 place-items-center rounded-full text-ink hover:bg-mist"
+        >
+          <ChevronLeft aria-hidden className="size-6" strokeWidth={1.75} />
+        </button>
       )}
-      <g fill="none" vectorEffect="non-scaling-stroke">
-        <ellipse cx="150" cy="178" rx="96" ry="128" stroke="rgb(243 236 230 / 0.9)" strokeWidth="1.2" strokeDasharray="4 5" vectorEffect="non-scaling-stroke" />
-        <path d="M150 38V70M150 286V318M42 178H74M226 178H258" stroke="rgb(243 236 230 / 0.55)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        <path d="M144 178H156M150 172V184" stroke="rgb(243 236 230 / 0.7)" strokeWidth="1" vectorEffect="non-scaling-stroke" />
-        {ticks.map((d) => (
-          <path key={d} d={d} stroke="var(--color-accent)" strokeWidth="2.5" strokeLinecap="square" vectorEffect="non-scaling-stroke" />
-        ))}
-      </g>
-    </svg>
+      <h1 className="min-w-0 flex-1 text-[clamp(1.6rem,6.6vw,2rem)] text-ink">{title}</h1>
+      {aside}
+    </div>
   );
 }
 
-/** Square checkbox styled for dark cards (accent-soft when checked). */
-export function DarkCheckbox({
+/** Segmented step bar with an `n/total` pill. */
+export function StepBar({ current, total, label, className }: { current: number; total: number; label: string; className?: string }) {
+  return (
+    <div className={clsx('flex items-center gap-2.5', className)} role="progressbar" aria-label={label} aria-valuemin={1} aria-valuemax={total} aria-valuenow={current}>
+      <span aria-hidden className="rounded-pill bg-violet px-2.5 py-0.5 text-[11px] font-bold text-white tabular-nums">
+        {current}/{total}
+      </span>
+      <span aria-hidden className="flex flex-1 gap-1">
+        {Array.from({ length: total }, (_, i) => (
+          <i key={i} className={clsx('block h-1 flex-1 rounded-full transition-colors', i < current ? 'bg-violet' : 'bg-line')} />
+        ))}
+      </span>
+    </div>
+  );
+}
+
+/** Light checkbox row (violet-soft when checked). */
+export function CheckRow({
   checked,
   onChange,
   invalid,
@@ -71,8 +94,8 @@ export function DarkCheckbox({
   return (
     <div
       className={clsx(
-        'flex gap-3 rounded-[16px] p-4 ring-1 transition-colors ring-inset',
-        checked ? 'bg-white/[0.06] ring-accent-soft/70' : invalid ? 'ring-[#ff8a98]/70' : 'ring-white/15',
+        'flex gap-3 rounded-card p-4 ring-[1.5px] transition-colors ring-inset',
+        checked ? 'bg-violet-soft ring-violet' : invalid ? 'bg-paper ring-rose' : 'bg-paper ring-line',
       )}
     >
       <span className="relative mt-0.5 grid size-6 shrink-0 place-items-center">
@@ -82,48 +105,18 @@ export function DarkCheckbox({
           checked={checked}
           onChange={(e) => onChange(e.target.checked)}
           aria-invalid={invalid && !checked ? true : undefined}
-          className="peer size-6 cursor-pointer appearance-none rounded-[6px] border border-white/40 transition-colors checked:border-accent-soft checked:bg-accent-soft focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-soft"
+          className="peer size-6 cursor-pointer appearance-none rounded-[7px] border-[1.5px] border-[#CFC8E6] bg-paper transition-colors checked:border-violet checked:bg-violet focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet"
         />
-        <Check aria-hidden strokeWidth={2.5} className="pointer-events-none absolute size-4 text-[#231816] opacity-0 peer-checked:opacity-100" />
+        <Check aria-hidden strokeWidth={3} className="pointer-events-none absolute size-3.5 text-white opacity-0 peer-checked:opacity-100" />
       </span>
-      <label htmlFor={id} className="cursor-pointer text-[0.95rem] leading-snug text-ink-inverse">
+      <label htmlFor={id} className="cursor-pointer text-[14.5px] leading-snug text-ink">
         {children}
       </label>
     </div>
   );
 }
 
-/** Round ink icon button (BRIK nav flank / back button). */
-export function RoundButton({
-  label,
-  onClick,
-  children,
-  tone = 'ink',
-  className,
-}: {
-  label: string;
-  onClick: () => void;
-  children: ReactNode;
-  tone?: 'ink' | 'glass';
-  className?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className={clsx(
-        'press grid size-11 shrink-0 place-items-center rounded-full',
-        tone === 'ink' ? 'bg-ink text-ink-inverse hover:bg-ink-soft' : 'text-ink-inverse ring-1 ring-white/20 ring-inset hover:bg-white/10',
-        className,
-      )}
-    >
-      {children}
-    </button>
-  );
-}
-
-/** Small note on the paper canvas (success / warning / error / neutral). */
+/** Small note (success / warning / error / neutral). */
 export function Note({
   tone = 'neutral',
   children,
@@ -139,25 +132,42 @@ export function Note({
     <p
       role={role}
       className={clsx(
-        'mono flex gap-2.5 rounded-[14px] px-4 py-3 text-[12.5px]',
-        tone === 'neutral' && 'bg-paper-raised text-ink',
-        tone === 'success' && 'bg-paper-raised text-ink',
-        tone === 'warning' && 'bg-[#f3e2c4] text-ink',
-        tone === 'danger' && 'bg-[#f4d3d6] text-[#7d1726]',
+        'flex gap-2.5 rounded-card px-4 py-3 text-[13.5px] leading-snug',
+        tone === 'neutral' && 'bg-mist text-ink',
+        tone === 'success' && 'bg-mint/60 text-mint-ink',
+        tone === 'warning' && 'bg-butter/70 text-butter-ink',
+        tone === 'danger' && 'bg-rose-soft text-rose-ink',
         className,
       )}
     >
       <span
         aria-hidden
         className={clsx(
-          'mt-[4px] size-2 shrink-0',
-          tone === 'neutral' && 'bg-ink',
-          tone === 'success' && 'bg-success',
-          tone === 'warning' && 'bg-warning',
-          tone === 'danger' && 'bg-danger',
+          'mt-[5px] size-2 shrink-0 rounded-full',
+          tone === 'neutral' && 'bg-violet',
+          tone === 'success' && 'bg-mint-ink',
+          tone === 'warning' && 'bg-butter-ink',
+          tone === 'danger' && 'bg-rose-ink',
         )}
       />
       <span>{children}</span>
     </p>
+  );
+}
+
+/** Round photo with a violet double ring (avatar / confirmation). */
+export function RingPhoto({ src, alt, size, className }: { src: string | null; alt: string; size: number; className?: string }) {
+  return (
+    <span
+      className={clsx('relative mx-auto block overflow-hidden rounded-full bg-mist', className)}
+      style={{ width: size, height: size, maxWidth: '100%', boxShadow: '0 0 0 4px #fff, 0 0 0 7px var(--color-violet-soft)' }}
+    >
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element -- in-memory data URL, never uploaded
+        <img src={src} alt={alt} className="size-full object-cover" />
+      ) : (
+        <span role="img" aria-label={alt} className="block size-full bg-[linear-gradient(160deg,#F8E4D8,#EFD8E6_55%,#E6E0FA)]" />
+      )}
+    </span>
   );
 }

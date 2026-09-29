@@ -25,7 +25,7 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
 
   return (
     <LegalShell locale={locale} content={content} title={contact.title} path="/contact">
-      <p className="text-lg text-ink">{contact.intro}</p>
+      <p className="text-[17px] text-ink">{contact.intro}</p>
       <ul className="grid gap-4 sm:grid-cols-2">
         {contact.cards.map((card) => {
           const Icon = ICONS[card.kind];
@@ -33,29 +33,29 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
           return (
             <li
               key={card.kind}
-              className={`rounded-card bg-paper-raised p-6 ${card.kind === 'company' ? 'sm:col-span-2' : ''}`}
+              className={`rounded-panel bg-mist p-6 ${card.kind === 'company' ? 'sm:col-span-2' : ''}`}
             >
-              <span className="grid size-10 place-items-center rounded-[10px] bg-ink text-ink-inverse">
-                <Icon aria-hidden className="size-5" />
+              <span className="grid size-10 place-items-center rounded-[12px] bg-paper text-violet">
+                <Icon aria-hidden className="size-5" strokeWidth={1.75} />
               </span>
-              <h2 className="mt-5 text-[1.4rem] tracking-[-0.03em] text-ink">{card.title}</h2>
+              <h2 className="mt-4 text-[1.4rem] text-ink">{card.title}</h2>
               <p className="mt-2 text-[0.95rem]">{card.body}</p>
               {email && (
-                <a href={`mailto:${email}`} className="mono mt-3 inline-flex min-h-11 items-center text-ink underline decoration-accent underline-offset-4 hover:decoration-2">
+                <a href={`mailto:${email}`} className="mt-2 inline-flex min-h-11 items-center font-semibold text-violet underline decoration-violet/40 underline-offset-4 hover:decoration-violet">
                   {email}
                 </a>
               )}
               {card.kind === 'company' && (
-                <dl className="mt-5 grid gap-x-6 gap-y-2 border-t border-line-strong pt-4 text-[0.95rem] sm:grid-cols-[auto_1fr]">
-                  <dt className="mono-caps pt-[3px] text-ink">{contact.addressLabel}</dt>
+                <dl className="mt-5 grid gap-x-6 gap-y-2 border-t border-line pt-4 text-[0.95rem] sm:grid-cols-[auto_1fr]">
+                  <dt className="caps pt-[3px] text-ink">{contact.addressLabel}</dt>
                   <dd>
                     {COMPANY.legalName}, {COMPANY.address}
                   </dd>
-                  <dt className="mono-caps pt-[3px] text-ink">{contact.registrationLabel}</dt>
+                  <dt className="caps pt-[3px] text-ink">{contact.registrationLabel}</dt>
                   <dd>{COMPANY.registrationNumber}</dd>
-                  <dt className="mono-caps pt-[3px] text-ink">{contact.kepLabel}</dt>
+                  <dt className="caps pt-[3px] text-ink">{contact.kepLabel}</dt>
                   <dd>{COMPANY.kepAddress}</dd>
-                  <dt className="mono-caps pt-[3px] text-ink">{contact.representativeLabel}</dt>
+                  <dt className="caps pt-[3px] text-ink">{contact.representativeLabel}</dt>
                   <dd>{COMPANY.turkeyRepresentative}</dd>
                 </dl>
               )}
@@ -63,7 +63,7 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
           );
         })}
       </ul>
-      <p className="mono text-[12px]">{contact.responseTime}</p>
+      <p className="text-[13px]">{contact.responseTime}</p>
     </LegalShell>
   );
 }

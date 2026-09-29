@@ -2,17 +2,16 @@
 
 import { PRODUCT_IDS, type PlanId } from '@tonelle/shared';
 import clsx from 'clsx';
-import { ArrowRight, BellRing, Check, X } from 'lucide-react';
+import { BellRing, Check, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { StoreBadge } from '@/components/site/StoreBadges';
-import { Chip } from '@/components/lab/primitives';
 import { Button, Modal, buttonClasses } from '@/components/ui';
 import { COMPANY } from '@/config/company';
 import { paymentProvider, type PaymentProvider, type StoreLink } from '@/lib/payments';
 import { getExitOfferDisplay, getPlanDisplays } from '@/lib/pricing-display';
 import { getAppUserId } from '@/lib/storage';
 import type { StepProps, StoreCopy } from '../types';
-import { Eyebrow, delay } from '../ui';
+import { delay } from '../ui';
 
 type Sheet = { kind: 'none' } | { kind: 'stores'; links: StoreLink[] } | { kind: 'soon' } | { kind: 'failed' };
 
@@ -70,30 +69,35 @@ export function PaywallStep({
   const notifyHref = `mailto:${COMPANY.supportEmail}?subject=${encodeURIComponent(copy.notifySubject)}`;
 
   return (
-    <div className="flex flex-col gap-[10px]">
-      <section className="enter ink-card neck-top relative p-6" style={delay(40)}>
+    <div className="flex flex-col gap-5">
+      <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => dispatch({ type: 'DISMISS_PAYWALL' })}
           aria-label={copy.paywallClose}
-          className="press absolute top-3 right-3 grid size-11 place-items-center rounded-full text-ink-inverse-muted ring-1 ring-white/15 ring-inset hover:bg-white/10 hover:text-ink-inverse"
+          className="press -ml-1 grid size-11 place-items-center rounded-full bg-mist text-muted hover:bg-violet-soft hover:text-ink"
         >
-          <X aria-hidden className="size-5" />
+          <X aria-hidden className="size-5" strokeWidth={1.75} />
         </button>
-        <Eyebrow n="06">Premium</Eyebrow>
-        <h1 className="mt-5 pr-8 text-[clamp(1.9rem,8.4vw,2.5rem)] text-ink-inverse">{tt('paywall.title')}</h1>
-        <p className="mono mt-3 text-ink-inverse-muted">{tt('paywall.subtitle')}</p>
-        <ul className="mt-6 grid gap-2 border-t border-white/10 pt-5">
+        <span className="caps rounded-pill bg-violet-soft px-3 py-1.5 text-[#5a3fe0]">Premium</span>
+      </div>
+
+      <div>
+        <h1 className="text-[clamp(1.75rem,7.2vw,2.2rem)] text-ink">{tt('paywall.title')}</h1>
+        <p className="mt-2 text-[14.5px] text-muted">{tt('paywall.subtitle')}</p>
+        <ul className="mt-5 flex flex-col gap-2.5">
           {features.map((f) => (
-            <li key={f} className="mono flex gap-2.5 text-ink-inverse">
-              <span aria-hidden className="mt-[5px] size-1.5 shrink-0 bg-accent-soft" />
+            <li key={f} className="flex items-center gap-2.5 text-[14px] text-ink">
+              <span className="grid size-5 shrink-0 place-items-center rounded-full bg-violet-soft text-violet">
+                <Check aria-hidden className="size-3" strokeWidth={3} />
+              </span>
               {f}
             </li>
           ))}
         </ul>
-      </section>
+      </div>
 
-      <div role="radiogroup" aria-label={copy.paywallPlansLabel} className="flex flex-col gap-[10px]">
+      <div role="radiogroup" aria-label={copy.paywallPlansLabel} className="mt-2 flex flex-col gap-3">
         {plans.map((p, i) => {
           const active = p.id === selected;
           return (
@@ -105,62 +109,54 @@ export function PaywallStep({
               data-product-id={PRODUCT_IDS[p.id]}
               onClick={() => setSelected(p.id)}
               className={clsx(
-                'press enter ink-card neck-top w-full p-5 text-left transition-shadow',
-                active ? 'shadow-[inset_0_0_0_2px_var(--color-accent-soft)]' : 'hover:bg-ink-soft',
+                'press enter relative flex w-full items-center gap-3 rounded-card px-4 py-4 text-left ring-[1.5px] ring-inset',
+                active ? 'bg-violet-soft ring-violet' : 'bg-paper ring-line hover:ring-violet/40',
               )}
-              style={delay(100 + i * 60)}
+              style={delay(60 + i * 50)}
             >
-              <span className="flex items-center justify-between gap-3">
-                <span className="flex items-center gap-3">
-                  <span
-                    aria-hidden
-                    className={clsx(
-                      'grid size-6 shrink-0 place-items-center rounded-full',
-                      active ? 'bg-accent-soft text-[#231816]' : 'ring-1 ring-white/30 ring-inset',
-                    )}
-                  >
-                    {active && <Check className="size-3.5" strokeWidth={3} />}
-                  </span>
-                  <span className="mono-caps text-ink-inverse">{p.name}</span>
+              {p.badge && (
+                <span className="absolute -top-2.5 right-4 rounded-pill bg-violet px-2.5 py-0.5 text-[11px] font-bold text-white">
+                  {p.badge}
+                  {p.savings ? ` · ${p.savings}` : ''}
                 </span>
-                {p.badge && (
-                  <Chip tone="soft">
-                    {p.badge}
-                    {p.savings ? ` · ${p.savings}` : ''}
-                  </Chip>
-                )}
+              )}
+              <span
+                aria-hidden
+                className={clsx('size-5 shrink-0 rounded-full', active ? 'border-[6px] border-violet bg-paper' : 'border-[1.5px] border-[#CFC8E6]')}
+              />
+              <span className="min-w-0 flex-1">
+                <span className="block text-[15px] font-bold text-ink">{p.name}</span>
+                <span className="mt-0.5 block text-[12.5px] leading-snug text-muted">{p.headline}</span>
               </span>
-              <span className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <span className="numeral text-[clamp(2.8rem,13vw,3.6rem)] text-ink-inverse">{p.introPrice ?? p.price}</span>
-                {p.introPrice && <s className="mono text-ink-inverse-muted">{p.price}</s>}
+              <span className="shrink-0 text-right">
+                <span className="serif block text-[1.5rem] leading-none text-ink">{p.introPrice ?? p.price}</span>
+                {p.introPrice && <s className="mt-1 block text-[11.5px] text-muted">{p.price}</s>}
+                {!p.introPrice && p.subline && p.id === 'yearly' && <span className="mt-1 block text-[11px] text-muted">{p.subline}</span>}
               </span>
-              <span className="mt-3 block text-[0.98rem] leading-snug font-medium text-ink-inverse">{p.headline}</span>
-              {p.subline && <span className="mono mt-1 block text-ink-inverse-muted">{p.subline}</span>}
             </button>
           );
         })}
       </div>
 
-      <div className="mt-2">
-        <Button size="lg" fullWidth className="justify-between" loading={pending} onClick={() => void buy(selected)}>
+      <div className="sticky bottom-3 z-10 mt-1 rounded-panel bg-paper/90 pt-2 backdrop-blur">
+        <Button size="lg" fullWidth loading={pending} onClick={() => void buy(selected)}>
           {plan.cta}
-          {!pending && <ArrowRight aria-hidden className="size-5" />}
         </Button>
-        {plan.plan.autoRenews && <p className="mono mt-3 text-center text-[12px] text-ink-muted">{tt('paywall.cancelAnytime')}</p>}
-        <p className="mono mt-1 text-center text-[12px] text-ink-muted">{tt('paywall.webNotice')}</p>
+        {plan.plan.autoRenews && <p className="mt-2 text-center text-[12px] text-muted">{tt('paywall.cancelAnytime')}</p>}
       </div>
+      <p className="-mt-2 text-center text-[12px] text-muted">{tt('paywall.webNotice')}</p>
 
       {demoAllowed && (
-        <div className="mt-2 rounded-card border border-dashed border-ink/30 p-4 text-center">
+        <div className="rounded-card border border-dashed border-violet/40 p-4 text-center">
           <Button variant="secondary" size="sm" onClick={() => dispatch({ type: 'UNLOCK' })}>
             {copy.demoUnlock}
           </Button>
-          <p className="mono mt-2 text-[11px] text-ink-muted">{copy.demoNote}</p>
+          <p className="mt-2 text-[11.5px] text-muted">{copy.demoNote}</p>
         </div>
       )}
 
-      <p className="mono mt-3 text-[11px] leading-relaxed text-ink-muted">{plan.legal}</p>
-      <p className="mono flex flex-wrap gap-x-4 text-[11px] text-ink-muted">
+      <p className="text-[11.5px] leading-relaxed text-muted">{plan.legal}</p>
+      <p className="flex flex-wrap gap-x-4 text-[12px] text-muted">
         <a href={`/${locale}/terms`} target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-ink">
           {tt('legal.terms')}
         </a>
@@ -176,15 +172,15 @@ export function PaywallStep({
         title={exitOffer.title}
         closeLabel={copy.paywallClose}
         size="sm"
-        tone="ink"
+        tone="lavender"
       >
         <div>
-          <p className="numeral text-[6.5rem] text-accent-soft">{locale === 'tr' ? `%${exitOffer.percent}` : `${exitOffer.percent}%`}</p>
-          <p className="mono mt-4 text-ink-inverse-muted">{exitOffer.body}</p>
-          <Button variant="soft" size="lg" fullWidth className="mt-6" loading={pending} onClick={() => void buy('yearly', true)}>
+          <p className="serif text-[5.5rem] leading-none text-violet">{locale === 'tr' ? `%${exitOffer.percent}` : `${exitOffer.percent}%`}</p>
+          <p className="mt-4 text-[14.5px] text-ink">{exitOffer.body}</p>
+          <Button size="lg" fullWidth className="mt-6" loading={pending} onClick={() => void buy('yearly', true)}>
             {exitOffer.cta}
           </Button>
-          <Button variant="ghost" fullWidth className="mt-1 text-ink-inverse-muted hover:bg-white/10 hover:text-ink-inverse" onClick={() => dispatch({ type: 'CLOSE_EXIT_OFFER' })}>
+          <Button variant="ghost" fullWidth className="mt-1" onClick={() => dispatch({ type: 'CLOSE_EXIT_OFFER' })}>
             {exitOffer.dismiss}
           </Button>
         </div>
@@ -197,7 +193,7 @@ export function PaywallStep({
         closeLabel={copy.paywallClose}
         size="sm"
       >
-        <p className="mono text-ink-muted">{copy.chooseStoreBody}</p>
+        <p className="text-[14.5px] text-muted">{copy.chooseStoreBody}</p>
         <div className="mt-5 flex flex-col items-stretch gap-3">
           {sheet.kind === 'stores' &&
             sheet.links.map((link) => (
@@ -213,7 +209,7 @@ export function PaywallStep({
         closeLabel={copy.paywallClose}
         size="sm"
       >
-        <p className="mono text-ink-muted">{copy.comingSoonBody}</p>
+        <p className="text-[14.5px] text-muted">{copy.comingSoonBody}</p>
         <a href={notifyHref} className={clsx(buttonClasses({ size: 'lg', fullWidth: true }), 'mt-6')}>
           <BellRing aria-hidden className="size-5" />
           {copy.notifyCta}

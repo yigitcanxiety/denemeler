@@ -1,112 +1,110 @@
 'use client';
 
-import { LOOKS, SEASONS, localized } from '@tonelle/shared';
-import { ArrowRight, Lock } from 'lucide-react';
-import { HeatFace } from '@/components/lab/HeatFace';
-import { Chip, PaletteBar } from '@/components/lab/primitives';
+import { SEASONS, localized } from '@tonelle/shared';
+import { Contrast, Droplet, LockKeyhole, RefreshCw, ScanFace, Sun, X } from 'lucide-react';
+import Link from 'next/link';
+import { useMemo } from 'react';
 import { Button } from '@/components/ui';
-import { heatFrom } from '@/lib/heat';
+import { getPlanDisplays } from '@/lib/pricing-display';
 import type { StepProps } from '../types';
-import { Eyebrow, delay } from '../ui';
+import { Note, RingPhoto, StepBar } from '../ui';
 
+/** Number of result cards revealed after unlocking (season, undertone, contrast, face shape, skin colour, palette). */
+const RESULT_COUNT = 6;
+
+/** Locked result (DESIGN §3.5): the result exists but stays blurred until the paywall. */
 export function TeaserStep({ locale, state, dispatch, copy, tt }: StepProps) {
+  const yearly = useMemo(() => getPlanDisplays(locale).find((p) => p.id === 'yearly'), [locale]);
   const result = state.result;
   if (!result) return null;
-  const { analysis, recommendedLookIds } = result;
-  const season = SEASONS[analysis.season];
-  const seasonName = localized(season.name, locale);
-  const includes = [
-    tt('teaser.includesSeason'),
-    tt('teaser.includesPalette'),
-    tt('teaser.includesShades'),
-    tt('teaser.includesLooks'),
-    tt('teaser.includesSteps'),
+  const { analysis } = result;
+  const seasonName = localized(SEASONS[analysis.season].name, locale);
+  const trialDays = yearly?.plan.trialDays;
+
+  const locked = [
+    { icon: Sun, label: tt('results.undertoneTitle') },
+    { icon: Contrast, label: tt('results.contrastTitle') },
+    { icon: ScanFace, label: tt('results.faceShapeTitle') },
+    { icon: Droplet, label: copy.lockedSkinColor },
   ];
 
+  const legal = (path: string, label: string) => (
+    <a href={`/${locale}/${path}`} target="_blank" rel="noopener" className="underline-offset-2 hover:text-ink hover:underline">
+      {label}
+    </a>
+  );
+
   return (
-    <div className="flex flex-col gap-[10px]">
-      {/* Season name in giant grotesk */}
-      <section className="enter ink-card neck-top relative overflow-hidden p-6 pb-7" style={delay(40)}>
-        <Eyebrow n="05">{tt('teaser.title')}</Eyebrow>
-        <p className="mono-caps mt-8 text-ink-inverse-muted">{tt('teaser.seasonLocked')}</p>
-        <h1 className="mt-2 text-[clamp(3rem,15vw,5.2rem)] leading-[0.88] tracking-[-0.055em] text-ink-inverse [overflow-wrap:anywhere]">
-          {seasonName}
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <StepBar current={1} total={RESULT_COUNT} label={copy.lockedProgress.replace('{current}', '1').replace('{total}', String(RESULT_COUNT))} className="flex-1" />
+        <Link
+          href={`/${locale}`}
+          aria-label={copy.lockedClose}
+          className="press grid size-11 shrink-0 place-items-center rounded-full bg-mist text-muted hover:bg-violet-soft hover:text-ink"
+        >
+          <X aria-hidden className="size-5" strokeWidth={1.75} />
+        </Link>
+      </div>
+
+      <div className="flex flex-col items-center gap-3 text-center">
+        <RingPhoto src={state.photo} alt={copy.photoFrameLabel} size={112} className="mt-2" />
+        <p className="mt-3 text-[14px] text-muted">{copy.lockedSeasonLabel}</p>
+        <h1 className="relative">
+          <span aria-hidden className="block text-[clamp(1.9rem,8vw,2.4rem)] text-ink blur-[9px] select-none">
+            {seasonName}
+          </span>
+          <span className="sr-only">
+            {copy.lockedSeasonLabel}: {copy.teaserHidden}
+          </span>
         </h1>
-        <div className="mt-6 flex flex-wrap items-center gap-2">
-          <Chip tone="soft">
-            {tt('results.undertoneTitle')} · {tt(`results.undertone.${analysis.undertone}`)}
-          </Chip>
-        </div>
-        <p className="mono mt-5 max-w-[36ch] text-ink-inverse-muted">{tt('teaser.subtitle', { count: recommendedLookIds.length })}</p>
-      </section>
+        <button
+          type="button"
+          onClick={() => dispatch({ type: 'OPEN_PAYWALL' })}
+          className="press violet-gradient mt-1 inline-flex h-12 items-center gap-2 rounded-[16px] px-6 text-[15px] font-semibold text-white shadow-violet"
+        >
+          <LockKeyhole aria-hidden className="size-4" strokeWidth={2} />
+          {copy.lockedUnlock}
+        </button>
+      </div>
 
-      {/* Palette + looks, blurred under a frosted card */}
-      <section className="enter ink-card neck-top relative overflow-hidden p-6" style={delay(120)}>
-        <p className="mono-caps text-ink-inverse-muted">{tt('teaser.paletteLocked')}</p>
-        <div aria-hidden className="mt-4 blur-[7px] select-none">
-          <PaletteBar colors={analysis.bestColors} height="h-14" />
-        </div>
-        <p className="mono-caps mt-7 text-ink-inverse-muted">{tt('teaser.looksLocked')}</p>
-        <div className="relative mt-4">
-        <ul className="grid grid-cols-3 gap-2">
-          {recommendedLookIds.map((id, i) => (
-            <li key={id} className="relative aspect-[3/4] overflow-hidden rounded-[16px] bg-night">
-              <div aria-hidden className="absolute inset-0 scale-110 blur-[6px]">
-                <HeatFace
-                  id={`teaser-${i}`}
-                  tone="night"
-                  showBody={false}
-                  animated={false}
-                  palette={heatFrom([
-                    analysis.lip[i % analysis.lip.length] ?? '#C8354A',
-                    analysis.blush[i % analysis.blush.length] ?? '#E0775E',
-                    analysis.eyeshadow[i % analysis.eyeshadow.length] ?? '#F3B27A',
-                  ])}
-                  className="size-full"
-                />
-              </div>
-              <span className="sr-only">{localized(LOOKS[id].name, locale)}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-2">
-          <div className="mx-auto flex max-w-[15rem] flex-col items-center gap-2 rounded-[18px] bg-white/10 px-5 py-4 text-center ring-1 ring-white/20 backdrop-blur-md">
-            <span className="grid size-10 place-items-center rounded-full bg-accent-soft text-[#231816]">
-              <Lock aria-hidden className="size-4" />
+      <ul className="grid grid-cols-2 gap-3">
+        {locked.map(({ icon: Icon, label }) => (
+          <li key={label} className="flex flex-col items-center gap-2.5 rounded-card bg-paper px-3 py-5 text-center ring-1 ring-line ring-inset">
+            <span className="grid size-9 place-items-center rounded-full bg-mist text-violet">
+              <Icon aria-hidden className="size-4" strokeWidth={1.75} />
             </span>
-            <p className="mono text-ink-inverse">{copy.teaserHidden}</p>
-          </div>
-        </div>
-        </div>
-      </section>
-
-      <section className="enter rounded-card bg-paper-raised p-6" style={delay(200)}>
-        <h2 className="mono-caps text-ink-muted">{tt('teaser.includesTitle')}</h2>
-        <ol className="mt-4 grid gap-2.5">
-          {includes.map((item, i) => (
-            <li key={item} className="flex gap-3 text-[0.98rem] text-ink">
-              <span aria-hidden className="mono pt-[2px] text-[12px] text-ink-subtle">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              {item}
-            </li>
-          ))}
-        </ol>
-      </section>
+            <span className="text-[13.5px] font-semibold text-ink">{label}</span>
+            <span aria-hidden className="block h-2 w-4/5 rounded-full bg-violet-soft" />
+            <span className="sr-only">{copy.teaserHidden}</span>
+          </li>
+        ))}
+      </ul>
 
       {analysis.qualityIssues.length > 0 && (
-        <ul className="mono space-y-1.5 px-2 text-[12px] text-ink-muted">
+        <div className="flex flex-col gap-2">
           {analysis.qualityIssues.map((issue) => (
-            <li key={issue}>— {tt(`camera.qualityIssues.${issue}`)}</li>
+            <Note key={issue} tone="warning">
+              {tt(`camera.qualityIssues.${issue}`)}
+            </Note>
           ))}
-        </ul>
+          <Button variant="secondary" fullWidth onClick={() => dispatch({ type: 'NEW_SELFIE' })} icon={<RefreshCw aria-hidden className="size-4" />}>
+            {tt('camera.retake')}
+          </Button>
+        </div>
       )}
 
-      <div className="sticky bottom-3 z-10 mt-2">
-        <Button size="lg" fullWidth className="justify-between shadow-lift" onClick={() => dispatch({ type: 'OPEN_PAYWALL' })}>
-          {tt('teaser.unlock')}
-          <ArrowRight aria-hidden className="size-5" />
+      <div className="sticky bottom-3 z-10 flex flex-col gap-2 rounded-panel bg-paper/90 pt-2 backdrop-blur">
+        <Button size="lg" fullWidth onClick={() => dispatch({ type: 'OPEN_PAYWALL' })}>
+          {trialDays ? copy.lockedTrialCta.replace('{days}', String(trialDays)) : copy.lockedCta}
+          <span aria-hidden>✦</span>
         </Button>
+        {yearly && trialDays ? <p className="text-center text-[12px] text-muted">{copy.lockedFine.replace('{price}', yearly.price)}</p> : null}
+        <p className="flex justify-center gap-2 text-center text-[12px] text-muted">
+          {legal('privacy', tt('legal.privacy'))}
+          <span aria-hidden>·</span>
+          {legal('terms', tt('legal.terms'))}
+        </p>
       </div>
     </div>
   );

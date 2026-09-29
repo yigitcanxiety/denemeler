@@ -1,10 +1,9 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
-import { NumberTag } from '@/components/lab/primitives';
-import { Button } from '@/components/ui';
+import { Check, ShieldCheck } from 'lucide-react';
+import { Button, Eyebrow } from '@/components/ui';
 import type { StepProps } from '../types';
-import { DarkCheckbox, Eyebrow, Note, delay } from '../ui';
+import { CheckRow, Note } from '../ui';
 
 export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
   const points = [
@@ -19,7 +18,7 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
       href={`/${locale}/${path}`}
       target="_blank"
       rel="noopener"
-      className="text-accent-soft underline decoration-accent-soft/50 underline-offset-[3px] hover:decoration-accent-soft"
+      className="font-semibold text-violet underline decoration-violet/40 underline-offset-[3px] hover:decoration-violet"
     >
       {label}
     </a>
@@ -28,31 +27,34 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
   const showHint = state.consentAttempted && !ready;
 
   return (
-    <div className="flex flex-col gap-[10px]">
-      <section className="enter ink-card neck-top p-6" style={delay(40)}>
-        <Eyebrow n="01">KVKK · GDPR</Eyebrow>
-        <h1 className="mt-5 text-[clamp(2rem,9vw,2.6rem)] text-ink-inverse">{tt('consent.title')}</h1>
-        <p className="mt-3 text-[0.98rem] leading-relaxed text-ink-inverse-muted">{tt('consent.intro')}</p>
-        <ol className="mt-6 grid gap-3 border-t border-white/10 pt-5">
-          {points.map((text, i) => (
-            <li key={text} className="flex gap-3">
-              <NumberTag n={i + 1} tone="light" className="size-6 text-[11px]" />
-              <span className="mono pt-[3px] text-ink-inverse">{text}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-col items-start gap-4">
+        <Eyebrow>KVKK · GDPR</Eyebrow>
+        <h1 className="text-[clamp(1.8rem,7.4vw,2.3rem)] text-ink">{tt('consent.title')}</h1>
+        <p className="text-[15px] text-muted">{tt('consent.intro')}</p>
+      </div>
 
-      <fieldset className="enter ink-card neck-top space-y-2.5 p-4 sm:p-5" style={delay(120)}>
+      <ul className="flex flex-col gap-2.5 rounded-card bg-mist p-4">
+        {points.map((text) => (
+          <li key={text} className="flex gap-3 text-[14px] text-ink">
+            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-violet-soft text-violet">
+              <Check aria-hidden className="size-3" strokeWidth={3} />
+            </span>
+            {text}
+          </li>
+        ))}
+      </ul>
+
+      <fieldset className="flex flex-col gap-2.5">
         <legend className="sr-only">{tt('consent.title')}</legend>
-        <DarkCheckbox
+        <CheckRow
           checked={state.consent.explicit}
           invalid={state.consentAttempted}
           onChange={(value) => dispatch({ type: 'SET_CONSENT', field: 'explicit', value })}
         >
           {tt('consent.explicitConsentCheckbox')}
-        </DarkCheckbox>
-        <DarkCheckbox
+        </CheckRow>
+        <CheckRow
           checked={state.consent.terms}
           invalid={state.consentAttempted}
           onChange={(value) => dispatch({ type: 'SET_CONSENT', field: 'terms', value })}
@@ -60,8 +62,8 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
           {before}
           {legalLink('terms', copy.consentTermsLink)}
           {after}
-        </DarkCheckbox>
-        <p className="mono flex flex-wrap gap-x-4 gap-y-2 px-1 pt-2 text-[12px]">
+        </CheckRow>
+        <p className="flex flex-wrap gap-x-4 gap-y-1 px-1 pt-1 text-[13px]">
           {legalLink('consent', tt('consent.readConsent'))}
           {legalLink('kvkk', tt('consent.readKvkk'))}
           {legalLink('privacy', tt('consent.readPrivacy'))}
@@ -70,34 +72,38 @@ export function ConsentStep({ locale, state, dispatch, copy, tt }: StepProps) {
 
       <div aria-live="polite">
         {showHint && (
-          <Note tone="danger" className="mt-1">
+          <Note tone="danger">
             {tt('consent.requiredHint')}
           </Note>
         )}
       </div>
 
       {state.consentDeclined && (
-        <div role="status" className="rounded-card bg-paper-raised p-5">
+        <div role="status" className="rounded-card bg-mist p-5">
           <p className="font-semibold text-ink">{tt('consent.declinedTitle')}</p>
-          <p className="mt-1 text-sm text-ink-muted">{tt('consent.declinedBody')}</p>
+          <p className="mt-1 text-[14px] text-muted">{tt('consent.declinedBody')}</p>
         </div>
       )}
 
-      <div className="enter mt-2 flex flex-col gap-1.5" style={delay(200)}>
+      <div className="flex flex-col gap-1.5">
         <Button
           size="lg"
           fullWidth
           onClick={() => dispatch({ type: 'ACCEPT_CONSENT' })}
           aria-disabled={!ready}
-          className={ready ? 'justify-between' : 'justify-between opacity-55'}
+          className={ready ? undefined : 'opacity-55 shadow-none'}
         >
           {tt('consent.accept')}
-          <ArrowRight aria-hidden className="size-5" />
         </Button>
         <Button variant="ghost" fullWidth onClick={() => dispatch({ type: 'DECLINE_CONSENT' })}>
           {tt('consent.decline')}
         </Button>
       </div>
+
+      <p className="flex items-center justify-center gap-1.5 text-center text-[12.5px] text-muted">
+        <ShieldCheck aria-hidden className="size-4 shrink-0 text-mint-ink" strokeWidth={1.75} />
+        {tt('common.privacyBadge')}
+      </p>
     </div>
   );
 }
