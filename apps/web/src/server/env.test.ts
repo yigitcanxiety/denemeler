@@ -25,7 +25,8 @@ describe('getServerConfig', () => {
   });
 
   it('computes mock flags per capability', () => {
-    const live = getServerConfig({ OPENROUTER_API_KEY: 'a', GEMINI_API_KEY: 'b' });
+    const live = getServerConfig({ OPENROUTER_API_KEY: 'a', GEMINI_API_KEY: 'b', REVENUECAT_SECRET_KEY: 'r' });
+    expect(isRenderMock(getServerConfig({ OPENROUTER_API_KEY: 'a', GEMINI_API_KEY: 'b' }))).toBe(true);
     expect(isAnalysisMock(live)).toBe(false);
     expect(isRenderMock(live)).toBe(false);
     expect(isRenderMock(getServerConfig({ OPENROUTER_API_KEY: 'a', GEMINI_API_KEY: 'b', IMAGE_PROVIDER: 'fal' }))).toBe(true);

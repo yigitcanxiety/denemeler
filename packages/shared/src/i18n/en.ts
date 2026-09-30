@@ -22,7 +22,7 @@ export const en = {
     startAnalysis: 'Start my analysis',
     aiGenerated: 'AI-generated',
     aiGeneratedNote: 'This image was created by AI and shows a simulation of makeup on your photo.',
-    privacyBadge: 'Your photo is never stored',
+    privacyBadge: 'We don’t keep your photo',
     stepOf: 'Step {current} of {total}',
     or: 'or',
   },
@@ -171,7 +171,7 @@ export const en = {
     stepPalette: 'Building your palette',
     stepLooks: 'Choosing looks for you',
     slow: 'Almost there, this is taking a little longer than usual…',
-    privacy: 'Your photo is processed securely and deleted right after analysis.',
+    privacy: 'Your photo is processed securely and we don’t keep it after the analysis.',
   },
 
   teaser: {

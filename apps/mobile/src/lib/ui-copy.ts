@@ -166,7 +166,7 @@ const COPY = {
 
     tryOnTitle: 'Makeup try-on',
     shadesForLook: 'Your shades for this look',
-    needPhoto: 'To see the look on your face we need a selfie. Your photo is never stored.',
+    needPhoto: 'To see the look on your face we need a selfie. We don’t keep your photo.',
     addSelfie: 'Add a selfie',
     sliderLabel: 'Before and after comparison slider',
 

@@ -62,7 +62,7 @@ describe('Kie.ai', () => {
   });
 
   it('is selected automatically when it is the only key', () => {
-    const config = getServerConfig({ KIE_API_KEY: 'k' });
+    const config = getServerConfig({ KIE_API_KEY: 'k', REVENUECAT_SECRET_KEY: 'r' });
     expect(config.analysisProvider).toBe('kie');
     expect(config.imageProvider).toBe('kie');
     expect(isAnalysisMock(config)).toBe(false);

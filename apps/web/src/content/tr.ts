@@ -7,10 +7,10 @@ export const tr: SiteContent = {
   meta: {
     homeTitle: 'Tonelle · Sana yakışan makyajı kendi yüzünde gör',
     homeDescription:
-      'Tek bir selfie çek. Tonelle alt tonunu ve renk sezonunu bulur, kişisel paletini çıkarır ve makyaj görünümlerini kendi yüzünde gösterir. Fotoğrafın asla saklanmaz.',
+      'Tek bir selfie çek. Tonelle alt tonunu ve renk sezonunu bulur, kişisel paletini çıkarır ve makyaj görünümlerini kendi yüzünde gösterir. Fotoğrafını saklamayız.',
     analyzeTitle: 'Ücretsiz renk ve makyaj analizi',
     analyzeDescription:
-      'Renk sezonunu, alt tonunu ve sana yakışan makyaj tonlarını yaklaşık bir dakikada öğren. Fotoğrafın asla saklanmaz.',
+      'Renk sezonunu, alt tonunu ve sana yakışan makyaj tonlarını yaklaşık bir dakikada öğren. Fotoğrafını saklamayız.',
     ogAlt: 'Tonelle: yapay zekâ ile renk sezonu ve makyaj analizi',
     keywords: [
       'renk analizi',
@@ -42,7 +42,7 @@ export const tr: SiteContent = {
       'Tek bir selfie yeterli. Tonelle alt tonunu okur, renk sezonunu bulur ve makyaj görünümlerini kendi yüzünde gösterir.',
     cta: 'Ücretsiz analizimi başlat',
     ctaNote: 'Ücretsiz analiz · Yaklaşık 1 dakika · Üyelik yok',
-    trustPoints: ['Fotoğrafın asla saklanmaz', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
+    trustPoints: ['Fotoğrafını saklamayız', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
     storesLabel: 'Telefonunda da',
     portraitAlt: 'Tonelle ile analiz edilen bir portre; alt ton, renk sezonu ve uyum bilgileri fotoğrafın üzerinde.',
     undertoneChip: 'Alt ton',
@@ -84,7 +84,7 @@ export const tr: SiteContent = {
   how: {
     eyebrow: 'Nasıl çalışır',
     title: 'Selfie’den kişisel rehbere üç adım',
-    subtitle: 'Yaklaşık bir dakika sürer. Fotoğrafın analizden hemen sonra silinir.',
+    subtitle: 'Yaklaşık bir dakika sürer. Fotoğrafın yalnızca analiz için kullanılır, biz saklamayız.',
     steps: [
       {
         title: 'Bir selfie çek',
@@ -124,9 +124,9 @@ export const tr: SiteContent = {
   },
   privacy: {
     title: 'Fotoğrafın sende kalır',
-    body: 'Selfie’n yalnızca analizini oluşturmak için kullanılır ve sunucularımızda asla saklanmaz.',
+    body: 'Selfie’n yalnızca analizini oluşturmak için kullanılır ve sunucularımızda saklanmaz.',
     points: [
-      'Fotoğraflar bellekte işlenir ve analiz biter bitmez silinir',
+      'Fotoğrafları bellekte işler, analiz bitince sileriz; sağlayıcıdaki geçici kopya en geç 3 günde silinir',
       'Yapay zekâ modellerini eğitmek için asla kullanılmaz',
       'Sonuçların yalnızca cihazında saklanır; tek dokunuşla silebilirsin',
       'Görünüşünü asla puanlamayız',

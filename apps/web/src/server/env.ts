@@ -94,9 +94,12 @@ export function isAnalysisMock(config: ServerConfig): boolean {
   return config.mockForced || (!config.openRouter.apiKey && !config.kie.apiKey);
 }
 
-/** Rendering is mocked when forced or when the selected image provider has no key. */
+/**
+ * Rendering is mocked when forced, when the selected image provider has no key, or when
+ * RevenueCat is not configured (paid renders cannot be verified, so show the free demo instead).
+ */
 export function isRenderMock(config: ServerConfig): boolean {
-  if (config.mockForced) return true;
+  if (config.mockForced || !config.revenueCatSecretKey) return true;
   const key = { fal: config.fal.apiKey, kie: config.kie.apiKey, gemini: config.gemini.apiKey }[config.imageProvider];
   return !key;
 }

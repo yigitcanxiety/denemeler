@@ -7,10 +7,10 @@ export const en: SiteContent = {
   meta: {
     homeTitle: 'Tonelle · See the makeup that suits you, on your own face',
     homeDescription:
-      'Take one selfie. Tonelle finds your undertone and colour season, builds your personal palette and shows makeup looks on your own face. Your photo is never stored.',
+      'Take one selfie. Tonelle finds your undertone and colour season, builds your personal palette and shows makeup looks on your own face. We don’t keep your photo.',
     analyzeTitle: 'Free colour & makeup analysis',
     analyzeDescription:
-      'Find your colour season, undertone and the makeup shades that flatter you in about a minute. Your photo is never stored.',
+      'Find your colour season, undertone and the makeup shades that flatter you in about a minute. We don’t keep your photo.',
     ogAlt: 'Tonelle: AI colour season and makeup analysis',
     keywords: [
       'colour analysis',
@@ -42,7 +42,7 @@ export const en: SiteContent = {
       'One selfie is all it takes. Tonelle reads your undertone, finds your colour season and shows makeup looks on your own face.',
     cta: 'Start my free analysis',
     ctaNote: 'Free analysis · About 1 minute · No sign-up',
-    trustPoints: ['Your photo is never stored', '12 colour seasons', 'Made for warm & olive skin'],
+    trustPoints: ['We don’t keep your photo', '12 colour seasons', 'Made for warm & olive skin'],
     storesLabel: 'Also on your phone',
     portraitAlt: 'A portrait analysed with Tonelle, with undertone, colour season and fit details over the photo.',
     undertoneChip: 'Undertone',
@@ -84,7 +84,7 @@ export const en: SiteContent = {
   how: {
     eyebrow: 'How it works',
     title: 'From selfie to personal guide in three steps',
-    subtitle: 'It takes about a minute. Your photo is deleted right after the analysis.',
+    subtitle: 'It takes about a minute. Your photo is only used for the analysis; we don’t keep it.',
     steps: [
       {
         title: 'Take a selfie',
@@ -124,9 +124,9 @@ export const en: SiteContent = {
   },
   privacy: {
     title: 'Your photo stays yours',
-    body: 'Your selfie is only used to create your analysis and is never stored on our servers.',
+    body: 'Your selfie is only used to create your analysis and is not stored on our servers.',
     points: [
-      'Photos are processed in memory and deleted as soon as the analysis is done',
+      'We process photos in memory and discard them after the analysis; any temporary provider copy is deleted within 3 days',
       'Never used to train AI models',
       'Your results are stored only on your device; delete them with one tap',
       'We never rate your looks',

@@ -21,7 +21,7 @@ export const tr: Dictionary = {
     startAnalysis: 'Analizimi başlat',
     aiGenerated: 'AI ile oluşturuldu',
     aiGeneratedNote: 'Bu görsel yapay zekâ ile oluşturuldu ve fotoğrafındaki makyajın bir simülasyonunu gösterir.',
-    privacyBadge: 'Fotoğrafın asla saklanmaz',
+    privacyBadge: 'Fotoğrafını saklamayız',
     stepOf: 'Adım {current}/{total}',
     or: 'veya',
   },
@@ -170,7 +170,7 @@ export const tr: Dictionary = {
     stepPalette: 'Paletin hazırlanıyor',
     stepLooks: 'Sana uygun görünümler seçiliyor',
     slow: 'Az kaldı, bu sefer biraz daha uzun sürüyor…',
-    privacy: 'Fotoğrafın güvenle işlenir ve analizden hemen sonra silinir.',
+    privacy: 'Fotoğrafın güvenle işlenir; analizden sonra biz saklamayız.',
   },
 
   teaser: {

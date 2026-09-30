@@ -78,7 +78,12 @@ export default function PaywallScreen() {
   );
   const regularYearly = data.plans.find((p) => p.kind === 'yearly');
   const savings = yearlySavingsPercent(data.plans);
-  const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+  // The browser preview has no store; pick the store copy from the device it is viewed on.
+  const platform =
+    Platform.OS === 'ios' ||
+    (Platform.OS === 'web' && typeof navigator !== 'undefined' && /iPhone|iPad|Macintosh/.test(navigator.userAgent))
+      ? 'ios'
+      : 'android';
 
   const onSuccess = () => {
     setExitVisible(false);

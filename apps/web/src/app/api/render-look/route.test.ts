@@ -121,11 +121,11 @@ describe('POST /api/render-look', () => {
       expect((await post(request({ appUserId: 'other' }))).status).toBe(402);
     });
 
-    it('fails closed when RevenueCat is not configured', async () => {
+    it('never calls the paid provider when RevenueCat is not configured (demo echo instead)', async () => {
       vi.stubEnv('REVENUECAT_SECRET_KEY', '');
-      vi.spyOn(console, 'error').mockImplementation(() => undefined);
       const res = await post(request({ appUserId: 'u' }));
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(200);
+      expect((await res.json()).mock).toBe(true);
       expect(fetchMock).not.toHaveBeenCalled();
     });
   });
