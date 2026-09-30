@@ -68,3 +68,19 @@ pnpm --filter @tonelle/web dev          # http://localhost:3000 (anahtar yoksa m
 cd apps/mobile && npx expo start        # EXPO_PUBLIC_API_URL=http://<bilgisayar-ip>:3000
 pnpm -r typecheck && pnpm -r lint && pnpm -r test
 ```
+
+## Vercel'e yayın (web sitesi + API)
+
+Depo yayına hazır: `apps/web/vercel.json` bölgeyi (fra1) ve kurulum komutunu tanımlıyor. Temiz bir kopyada kurulum ve derleme denendi.
+
+**Durum (30 Eylül):** Claude'un Vercel bağlantısı projeleri okuyabiliyor ama yazamıyor ("yigitcanxietys-projects" kapsamı için yeniden yetki gerekiyor). İki yoldan biri:
+
+1. **Claude yapsın:** claude.ai → Ayarlar → Bağlayıcılar → Vercel → bağlantıyı kes ve yeniden bağla. Yetki ekranında "yigitcanxietys-projects" ekibini seç. Sonra "Vercel'e yükle" demen yeterli.
+2. **Kendin yap (≈3 dk):** vercel.com/new → `yigitcanxiety/denemeler` deposunu içe aktar.
+   - Root Directory: `apps/web` (Framework otomatik olarak Next.js seçilir)
+   - Environment Variables: `KIE_API_KEY` = Kie anahtarın (Sensitive)
+   - Deploy.
+
+Sonra `https://<proje>.vercel.app/api/health` → `{"ok":true,"mock":{"analysis":false,...}}` görünmeli. `analysis:false` gerçek Kie analizinin açık olduğunu gösterir.
+
+Not: RevenueCat anahtarı (`REVENUECAT_SECRET_KEY`) girilene kadar makyaj denemesi demo modunda kalır, yani ücretli görsel üretilmez. Renk analizi ise Kie ile gerçek çalışır.
