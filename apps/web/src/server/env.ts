@@ -4,7 +4,7 @@
  */
 
 export type ImageProviderName = 'gemini' | 'fal' | 'kie';
-export type AnalysisProviderName = 'openrouter' | 'kie';
+export type AnalysisProviderName = 'openrouter' | 'gemini' | 'kie';
 
 export interface ServerConfig {
   /** `TONELLE_MOCK=1` forces every capability into mock mode. */
@@ -17,17 +17,18 @@ export interface ServerConfig {
     model: string;
     fallbackModel: string | undefined;
   };
-  /** OpenRouter when its key is set (Space Bunny), otherwise Kie.ai when that key is set. */
+  /** OpenRouter when its key is set (Space Bunny), else Google Gemini directly, else Kie.ai. */
   analysisProvider: AnalysisProviderName;
   imageProvider: ImageProviderName;
   kie: { apiKey: string | undefined; analysisModel: string; imageModel: string };
-  gemini: { apiKey: string | undefined; model: string };
+  gemini: { apiKey: string | undefined; model: string; analysisModel: string };
   fal: { apiKey: string | undefined; model: string };
   revenueCatSecretKey: string | undefined;
 }
 
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
 export const DEFAULT_GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
+export const DEFAULT_GEMINI_ANALYSIS_MODEL = 'gemini-2.5-flash';
 export const DEFAULT_FAL_IMAGE_MODEL = 'fal-ai/nano-banana/edit';
 export const DEFAULT_KIE_ANALYSIS_MODEL = 'gemini-3-flash';
 export const DEFAULT_KIE_IMAGE_MODEL = 'google/nano-banana-edit';
@@ -70,7 +71,7 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
       model: read(env, 'ANALYSIS_MODEL') ?? DEFAULT_ANALYSIS_MODEL,
       fallbackModel: read(env, 'ANALYSIS_FALLBACK_MODEL'),
     },
-    analysisProvider: !openRouterKey && kieKey ? 'kie' : 'openrouter',
+    analysisProvider: openRouterKey ? 'openrouter' : geminiKey ? 'gemini' : kieKey ? 'kie' : 'openrouter',
     imageProvider,
     kie: {
       apiKey: kieKey,
@@ -80,6 +81,7 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
     gemini: {
       apiKey: geminiKey,
       model: read(env, 'GEMINI_IMAGE_MODEL') ?? DEFAULT_GEMINI_IMAGE_MODEL,
+      analysisModel: read(env, 'GEMINI_ANALYSIS_MODEL') ?? DEFAULT_GEMINI_ANALYSIS_MODEL,
     },
     fal: {
       apiKey: read(env, 'FAL_KEY'),
@@ -89,9 +91,9 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
   };
 }
 
-/** Analysis is mocked when forced or when neither OpenRouter nor Kie.ai has a key. */
+/** Analysis is mocked when forced or when no analysis provider has a key. */
 export function isAnalysisMock(config: ServerConfig): boolean {
-  return config.mockForced || (!config.openRouter.apiKey && !config.kie.apiKey);
+  return config.mockForced || (!config.openRouter.apiKey && !config.gemini.apiKey && !config.kie.apiKey);
 }
 
 /**

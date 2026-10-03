@@ -10,6 +10,8 @@ import { fetchWithTimeout, readProviderJson } from './fetch';
 import { extractJson } from './json-extract';
 
 export const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
+/** Google's OpenAI-compatible endpoint; accepts the same body and base64 data URLs. */
+export const GEMINI_CHAT_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions';
 export const ANALYSIS_TIMEOUT_MS = 45_000;
 /** Overall budget across retries + fallback, so a request never hangs for minutes. */
 export const ANALYSIS_TOTAL_BUDGET_MS = 100_000;

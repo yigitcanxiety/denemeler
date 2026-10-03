@@ -35,3 +35,17 @@ describe('getServerConfig', () => {
     expect(isRenderMock(forced)).toBe(true);
   });
 });
+
+describe('analysis provider selection', () => {
+  it('uses Gemini directly when only GEMINI_API_KEY is set, ahead of Kie.ai', () => {
+    const config = getServerConfig({ GEMINI_API_KEY: 'g', KIE_API_KEY: 'k' });
+    expect(config.analysisProvider).toBe('gemini');
+    expect(config.imageProvider).toBe('gemini');
+    expect(config.gemini.analysisModel).toBe('gemini-2.5-flash');
+    expect(isAnalysisMock(config)).toBe(false);
+    expect(getServerConfig({ GEMINI_API_KEY: 'g', GEMINI_ANALYSIS_MODEL: 'gemini-3-flash' }).gemini.analysisModel).toBe(
+      'gemini-3-flash',
+    );
+    expect(getServerConfig({ GEMINI_API_KEY: 'g', OPENROUTER_API_KEY: 'o' }).analysisProvider).toBe('openrouter');
+  });
+});
