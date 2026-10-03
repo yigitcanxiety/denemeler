@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tonelle Site Taslağı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --board:#E9E5FB; --mist:#F6F4FE; --ink:#17141F; --muted:#6B6679; --line:#E6E2F3;
+  --violet:#7457F5; --violet2:#8E75FF; --vsoft:#EDE8FF; --rose:#E4718A; --rsoft:#FCE9EE;
+  --mint:#CFF3D6; --mintink:#1E7A3A; --butter:#FFE9A8; --butterink:#8A6400;
+  --chip:rgba(255,255,255,.92); --shadow:0 18px 40px -22px rgba(76,52,190,.45);
+  --serif:'Gloock',Georgia,serif; --sans:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#15121C; --board:#1D1830; --mist:#1F1A2C; --ink:#F4F1FF; --muted:#ABA5BE; --line:#2E2840;
+  --vsoft:#2A2148; --rsoft:#3A1F2A; --chip:rgba(30,25,44,.9); --shadow:0 18px 40px -22px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --paper:#15121C; --board:#1D1830; --mist:#1F1A2C; --ink:#F4F1FF; --muted:#ABA5BE; --line:#2E2840;
+  --vsoft:#2A2148; --rsoft:#3A1F2A; --chip:rgba(30,25,44,.9); --shadow:0 18px 40px -22px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.shell{width:min(1120px,100% - 32px);margin-inline:auto}
+.serif{font-family:var(--serif);font-weight:400;letter-spacing:-.01em}
+.caps{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;background:var(--vsoft);color:var(--violet)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 26px;border-radius:999px;font-weight:600;transition:transform .2s ease, box-shadow .2s ease}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--violet2));color:#fff;box-shadow:0 14px 28px -14px var(--violet)}
+.btn-ghost{background:var(--mist);color:var(--ink)}
+:focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:12px}
+
+/* ---------- header ---------- */
+header{position:fixed;inset:0 0 auto;z-index:50;transition:background .3s, box-shadow .3s}
+header.solid{background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--serif);font-size:24px}
+.nav .btn{height:40px;padding:0 16px;font-size:14px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;padding:88px 0 40px;background:radial-gradient(120% 80% at 50% 0%,var(--board),var(--paper) 70%);overflow:hidden}
+.aurora{position:absolute;inset:-20% -10% auto;height:90%;pointer-events:none;filter:blur(60px);opacity:.75}
+.aurora i{position:absolute;border-radius:50%;animation:drift 16s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:46vw;height:46vw;left:-6vw;top:6vw;background:#D9CCFF}
+.aurora i:nth-child(2){width:38vw;height:38vw;right:-4vw;top:0;background:#FFD6E0;animation-delay:-5s}
+.aurora i:nth-child(3){width:30vw;height:30vw;left:35vw;top:22vw;background:#FFE9C7;animation-delay:-9s}
+@keyframes drift{to{transform:translate(4vw,3vw) scale(1.12)}}
+.hero-grid{position:relative;display:grid;gap:18px;align-items:center;grid-template-areas:"top" "face" "copy"}
+.h-top{grid-area:top}.h-face{grid-area:face}.h-copy{grid-area:copy}
+@media(min-width:960px){.hero-grid{grid-template-columns:1.05fr .95fr;gap:0 56px;grid-template-areas:"top face" "copy face";align-content:center}.h-top{align-self:end}.h-copy{align-self:start}}
+@media(max-width:959px){.hero .stage{width:min(300px,78vw)}.hero{padding-top:76px}.hero h1{font-size:clamp(34px,10vw,46px);margin:12px 0 0}.palette i{width:28px;height:28px}}
+.hero h1{font-size:clamp(40px,9vw,76px);line-height:1.02;margin:18px 0 18px}
+.hero h1 .w{display:inline-block;opacity:0;transform:translateY(.4em) rotate(2deg);filter:blur(8px);transition:all .8s cubic-bezier(.2,.8,.2,1)}
+.hero h1 .w.in{opacity:1;transform:none;filter:none}
+.hero h1 em{font-style:normal;background:linear-gradient(100deg,var(--violet),var(--rose) 60%,#F29A5E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:17px;color:var(--muted);max-width:30em}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.trust{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:22px;color:var(--muted);font-size:13px}
+.trust span::before{content:'✓ ';color:var(--mintink);font-weight:700}
+.fade-up{opacity:0;transform:translateY(16px);transition:all .8s cubic-bezier(.2,.8,.2,1)}
+.fade-up.in{opacity:1;transform:none}
+
+/* face stage */
+.stage{position:relative;width:min(420px,100%);margin-inline:auto;aspect-ratio:3/4}
+.face{position:absolute;inset:0;border-radius:32px;overflow:hidden;background:var(--mist);box-shadow:var(--shadow);transform:scale(.94);opacity:0;transition:all 1.1s cubic-bezier(.2,.8,.2,1)}
+.face.in{transform:none;opacity:1}
+.face img,.face svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mk{mix-blend-mode:multiply;transition:fill .6s ease, opacity .6s ease}
+.scan{position:absolute;left:0;right:0;height:22%;top:-25%;background:linear-gradient(180deg,transparent,rgba(142,117,255,.32) 70%,rgba(255,255,255,.9) 98%,transparent);mix-blend-mode:screen;pointer-events:none}
+.scan.run{animation:scan 2.2s cubic-bezier(.45,0,.3,1) forwards}
+@keyframes scan{to{top:105%}}
+.mesh circle{fill:#fff;opacity:0;transition:opacity .35s}
+.mesh line{stroke:rgba(255,255,255,.55);stroke-width:1.4;opacity:0;transition:opacity .5s}
+.mesh .on{opacity:.85}
+.mesh.fade circle,.mesh.fade line{opacity:0!important;transition:opacity 1.2s}
+.fchip{position:absolute;z-index:3;display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:14px;background:var(--chip);backdrop-filter:blur(10px);box-shadow:0 10px 24px -14px rgba(23,20,31,.5);font-size:12.5px;opacity:0;transform:translateY(10px) scale(.92);transition:all .6s cubic-bezier(.2,1.3,.4,1)}
+.fchip.in{opacity:1;transform:none}
+.fchip b{display:block;font-size:13.5px}
+.fchip small{display:block;color:var(--muted);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.dot{width:22px;height:22px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 2px rgba(255,255,255,.7)}
+.c1{left:-14px;top:14%}.c2{right:-14px;top:38%}.c3{left:-6px;bottom:20%}
+@media(min-width:520px){.c1{left:-48px}.c2{right:-48px}.c3{left:-36px}}
+.ring{position:absolute;z-index:3;right:12px;bottom:12px;width:74px;height:74px;border-radius:50%;background:var(--chip);backdrop-filter:blur(10px);display:grid;place-items:center;opacity:0;transform:scale(.6);transition:all .6s cubic-bezier(.2,1.3,.4,1)}
+.ring.in{opacity:1;transform:none}
+.ring svg{position:absolute;inset:6px;width:calc(100% - 12px);height:calc(100% - 12px);transform:rotate(-90deg)}
+.ring b{font-family:var(--serif);font-size:20px;line-height:1}
+.ring small{display:block;font-size:9px;color:var(--muted);text-align:center;font-weight:700;letter-spacing:.08em}
+.palette{display:flex;justify-content:center;gap:8px;margin-top:18px}
+.palette i{width:34px;height:34px;border-radius:12px;opacity:0;transform:translateY(-120px) scale(.4);transition:all .9s cubic-bezier(.2,1.2,.3,1);box-shadow:0 8px 16px -10px rgba(0,0,0,.5)}
+.palette.in i{opacity:1;transform:none}
+.status{position:absolute;z-index:3;left:50%;top:14px;translate:-50% 0;padding:7px 12px;border-radius:999px;background:var(--chip);backdrop-filter:blur(10px);font-size:11.5px;font-weight:700;letter-spacing:.06em;white-space:nowrap;transition:opacity .4s}
+.status::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--violet);margin-right:7px;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.25}}
+
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid var(--line);background:var(--paper);padding:16px 0}
+.marquee div{display:flex;gap:42px;width:max-content;animation:marq 32s linear infinite}
+.marquee span{font-family:var(--serif);font-size:22px;color:var(--muted);white-space:nowrap}
+.marquee span::after{content:'✦';margin-left:42px;color:var(--rose);font-size:14px;vertical-align:middle}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* sections */
+section{padding:84px 0}
+.sec-head{text-align:center;max-width:640px;margin:0 auto 40px}
+.sec-head h2{font-size:clamp(32px,6vw,52px);line-height:1.06;margin:14px 0 12px}
+.sec-head p{color:var(--muted);font-size:16px}
+.reveal{opacity:0;transform:translateY(28px);transition:all .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* live try-on */
+.lab{display:grid;gap:28px;align-items:center}
+@media(min-width:900px){.lab{grid-template-columns:420px 1fr;gap:56px}}
+.lab .stage .face{opacity:1;transform:none}
+.tabs{display:inline-flex;padding:4px;border-radius:999px;background:var(--mist);gap:4px}
+.tabs button{height:40px;padding:0 18px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted);transition:all .25s}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper)}
+.shades{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}
+.shade{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 4px 9px;border-radius:18px;background:var(--mist);border:2px solid transparent;transition:all .25s}
+.shade[aria-pressed="true"]{border-color:var(--violet);background:var(--vsoft);transform:translateY(-3px)}
+.shade i{width:38px;height:38px;border-radius:50%;box-shadow:inset 0 -6px 10px rgba(0,0,0,.18),0 6px 14px -8px rgba(0,0,0,.5)}
+.shade span{font-size:11px;font-weight:600;text-align:center;line-height:1.2}
+.pill{display:inline-block;padding:2px 7px;border-radius:999px;font-size:10.5px;font-weight:700}
+.p-hi{background:var(--mint);color:var(--mintink)}.p-mid{background:var(--butter);color:var(--butterink)}.p-lo{background:var(--rsoft);color:#B23E5A}
+.looks{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.looks button{height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line);font-size:13.5px;font-weight:600;transition:all .25s}
+.looks button[aria-pressed="true"]{background:var(--rose);border-color:var(--rose);color:#fff}
+.range{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:13px;color:var(--muted)}
+.range input{flex:1;accent-color:var(--violet)}
+.note{margin-top:16px;font-size:12px;color:var(--muted)}
+.tag{position:absolute;z-index:3;left:12px;bottom:12px;padding:6px 10px;border-radius:999px;background:var(--chip);font-size:11px;font-weight:700}
+.compare{position:absolute;z-index:3;right:12px;top:12px;height:36px;padding:0 12px;border-radius:999px;background:var(--chip);font-size:12px;font-weight:700}
+
+/* season wheel (pinned) */
+.wheel-wrap{height:260vh;position:relative}
+.wheel-pin{position:sticky;top:0;height:100svh;display:grid;place-items:center;overflow:hidden;background:var(--ink);color:#fff}
+.wheel-pin .inner{display:grid;gap:28px;justify-items:center;text-align:center;padding:0 16px}
+.wheel{width:min(78vw,440px);aspect-ratio:1;position:relative}
+.wheel svg{width:100%;height:100%;transition:transform .1s linear}
+.wheel .center{position:absolute;inset:22%;border-radius:50%;background:#17141F;display:grid;place-items:center;text-align:center;box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.wheel .center b{font-family:var(--serif);font-size:clamp(22px,4.6vw,32px);line-height:1.05;display:block}
+.wheel .center small{color:#ABA5BE;font-size:11px;letter-spacing:.14em;font-weight:700;text-transform:uppercase}
+.pointer{position:absolute;left:50%;top:-6px;translate:-50% 0;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:16px solid #fff}
+.wheel-pin h2{font-size:clamp(30px,6vw,50px);line-height:1.05}
+.wheel-pin p{color:#ABA5BE;max-width:28em;margin:0 auto}
+.final-pal{display:flex;gap:6px;justify-content:center;min-height:30px}
+.final-pal i{width:28px;height:28px;border-radius:9px;transform:scale(0);transition:transform .5s cubic-bezier(.2,1.4,.4,1)}
+.final-pal.in i{transform:scale(1)}
+
+/* steps */
+.steps{display:grid;gap:16px}
+@media(min-width:860px){.steps{grid-template-columns:repeat(3,1fr)}}
+.step{position:relative;padding:26px;border-radius:26px;background:var(--mist);overflow:hidden;min-height:250px}
+.step .n{font-family:var(--serif);font-size:64px;line-height:1;color:var(--violet);opacity:.18;position:absolute;right:18px;top:10px}
+.step h3{font-family:var(--serif);font-weight:400;font-size:26px;margin:120px 0 6px}
+.step p{color:var(--muted)}
+.mini{position:absolute;left:26px;top:26px;height:86px;display:flex;align-items:center;gap:10px}
+.mini .ph{width:62px;height:82px;border-radius:14px;background:url(images/portrait-2.jpg) center/cover;box-shadow:var(--shadow)}
+.mini .ring2{width:74px;height:74px;border-radius:50%;border:5px solid var(--vsoft);border-top-color:var(--violet);animation:spin 1.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mini .sw{display:flex;gap:6px}.mini .sw i{width:26px;height:56px;border-radius:10px;animation:bob 2.4s ease-in-out infinite}
+.mini .sw i:nth-child(2){animation-delay:.2s}.mini .sw i:nth-child(3){animation-delay:.4s}.mini .sw i:nth-child(4){animation-delay:.6s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+
+/* pricing */
+.plans{display:grid;gap:14px;max-width:760px;margin:0 auto}
+@media(min-width:720px){.plans{grid-template-columns:1fr 1fr}}
+.plan{position:relative;padding:26px;border-radius:26px;border:1.5px solid var(--line);background:var(--paper)}
+.plan.best{border-color:var(--violet);box-shadow:var(--shadow)}
+.plan .badge{position:absolute;top:-12px;left:22px;padding:5px 11px;border-radius:999px;background:var(--violet);color:#fff;font-size:11.5px;font-weight:700}
+.plan h3{font-weight:700;font-size:16px}
+.plan .price{font-family:var(--serif);font-size:44px;line-height:1.1;margin:10px 0 2px}
+.plan .price small{font-family:var(--sans);font-size:14px;color:var(--muted)}
+.plan ul{list-style:none;margin:16px 0 22px;display:grid;gap:8px;font-size:14px}
+.plan li::before{content:'✓';color:var(--mintink);font-weight:700;margin-right:8px}
+.plan .btn{width:100%}
+
+/* final */
+.final{position:relative;overflow:hidden;text-align:center;padding:110px 0;background:linear-gradient(160deg,var(--violet),#B865E8 55%,var(--rose));color:#fff}
+.final h2{font-size:clamp(36px,8vw,68px);line-height:1.02;margin-bottom:16px}
+.final p{opacity:.9;max-width:28em;margin:0 auto 28px}
+.final .btn{background:#fff;color:var(--violet)}
+.orbs i{position:absolute;border-radius:50%;background:rgba(255,255,255,.14);animation:float 9s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-30px)}}
+footer{padding:30px 0 110px;color:var(--muted);font-size:12.5px;text-align:center}
+
+/* mobile sticky CTA */
+.sticky{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:60;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.sticky.in{transform:none}
+.sticky .btn{width:100%}
+@media(min-width:900px){.sticky{display:none}}
+
+/* cursor glow (desktop) */
+.glow{position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(142,117,255,.16),transparent 65%);translate:-50% -50%;opacity:0;transition:opacity .4s}
+@media(hover:hover){.glow.on{opacity:1}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important}
+}
+.proto{position:fixed;bottom:84px;left:12px;z-index:70;padding:6px 12px;border-radius:999px;background:var(--ink);color:var(--paper);font-size:11px;font-weight:700;letter-spacing:.06em;opacity:.85}
+</style>
+</head>
+<body>
+<div class="glow" id="glow"></div>
+<div class="proto">TASLAK · v4</div>
+
+<header id="hdr"><div class="shell nav">
+  <span class="logo">Tonelle</span>
+  <a class="btn btn-primary" href="#dene">✦ Ücretsiz dene</a>
+</div></header>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="shell hero-grid">
+    <div class="h-top">
+      <span class="chip caps fade-up" data-d="100">✦ Yapay zekâ ile renk analizi</span>
+      <h1 class="serif" id="h1" aria-label="Yüzün zaten bir palet. Biz sadece okuyoruz.">Yüzün zaten bir <em>palet.</em> Biz sadece okuyoruz.</h1>
+    </div>
+    <div class="h-copy">
+      <p class="lead fade-up" data-d="900">Tek bir selfie. Alt tonunu, renk sezonunu ve sana gerçekten yakışan ruj, allık ve far tonlarını 60 saniyede öğren. Sonra hepsini kendi yüzünde dene.</p>
+      <div class="cta-row fade-up" data-d="1100">
+        <a class="btn btn-primary" href="#dene">Selfie ile başla →</a>
+        <a class="btn btn-ghost" href="#lab">Önce burada dene</a>
+      </div>
+      <div class="trust fade-up" data-d="1300"><span>Fotoğrafını saklamayız</span><span>12 renk sezonu</span><span>Sıcak ve zeytin tenler için</span></div>
+    </div>
+
+    <div class="h-face">
+      <div class="stage" id="heroStage">
+        <div class="face" id="heroFace">
+          <img src="images/portrait-hero.jpg" alt="Makyajsız bir kadın portresi; yapay zekâ yüzünü tarıyor">
+          <svg viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" class="mkup" data-face="hero"></svg>
+          <svg viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" class="mesh" id="mesh"></svg>
+          <div class="scan" id="scan"></div>
+          <div class="status" id="status">YÜZ TARANIYOR</div>
+        </div>
+        <div class="fchip c1" id="fc1"><span class="dot" style="background:#C79A74"></span><span><small>Alt ton</small><b>Sıcak zeytin</b></span></div>
+        <div class="fchip c2" id="fc2"><span class="dot" style="background:linear-gradient(135deg,#B5651D,#8A9A5B)"></span><span><small>Renk sezonun</small><b>Yumuşak Sonbahar</b></span></div>
+        <div class="fchip c3" id="fc3"><span class="dot" style="background:#B65A5A"></span><span><small>En iyi rujun</small><b>Gül kurusu · %96</b></span></div>
+        <div class="ring" id="ring">
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--vsoft)" stroke-width="3.5"/><circle id="ringArc" cx="18" cy="18" r="15.5" fill="none" stroke="var(--violet)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="97.4" stroke-dashoffset="97.4" style="transition:stroke-dashoffset 1.4s ease"/></svg>
+          <div><b id="ringNum">0</b><small>UYUM</small></div>
+        </div>
+      </div>
+      <div class="palette" id="heroPal" aria-label="Kişisel paletin"></div>
+    </div>
+  </div>
+</div>
+
+<div class="marquee" aria-hidden="true"><div id="marq"></div></div>
+
+<!-- ============ LIVE LAB ============ -->
+<section id="lab">
+  <div class="shell">
+    <div class="sec-head reveal">
+      <span class="chip caps">✦ Canlı deneme</span>
+      <h2 class="serif">Dokun. Yüzünde gör.</h2>
+      <p>Bir ton seç, anında uygulansın. Her tonun yanında bu yüze ne kadar uyduğu yazıyor. Uygulamada aynısını senin selfie'nde yapıyoruz.</p>
+    </div>
+    <div class="lab">
+      <div class="stage reveal">
+        <div class="face">
+          <img src="images/portrait-hero.jpg" alt="Seçilen makyaj tonlarının uygulandığı portre">
+          <svg viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" class="mkup" data-face="lab"></svg>
+          <span class="tag">✦ Canlı önizleme</span>
+          <button class="compare" id="hold" aria-label="Basılı tut: makyajsız hâlini gör">Basılı tut: önce</button>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="tabs" role="tablist" aria-label="Ürün türü">
+          <button role="tab" aria-selected="true" data-tab="lip">Ruj</button>
+          <button role="tab" aria-selected="false" data-tab="blush">Allık</button>
+          <button role="tab" aria-selected="false" data-tab="eye">Far</button>
+        </div>
+        <div class="shades" id="shades"></div>
+        <div class="caps" style="color:var(--muted)">Hazır görünümler</div>
+        <div class="looks" id="looks"></div>
+        <label class="range">Yoğunluk <input type="range" id="amt" min="0" max="100" value="70" aria-label="Makyaj yoğunluğu"></label>
+        <p class="note">Bu önizleme örnek modelin fotoğrafında çalışır. Uygulamada yapay zekâ, seçtiğin görünümü kendi selfie'ne uygular. Görseller "AI ile oluşturuldu" etiketi taşır.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEASON WHEEL ============ -->
+<div class="wheel-wrap" id="wheelWrap">
+  <div class="wheel-pin">
+    <div class="inner">
+      <span class="chip caps" style="background:rgba(255,255,255,.1);color:#fff">✦ 12 renk sezonu</span>
+      <h2 class="serif">Hangisi sensin?</h2>
+      <div class="wheel">
+        <div class="pointer"></div>
+        <svg viewBox="-110 -110 220 220" id="wheelSvg"></svg>
+        <div class="center"><div><small id="wSub">Kaydır</small><b id="wName">?</b></div></div>
+      </div>
+      <div class="final-pal" id="finalPal"></div>
+      <p id="wDesc">Aşağı kaydırdıkça çark döner. Tonelle bunu tek fotoğrafla, saniyeler içinde yapar.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ STEPS ============ -->
+<section>
+  <div class="shell">
+    <div class="sec-head reveal">
+      <span class="chip caps">✦ Nasıl çalışır</span>
+      <h2 class="serif">Üç adım. Bir dakika.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="mini"><div class="ph"></div></div><span class="n">01</span><h3>Selfie çek</h3><p>Gün ışığında, makyajsız. Hangi açının ideal olduğunu sana gösteriyoruz.</p></div>
+      <div class="step reveal"><div class="mini"><div class="ring2"></div></div><span class="n">02</span><h3>Analiz</h3><p>Alt ton, kontrast, yüz ve göz şekli. Sonuç: 12 sezondan biri ve kişisel paletin.</p></div>
+      <div class="step reveal"><div class="mini"><div class="sw"><i style="background:#B65A5A"></i><i style="background:#D99A7E"></i><i style="background:#8A9A5B"></i><i style="background:#6B4E3D"></i></div></div><span class="n">03</span><h3>Yüzünde dene</h3><p>Sana uyan tonlarla hazırlanmış görünümleri kendi fotoğrafında gör.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section style="background:var(--mist)" id="dene">
+  <div class="shell">
+    <div class="sec-head reveal">
+      <span class="chip caps">✦ Fiyat</span>
+      <h2 class="serif">Bir rujdan ucuz.</h2>
+      <p>Analizin ön izlemesi ücretsiz. Tam raporu ve makyaj denemesini açmak için:</p>
+    </div>
+    <div class="plans">
+      <div class="plan best reveal"><span class="badge">En avantajlı · %88</span><h3>Yıllık</h3><div class="price">₺15,38 <small>/ hafta</small></div><div style="color:var(--muted);font-size:13px">Yılda ₺799,99 · 3 gün ücretsiz</div><ul><li>Tam renk analizi ve paletin</li><li>Sınırsız makyaj denemesi</li><li>Yeni görünümler her ay</li></ul><a class="btn btn-primary" href="#">3 gün ücretsiz başla</a></div>
+      <div class="plan reveal"><h3>Tek rapor</h3><div class="price">₺199 <small>bir kez</small></div><div style="color:var(--muted);font-size:13px">Abonelik yok</div><ul><li>Tam renk analizi ve paletin</li><li>8 görünümde makyaj denemesi</li><li>Kalıcı erişim</li></ul><a class="btn btn-ghost" href="#">Raporu al</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL ============ -->
+<div class="final">
+  <div class="orbs" aria-hidden="true"><i style="width:180px;height:180px;left:-40px;top:20px"></i><i style="width:120px;height:120px;right:8%;top:30%;animation-delay:-3s"></i><i style="width:70px;height:70px;left:20%;bottom:12%;animation-delay:-6s"></i></div>
+  <div class="shell" style="position:relative">
+    <h2 class="serif reveal">Aynaya bir dakika.<br>Renklerine bir ömür.</h2>
+    <p class="reveal">Hangi rujun sende "tam o" durduğunu tahmin etmeyi bırak.</p>
+    <a class="btn reveal" href="#dene">✦ Ücretsiz analizi başlat</a>
+  </div>
+</div>
+<footer>© 2026 Doribleg Trade Ltd · Tonelle · Gizlilik · Kullanım şartları<br>Görseller yapay zekâ ile oluşturulmuştur.</footer>
+
+<div class="sticky" id="sticky"><a class="btn btn-primary" href="#dene">✦ Selfie ile ücretsiz başla</a></div>
+
+<script>
+(() => {
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs = {}) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+
+/* ---------- makeup layers (portrait is 1200x1600) ---------- */
+const LIP = 'M497,871 C522,858 556,849 584,854 C594,856 602,860 607,860 C613,859 622,855 632,852 C662,846 692,853 716,865 C701,878 692,881 676,890 C652,906 628,914 604,914 C578,913 552,905 532,892 C516,883 506,878 497,871 Z';
+function buildFace(svg) {
+  const defs = el('defs');
+  defs.innerHTML = `
+    <filter id="soft-${svg.dataset.face}" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="xsoft-${svg.dataset.face}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>
+    <filter id="eye-${svg.dataset.face}" x="-50%" y="-80%" width="200%" height="260%"><feGaussianBlur stdDeviation="14"/></filter>`;
+  svg.append(defs);
+  const f = svg.dataset.face;
+  const blush = el('g', { class: 'mk', filter: `url(#xsoft-${f})`, opacity: 0 });
+  blush.append(el('ellipse', { cx: 448, cy: 790, rx: 92, ry: 62 }), el('ellipse', { cx: 770, cy: 786, rx: 92, ry: 62 }));
+  const eye = el('g', { class: 'mk', filter: `url(#eye-${f})`, opacity: 0 });
+  eye.append(el('ellipse', { cx: 470, cy: 578, rx: 70, ry: 22 }), el('ellipse', { cx: 732, cy: 574, rx: 70, ry: 22 }));
+  const lip = el('path', { class: 'mk', d: LIP, filter: `url(#soft-${f})`, opacity: 0 });
+  svg.append(blush, eye, lip);
+  return { blush, eye, lip };
+}
+const faces = Object.fromEntries($$('svg.mkup').map(s => [s.dataset.face, buildFace(s)]));
+function apply(face, { lip, blush, eye }, amt = .7) {
+  const L = faces[face];
+  if (lip) { L.lip.setAttribute('fill', lip); L.lip.setAttribute('opacity', (.72 * amt).toFixed(2)); } else L.lip.setAttribute('opacity', 0);
+  if (blush) { L.blush.setAttribute('fill', blush); L.blush.setAttribute('opacity', (.5 * amt).toFixed(2)); } else L.blush.setAttribute('opacity', 0);
+  if (eye) { L.eye.setAttribute('fill', eye); L.eye.setAttribute('opacity', (.55 * amt).toFixed(2)); } else L.eye.setAttribute('opacity', 0);
+}
+
+/* ---------- hero sequence ---------- */
+const words = $('#h1');
+const html = words.innerHTML.replace(/<em>(.*?)<\/em>/, '§$1§');
+let out = '', i = 0;
+html.split(' ').forEach(w => {
+  const accent = w.includes('§');
+  const txt = w.replace(/§/g, '');
+  out += `<span class="w" style="transition-delay:${200 + i++ * 90}ms">${accent ? `<em>${txt}</em>` : txt}</span> `;
+});
+words.innerHTML = out;
+
+const PAL = ['#C19A6B', '#B65A5A', '#D99A7E', '#8A9A5B', '#6B4E3D', '#E3B778'];
+$('#heroPal').innerHTML = PAL.map((c, k) => `<i style="background:${c};transition-delay:${k * 80}ms"></i>`).join('');
+
+// face mesh: points inside the face oval, connected to nearest neighbours
+const mesh = $('#mesh');
+const pts = [];
+const rnd = (a => () => (a = (a * 9301 + 49297) % 233280) / 233280)(7);
+for (let k = 0; k < 120 && pts.length < 64; k++) {
+  const x = 330 + rnd() * 550, y = 330 + rnd() * 760;
+  const dx = (x - 606) / 265, dy = (y - 690) / 360;
+  if (dx * dx + dy * dy < 1 && !pts.some(p => Math.hypot(p[0] - x, p[1] - y) < 62)) pts.push([x, y]);
+}
+[[468, 605], [735, 600], [606, 760], [606, 882], [500, 870], [712, 864]].forEach(p => pts.push(p));
+const lines = [];
+pts.forEach((p, a) => {
+  pts.map((q, b) => [b, Math.hypot(p[0] - q[0], p[1] - q[1])]).filter(([b]) => b !== a).sort((m, n) => m[1] - n[1]).slice(0, 2)
+    .forEach(([b]) => { if (a < b) lines.push([a, b]); });
+});
+lines.forEach(([a, b]) => mesh.append(Object.assign(el('line', { x1: pts[a][0], y1: pts[a][1], x2: pts[b][0], y2: pts[b][1] }), { _y: Math.max(pts[a][1], pts[b][1]) })));
+pts.forEach(p => mesh.append(Object.assign(el('circle', { cx: p[0], cy: p[1], r: 6 }), { _y: p[1] })));
+
+const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+async function hero() {
+  $$('.hero .w').forEach(w => w.classList.add('in'));
+  $$('.fade-up').forEach(e => setTimeout(() => e.classList.add('in'), reduce ? 0 : +e.dataset.d));
+  await wait(300);
+  $('#heroFace').classList.add('in');
+  await wait(700);
+  // scan reveals mesh as it passes
+  const scan = $('#scan'); scan.classList.add('run');
+  const start = performance.now(), dur = reduce ? 1 : 2200;
+  const items = [...mesh.children];
+  await new Promise(done => {
+    (function tick(t) {
+      const p = Math.min(1, (t - start) / dur), yLine = -400 + p * 2200;
+      items.forEach(n => { if (n._y < yLine) n.classList.add('on'); });
+      p < 1 ? requestAnimationFrame(tick) : done();
+    })(start);
+  });
+  $('#status').textContent = 'ANALİZ TAMAM';
+  for (const id of ['fc1', 'fc2', 'fc3']) { $('#' + id).classList.add('in'); await wait(380); }
+  $('#ring').classList.add('in');
+  $('#ringArc').style.strokeDashoffset = 97.4 * (1 - .94);
+  countTo($('#ringNum'), 94, 1400);
+  await wait(500);
+  $('#heroPal').classList.add('in');
+  mesh.classList.add('fade');
+  await wait(900);
+  $('#status').style.opacity = 0;
+  // the "after": her best shades fade onto the face
+  apply('hero', { lip: '#B65A5A', blush: '#D9826E', eye: '#9C7458' }, .75);
+}
+function countTo(node, to, ms) {
+  const s = performance.now();
+  (function f(t) { const p = Math.min(1, (t - s) / (reduce ? 1 : ms)); node.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(s);
+}
+hero();
+
+/* ---------- marquee ---------- */
+const LOOKS = ['Doğal Işıltı', 'Ofis Şıklığı', 'Yumuşak Glam', 'Gece Dumanlı Göz', 'Gelin Makyajı', 'İddialı Dudak', 'Makyajsız Makyaj', 'Festival Renkleri'];
+$('#marq').innerHTML = [...LOOKS, ...LOOKS].map(l => `<span>${l}</span>`).join('');
+
+/* ---------- live lab ---------- */
+const SHADES = {
+  lip: [['#B65A5A', 'Gül kurusu', 96], ['#C0705E', 'Terrakota', 92], ['#9E4B4F', 'Mürdüm', 88], ['#D4848A', 'Şeker pembe', 79], ['#C2185B', 'Fuşya', 64]],
+  blush: [['#D9826E', 'Şeftali', 95], ['#C9776F', 'Bronz gül', 91], ['#E59A8C', 'Mercan', 86], ['#D98BA8', 'Pudra', 74], ['#E0457B', 'Neon pembe', 61]],
+  eye: [['#9C7458', 'Karamel', 94], ['#7C6A4E', 'Zeytin bronz', 90], ['#6B4E3D', 'Çikolata', 89], ['#8E7AA8', 'Lila', 70], ['#3E6FB0', 'Kobalt', 62]],
+};
+const LOOKSET = {
+  'Doğal': { lip: '#C0705E', blush: '#D9826E', eye: '#9C7458', amt: 55 },
+  'Ofis': { lip: '#B65A5A', blush: '#C9776F', eye: '#7C6A4E', amt: 70 },
+  'Gece': { lip: '#9E4B4F', blush: '#C9776F', eye: '#6B4E3D', amt: 95 },
+  'Makyajsız': { lip: null, blush: null, eye: null, amt: 0 },
+};
+const state = { tab: 'lip', lip: '#B65A5A', blush: '#D9826E', eye: null, amt: .7 };
+const pillCls = m => m >= 90 ? 'p-hi' : m >= 75 ? 'p-mid' : 'p-lo';
+function renderShades() {
+  $('#shades').innerHTML = SHADES[state.tab].map(([c, n, m]) =>
+    `<button class="shade" data-c="${c}" aria-pressed="${state[state.tab] === c}" aria-label="${n}, yüzde ${m} uyum"><i style="background:${c}"></i><span>${n}</span><span class="pill ${pillCls(m)}">%${m}</span></button>`).join('');
+}
+function paint() { apply('lab', state, state.amt); }
+$$('.tabs button').forEach(b => b.addEventListener('click', () => {
+  $$('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b)); state.tab = b.dataset.tab; renderShades();
+}));
+$('#shades').addEventListener('click', e => {
+  const b = e.target.closest('.shade'); if (!b) return;
+  state[state.tab] = state[state.tab] === b.dataset.c ? null : b.dataset.c; renderShades(); paint(); clearLook();
+});
+$('#looks').innerHTML = Object.keys(LOOKSET).map(k => `<button aria-pressed="false" data-l="${k}">${k}</button>`).join('');
+function clearLook() { $$('#looks button').forEach(x => x.setAttribute('aria-pressed', false)); }
+$('#looks').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const L = LOOKSET[b.dataset.l]; Object.assign(state, { lip: L.lip, blush: L.blush, eye: L.eye, amt: L.amt / 100 });
+  $('#amt').value = L.amt; clearLook(); b.setAttribute('aria-pressed', true); renderShades(); paint();
+});
+$('#amt').addEventListener('input', e => { state.amt = e.target.value / 100; paint(); });
+const hold = $('#hold');
+const before = on => on ? apply('lab', {}, 0) : paint();
+['pointerdown', 'keydown'].forEach(ev => hold.addEventListener(ev, e => { if (ev === 'keydown' && e.key !== ' ' && e.key !== 'Enter') return; before(true); }));
+['pointerup', 'pointerleave', 'keyup', 'blur'].forEach(ev => hold.addEventListener(ev, () => before(false)));
+renderShades(); paint();
+
+/* ---------- season wheel ---------- */
+const SEASONS = [
+  ['Açık İlkbahar', ['#F7C59F', '#FFE5A3', '#A8D8B9', '#F4A6A0']], ['Sıcak İlkbahar', ['#FF8C61', '#F2C14E', '#7FB069', '#3FB8AF']],
+  ['Parlak İlkbahar', ['#FF5E78', '#FFD23F', '#00B2A9', '#3E7CB1']], ['Açık Yaz', ['#C8B6E2', '#F3C4D6', '#A9CCE3', '#D5E8D4']],
+  ['Soğuk Yaz', ['#B5739D', '#6A8EAE', '#C27BA0', '#7FA7A0']], ['Yumuşak Yaz', ['#9B7E9E', '#A3B5A6', '#7D8FA8', '#C9A9A6']],
+  ['Yumuşak Sonbahar', ['#C19A6B', '#B65A5A', '#8A9A5B', '#D99A7E']], ['Sıcak Sonbahar', ['#C1502E', '#D4A017', '#6B8E23', '#1F6F78']],
+  ['Koyu Sonbahar', ['#7B2D26', '#5C3A21', '#556B2F', '#B8860B']], ['Koyu Kış', ['#1B2A49', '#7A1F3D', '#0F6B4F', '#F5F5F5']],
+  ['Soğuk Kış', ['#1F4FBF', '#D1006F', '#008E5A', '#FFFFFF']], ['Parlak Kış', ['#FF1F8E', '#0F52BA', '#00C853', '#FAFAFA']],
+];
+const wsvg = $('#wheelSvg');
+SEASONS.forEach(([name, cols], k) => {
+  const a0 = (k / 12) * Math.PI * 2 - Math.PI / 2 - Math.PI / 12, a1 = a0 + Math.PI * 2 / 12;
+  cols.forEach((c, r) => {
+    const R0 = 52 + r * 13, R1 = R0 + 12;
+    const p = (R, a) => `${(R * Math.cos(a)).toFixed(2)},${(R * Math.sin(a)).toFixed(2)}`;
+    wsvg.append(el('path', { d: `M${p(R0, a0)} L${p(R1, a0)} A${R1},${R1} 0 0 1 ${p(R1, a1)} L${p(R0, a1)} A${R0},${R0} 0 0 0 ${p(R0, a0)} Z`, fill: c, stroke: '#17141F', 'stroke-width': 1.2 }));
+  });
+});
+const target = 6; // Yumuşak Sonbahar
+const wrap = $('#wheelWrap');
+let lastIdx = -1;
+function onWheel() {
+  const r = wrap.getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, -r.top / (r.height - innerHeight)));
+  const ease = 1 - Math.pow(1 - p, 2.2);
+  const deg = ease * (360 * 2 + target * 30);
+  wsvg.style.transform = `rotate(${-deg}deg)`;
+  const idx = ((Math.round(deg / 30) % 12) + 12) % 12;
+  if (idx !== lastIdx) { lastIdx = idx; $('#wName').textContent = SEASONS[idx][0]; }
+  const done = p > .92;
+  $('#wSub').textContent = done ? 'Bu yüzün sezonu' : p > 0.02 ? 'Okunuyor…' : 'Kaydır';
+  const fp = $('#finalPal');
+  if (done && !fp.classList.contains('in')) {
+    fp.innerHTML = SEASONS[target][1].concat(['#6B4E3D', '#E3B778']).map((c, k) => `<i style="background:${c};transition-delay:${k * 70}ms"></i>`).join('');
+    requestAnimationFrame(() => fp.classList.add('in'));
+    $('#wDesc').textContent = 'Toprak tonları, gül kurusu ve adaçayı. Neon ve buz gibi soğuk tonlar bu yüzü yorar.';
+  } else if (!done && fp.classList.contains('in')) {
+    fp.classList.remove('in'); $('#wDesc').textContent = 'Aşağı kaydırdıkça çark döner. Tonelle bunu tek fotoğrafla, saniyeler içinde yapar.';
+  }
+}
+
+/* ---------- scroll: header, sticky CTA, reveals ---------- */
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .15 });
+$$('.reveal').forEach((e, k) => { e.style.transitionDelay = `${(k % 3) * 90}ms`; io.observe(e); });
+function onScroll() {
+  $('#hdr').classList.toggle('solid', scrollY > 30);
+  $('#sticky').classList.toggle('in', scrollY > 160 && scrollY < document.body.scrollHeight - innerHeight * 1.6);
+  onWheel();
+}
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+/* ---------- cursor glow ---------- */
+const glow = $('#glow');
+addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; glow.classList.add('on'); glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }, { passive: true });
+})();
+</script>
+</body>
+</html>
