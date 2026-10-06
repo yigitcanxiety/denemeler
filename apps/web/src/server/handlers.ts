@@ -85,6 +85,7 @@ function analysisOptions(config: ServerConfig): OpenRouterOptions {
       siteUrl: config.siteUrl,
       endpoint: () => GEMINI_CHAT_URL,
       providerLabel: 'gemini',
+      reasoningEffort: 'none',
     };
   }
   if (config.analysisProvider === 'kie') {

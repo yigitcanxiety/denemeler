@@ -33,6 +33,8 @@ export interface OpenRouterOptions {
   endpoint?: (model: string) => string;
   /** Log label prefix, e.g. `openrouter` or `kie`. */
   providerLabel?: string;
+  /** OpenAI-style `reasoning_effort`; Gemini 2.5 otherwise spends `max_tokens` on thinking and truncates the JSON. */
+  reasoningEffort?: 'none' | 'low';
 }
 
 export interface AnalyzeFaceInput {
@@ -128,6 +130,7 @@ async function callModel<T>(
         temperature: 0.2,
         max_tokens: 1500,
         response_format: { type: 'json_object' },
+        ...(options.reasoningEffort ? { reasoning_effort: options.reasoningEffort } : {}),
         messages: [
           { role: 'system', content: prompt.system },
           {

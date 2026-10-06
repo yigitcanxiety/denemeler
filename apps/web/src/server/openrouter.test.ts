@@ -39,6 +39,14 @@ describe('analyzeFace (OpenRouter)', () => {
     expect(body.messages[1].content).toContainEqual({ type: 'image_url', image_url: { url: MOCK_IMAGE_DATA_URL } });
   });
 
+  it('sends reasoning_effort only when asked (Gemini would otherwise truncate the JSON)', async () => {
+    fetchMock.mockImplementation(async () => completion(JSON.stringify(MOCK_ANALYSIS)));
+    await analyzeFace(input, options);
+    expect(bodyOf(0)).not.toHaveProperty('reasoning_effort');
+    await analyzeFace(input, { ...options, reasoningEffort: 'none' });
+    expect(bodyOf(1).reasoning_effort).toBe('none');
+  });
+
   it('accepts fenced JSON and lowercase hex', async () => {
     const lower = { ...MOCK_ANALYSIS, lip: MOCK_ANALYSIS.lip.map((c) => c.toLowerCase()) };
     fetchMock.mockResolvedValueOnce(completion('```json\n' + JSON.stringify(lower) + '\n```'));
