@@ -17,7 +17,7 @@ type RenderState = { status: 'done'; image: string } | { status: 'error'; messag
 type LookRenderState = RenderState | { status: 'pending' };
 type Tab = 'color' | 'tryon';
 
-function Panel({ title, children, className, aside }: { title?: string; children: ReactNode; className?: string; aside?: ReactNode }) {
+export function Panel({ title, children, className, aside }: { title?: string; children: ReactNode; className?: string; aside?: ReactNode }) {
   return (
     <section className={clsx('rounded-panel bg-paper p-5 ring-1 ring-line ring-inset sm:p-6', className)}>
       {title && (
@@ -210,6 +210,7 @@ export function ResultsStep({
   const [shareOpen, setShareOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [tab, setTab] = useState<Tab>('color');
+  const full = state.mode === 'full';
   const [selectedLook, setSelectedLook] = useState<LookId | null>(null);
   const photo = state.photo;
 
@@ -223,7 +224,7 @@ export function ResultsStep({
 
   // Render looks one at a time (cost + rate limits), the selected one first, only while we still hold the photo.
   useEffect(() => {
-    if (!result || !photo || !state.unlocked || inFlight.current) return;
+    if (!full || !result || !photo || !state.unlocked || inFlight.current) return;
     const next = selected && !renders[selected] ? selected : result.recommendedLookIds.find((id) => !renders[id]);
     if (!next) return;
     const controller = new AbortController();
@@ -244,7 +245,7 @@ export function ResultsStep({
           return copy;
         });
       });
-  }, [result, photo, state.unlocked, renders, client, locale, selected]);
+  }, [full, result, photo, state.unlocked, renders, client, locale, selected]);
 
   if (!result) return null;
   const { analysis } = result;
@@ -254,8 +255,13 @@ export function ResultsStep({
   const traits = [
     { icon: Sun, label: tt('results.undertoneTitle'), value: tt(`results.undertone.${analysis.undertone}`) },
     { icon: Contrast, label: tt('results.contrastTitle'), value: tt(`results.contrast.${analysis.contrast}`) },
-    { icon: ScanFace, label: tt('results.faceShapeTitle'), value: tt(`results.faceShape.${analysis.faceShape}`) },
-    { icon: Eye, label: tt('results.eyeShapeTitle'), value: tt(`results.eyeShape.${analysis.eyeShape}`) },
+    // Face and eye shape guide makeup, so the colour-only analysis leaves them out.
+    ...(full
+      ? [
+          { icon: ScanFace, label: tt('results.faceShapeTitle'), value: tt(`results.faceShape.${analysis.faceShape}`) },
+          { icon: Eye, label: tt('results.eyeShapeTitle'), value: tt(`results.eyeShape.${analysis.eyeShape}`) },
+        ]
+      : []),
   ];
 
   const shadeGroups: [string, string[]][] = [
@@ -272,7 +278,7 @@ export function ResultsStep({
   return (
     <div id="results-top" className="scroll-mt-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-[clamp(1.8rem,7vw,2.4rem)] text-ink">{tt('results.title')}</h1>
+        <h1 className="text-[clamp(1.8rem,7vw,2.4rem)] text-ink">{full ? tt('results.title') : copy.colorResultsTitle}</h1>
         <button
           type="button"
           onClick={() => setShareOpen(true)}
@@ -283,6 +289,7 @@ export function ResultsStep({
         </button>
       </div>
 
+ {full && (
       <div role="tablist" aria-label={tt('results.title')} className="mt-4 grid grid-cols-2 gap-1 rounded-pill bg-mist p-1 ring-1 ring-line ring-inset sm:inline-grid sm:w-auto">
         {tabs.map(([id, label]) => (
           <button
@@ -302,6 +309,7 @@ export function ResultsStep({
           </button>
         ))}
       </div>
+      )}
 
       {tab === 'color' ? (
         <div id="panel-color" role="tabpanel" aria-labelledby="tab-color" className="enter mt-5 flex flex-col gap-4">
@@ -376,6 +384,7 @@ export function ResultsStep({
             </div>
           </div>
 
+          {full && (
           <Panel title={copy.resultsShadesTitle}>
             <div className="flex flex-col gap-5">
               {shadeGroups.map(([title, colors]) => (
@@ -392,6 +401,7 @@ export function ResultsStep({
               ))}
             </div>
           </Panel>
+          )}
 
           <section className="flex flex-col items-start gap-4 rounded-panel bg-violet-soft p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
             <div>

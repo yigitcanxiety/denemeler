@@ -1,4 +1,4 @@
-import type { FaceAnalysis, Locale } from './schemas';
+import type { FaceAnalysis, Locale, SkinAnalysis } from './schemas';
 
 /** Deterministic analysis used in mock mode and tests (Soft Autumn). */
 export const MOCK_ANALYSIS: FaceAnalysis = {
@@ -44,3 +44,35 @@ export function mockAnalysisFor(locale: Locale): FaceAnalysis {
 /** 1×1 transparent PNG, handy as a placeholder image in mock mode and tests. */
 export const MOCK_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+const MOCK_SKIN_TEXT: Record<Locale, Pick<SkinAnalysis, 'routine' | 'ingredients' | 'summary'>> = {
+  en: {
+    routine: {
+      morning: ['Gentle gel cleanser', 'Light hydrating serum', 'Oil-free moisturiser', 'SPF 50 sunscreen'],
+      evening: ['Gentle cleanser', 'Niacinamide serum', 'Barrier-repair moisturiser'],
+    },
+    ingredients: ['Niacinamide', 'Hyaluronic acid', 'Ceramides'],
+    summary:
+      'Your skin looks balanced with a little shine in the T-zone. A light, hydrating routine with daily sunscreen will keep it comfortable and even.',
+  },
+  tr: {
+    routine: {
+      morning: ['Nazik jel temizleyici', 'Hafif nemlendirici serum', 'Yağsız nemlendirici', 'SPF 50 güneş kremi'],
+      evening: ['Nazik temizleyici', 'Niasinamid serumu', 'Bariyer onarıcı nemlendirici'],
+    },
+    ingredients: ['Niasinamid', 'Hyaluronik asit', 'Seramid'],
+    summary:
+      'Cildin dengeli görünüyor, T bölgesinde hafif parlama var. Hafif ve nem veren bir rutin ile her gün güneş kremi cildini rahat ve eşit tonlu tutar.',
+  },
+};
+
+/** Deterministic skin analysis used in mock mode and tests, in the requested locale. */
+export function mockSkinAnalysisFor(locale: Locale): SkinAnalysis {
+  return {
+    faceDetected: true,
+    qualityIssues: [],
+    skinType: 'combination',
+    concerns: { hydration: 'medium', oiliness: 'medium', pores: 'medium', redness: 'low', pigmentation: 'low', texture: 'low' },
+    ...MOCK_SKIN_TEXT[locale],
+  };
+}

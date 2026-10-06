@@ -1,4 +1,4 @@
-import { MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL, type AnalyzeResponse } from '@tonelle/shared';
+import { MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL, mockSkinAnalysisFor, type AnalyzeResponse } from '@tonelle/shared';
 import { describe, expect, it } from 'vitest';
 import { QUIZ_KEYS, completeQuiz, flowReducer, initialState, type FlowEvent, type FlowState } from './machine';
 
@@ -139,5 +139,42 @@ describe('analyze flow reducer', () => {
     const rescanned = run([{ type: 'SET_PHOTO', dataUrl: MOCK_IMAGE_DATA_URL, tooDark: true }, { type: 'START_ANALYSIS' }], selfie);
     expect(rescanned.step).toBe('scanning');
     expect(flowReducer(rescanned, { type: 'ANALYSIS_SUCCEEDED', response }).step).toBe('results');
+  });
+});
+
+describe('single-analysis modes', () => {
+  const consentIn = (mode: 'color' | 'skin') =>
+    run(
+      [
+        { type: 'SET_CONSENT', field: 'explicit', value: true },
+        { type: 'SET_CONSENT', field: 'terms', value: true },
+        { type: 'ACCEPT_CONSENT' },
+      ],
+      { ...initialState, mode },
+    );
+
+  it('skips the quiz and the paywall in colour mode', () => {
+    const atSelfie = consentIn('color');
+    expect(atSelfie.step).toBe('selfie');
+    const done = run(
+      [{ type: 'SET_PHOTO', dataUrl: MOCK_IMAGE_DATA_URL, tooDark: false }, { type: 'START_ANALYSIS' }, { type: 'ANALYSIS_SUCCEEDED', response }],
+      atSelfie,
+    );
+    expect(done.step).toBe('results');
+    expect(run([{ type: 'QUIZ_BACK' }], atSelfie).step).toBe('consent');
+  });
+
+  it('stores the skin result and keeps the mode when starting over', () => {
+    const skin = { skin: mockSkinAnalysisFor('tr'), mock: true };
+    const done = run(
+      [{ type: 'SET_PHOTO', dataUrl: MOCK_IMAGE_DATA_URL, tooDark: false }, { type: 'START_ANALYSIS' }, { type: 'SKIN_SUCCEEDED', response: skin }],
+      consentIn('skin'),
+    );
+    expect(done.step).toBe('results');
+    expect(done.skin).toEqual(skin);
+    const again = run([{ type: 'START_OVER' }], done);
+    expect(again.mode).toBe('skin');
+    expect(again.step).toBe('selfie');
+    expect(again.skin).toBeNull();
   });
 });

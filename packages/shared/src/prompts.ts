@@ -5,6 +5,9 @@ import {
   FACE_SHAPES,
   QUALITY_ISSUES,
   SEASON_IDS,
+  SKIN_CONCERNS,
+  SKIN_LEVELS,
+  SKIN_TYPES,
   SKIN_DEPTHS,
   UNDERTONES,
   type FaceAnalysis,
@@ -78,6 +81,39 @@ export function buildAnalysisPrompt(locale: Locale, quiz?: QuizAnswers): Analysi
     quizLines,
     `Write human-readable text in ${language}. Return JSON only.`,
   ].join('\n\n');
+
+  return { system, user };
+}
+
+const SKIN_ANALYSIS_SHAPE = `{
+  "faceDetected": boolean,
+  "qualityIssues": Array<${oneOf(QUALITY_ISSUES)}>,
+  "skinType": ${oneOf(SKIN_TYPES)},
+  "concerns": { ${SKIN_CONCERNS.map((c) => `"${c}": ${oneOf(SKIN_LEVELS)}`).join(', ')} },
+  "routine": { "morning": 2 to 5 short strings, "evening": 2 to 5 short strings },
+  "ingredients": 2 to 6 short strings,
+  "summary": string
+}`;
+
+/** Prompt for the vision LLM that produces a `SkinAnalysis` (skincare, not colour). */
+export function buildSkinAnalysisPrompt(locale: Locale): AnalysisPrompt {
+  const language = LANGUAGE_NAMES[locale];
+
+  const system = [
+    'You are an experienced skincare consultant. You look at a single selfie and describe the visible state of the facial skin for a cosmetic skincare routine.',
+    'Rules:',
+    '- Respond with strict JSON only: a single object, no markdown, no code fences, no comments, no extra keys.',
+    `- The JSON must match exactly this shape:\n${SKIN_ANALYSIS_SHAPE}`,
+    '- "concerns" rates how visible each item is: "hydration" is how well-hydrated the skin looks ("low" = looks dehydrated), "oiliness" is visible shine, "pores" is pore visibility, "redness" is visible redness, "pigmentation" is uneven tone or dark spots, "texture" is visible unevenness of the surface.',
+    '- This is cosmetic guidance, not a medical diagnosis. Never name diseases or conditions (no acne type, rosacea, eczema, melasma diagnoses), never mention age, weight or attractiveness, and keep the tone kind and neutral.',
+    '- "routine" steps are short, generic product types with a purpose (e.g. "Gentle gel cleanser"), never brand names. Always include sunscreen in the morning.',
+    '- "ingredients" are well-known cosmetic ingredients that suit the observed skin (e.g. niacinamide, hyaluronic acid).',
+    '- If no human face is visible, set "faceDetected": false and fill the remaining fields with your best neutral defaults.',
+    '- Report every photo problem you notice in "qualityIssues" (low light, blur, filters, heavy makeup hide the skin), but still give your best analysis.',
+    `- "summary" is 2–3 warm, practical sentences in ${language}. "routine" and "ingredients" are in ${language}.`,
+  ].join('\n');
+
+  const user = ['Analyse the skin in the attached selfie and return the JSON object.', `Write human-readable text in ${language}. Return JSON only.`].join('\n\n');
 
   return { system, user };
 }

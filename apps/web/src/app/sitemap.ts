@@ -6,6 +6,8 @@ import { absoluteUrl, localePath } from '@/lib/seo';
 const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'monthly' | 'yearly'; legal?: boolean }[] = [
   { path: '', priority: 1, changeFrequency: 'weekly' },
   { path: '/analyze', priority: 0.9, changeFrequency: 'monthly' },
+  { path: '/analyze/color', priority: 0.8, changeFrequency: 'monthly' },
+  { path: '/analyze/skin', priority: 0.8, changeFrequency: 'monthly' },
   { path: '/privacy', priority: 0.3, changeFrequency: 'yearly', legal: true },
   { path: '/kvkk', priority: 0.3, changeFrequency: 'yearly', legal: true },
   { path: '/consent', priority: 0.2, changeFrequency: 'yearly', legal: true },

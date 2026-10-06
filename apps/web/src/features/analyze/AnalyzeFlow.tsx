@@ -8,13 +8,14 @@ import { LanguageSwitcher } from '@/components/site/LanguageSwitcher';
 import { Logo } from '@/components/site/Logo';
 import { apiClient, type ApiClient } from '@/lib/api-client';
 import { clearAllData, clearAnalysis, loadAnalysis, saveAnalysis } from '@/lib/storage';
-import { completeQuiz, flowReducer, initialState, type FlowEvent } from './machine';
+import { completeQuiz, flowReducer, initialState, type AnalyzeMode, type FlowEvent } from './machine';
 import { ConsentStep } from './steps/ConsentStep';
 import { PaywallStep } from './steps/PaywallStep';
 import { QuizStep } from './steps/QuizStep';
 import { ResultsStep } from './steps/ResultsStep';
 import { ScanningStep } from './steps/ScanningStep';
 import { SelfieStep } from './steps/SelfieStep';
+import { SkinResultsStep } from './steps/SkinResultsStep';
 import { TeaserStep } from './steps/TeaserStep';
 import type { AnalyzeCopy, StoreCopy } from './types';
 import { Note } from './ui';
@@ -28,14 +29,16 @@ export function AnalyzeFlow({
   locale,
   copy,
   stores,
+  mode = 'full',
   client = apiClient,
 }: {
   locale: Locale;
+  mode?: AnalyzeMode;
   copy: AnalyzeCopy;
   stores: StoreCopy;
   client?: ApiClient;
 }) {
-  const [state, dispatch] = useReducer(flowReducer, initialState);
+  const [state, dispatch] = useReducer(flowReducer, mode, (m): typeof initialState => ({ ...initialState, mode: m }));
   const demoParam = useSyncExternalStore(
     noopSubscribe,
     () => new URLSearchParams(window.location.search).get('demo') === '1',
@@ -45,12 +48,13 @@ export function AnalyzeFlow({
   const tt = useMemo(() => createTranslator(locale), [locale]);
   const restored = useRef(false);
 
-  // Restore the last analysis (never a photo) after hydration.
+  // Restore the last full analysis (never a photo) after hydration. Single analyses are not saved.
   useEffect(() => {
+    if (mode !== 'full') return;
     const saved = loadAnalysis();
     if (saved) dispatch({ type: 'RESTORE', response: saved.response, quiz: saved.quiz, unlocked: saved.unlocked });
     restored.current = true;
-  }, []);
+  }, [mode]);
 
   // Persist derived results whenever they change.
   useEffect(() => {
@@ -81,15 +85,25 @@ export function AnalyzeFlow({
     if (state.step !== 'scanning' || !state.photo) return;
     const controller = new AbortController();
     const started = Date.now();
-    void client
-      .analyze({ image: state.photo, locale, quiz: completeQuiz(state.quiz) }, { signal: controller.signal })
-      .then(async (res) => {
-        const wait = MIN_SCAN_MS - (Date.now() - started);
-        if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
-        if (controller.signal.aborted) return;
+    const settle = async () => {
+      const wait = MIN_SCAN_MS - (Date.now() - started);
+      if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+      return !controller.signal.aborted;
+    };
+    const request = { image: state.photo, locale, quiz: completeQuiz(state.quiz) };
+    if (state.mode === 'skin') {
+      void client.analyzeSkin(request, { signal: controller.signal }).then(async (res) => {
+        if (!(await settle())) return;
+        if (res.ok) dispatch({ type: 'SKIN_SUCCEEDED', response: res.data });
+        else dispatch({ type: 'ANALYSIS_FAILED', code: res.error.code });
+      });
+    } else {
+      void client.analyze(request, { signal: controller.signal }).then(async (res) => {
+        if (!(await settle())) return;
         if (res.ok) dispatch({ type: 'ANALYSIS_SUCCEEDED', response: res.data });
         else dispatch({ type: 'ANALYSIS_FAILED', code: res.error.code });
       });
+    }
     return () => controller.abort();
     // The photo/quiz cannot change while scanning.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,7 +144,8 @@ export function AnalyzeFlow({
         {state.step === 'scanning' && <ScanningStep {...stepProps} />}
         {state.step === 'teaser' && <TeaserStep {...stepProps} />}
         {state.step === 'paywall' && <PaywallStep {...stepProps} stores={stores} demoAllowed={demoAllowed} />}
-        {state.step === 'results' && <ResultsStep {...stepProps} client={client} />}
+        {state.step === 'results' && state.mode === 'skin' && <SkinResultsStep {...stepProps} />}
+        {state.step === 'results' && state.mode !== 'skin' && <ResultsStep {...stepProps} client={client} />}
       </div>
     </div>
   );

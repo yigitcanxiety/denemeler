@@ -3,11 +3,13 @@ import {
   AnalyzeResponseSchema,
   ApiErrorSchema,
   RenderResponseSchema,
+  SkinAnalyzeResponseSchema,
   type AnalyzeRequest,
   type AnalyzeResponse,
   type ApiErrorCode,
   type RenderRequest,
   type RenderResponse,
+  type SkinAnalyzeResponse,
   type TranslationKey,
 } from '@tonelle/shared';
 import type { z } from 'zod';
@@ -120,6 +122,10 @@ export function createApiClient(clientOptions: ApiClientOptions = {}) {
     /** POST /api/analyze — the photo goes only to our own API. */
     analyze(request: AnalyzeRequest, options: RequestOptions = {}): Promise<ApiResult<AnalyzeResponse>> {
       return postJson('/api/analyze', request, AnalyzeResponseSchema, { ...clientOptions, ...options });
+    },
+    /** POST /api/analyze-skin — skincare-only analysis; the photo goes only to our own API. */
+    analyzeSkin(request: AnalyzeRequest, options: RequestOptions = {}): Promise<ApiResult<SkinAnalyzeResponse>> {
+      return postJson('/api/analyze-skin', request, SkinAnalyzeResponseSchema, { ...clientOptions, ...options });
     },
     /** POST /api/render-look — Premium only; 402 `payment_required` without entitlement. */
     renderLook(request: RenderRequest, options: RequestOptions = {}): Promise<ApiResult<RenderResponse>> {

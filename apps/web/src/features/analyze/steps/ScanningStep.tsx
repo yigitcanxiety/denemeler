@@ -49,9 +49,12 @@ export function ScanningStep({ locale, state, copy, tt }: StepProps) {
   const [index, setIndex] = useState(0);
   const [slow, setSlow] = useState(false);
   const [percent, setPercent] = useState(0);
+  const skin = state.mode === 'skin';
+  const labels = skin ? copy.skinScanSteps : MESSAGES.map((key) => tt(key));
+  const last = labels.length - 1;
 
   useEffect(() => {
-    const rotate = window.setInterval(() => setIndex((i) => Math.min(i + 1, MESSAGES.length - 1)), 1100);
+    const rotate = window.setInterval(() => setIndex((i) => Math.min(i + 1, last)), 1100);
     const slowTimer = window.setTimeout(() => setSlow(true), 14000);
     const start = performance.now();
     let frame = 0;
@@ -65,15 +68,15 @@ export function ScanningStep({ locale, state, copy, tt }: StepProps) {
       window.clearTimeout(slowTimer);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [last]);
 
-  const message = MESSAGES[index] ?? MESSAGES[0]!;
+  const message = labels[index] ?? labels[0];
   const shown = Math.round(percent);
 
   return (
     <div className="flex flex-col items-center gap-6 text-center" aria-busy="true">
       <Eyebrow>{copy.scanningChip}</Eyebrow>
-      <h1 className="-mt-2 text-[clamp(1.7rem,7vw,2.2rem)] text-ink">{copy.scanningTitle}</h1>
+      <h1 className="-mt-2 text-[clamp(1.7rem,7vw,2.2rem)] text-ink">{skin ? copy.skinScanningTitle : copy.scanningTitle}</h1>
 
       <ProgressRing value={percent} size={248} stroke={3.2} label={copy.scanningLabel}>
         <div className="absolute inset-[14px] overflow-hidden rounded-full bg-mist">
@@ -91,9 +94,9 @@ export function ScanningStep({ locale, state, copy, tt }: StepProps) {
       </p>
 
       <ol className="flex w-full max-w-xs flex-col gap-2.5 text-left" aria-live="polite">
-        {MESSAGES.map((key, i) => (
+        {labels.map((label, i) => (
           <li
-            key={key}
+            key={label}
             className={clsx(
               'flex items-center gap-2.5 text-[14px] transition-colors',
               i < index ? 'text-ink' : i === index ? 'font-semibold text-violet' : 'text-muted',
@@ -109,12 +112,12 @@ export function ScanningStep({ locale, state, copy, tt }: StepProps) {
             >
               {i < index ? <Check className="size-3" strokeWidth={3} /> : i === index ? <span className="pulse size-2 rounded-full bg-violet" /> : null}
             </span>
-            {tt(key)}
+            {label}
           </li>
         ))}
       </ol>
       <p className="sr-only" role="status">
-        {tt(message)}
+        {message}
       </p>
       {slow && <p className="text-[13.5px] text-muted">{tt('analyzing.slow')}</p>}
 

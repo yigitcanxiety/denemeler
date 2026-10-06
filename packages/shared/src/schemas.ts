@@ -140,6 +140,29 @@ export type Contrast = FaceAnalysis['contrast'];
 export type FaceShape = FaceAnalysis['faceShape'];
 export type EyeShape = FaceAnalysis['eyeShape'];
 
+/* ---------- Skin analysis ---------- */
+
+export const SKIN_LEVELS = ['low', 'medium', 'high'] as const;
+export const SKIN_CONCERNS = ['hydration', 'oiliness', 'pores', 'redness', 'pigmentation', 'texture'] as const;
+export type SkinConcern = (typeof SKIN_CONCERNS)[number];
+export type SkinLevel = (typeof SKIN_LEVELS)[number];
+
+const SkinLevelSchema = z.enum(SKIN_LEVELS);
+const RoutineStepsSchema = z.array(z.string().min(1)).min(2).max(5);
+
+export const SkinAnalysisSchema = z.object({
+  faceDetected: z.boolean(),
+  qualityIssues: z.array(z.enum(QUALITY_ISSUES)),
+  skinType: z.enum(SKIN_TYPES),
+  concerns: z.object(
+    Object.fromEntries(SKIN_CONCERNS.map((c) => [c, SkinLevelSchema])) as Record<SkinConcern, typeof SkinLevelSchema>,
+  ),
+  routine: z.object({ morning: RoutineStepsSchema, evening: RoutineStepsSchema }),
+  ingredients: z.array(z.string().min(1)).min(2).max(6),
+  summary: z.string().min(1),
+});
+export type SkinAnalysis = z.infer<typeof SkinAnalysisSchema>;
+
 /* ---------- API contracts ---------- */
 
 export const AnalyzeRequestSchema = z.object({
@@ -155,6 +178,12 @@ export const AnalyzeResponseSchema = z.object({
   mock: z.boolean(),
 });
 export type AnalyzeResponse = z.infer<typeof AnalyzeResponseSchema>;
+
+export const SkinAnalyzeResponseSchema = z.object({
+  skin: SkinAnalysisSchema,
+  mock: z.boolean(),
+});
+export type SkinAnalyzeResponse = z.infer<typeof SkinAnalyzeResponseSchema>;
 
 export const RenderRequestSchema = z.object({
   image: ImageDataUrlSchema,

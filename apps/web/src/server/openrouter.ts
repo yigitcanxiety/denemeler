@@ -1,10 +1,15 @@
 import {
   buildAnalysisPrompt,
+  buildSkinAnalysisPrompt,
   FaceAnalysisSchema,
+  SkinAnalysisSchema,
+  type AnalysisPrompt,
   type FaceAnalysis,
   type Locale,
   type QuizAnswers,
+  type SkinAnalysis,
 } from '@tonelle/shared';
+import type { z } from 'zod';
 import { NoFaceError, ProviderError } from './errors';
 import { fetchWithTimeout, readProviderJson } from './fetch';
 import { extractJson } from './json-extract';
@@ -38,9 +43,16 @@ export interface AnalyzeFaceInput {
   imageUrl?: string;
 }
 
-export interface AnalyzeFaceResult {
-  analysis: FaceAnalysis;
+export interface AnalyzeFaceResult<T = FaceAnalysis> {
+  analysis: T;
   model: string;
+}
+
+/** What to ask the model and how to validate its JSON answer. */
+interface AnalysisSpec<T> {
+  prompt: AnalysisPrompt;
+  schema: z.ZodType<T>;
+  normalize?: (value: unknown) => unknown;
 }
 
 /** Thrown when the model answered but the content was not a valid `FaceAnalysis`. */
@@ -52,7 +64,20 @@ class InvalidOutputError extends ProviderError {}
  * Transport/HTTP failures on the primary skip the retry and go straight to the fallback.
  * A `faceDetected: false` answer ends the chain with `NoFaceError`.
  */
-export async function analyzeFace(input: AnalyzeFaceInput, options: OpenRouterOptions): Promise<AnalyzeFaceResult> {
+export function analyzeFace(input: AnalyzeFaceInput, options: OpenRouterOptions): Promise<AnalyzeFaceResult> {
+  return runAnalysis(input, options, {
+    prompt: buildAnalysisPrompt(input.locale, input.quiz),
+    schema: FaceAnalysisSchema,
+    normalize,
+  });
+}
+
+/** Skincare analysis of the same selfie; same retry/fallback chain as `analyzeFace`. */
+export function analyzeSkin(input: AnalyzeFaceInput, options: OpenRouterOptions): Promise<AnalyzeFaceResult<SkinAnalysis>> {
+  return runAnalysis(input, options, { prompt: buildSkinAnalysisPrompt(input.locale), schema: SkinAnalysisSchema, normalize: normalizeIssues });
+}
+
+async function runAnalysis<T>(input: AnalyzeFaceInput, options: OpenRouterOptions, spec: AnalysisSpec<T>): Promise<AnalyzeFaceResult<T>> {
   const deadline = Date.now() + (options.totalBudgetMs ?? ANALYSIS_TOTAL_BUDGET_MS);
   const perCall = options.timeoutMs ?? ANALYSIS_TIMEOUT_MS;
   const attempts: string[] = [options.model, options.model];
@@ -66,7 +91,7 @@ export async function analyzeFace(input: AnalyzeFaceInput, options: OpenRouterOp
     const remaining = deadline - Date.now();
     if (remaining <= 1_000) break;
     try {
-      const analysis = await callModel(model, input, options, Math.min(perCall, remaining));
+      const analysis = await callModel(model, input, options, spec, Math.min(perCall, remaining));
       return { analysis, model };
     } catch (error) {
       if (!(error instanceof ProviderError)) throw error;
@@ -77,13 +102,14 @@ export async function analyzeFace(input: AnalyzeFaceInput, options: OpenRouterOp
   throw lastError ?? new ProviderError('openrouter: analysis time budget exhausted');
 }
 
-async function callModel(
+async function callModel<T>(
   model: string,
   input: AnalyzeFaceInput,
   options: OpenRouterOptions,
+  spec: AnalysisSpec<T>,
   timeoutMs: number,
-): Promise<FaceAnalysis> {
-  const prompt = buildAnalysisPrompt(input.locale, input.quiz);
+): Promise<T> {
+  const { prompt } = spec;
   const label = `${options.providerLabel ?? 'openrouter'}(${model})`;
 
   const response = await fetchWithTimeout(
@@ -135,7 +161,7 @@ async function callModel(
   if (json === undefined) throw new InvalidOutputError(`${label}: output was not JSON`);
   if ((json as { faceDetected?: unknown }).faceDetected === false) throw new NoFaceError();
 
-  const parsed = FaceAnalysisSchema.safeParse(normalize(json));
+  const parsed = spec.schema.safeParse(spec.normalize ? spec.normalize(json) : json);
   if (!parsed.success) {
     const paths = parsed.error.issues
       .slice(0, 3)
@@ -171,6 +197,12 @@ function normalize(value: unknown): unknown {
     const list = obj[key];
     if (Array.isArray(list)) obj[key] = list.map((c) => (typeof c === 'string' ? c.trim().toUpperCase() : c));
   }
+  return normalizeIssues(obj);
+}
+
+function normalizeIssues(value: unknown): unknown {
+  if (typeof value !== 'object' || value === null) return value;
+  const obj = { ...(value as Record<string, unknown>) };
   if (!Array.isArray(obj.qualityIssues) && obj.qualityIssues == null) obj.qualityIssues = [];
   return obj;
 }

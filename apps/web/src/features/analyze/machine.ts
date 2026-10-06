@@ -7,11 +7,15 @@ import {
   SKIN_TYPES,
   type AnalyzeResponse,
   type QuizAnswers,
+  type SkinAnalyzeResponse,
   type TranslationKey,
 } from '@tonelle/shared';
 import { errorMessageKey, type ClientErrorCode } from '@/lib/api-client';
 
 /** Pure state machine for the web analysis flow (no side effects; see AnalyzeFlow.tsx). */
+
+/** `full` = colour + makeup flow; `color` and `skin` are single, free analyses without quiz or paywall. */
+export type AnalyzeMode = 'full' | 'color' | 'skin';
 
 export type Step = 'consent' | 'quiz' | 'selfie' | 'scanning' | 'teaser' | 'paywall' | 'results';
 
@@ -27,6 +31,7 @@ export const QUIZ_OPTIONS: { [K in QuizKey]: readonly QuizAnswers[K][] } = {
 };
 
 export interface FlowState {
+  mode: AnalyzeMode;
   step: Step;
   consent: { explicit: boolean; terms: boolean };
   /** User pressed continue without ticking both boxes. */
@@ -40,12 +45,14 @@ export interface FlowState {
   /** Error shown on the selfie step (shared `errors.*` / `camera.*` key). */
   errorKey: TranslationKey | null;
   result: AnalyzeResponse | null;
+  skin: SkinAnalyzeResponse | null;
   unlocked: boolean;
   exitOfferOpen: boolean;
   exitOfferSeen: boolean;
 }
 
 export const initialState: FlowState = {
+  mode: 'full',
   step: 'consent',
   consent: { explicit: false, terms: false },
   consentAttempted: false,
@@ -56,6 +63,7 @@ export const initialState: FlowState = {
   photoTooDark: false,
   errorKey: null,
   result: null,
+  skin: null,
   unlocked: false,
   exitOfferOpen: false,
   exitOfferSeen: false,
@@ -73,6 +81,7 @@ export type FlowEvent =
   | { type: 'SELFIE_ERROR'; errorKey: TranslationKey }
   | { type: 'START_ANALYSIS' }
   | { type: 'ANALYSIS_SUCCEEDED'; response: AnalyzeResponse }
+  | { type: 'SKIN_SUCCEEDED'; response: SkinAnalyzeResponse }
   | { type: 'ANALYSIS_FAILED'; code: ClientErrorCode }
   | { type: 'OPEN_PAYWALL' }
   | { type: 'DISMISS_PAYWALL' }
@@ -105,7 +114,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
     case 'ACCEPT_CONSENT':
       if (state.step !== 'consent') return state;
       if (!hasConsent(state)) return { ...state, consentAttempted: true };
-      return { ...state, step: 'quiz', quizIndex: 0, consentAttempted: false, consentDeclined: false };
+      return { ...state, step: state.mode === 'full' ? 'quiz' : 'selfie', quizIndex: 0, consentAttempted: false, consentDeclined: false };
 
     case 'DECLINE_CONSENT':
       return { ...state, consentDeclined: true };
@@ -120,6 +129,7 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
     }
 
     case 'QUIZ_BACK':
+      if (state.step === 'selfie' && state.mode !== 'full') return { ...state, step: 'consent', errorKey: null };
       if (state.step === 'selfie') return { ...state, step: 'quiz', quizIndex: QUIZ_KEYS.length - 1, errorKey: null };
       if (state.step !== 'quiz') return state;
       return state.quizIndex === 0 ? { ...state, step: 'consent' } : { ...state, quizIndex: state.quizIndex - 1 };
@@ -142,7 +152,11 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
 
     case 'ANALYSIS_SUCCEEDED':
       if (state.step !== 'scanning') return state;
-      return { ...state, result: event.response, step: state.unlocked ? 'results' : 'teaser' };
+      return { ...state, result: event.response, step: state.unlocked || state.mode !== 'full' ? 'results' : 'teaser' };
+
+    case 'SKIN_SUCCEEDED':
+      if (state.step !== 'scanning') return state;
+      return { ...state, skin: event.response, step: 'results' };
 
     case 'ANALYSIS_FAILED':
       if (state.step !== 'scanning') return state;
@@ -185,14 +199,15 @@ export function flowReducer(state: FlowState, event: FlowEvent): FlowState {
     case 'START_OVER':
       return {
         ...initialState,
+        mode: state.mode,
         consent: state.consent,
         unlocked: state.unlocked,
         exitOfferSeen: state.exitOfferSeen,
-        step: hasConsent(state) ? 'quiz' : 'consent',
+        step: !hasConsent(state) ? 'consent' : state.mode === 'full' ? 'quiz' : 'selfie',
       };
 
     case 'DELETE_DATA':
-      return initialState;
+      return { ...initialState, mode: state.mode };
 
     default:
       return state;

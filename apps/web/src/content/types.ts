@@ -27,6 +27,10 @@ export interface SiteContent {
     homeDescription: string;
     analyzeTitle: string;
     analyzeDescription: string;
+    colorTitle: string;
+    colorDescription: string;
+    skinTitle: string;
+    skinDescription: string;
     ogAlt: string;
     keywords: string[];
   };
@@ -49,6 +53,10 @@ export interface SiteContent {
     subtitle: string;
     cta: string;
     ctaNote: string;
+    /** Links to the single colour / skin analyses under the main CTA. */
+    modesLabel: string;
+    colorOnly: string;
+    skinOnly: string;
     trustPoints: string[];
     storesLabel: string;
     portraitAlt: string;
@@ -229,5 +237,23 @@ export interface SiteContent {
     navResults: string;
     navLooks: string;
     photoFrameLabel: string;
+    colorResultsTitle: string;
+    skinScanningTitle: string;
+    skinScanSteps: string[];
+    skin: {
+      title: string;
+      skinTypeTitle: string;
+      concernsTitle: string;
+      concerns: Record<'hydration' | 'oiliness' | 'pores' | 'redness' | 'pigmentation' | 'texture', string>;
+      levels: Record<'low' | 'medium' | 'high', string>;
+      routineTitle: string;
+      morning: string;
+      evening: string;
+      ingredientsTitle: string;
+      summaryTitle: string;
+      disclaimer: string;
+      startOver: string;
+      fullAnalysis: string;
+    };
   };
 }

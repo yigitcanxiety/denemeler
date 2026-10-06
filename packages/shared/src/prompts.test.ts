@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { MOCK_ANALYSIS } from './fixtures';
+import { MOCK_ANALYSIS, mockSkinAnalysisFor } from './fixtures';
 import { LOOKS } from './looks';
-import { buildAnalysisPrompt, buildRenderPrompt } from './prompts';
-import { LOOK_IDS, SEASON_IDS } from './schemas';
+import { buildAnalysisPrompt, buildRenderPrompt, buildSkinAnalysisPrompt } from './prompts';
+import { LOCALES, LOOK_IDS, SEASON_IDS, SKIN_CONCERNS, SkinAnalysisSchema } from './schemas';
 
 describe('buildAnalysisPrompt', () => {
   it('demands strict JSON matching FaceAnalysis', () => {
@@ -47,5 +47,18 @@ describe('buildRenderPrompt', () => {
 
   it('accepts a Look object', () => {
     expect(buildRenderPrompt(LOOKS.bold_lip, MOCK_ANALYSIS)).toBe(buildRenderPrompt('bold_lip', MOCK_ANALYSIS));
+  });
+});
+
+describe('skin analysis', () => {
+  it('mock skin analysis matches the schema in every locale', () => {
+    for (const locale of LOCALES) expect(SkinAnalysisSchema.safeParse(mockSkinAnalysisFor(locale)).success).toBe(true);
+  });
+
+  it('skin prompt lists every concern and stays non-medical', () => {
+    const { system } = buildSkinAnalysisPrompt('tr');
+    for (const concern of SKIN_CONCERNS) expect(system).toContain(`"${concern}"`);
+    expect(system).toContain('not a medical diagnosis');
+    expect(system).toContain('Turkish');
   });
 });
