@@ -1,34 +1,91 @@
-# Devam notu (bulut oturumundan yerele geçiş)
+# Tonelle: durum, sorunlar ve plan
 
-Son güncelleme: 2026-10-03. Bu dosya, bulut sohbetinde alınan kararları ve yarım kalan işleri özetler.
-Kurulum adımları için `KURULUM.md`, teknik yapı için `ARCHITECTURE.md`.
+Son güncelleme: 2026-10-06. Proje yöneticisi: Claude. Bu dosya projenin tek doğru kaynağıdır; her iş
+bitiminde güncellenir. Plan körü körüne izlenmez: her faz sonunda "hâlâ doğru mu?" diye sorgulanır.
+Uzun araştırma ve gerekçeler: `ARASTIRMA_VE_YOL_HARITASI.md`. Kurulum: `KURULUM.md`. Teknik yapı: `ARCHITECTURE.md`.
 
-## Durum
+## 1. Neredeyiz (çalışan şeyler)
 
-- Canlı site: https://tonelle-taupe.vercel.app (Vercel projesi `tonelle`, bu dalı yayınlıyor:
-  `claude/sharp-faraday-2h9ny6`).
-- **Analiz canlıda çalışmıyor:** Kie.ai isteği başarısız oluyor ("Yapay zekâ servisimiz şu anda yoğun").
-  Kie entegrasyonu hiç canlı denenemedi.
-- Çözüm hazır: analiz artık doğrudan Google Gemini'ye bağlanabiliyor. `GEMINI_API_KEY` tanımlıysa
-  analiz (`gemini-2.5-flash`) ve makyaj görseli (`gemini-2.5-flash-image`) Gemini'den gelir.
-  Sıra: OpenRouter → Gemini → Kie.
+- Canlı site: https://tonelle-taupe.vercel.app (Vercel `tonelle`, dal `claude/sharp-faraday-2h9ny6`, her push yayınlanır).
+- Tam analiz (`/analyze`): rıza → 5 soru → selfie → renk sezonu, palet, fondöten, ruj/allık/far → makyaj görselleri.
+- Yalnız renk (`/analyze/color`) ve yalnız cilt (`/analyze/skin`, `/api/analyze-skin`) analizleri: soru ve ödeme yok.
+- Yapay zekâ: Google Gemini (`gemini-2.5-flash` analiz, `gemini-2.5-flash-image` görsel). Canlıda test edildi.
+- Makyaj görselleri canlıda gerçek: `TONELLE_FREE_RENDERS=1`, ödeme kontrolü yok, IP başı günde 6 görsel.
+- Mobil uygulama kodu (`apps/mobile`, Expo + RevenueCat) var, mağazada değil.
+- 108 web + 63 ortak test, tip kontrolü ve lint temiz.
 
-## Yapılacaklar (sırayla)
+## 2. Sorunlar (önem sırasıyla)
 
-1. Google AI Studio'dan anahtar al, faturalandırmayı aç (ücretsiz kotada veriler eğitimde kullanılabilir).
-   `GEMINI_API_KEY` değerini Vercel ortam değişkenlerine ve yerelde `apps/web/.env.local` dosyasına ekle.
-   Kie anahtarını kaldır ya da yenile (sohbette paylaşıldı).
-2. Canlı selfie testi; gerçek maliyeti Google panelinden kontrol et.
-3. Kişi bazlı kalıcı kullanım sayacı (Upstash Redis, Vercel Marketplace). Şu anki
-   `apps/web/src/server/rate-limit.ts` bellek içi ve sunucu kopyası başına sayıyor.
-4. Web ödemesi: **Paddle** (satıcı Paddle olur; AB KDV'sini Paddle halleder). Stripe ve Shopify Payments
-   istenmedi. Doribleg Trade Ltd (İngiltere) adına hesap açılacak; mümkünse kendi alan adıyla başvurulacak.
-   Kod tarafında mevcut `PaymentProvider` soyutlamasına bağlanacak.
-5. Yeni site tasarımı (v4) onay bekliyor: `docs/design/prototype-v4/index.html` (tarayıcıda açılır).
-   Onaylanırsa `apps/web` içine taşınacak.
-6. UGC videoları için çekim senaryoları; trafik doğrudan siteye.
+1. **Para alınamıyor.** Web paywall'ı mağazalara yönlendiriyor; uygulama mağazada yok, web ödemesi (Paddle) yok.
+   Bugün reklam açılsa gelen kullanıcıdan tek lira alınamaz.
+2. **Ölçüm yok.** Meta Pixel, Conversions API, analitik yok. Reklam açılırsa Meta neyin işe yaradığını öğrenemez, para yanar.
+3. **İsim çakışması.** `tonelle.app` başka bir "Tonelle"ye ait (Netlify'da kuaför/salon yönetim uygulaması, RU/EN/HE).
+   Güzellik sektörü olduğu için marka (sınıf 44) riski var. Alan adımız yok. Karar gerekiyor.
+4. **Gizlilik iddiası doğrulanmadı.** Sitede "fotoğraf model eğitiminde kullanılmaz" diyoruz. Gemini anahtarı ücretsiz
+   katmandaysa Google veriyi eğitimde kullanabilir. Faturalandırmanın açık olduğu doğrulanmalı.
+   Cilt sayfasındaki açık rıza metni hâlâ "renk ve makyaj analizi" diyor.
+5. **Maliyet koruması zayıf.** Görsel sınırı bellek içi (sunucu kopyası başına); `?demo=1` ile herkes sonuçları açabiliyor.
+   Reklam trafiğinden önce kalıcı sayaç (Upstash Redis) ve gerçek ödeme şart.
+6. **İzleme yok.** Canlı analiz günlerce (Kie.ai hatası) bozuk kaldı, kimse fark etmedi. Günlük otomatik canlı test gerekli.
+7. **Sızmış anahtar.** Kie.ai anahtarı sohbette paylaşılmıştı; artık kullanılmıyor ama Vercel'de duruyor ve iptal edilmedi.
 
-## Fiyat ve sınır kararları (önerilen, henüz uygulanmadı)
+## 3. Yönetici görüşü: ilk plandan sapmalar
+
+- İlk plan "14 günde mağaza, sonra reklam" idi. Apple hesabı ve D-U-N-S beklediği için bu yol tıkalı.
+  **Karar: önce web.** Satış web'de (Paddle), uygulama sonra. Artısı: mağaza komisyonu yok, fiyat testi hızlı.
+  Eksisi: web dönüşümü uygulamadan düşük olabilir. Faz C'deki sayılar bunu söyleyecek.
+- **Odak: renk analizi.** Türkiye'de kanıtlanmış kanca bu (Glamour vakası). Cilt analizi ikincil kalır;
+  ilk reklam bütçesi bölünmez. Cilt reklamı ancak renk kampanyası kârlı olduktan sonra test edilir.
+- **Reklam, ödeme ve ölçüm olmadan açılmaz.** Bu kural pazarlık konusu değil.
+
+## 4. Plan
+
+### Faz A: satılabilir ve ölçülebilir hale getir (1. hafta)
+
+| # | İş | Kim |
+|---|---|---|
+| A1 | İsim/alan adı kararı: uygun alan adlarını kontrol et, öner; satın alma | Claude öneri, Yiğit ödeme |
+| A2 | Paddle hesabı (Doribleg Trade Ltd) | Yiğit başvuru, Claude başvuru metinleri |
+| A3 | Paddle'ı `PaymentProvider`'a bağla; `?demo=1` kilidini canlıda kapat | Claude |
+| A4 | Meta Pixel + Conversions API + PostHog: selfie → analiz → paywall → ödeme olayları | Claude (Yiğit Pixel ID verir) |
+| A5 | Gemini faturalandırması açık mı doğrula; cilt rıza metnini güncelle | Claude kontrol, Yiğit onay |
+| A6 | Kalıcı kullanım sayacı (Upstash Redis, Vercel Marketplace) | Claude |
+| A7 | Günlük otomatik canlı test (analiz + görsel), bozulunca bildirim | Claude |
+| A8 | Kie anahtarını Kie panelinden iptal et, Vercel'den sil | Yiğit iptal, Claude siler |
+
+**Kapı A:** test kullanıcısı web'de ödeme yapabiliyor ve olay Meta'da görünüyor. Bu olmadan Faz C başlamaz.
+
+### Faz B: reklam hazırlığı (2. hafta, Faz A ile paralel başlar)
+
+- Meta Ads Library'de TR rakip analizi ("renk analizi", "renk sezonu", "makyaj AI"): uzun süredir yayında kalan kancalar.
+- 10 kreatif: 5 UGC senaryosu ("Yanlış fondöten kullanıyormuşum", "AI sezonumu buldu", öncesi/sonrası) + 5 üretilmiş video.
+- Reklamın indiği sayfa tek mesaj: "Renk sezonunu 1 dakikada bul". Doğrudan `/analyze/color` veya tam analiz; A/B.
+- Instagram ve TikTok hesapları (isim kararına bağlı).
+
+### Faz C: Türkiye test kampanyası (3. hafta)
+
+- Bütçe: günlük ₺750 × 7 gün (~₺5.250 + %5 Meta konum ücreti). Optimizasyon: satın alma.
+- Ölçülecekler ve eşikler:
+
+| Metrik | İyi | Durdur / değiştir |
+|---|---|---|
+| Tıklama → selfie tamamlama | > %40 | < %20: sayfa/akış sorunu |
+| Analiz → paywall görüntüleme | > %70 | < %50: teaser zayıf |
+| Paywall → ödeme | > %3 | < %1: fiyat/teklif değiştir |
+| Satın alma maliyeti (CPA) | < ₺250 | > ₺500 (3 gün üst üste): kreatifi kes |
+
+**Kapı C:** 7 gün sonunda CPA, haftalık planın net getirisinin (~₺80) kaç katı? Abonelik ortalama 3+ hafta
+sürüyorsa ölçeklenir; değilse fiyat veya teklif değişir, ya da yön sorgulanır.
+
+### Faz D: mobil uygulama (web kârlıysa)
+
+Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de kanıtlanmış akış taşınır.
+
+### Faz E: Avrupa
+
+Önce PL, ES, IT (ucuz gösterim), sonra DE, FR, NL. Çeviri + yerel kreatif.
+
+## 5. Fiyat ve sınır kararları (önerilen, henüz uygulanmadı)
 
 | Plan | Fiyat (TR) | Analiz | Makyaj görseli |
 |---|---|---|---|
@@ -40,7 +97,13 @@ Kurulum adımları için `KURULUM.md`, teknik yapı için `ARCHITECTURE.md`.
 Tahmini maliyet: analiz ~₺0,10, görsel ~₺1,70 (~$0,04). Haftalık plan net ~₺80 (KDV ve Paddle sonrası).
 Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 görünüm" olarak değişmeli.
 
-## Bekleyen hesaplar
+## 6. Ortam değişkenleri (Vercel, Production)
 
-Apple Developer + D-U-N-S, Expo, RevenueCat anahtarları, Paddle, Gemini anahtarı,
-Vercel bağlantısının log okuma izni.
+`GEMINI_API_KEY` (gizli), `TONELLE_FREE_RENDERS=1`, `NEXT_PUBLIC_SITE_URL=https://tonelle-taupe.vercel.app`
+(alan adı alınınca değişecek), `KIE_API_KEY` (silinecek).
+
+## 7. Değişiklik günlüğü
+
+- 2026-10-06: Gemini canlıya bağlandı; Gemini'nin JSON'u kesmesi düzeltildi; renk ve cilt bölümleri;
+  canlıda gerçek makyaj görseli; site adresi başkasının alan adından bizim Vercel adresine çevrildi.
+- 2026-10-03: Gemini sağlayıcısı eklendi, Vercel'e yayın.
