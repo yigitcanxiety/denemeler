@@ -35,12 +35,10 @@ describe('getServerConfig', () => {
     expect(isRenderMock(forced)).toBe(true);
   });
 
-  it('allows free dev renders without RevenueCat, never in production', () => {
-    const dev = getServerConfig({ GEMINI_API_KEY: 'b', TONELLE_DEV_FREE_RENDERS: '1', NODE_ENV: 'development' });
-    expect(isRenderMock(dev)).toBe(false);
-    const prod = getServerConfig({ GEMINI_API_KEY: 'b', TONELLE_DEV_FREE_RENDERS: '1', NODE_ENV: 'production' });
-    expect(prod.devFreeRenders).toBe(false);
-    expect(isRenderMock(prod)).toBe(true);
+  it('renders for real without RevenueCat only when free renders are switched on', () => {
+    expect(isRenderMock(getServerConfig({ GEMINI_API_KEY: 'b' }))).toBe(true);
+    expect(isRenderMock(getServerConfig({ GEMINI_API_KEY: 'b', TONELLE_FREE_RENDERS: '1' }))).toBe(false);
+    expect(isRenderMock(getServerConfig({ TONELLE_FREE_RENDERS: '1' }))).toBe(true);
   });
 });
 

@@ -17,7 +17,7 @@ import { clientIp, errorResponse, handleError, jsonResponse, parseJsonBody, rate
 import { createImageProvider } from './image-providers';
 import { kieChatUrl, uploadToKie } from './kie';
 import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } from './openrouter';
-import { analyzeRateLimiter, renderRateLimiter } from './rate-limit';
+import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
 import { checkEntitlement } from './revenuecat';
 
 /** POST /api/analyze */
@@ -112,7 +112,8 @@ export async function handleRenderLook(request: Request): Promise<Response> {
     const { image, lookId, analysis, appUserId } = body.data;
 
     const config = getServerConfig();
-    const rateKey = appUserId ? `user:${appUserId}` : `ip:${clientIp(request)}`;
+    // Free renders are keyed by IP: the app user id comes from the browser and can be rotated.
+    const rateKey = appUserId && !config.freeRenders ? `user:${appUserId}` : `ip:${clientIp(request)}`;
 
     if (isRenderMock(config)) {
       const limit = renderRateLimiter.check(rateKey);
@@ -122,12 +123,12 @@ export async function handleRenderLook(request: Request): Promise<Response> {
       return jsonResponse(response);
     }
 
-    if (!appUserId && !config.devFreeRenders) return errorResponse('payment_required', 'A premium subscription is required.');
+    if (!appUserId && !config.freeRenders) return errorResponse('payment_required', 'A premium subscription is required.');
 
-    const limit = renderRateLimiter.check(rateKey);
+    const limit = (config.freeRenders ? freeRenderRateLimiter : renderRateLimiter).check(rateKey);
     if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
 
-    if (!config.devFreeRenders) {
+    if (!config.freeRenders) {
       if (!config.revenueCatSecretKey) {
         // Fail closed: rendering costs money and must never be unverified in production.
         throw new HttpError('internal', 'Rendering is temporarily unavailable.', 'REVENUECAT_SECRET_KEY is not set');

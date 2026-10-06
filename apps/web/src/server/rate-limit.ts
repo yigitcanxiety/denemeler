@@ -65,3 +65,8 @@ const HOUR_MS = 60 * 60 * 1000;
 export const analyzeRateLimiter = new SlidingWindowRateLimiter(10, HOUR_MS);
 /** `/api/render-look`: 30 requests / hour / app user. */
 export const renderRateLimiter = new SlidingWindowRateLimiter(30, HOUR_MS);
+/**
+ * Free renders (`TONELLE_FREE_RENDERS=1`, no payment check): 6 / day / IP, one analysis' three
+ * looks twice. ponytail: per instance like the others; move to Redis before real traffic.
+ */
+export const freeRenderRateLimiter = new SlidingWindowRateLimiter(6, 24 * HOUR_MS);

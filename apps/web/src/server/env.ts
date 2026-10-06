@@ -24,8 +24,8 @@ export interface ServerConfig {
   gemini: { apiKey: string | undefined; model: string; analysisModel: string };
   fal: { apiKey: string | undefined; model: string };
   revenueCatSecretKey: string | undefined;
-  /** Local development only: real renders without RevenueCat or an entitlement check. */
-  devFreeRenders: boolean;
+  /** Real renders without RevenueCat or an entitlement check, capped per IP (`TONELLE_FREE_RENDERS=1`). */
+  freeRenders: boolean;
 }
 
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
@@ -90,8 +90,7 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
       model: read(env, 'FAL_IMAGE_MODEL') ?? DEFAULT_FAL_IMAGE_MODEL,
     },
     revenueCatSecretKey: read(env, 'REVENUECAT_SECRET_KEY'),
-    // Never honoured in production builds, whatever the env file says.
-    devFreeRenders: env.NODE_ENV !== 'production' && truthy(read(env, 'TONELLE_DEV_FREE_RENDERS')),
+    freeRenders: truthy(read(env, 'TONELLE_FREE_RENDERS')),
   };
 }
 
@@ -105,7 +104,7 @@ export function isAnalysisMock(config: ServerConfig): boolean {
  * RevenueCat is not configured (paid renders cannot be verified, so show the free demo instead).
  */
 export function isRenderMock(config: ServerConfig): boolean {
-  if (config.mockForced || (!config.revenueCatSecretKey && !config.devFreeRenders)) return true;
+  if (config.mockForced || (!config.revenueCatSecretKey && !config.freeRenders)) return true;
   const key = { fal: config.fal.apiKey, kie: config.kie.apiKey, gemini: config.gemini.apiKey }[config.imageProvider];
   return !key;
 }
