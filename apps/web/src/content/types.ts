@@ -215,6 +215,9 @@ export interface SiteContent {
     notifyCta: string;
     notifySubject: string;
     demoUnlock: string;
+    inviteLabel: string;
+    inviteCta: string;
+    inviteError: string;
     demoNote: string;
     resultsPhotoNeeded: string;
     resultsNewSelfie: string;

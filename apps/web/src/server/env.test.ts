@@ -35,6 +35,11 @@ describe('getServerConfig', () => {
     expect(isRenderMock(forced)).toBe(true);
   });
 
+  it('parses invite codes case-insensitively', () => {
+    expect(getServerConfig({ TONELLE_ACCESS_CODES: ' yigit-1a2b , DOST-3C4D,, ' }).accessCodes).toEqual(['YIGIT-1A2B', 'DOST-3C4D']);
+    expect(getServerConfig({}).accessCodes).toEqual([]);
+  });
+
   it('renders for real without RevenueCat only when free renders are switched on', () => {
     expect(isRenderMock(getServerConfig({ GEMINI_API_KEY: 'b' }))).toBe(true);
     expect(isRenderMock(getServerConfig({ GEMINI_API_KEY: 'b', TONELLE_FREE_RENDERS: '1' }))).toBe(false);

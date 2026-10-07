@@ -11,6 +11,7 @@ import {
   type RenderResponse,
   type SkinAnalyzeResponse,
 } from '@tonelle/shared';
+import { z } from 'zod';
 import { getServerConfig, isAnalysisMock, isRenderMock, type ServerConfig } from './env';
 import { HttpError } from './errors';
 import { clientIp, errorResponse, handleError, jsonResponse, parseJsonBody, rateLimitedResponse, sleep } from './http';
@@ -19,6 +20,8 @@ import { kieChatUrl, uploadToKie } from './kie';
 import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } from './openrouter';
 import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
 import { checkEntitlement } from './revenuecat';
+
+const RedeemRequestSchema = z.object({ code: z.string().min(1).max(64) });
 
 /** POST /api/analyze */
 export async function handleAnalyze(request: Request): Promise<Response> {
@@ -145,6 +148,22 @@ export async function handleRenderLook(request: Request): Promise<Response> {
     return jsonResponse(response);
   } catch (error) {
     return handleError(error, 'render-look');
+  }
+}
+
+/** POST /api/redeem: checks an invite code that unlocks results without paying. */
+export async function handleRedeem(request: Request): Promise<Response> {
+  try {
+    const body = await parseJsonBody(request, RedeemRequestSchema, 1024);
+    if (!body.ok) return body.response;
+    // Shares the analyze budget per IP, which also slows down code guessing.
+    const limit = analyzeRateLimiter.check(`redeem:${clientIp(request)}`);
+    if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
+    const ok = getServerConfig().accessCodes.includes(body.data.code.trim().toUpperCase());
+    if (!ok) return errorResponse('payment_required', 'Invalid invite code.');
+    return jsonResponse({ ok: true });
+  } catch (error) {
+    return handleError(error, 'redeem');
   }
 }
 

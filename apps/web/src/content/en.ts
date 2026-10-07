@@ -766,6 +766,9 @@ export const en: SiteContent = {
     notifyCta: 'Notify me at launch',
     notifySubject: 'Let me know when Tonelle launches',
     demoUnlock: 'Demo: unlock all results',
+    inviteLabel: 'Have an invite code?',
+    inviteCta: 'Use code',
+    inviteError: 'This code is not valid.',
     demoNote: 'Only visible in development and demo mode.',
     resultsPhotoNeeded:
       'We don’t keep your photo, so after a page reload the previews need a new selfie.',

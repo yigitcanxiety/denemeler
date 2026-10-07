@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 import { StoreBadge } from '@/components/site/StoreBadges';
 import { Button, Modal, buttonClasses } from '@/components/ui';
 import { COMPANY } from '@/config/company';
+import { apiClient } from '@/lib/api-client';
 import { paymentProvider, type PaymentProvider, type StoreLink } from '@/lib/payments';
 import { getExitOfferDisplay, getPlanDisplays } from '@/lib/pricing-display';
 import { getAppUserId } from '@/lib/storage';
@@ -30,6 +31,18 @@ export function PaywallStep({
   const [selected, setSelected] = useState<PlanId>('yearly');
   const [pending, setPending] = useState(false);
   const [sheet, setSheet] = useState<Sheet>({ kind: 'none' });
+  const [code, setCode] = useState('');
+  const [codeError, setCodeError] = useState(false);
+  const [redeeming, setRedeeming] = useState(false);
+
+  const redeem = async () => {
+    if (!code.trim()) return;
+    setRedeeming(true);
+    const res = await apiClient.redeem(code);
+    setRedeeming(false);
+    if (res.ok) dispatch({ type: 'UNLOCK' });
+    else setCodeError(true);
+  };
   const plan = plans.find((p) => p.id === selected) ?? plans[0]!;
 
   const features = [
@@ -145,6 +158,41 @@ export function PaywallStep({
         {plan.plan.autoRenews && <p className="mt-2 text-center text-[12px] text-muted">{tt('paywall.cancelAnytime')}</p>}
       </div>
       <p className="-mt-2 text-center text-[12px] text-muted">{tt('paywall.webNotice')}</p>
+
+      <form
+        className="rounded-card border border-line p-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void redeem();
+        }}
+      >
+        <label htmlFor="invite-code" className="text-[13.5px] font-semibold text-ink">
+          {copy.inviteLabel}
+        </label>
+        <div className="mt-2 flex gap-2">
+          <input
+            id="invite-code"
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value);
+              setCodeError(false);
+            }}
+            autoComplete="off"
+            autoCapitalize="characters"
+            aria-invalid={codeError}
+            aria-describedby={codeError ? 'invite-error' : undefined}
+            className="h-11 min-w-0 flex-1 rounded-pill border border-line bg-paper px-4 text-[15px] text-ink uppercase outline-none focus:border-violet"
+          />
+          <Button type="submit" variant="secondary" loading={redeeming}>
+            {copy.inviteCta}
+          </Button>
+        </div>
+        {codeError && (
+          <p id="invite-error" role="alert" className="mt-2 text-[12.5px] text-rose-700">
+            {copy.inviteError}
+          </p>
+        )}
+      </form>
 
       {demoAllowed && (
         <div className="rounded-card border border-dashed border-violet/40 p-4 text-center">

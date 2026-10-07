@@ -759,6 +759,9 @@ export const tr: SiteContent = {
     notifyCta: 'Yayına girince haber ver',
     notifySubject: 'Tonelle yayına girince bana haber verin',
     demoUnlock: 'Demo: tüm sonuçları aç',
+    inviteLabel: 'Davet kodun var mı?',
+    inviteCta: 'Kodu kullan',
+    inviteError: 'Bu kod geçerli değil.',
     demoNote: 'Yalnızca geliştirme ve demo modunda görünür.',
     resultsPhotoNeeded:
       'Fotoğrafını saklamadığımız için, sayfayı yeniledikten sonra önizlemeler için yeni bir selfie gerekir.',

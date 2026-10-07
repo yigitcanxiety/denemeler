@@ -12,7 +12,9 @@ import {
   type SkinAnalyzeResponse,
   type TranslationKey,
 } from '@tonelle/shared';
-import type { z } from 'zod';
+import { z } from 'zod';
+
+const RedeemResponseSchema = z.object({ ok: z.literal(true) });
 
 /** Error codes the client can surface: the API's own codes plus transport-level failures. */
 export type ClientErrorCode = ApiErrorCode | 'network' | 'invalid_response' | 'aborted';
@@ -126,6 +128,10 @@ export function createApiClient(clientOptions: ApiClientOptions = {}) {
     /** POST /api/analyze-skin — skincare-only analysis; the photo goes only to our own API. */
     analyzeSkin(request: AnalyzeRequest, options: RequestOptions = {}): Promise<ApiResult<SkinAnalyzeResponse>> {
       return postJson('/api/analyze-skin', request, SkinAnalyzeResponseSchema, { ...clientOptions, ...options });
+    },
+    /** POST /api/redeem — invite code that unlocks results without paying. */
+    redeem(code: string, options: RequestOptions = {}): Promise<ApiResult<{ ok: true }>> {
+      return postJson('/api/redeem', { code }, RedeemResponseSchema, { ...clientOptions, ...options });
     },
     /** POST /api/render-look — Premium only; 402 `payment_required` without entitlement. */
     renderLook(request: RenderRequest, options: RequestOptions = {}): Promise<ApiResult<RenderResponse>> {

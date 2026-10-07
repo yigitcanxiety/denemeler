@@ -26,6 +26,8 @@ export interface ServerConfig {
   revenueCatSecretKey: string | undefined;
   /** Real renders without RevenueCat or an entitlement check, capped per IP (`TONELLE_FREE_RENDERS=1`). */
   freeRenders: boolean;
+  /** Invite codes that unlock results without paying (`TONELLE_ACCESS_CODES`, comma separated, case-insensitive). */
+  accessCodes: string[];
 }
 
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
@@ -91,6 +93,10 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
     },
     revenueCatSecretKey: read(env, 'REVENUECAT_SECRET_KEY'),
     freeRenders: truthy(read(env, 'TONELLE_FREE_RENDERS')),
+    accessCodes: (read(env, 'TONELLE_ACCESS_CODES') ?? '')
+      .split(',')
+      .map((c) => c.trim().toUpperCase())
+      .filter(Boolean),
   };
 }
 

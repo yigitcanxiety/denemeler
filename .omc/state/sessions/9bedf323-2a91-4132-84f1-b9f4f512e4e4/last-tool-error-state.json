@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd ~/Desktop/denemeler/packages/shared/src; grep -n -i -B2 -A30 \\\"quiz\\\" i18n/tr.ts | head -60; echo ===PROMPT; grep -n -i -B3 -A12 \\\"quiz\\\\|answer\\\" prompts.ts | head -60\",\"description\":\"...",
+  "error": "Exit code 1\n73-  },\n74-\n75:  quiz: {\n76-    title: 'Birkaç kısa soru',\n77-    subtitle: 'Yanıtların, görünümleri ve ürünleri sana göre uyarlamamıza yardımcı olur.',\n78-    progress: '{current}/{total}',\n79-    skinType: {\n80-      question: 'Cildini nasıl tanımlarsın?',\n81-      hint: 'Yüzünü yıkadıktan birkaç saat sonra nasıl hissettirdiğini düşün.',\n82-      options: {\n83-        dry: 'Kuru',\n84-        oily: 'Yağlı',\n85-        combination: 'Karma',\n86-        normal: 'Normal',\n87-        sen...",
+  "timestamp": "2026-10-07T04:49:28.573Z",
+  "retry_count": 3
+}

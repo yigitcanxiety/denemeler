@@ -1,0 +1,343 @@
+{
+  "version": 1,
+  "jobId": "53b78039-5656-4211-8864-e0ff76542914",
+  "sessionId": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+  "scopeKey": "c557c12eea6a983194327213fb1732e70eb4859bc660d14de8d57dbe69ce3ef9",
+  "revision": 58,
+  "createdAt": "2026-10-07T04:51:02.834Z",
+  "updatedAt": "2026-10-07T04:51:34.298Z",
+  "producerGraceExpiresAt": "2026-10-07T04:51:32.835Z",
+  "bestEffortDeadlineAt": "2026-10-07T04:52:23.835Z",
+  "producers": {
+    "core": {
+      "state": "sealed",
+      "intentKey": "fd1249ee1c62bee6c490e183ac76f6b674c08cec455f2f491ffcce8970e85a9e",
+      "payloadDigest": "fd1249ee1c62bee6c490e183ac76f6b674c08cec455f2f491ffcce8970e85a9e",
+      "sealedAt": "2026-10-07T04:51:33.267Z",
+      "sealedBy": "recovery"
+    },
+    "wiki": {
+      "state": "no-op",
+      "sealedAt": "2026-10-07T04:51:02.875Z",
+      "sealedBy": "wiki-producer"
+    }
+  },
+  "actions": {
+    "foreground-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "57b2f11726f99d235ce36f60758124af7bd42324b355c565afb1dc0d199521ed",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-10-07T04:51:32.924Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "68bd77e1-b28f-4f26-b430-b8aaf1de4dcc",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:33.261Z"
+    },
+    "wiki-capture": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 0,
+      "idempotencyKey": "d97b2d61fc3fde8cae925d49cf743d965e8fab32e37913393f4b7b05877e5c3e",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {}
+      },
+      "budgetMs": 9000,
+      "completedAt": "2026-10-07T04:51:02.875Z"
+    },
+    "team-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "6283e6b6b3bd1c6aff340622e0659480a5e014e04ac23ceb3c1a5b44c4de26e2",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-10-07T04:51:33.280Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "8252707a-7bd5-4ae7-851d-0fb1e6e3eaa4",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:33.427Z"
+    },
+    "python-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "f55d8ad0c2fcf60482313759282995565cb9cef483a0d74639104a64e7e74ec2",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-10-07T04:51:33.441Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "1db2320e-5c70-42f2-b490-e3dd07c274a1",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:33.591Z"
+    },
+    "reply-cleanup": {
+      "class": "required",
+      "phase": "deferred-required",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "7b2a535588af0e578edc4a3fb6a271fc28da9497a05d2f5726f0e69105d31022",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {}
+      },
+      "budgetMs": 9000,
+      "claimedAt": "2026-10-07T04:51:33.606Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "1c15703c-591f-48c9-940b-850ee2ed8517",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:33.773Z"
+    },
+    "callback": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "e7f25ff4760a3abcabe8f9c28ecfa8e8489b5abda09a9d010179a6e1f81846ce",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-10-07T04:51:33.789Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "692d91ed-f01b-4f1b-b720-05ce4fe9a6a1",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:33.940Z"
+    },
+    "notification": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "9218cc78c20b13f5e3570d29624e67622d3d5e2ec040f043633601595ea2d3ea",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-10-07T04:51:33.956Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "c230b3b2-2c10-4c0b-9c77-ed3631a9bb18",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:34.112Z"
+    },
+    "openclaw": {
+      "class": "best-effort",
+      "phase": "deferred-best-effort",
+      "status": "completed",
+      "attempts": 1,
+      "idempotencyKey": "b19ea1cccb2fa1489799615e6f12db340deb3760184ecc69d264a2285290028f",
+      "payload": {
+        "transcriptPath": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+        "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+        "reason": "other",
+        "input": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "transcript_path": "/Users/yigit/.claude/projects/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4.jsonl",
+          "cwd": "/Users/yigit/Desktop/denemeler/packages/shared/src",
+          "scratchpad_dir": "/private/tmp/claude-501/-Users-yigit/9bedf323-2a91-4132-84f1-b9f4f512e4e4/scratchpad",
+          "prompt_id": "51c74c3b-b1d6-404e-8ae0-2fd310f38b1c",
+          "hook_event_name": "SessionEnd",
+          "reason": "other"
+        },
+        "initialTeamNames": [],
+        "openClawRouting": {},
+        "metrics": {
+          "session_id": "9bedf323-2a91-4132-84f1-b9f4f512e4e4",
+          "ended_at": "2026-10-07T04:51:33.121Z",
+          "reason": "other",
+          "agents_spawned": 0,
+          "agents_completed": 0,
+          "modes_used": []
+        }
+      },
+      "budgetMs": 2000,
+      "claimedAt": "2026-10-07T04:51:34.126Z",
+      "runner": {
+        "attempt": 1,
+        "runnerNonce": "33ca0a7c-26b5-4f56-8cc0-377807537162",
+        "phase": "terminal",
+        "deadlineAt": "2026-10-07T04:51:42.846Z"
+      },
+      "lastOutcomeCode": "completed",
+      "completedAt": "2026-10-07T04:51:34.266Z"
+    }
+  },
+  "owner": null,
+  "phase": "complete",
+  "recoverableFailure": {
+    "reason": "actions-settled",
+    "releasedAt": "2026-10-07T04:51:34.282Z",
+    "ownerNonce": "f9415922-9757-4014-a54b-e1fbc49cb092"
+  },
+  "completion": {
+    "completedAt": "2026-10-07T04:51:34.282Z",
+    "terminalDigest": "5e40aa4d8809390d8d81ee45fe3cff94766f56f8dd41009f6a87357af92f0d83",
+    "terminalRevision": 57
+  }
+}
