@@ -8,7 +8,7 @@ describe('getServerConfig', () => {
     expect(config.imageProvider).toBe('gemini');
     expect(config.gemini.model).toBe('gemini-2.5-flash-image');
     expect(config.fal.model).toBe('fal-ai/nano-banana/edit');
-    expect(config.siteUrl).toBe('https://tonelle.app');
+    expect(config.siteUrl).toBe('https://tonelleapp.com');
     expect(isAnalysisMock(config)).toBe(true);
     expect(isRenderMock(config)).toBe(true);
   });

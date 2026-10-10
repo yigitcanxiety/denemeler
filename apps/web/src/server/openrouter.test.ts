@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { analyzeFace, messageContent, OPENROUTER_URL } from './openrouter';
 
 const completion = (content: string) => Response.json({ choices: [{ message: { role: 'assistant', content } }] });
-const options = { apiKey: 'or-key', model: 'primary/model', fallbackModel: 'fallback/model', siteUrl: 'https://tonelle.app' };
+const options = { apiKey: 'or-key', model: 'primary/model', fallbackModel: 'fallback/model', siteUrl: 'https://tonelleapp.com' };
 const input = { imageDataUrl: MOCK_IMAGE_DATA_URL, locale: 'en' as const };
 
 describe('analyzeFace (OpenRouter)', () => {
@@ -29,7 +29,7 @@ describe('analyzeFace (OpenRouter)', () => {
     expect(url).toBe(OPENROUTER_URL);
     const headers = init!.headers as Record<string, string>;
     expect(headers.Authorization).toBe('Bearer or-key');
-    expect(headers['HTTP-Referer']).toBe('https://tonelle.app');
+    expect(headers['HTTP-Referer']).toBe('https://tonelleapp.com');
     expect(headers['X-Title']).toBe('Tonelle');
     const body = bodyOf(0);
     expect(body.model).toBe('primary/model');

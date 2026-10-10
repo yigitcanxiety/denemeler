@@ -340,7 +340,7 @@ export const en = {
     subtitle: 'Download your colour card and share it with friends.',
     cardHeadline: 'I’m a {season}',
     cardPaletteLabel: 'My palette',
-    cardFooter: 'Find yours at tonelle.app',
+    cardFooter: 'Find yours at tonelleapp.com',
     download: 'Download image',
     shareButton: 'Share',
     generating: 'Creating your card…',

@@ -17,9 +17,9 @@ export const COMPANY = {
   /** Jurisdiction whose law governs the Terms — placeholder. */
   governingLaw: '[Governing law jurisdiction]',
   /** General support contact — placeholder mailbox on the product domain. */
-  supportEmail: 'support@tonelle.app',
+  supportEmail: 'support@tonelleapp.com',
   /** Privacy / data-protection requests (GDPR & KVKK applications). */
-  privacyEmail: 'privacy@tonelle.app',
+  privacyEmail: 'privacy@tonelleapp.com',
   /** Registered electronic mail (KEP) address for KVKK applications — placeholder. */
   kepAddress: '[KEP address, if any]',
   /** Representative in Türkiye (KVKK "veri sorumlusu temsilcisi") — placeholder. */
@@ -32,7 +32,7 @@ export const COMPANY = {
 export const LEGAL_LAST_UPDATED = '2026-09-29';
 
 /** Canonical site origin, without trailing slash. */
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tonelle.app').replace(/\/+$/, '');
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tonelleapp.com').replace(/\/+$/, '');
 
 /**
  * Store links. NEXT_PUBLIC_* variables are inlined at build time, so they must be read

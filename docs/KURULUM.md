@@ -10,7 +10,7 @@ Kod hazır ve anahtar olmadan **sahte (mock) modda** baştan sona çalışıyor.
 | 2 | **Apple Developer Program** (şirket hesabı, 99 $/yıl) | iOS yayını, uygulama içi abonelik | D-U-N-S sonrası birkaç gün |
 | 3 | **Google Play Console** (şirket hesabı, 25 $) | Android yayını | 1–3 gün (kimlik doğrulama) |
 | 4 | **Apple/Google Küçük İşletme Programı** başvurusu | Komisyon %30 → %15 | Hesap açılınca |
-| 5 | **tonelle.app** domaini | Web sitesi, yasal sayfalar, API | Anında |
+| 5 | **tonelleapp.com** domaini (GoDaddy, alındı) | Web sitesi, yasal sayfalar, API | Anında |
 
 ## 2. Bana verilecek anahtarlar (API)
 
@@ -30,8 +30,8 @@ Alternatif görsel sağlayıcı: `IMAGE_PROVIDER=fal` + `FAL_KEY` (fal.ai).
 
 1. **Vercel** hesabı aç ve GitHub reposunu bağla. Root directory: `apps/web`. Bölge: **Frankfurt (fra1)** (veri AB'de kalsın).
 2. Ortam değişkenlerini gir (`apps/web/.env.example` listesi).
-3. Domain: `tonelle.app` → Vercel.
-4. `support@tonelle.app` ve `privacy@tonelle.app` e-posta adreslerini aç.
+3. Domain: `tonelleapp.com` → Vercel (A kaydı 76.76.21.21).
+4. `support@tonelleapp.com` ve `privacy@tonelleapp.com` e-posta adreslerini aç.
 
 ## 4. RevenueCat kurulumu
 

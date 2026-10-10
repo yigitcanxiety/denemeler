@@ -4,28 +4,28 @@ import { legalUrl, readEnv, revenueCatKeyFor } from './config';
 import { hasActiveEntitlement, isPremium, purchasesModeFor } from './entitlement';
 
 describe('readEnv', () => {
-  it('defaults to tonelle.app and trims trailing slashes', () => {
+  it('defaults to tonelleapp.com and trims trailing slashes', () => {
     expect(readEnv({})).toEqual({
-      apiUrl: 'https://tonelle.app',
-      siteUrl: 'https://tonelle.app',
+      apiUrl: 'https://tonelleapp.com',
+      siteUrl: 'https://tonelleapp.com',
       rcIosKey: null,
       rcAndroidKey: null,
     });
     const env = readEnv({
       EXPO_PUBLIC_API_URL: 'http://192.168.1.2:3000/',
-      EXPO_PUBLIC_SITE_URL: 'https://staging.tonelle.app/',
+      EXPO_PUBLIC_SITE_URL: 'https://staging.tonelleapp.com/',
       EXPO_PUBLIC_RC_IOS_KEY: ' appl_123 ',
       EXPO_PUBLIC_RC_ANDROID_KEY: '',
     });
     expect(env.apiUrl).toBe('http://192.168.1.2:3000');
-    expect(env.siteUrl).toBe('https://staging.tonelle.app');
+    expect(env.siteUrl).toBe('https://staging.tonelleapp.com');
     expect(env.rcIosKey).toBe('appl_123');
     expect(env.rcAndroidKey).toBeNull();
   });
 
   it('builds localized legal URLs', () => {
-    expect(legalUrl('https://tonelle.app/', 'tr', 'kvkk')).toBe('https://tonelle.app/tr/kvkk');
-    expect(legalUrl('https://tonelle.app', 'en', 'terms')).toBe('https://tonelle.app/en/terms');
+    expect(legalUrl('https://tonelleapp.com/', 'tr', 'kvkk')).toBe('https://tonelleapp.com/tr/kvkk');
+    expect(legalUrl('https://tonelleapp.com', 'en', 'terms')).toBe('https://tonelleapp.com/en/terms');
   });
 });
 

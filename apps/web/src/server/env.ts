@@ -36,7 +36,7 @@ export const DEFAULT_GEMINI_ANALYSIS_MODEL = 'gemini-2.5-flash';
 export const DEFAULT_FAL_IMAGE_MODEL = 'fal-ai/nano-banana/edit';
 export const DEFAULT_KIE_ANALYSIS_MODEL = 'gemini-3-flash';
 export const DEFAULT_KIE_IMAGE_MODEL = 'google/nano-banana-edit';
-export const DEFAULT_SITE_URL = 'https://tonelle.app';
+export const DEFAULT_SITE_URL = 'https://tonelleapp.com';
 const DEFAULT_MOCK_DELAY_MS = 600;
 
 type Env = Record<string, string | undefined>;

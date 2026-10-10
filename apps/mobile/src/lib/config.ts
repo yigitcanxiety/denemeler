@@ -1,6 +1,6 @@
 import type { Locale } from '@tonelle/shared';
 
-export const DEFAULT_SITE_URL = 'https://tonelle.app';
+export const DEFAULT_SITE_URL = 'https://tonelleapp.com';
 
 export type LegalPage = 'privacy' | 'kvkk' | 'consent' | 'terms';
 export type MobilePlatform = 'ios' | 'android' | 'web' | 'windows' | 'macos';
@@ -40,7 +40,7 @@ export function readEnv(raw: RawEnv): AppEnv {
   };
 }
 
-/** Public legal page on the website, e.g. https://tonelle.app/tr/kvkk */
+/** Public legal page on the website, e.g. https://tonelleapp.com/tr/kvkk */
 export function legalUrl(siteUrl: string, locale: Locale, page: LegalPage): string {
   return `${stripTrailingSlash(siteUrl)}/${locale}/${page}`;
 }

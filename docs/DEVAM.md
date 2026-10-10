@@ -19,8 +19,9 @@ Uzun araştırma ve gerekçeler: `ARASTIRMA_VE_YOL_HARITASI.md`. Kurulum: `KURUL
 1. **Para alınamıyor.** Web paywall'ı mağazalara yönlendiriyor; uygulama mağazada yok, web ödemesi (Paddle) yok.
    Bugün reklam açılsa gelen kullanıcıdan tek lira alınamaz.
 2. **Ölçüm yok.** Meta Pixel, Conversions API, analitik yok. Reklam açılırsa Meta neyin işe yaradığını öğrenemez, para yanar.
-3. **İsim çakışması.** `tonelle.app` başka bir "Tonelle"ye ait (Netlify'da kuaför/salon yönetim uygulaması, RU/EN/HE).
-   Güzellik sektörü olduğu için marka (sınıf 44) riski var. Alan adımız yok. Karar gerekiyor.
+3. **İsim çakışması (kısmen çözüldü).** Alan adımız `tonelleapp.com` (GoDaddy, 2026-10-11 alındı, Vercel'e eklendi).
+   `tonelle.app` başka bir "Tonelle"ye ait (kuaför/salon uygulaması); marka (sınıf 44) riski sürüyor.
+   `support@` ve `privacy@tonelleapp.com` e-postaları henüz açılmadı: yasal sayfalarda yazıyor, açılması şart.
 4. **Gizlilik iddiası doğrulanmadı.** Sitede "fotoğraf model eğitiminde kullanılmaz" diyoruz. Gemini anahtarı ücretsiz
    katmandaysa Google veriyi eğitimde kullanabilir. Faturalandırmanın açık olduğu doğrulanmalı.
    Cilt sayfasındaki açık rıza metni hâlâ "renk ve makyaj analizi" diyor.
@@ -99,11 +100,15 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 6. Ortam değişkenleri (Vercel, Production)
 
-`GEMINI_API_KEY` (gizli), `TONELLE_FREE_RENDERS=1`, `NEXT_PUBLIC_SITE_URL=https://tonelle-taupe.vercel.app`
-(alan adı alınınca değişecek), `KIE_API_KEY` (silinecek).
+`GEMINI_API_KEY` (gizli), `TONELLE_FREE_RENDERS=1`, `TONELLE_ACCESS_CODES` (davet kodları),
+`NEXT_PUBLIC_SITE_URL=https://tonelle-taupe.vercel.app` (DNS çalışınca `https://tonelleapp.com` olacak),
+`KIE_API_KEY` (silinecek).
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: `tonelleapp.com` alındı, Vercel'e eklendi; koddaki tüm `tonelle.app` adresleri (site, e-postalar,
+  mobil API, paylaşım kartı) `tonelleapp.com` yapıldı. Bekleyen: GoDaddy'de A kaydı, e-posta yönlendirme.
+- 2026-10-07: davet kodları (`/api/redeem`, ödeme ekranında kod kutusu).
 - 2026-10-06: Gemini canlıya bağlandı; Gemini'nin JSON'u kesmesi düzeltildi; renk ve cilt bölümleri;
   canlıda gerçek makyaj görseli; site adresi başkasının alan adından bizim Vercel adresine çevrildi.
 - 2026-10-03: Gemini sağlayıcısı eklendi, Vercel'e yayın.

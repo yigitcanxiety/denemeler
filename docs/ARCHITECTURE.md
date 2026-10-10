@@ -88,7 +88,7 @@ FAL_KEY=
 FAL_IMAGE_MODEL=fal-ai/nano-banana/edit
 REVENUECAT_SECRET_KEY=
 TONELLE_MOCK=                                  # 1 forces mock mode
-NEXT_PUBLIC_SITE_URL=https://tonelle.app
+NEXT_PUBLIC_SITE_URL=https://tonelleapp.com
 NEXT_PUBLIC_APP_STORE_URL=
 NEXT_PUBLIC_PLAY_STORE_URL=
 ```

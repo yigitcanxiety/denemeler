@@ -339,7 +339,7 @@ export const tr: Dictionary = {
     subtitle: 'Renk kartını indir ve arkadaşlarınla paylaş.',
     cardHeadline: 'Renk sezonum: {season}',
     cardPaletteLabel: 'Paletim',
-    cardFooter: 'Seninkini tonelle.app’te keşfet',
+    cardFooter: 'Seninkini tonelleapp.com’da keşfet',
     download: 'Görseli indir',
     shareButton: 'Paylaş',
     generating: 'Kartın hazırlanıyor…',
