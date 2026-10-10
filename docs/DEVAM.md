@@ -6,7 +6,7 @@ Uzun araştırma ve gerekçeler: `ARASTIRMA_VE_YOL_HARITASI.md`. Kurulum: `KURUL
 
 ## 1. Neredeyiz (çalışan şeyler)
 
-- Canlı site: https://tonelle-taupe.vercel.app (Vercel `tonelle`, dal `claude/sharp-faraday-2h9ny6`, her push yayınlanır).
+- Canlı site: https://tonelleapp.com (yedek: https://tonelle-taupe.vercel.app) (Vercel `tonelle`, dal `claude/sharp-faraday-2h9ny6`, her push yayınlanır).
 - Tam analiz (`/analyze`): rıza → 5 soru → selfie → renk sezonu, palet, fondöten, ruj/allık/far → makyaj görselleri.
 - Yalnız renk (`/analyze/color`) ve yalnız cilt (`/analyze/skin`, `/api/analyze-skin`) analizleri: soru ve ödeme yok.
 - Yapay zekâ: Google Gemini (`gemini-2.5-flash` analiz, `gemini-2.5-flash-image` görsel). Canlıda test edildi.
@@ -101,13 +101,13 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 ## 6. Ortam değişkenleri (Vercel, Production)
 
 `GEMINI_API_KEY` (gizli), `TONELLE_FREE_RENDERS=1`, `TONELLE_ACCESS_CODES` (davet kodları),
-`NEXT_PUBLIC_SITE_URL=https://tonelle-taupe.vercel.app` (DNS çalışınca `https://tonelleapp.com` olacak),
+`NEXT_PUBLIC_SITE_URL=https://tonelleapp.com` (DNS 2026-10-11 bağlandı),
 `KIE_API_KEY` (silinecek).
 
 ## 7. Değişiklik günlüğü
 
 - 2026-10-11: `tonelleapp.com` alındı, Vercel'e eklendi; koddaki tüm `tonelle.app` adresleri (site, e-postalar,
-  mobil API, paylaşım kartı) `tonelleapp.com` yapıldı. Bekleyen: GoDaddy'de A kaydı, e-posta yönlendirme.
+  mobil API, paylaşım kartı) `tonelleapp.com` yapıldı. DNS bağlandı; bekleyen: e-posta yönlendirme.
 - 2026-10-07: davet kodları (`/api/redeem`, ödeme ekranında kod kutusu).
 - 2026-10-06: Gemini canlıya bağlandı; Gemini'nin JSON'u kesmesi düzeltildi; renk ve cilt bölümleri;
   canlıda gerçek makyaj görseli; site adresi başkasının alan adından bizim Vercel adresine çevrildi.
