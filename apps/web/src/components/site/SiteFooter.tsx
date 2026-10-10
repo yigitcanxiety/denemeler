@@ -14,6 +14,7 @@ export function legalLinks(locale: Locale) {
     { href: `/${locale}/kvkk`, label: t(locale, 'legal.kvkk') },
     { href: `/${locale}/consent`, label: t(locale, 'legal.consent') },
     { href: `/${locale}/terms`, label: t(locale, 'legal.terms') },
+    { href: `/${locale}/terms#refunds`, label: t(locale, 'legal.refunds') },
     { href: `/${locale}/contact`, label: t(locale, 'legal.contact') },
   ];
 }

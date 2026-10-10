@@ -227,7 +227,7 @@ export const en: SiteContent = {
           blocks: [
             `The controller of your personal data is ${C.legalName}, ${C.address} (registration no. ${C.registrationNumber}).`,
             `For any privacy question or request, contact us at ${C.privacyEmail}.`,
-            `EU representative (GDPR Art. 27): ${C.euRepresentative}.`,
+            ...(C.euRepresentative ? [`EU representative (GDPR Art. 27): ${C.euRepresentative}.`] : []),
           ],
         },
         {
@@ -311,14 +311,12 @@ export const en: SiteContent = {
             {
               rows: [
                 ['Vercel Inc. (USA; servers in the EU, Frankfurt)', 'Website and API hosting; receives technical data and transiently the photo in transit.'],
-                ['OpenRouter, Inc. (USA)', 'Routes your photo and questionnaire answers to the AI vision model that performs the analysis.'],
-                ['AI model provider reached through OpenRouter (e.g. Google LLC)', 'Performs the analysis of your photo.'],
-                ['Google LLC (Gemini API) or Features & Labels, Inc. (fal.ai) (USA)', 'Generates makeup previews on your photo (Premium only).'],
-                ['Kie.ai (AI API provider)', 'Where enabled, routes your photo to the AI models (Google Gemini / Nano Banana) for the analysis and makeup previews. For this, your photo is held in Kie.ai’s temporary file storage and deleted automatically within 3 days.'],
+                ['Google LLC (Gemini API, USA)', 'Performs the colour and skin analysis of your photo and creates the makeup previews. On the paid API tier your data is not used to train models.'],
+                ['Paddle.com Market Ltd (United Kingdom)', 'Processes website purchases as Merchant of Record: payment, invoicing, tax and refunds.'],
                 ['RevenueCat, Inc. (USA)', 'Manages subscription status linked to your anonymous app user ID.'],
               ],
             },
-            'Apple Inc. (App Store) and Google LLC (Google Play) process your purchase and payment as independent controllers under their own privacy policies.',
+            'For website purchases Paddle, and for in-app purchases Apple Inc. (App Store) and Google LLC (Google Play), process your payment details as independent controllers under their own privacy policies. Your card details never reach us.',
             'We may disclose data to authorities where required by law. We never sell your personal data.',
           ],
         },
@@ -335,7 +333,7 @@ export const en: SiteContent = {
           blocks: [
             {
               rows: [
-                ['Facial image', 'Not stored by us. Discarded when the analysis or preview request ends. Where Kie.ai is used, its temporary copy is deleted automatically within 3 days.'],
+                ['Facial image', 'Not stored by us. Discarded when the analysis or preview request ends.'],
                 ['Analysis results', 'Only on your device, until you delete them.'],
                 ['Technical logs (without photos)', 'Up to 30 days, unless needed longer to investigate a security incident.'],
                 ['Rate-limiting counters (IP address or app user ID)', 'Up to 1 hour.'],
@@ -410,7 +408,7 @@ export const en: SiteContent = {
               rows: [
                 ['Data controller', `${C.legalName}`],
                 ['Address', C.address],
-                ['Data controller representative in Türkiye', C.turkeyRepresentative],
+                ...(C.turkeyRepresentative ? [['Data controller representative in Türkiye', C.turkeyRepresentative] as [string, string]] : []),
                 ['Email', C.privacyEmail],
               ],
             },
@@ -469,7 +467,7 @@ export const en: SiteContent = {
           id: 'transfer',
           heading: '5. Transfer of personal data (including abroad, Art. 9)',
           blocks: [
-            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis (OpenRouter, Inc. and the model provider it routes to, e.g. Google LLC, USA), AI image generation (Google LLC or Features & Labels, Inc. / fal.ai, USA), an AI API provider (Kie.ai) and subscription management (RevenueCat, Inc., USA). Payments are processed by Apple Inc. and Google LLC.',
+            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis and image generation (Google LLC, USA), website payments (Paddle.com Market Ltd, United Kingdom) and app subscription management (RevenueCat, Inc., USA). In-app payments are processed by Apple Inc. and Google LLC.',
             'Transfers abroad are carried out in accordance with KVKK Article 9: primarily on the basis of standard contracts announced by the Personal Data Protection Board and notified to the Authority within five business days of signature (Art. 9(4)). Where such safeguards cannot be applied, data is transferred only occasionally and with your explicit consent (Art. 9(6)(a)).',
             'Personal data may also be shared with authorised public institutions where required by law.',
           ],
@@ -499,7 +497,7 @@ export const en: SiteContent = {
           id: 'application',
           heading: '7. How to apply',
           blocks: [
-            `Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can send your request in writing to ${C.address}, via registered electronic mail (KEP) to ${C.kepAddress}, or by email to ${C.privacyEmail} from an email address you have previously shared with us. Your application must include your name, signature (for written applications), contact address and a clear description of your request.`,
+            `Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can send your request in writing to ${C.address}${C.kepAddress ? `, via registered electronic mail (KEP) to ${C.kepAddress},` : ''} or by email to ${C.privacyEmail} from an email address you have previously shared with us. Your application must include your name, signature (for written applications), contact address and a clear description of your request.`,
             'We will respond free of charge within 30 days at the latest. If the response requires an additional cost, a fee may be charged according to the tariff set by the Board. If your application is rejected or the answer is insufficient, you may lodge a complaint with the Personal Data Protection Board within the periods set out in Article 14.',
           ],
         },
@@ -532,7 +530,7 @@ export const en: SiteContent = {
           id: 'transfer',
           heading: '2. Transfer abroad',
           blocks: [
-            'I understand that, to perform the analysis, my photo and questionnaire answers are sent to AI service providers located abroad (OpenRouter, Inc. and the model provider it routes to, Google LLC, Features & Labels, Inc. / fal.ai, USA, or Kie.ai) and that hosting is provided by Vercel Inc. These transfers are primarily based on standard contracts / Standard Contractual Clauses. Where such safeguards cannot be applied, I consent to the occasional transfer of my data abroad for these purposes (KVKK Art. 9(6)(a)).',
+            'I understand that, to perform the analysis, my photo and questionnaire answers are sent to AI service providers located abroad (Google LLC, USA) and that hosting is provided by Vercel Inc. These transfers are primarily based on standard contracts / Standard Contractual Clauses. Where such safeguards cannot be applied, I consent to the occasional transfer of my data abroad for these purposes (KVKK Art. 9(6)(a)).',
           ],
         },
         {
@@ -617,8 +615,10 @@ export const en: SiteContent = {
           id: 'subscriptions',
           heading: '6. Premium subscriptions and purchases',
           blocks: [
-            'Premium is available as an auto-renewing weekly or yearly subscription and, where offered, as a one-time report. Purchases are made in the Tonelle app through the Apple App Store or Google Play, and are subject to their terms. Prices shown on the website are for information; the price shown by your store at checkout, including applicable taxes, applies.',
-            'Payment is charged to your Apple ID or Google Play account when you confirm the purchase.',
+            'Premium is available as an auto-renewing weekly or yearly subscription and, where offered, as a one-time report.',
+            `Our order process on the website is conducted by our online reseller Paddle.com. Paddle.com (${C.merchantOfRecord}) is the Merchant of Record for all our website orders: it takes payment, issues invoices, handles tax and manages refund requests. Website purchases are also subject to Paddle’s buyer terms.`,
+            'Purchases in the Tonelle app are made through the Apple App Store or Google Play, are subject to their terms, and are charged to your Apple ID or Google Play account.',
+            'The price shown at checkout, including applicable taxes, applies.',
           ],
         },
         {
@@ -633,14 +633,15 @@ export const en: SiteContent = {
           heading: '8. Automatic renewal and cancellation',
           blocks: [
             'Subscriptions renew automatically at the end of each period for the same length and price until cancelled. Your account is charged for renewal within 24 hours before the end of the current period.',
-            'You can cancel at any time in your App Store or Google Play account settings. Cancellation must be made at least 24 hours before the end of the current period to avoid the next charge; you keep Premium access until the end of the period you paid for. Deleting the app or your local data does not cancel a subscription.',
+            'You can cancel a website subscription at any time via the link in Paddle’s order email or by contacting us, and an app subscription in your App Store or Google Play account settings. Cancellation must be made at least 24 hours before the end of the current period to avoid the next charge; you keep Premium access until the end of the period you paid for. Deleting the app or your local data does not cancel a subscription.',
           ],
         },
         {
           id: 'refunds',
           heading: '9. Refunds',
           blocks: [
-            'Because purchases are processed by Apple or Google, refund requests must be made to them under their refund policies (Apple: reportaproblem.apple.com; Google Play: your Google Play order history). We cannot issue refunds for store purchases directly.',
+            `For purchases made on our website you can request a full refund, without giving a reason, within 14 days of your first payment. Send your request to ${C.supportEmail} or use the link in Paddle’s order email; Paddle, as Merchant of Record, issues the refund to your original payment method.`,
+            'In-app purchases are processed by Apple or Google, so refund requests for them must be made to the store under its refund policy (Apple: reportaproblem.apple.com; Google Play: your Google Play order history).',
             'For digital content supplied immediately, the statutory right of withdrawal may end once supply begins with your prior express consent and acknowledgement. This does not affect your other statutory rights as a consumer, including in case of defective digital content.',
           ],
         },
@@ -702,7 +703,7 @@ export const en: SiteContent = {
       {
         kind: 'support',
         title: 'Support',
-        body: 'Questions about the app, your results or your subscription. For refunds, please contact Apple or Google directly.',
+        body: 'Questions about the app, your results or your subscription. Website purchases can be refunded within 14 days; for in-app purchases, please contact Apple or Google.',
       },
       {
         kind: 'privacy',

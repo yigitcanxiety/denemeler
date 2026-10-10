@@ -227,7 +227,7 @@ export const tr: SiteContent = {
           blocks: [
             `Kişisel verilerinin sorumlusu ${C.legalName}, ${C.address} (sicil no. ${C.registrationNumber}) şirketidir.`,
             `Gizlilikle ilgili her soru ve talebin için ${C.privacyEmail} adresine yazabilirsin.`,
-            `AB temsilcisi (GDPR md. 27): ${C.euRepresentative}.`,
+            ...(C.euRepresentative ? [`AB temsilcisi (GDPR md. 27): ${C.euRepresentative}.`] : []),
           ],
         },
         {
@@ -305,14 +305,12 @@ export const tr: SiteContent = {
             {
               rows: [
                 ['Vercel Inc. (ABD; sunucular AB’de, Frankfurt)', 'Web sitesi ve API barındırma; teknik verileri ve aktarım sırasında geçici olarak fotoğrafı alır.'],
-                ['OpenRouter, Inc. (ABD)', 'Fotoğrafını ve soru cevaplarını analizi yapan yapay zekâ görüntü modeline yönlendirir.'],
-                ['OpenRouter üzerinden erişilen model sağlayıcı (ör. Google LLC)', 'Fotoğrafının analizini yapar.'],
-                ['Google LLC (Gemini API) veya Features & Labels, Inc. (fal.ai) (ABD)', 'Fotoğrafında makyaj önizlemeleri oluşturur (yalnızca Premium).'],
-                ['Kie.ai (yapay zekâ API sağlayıcısı)', 'Kullanıldığında fotoğrafını analiz ve makyaj önizlemeleri için yapay zekâ modellerine (Google Gemini / Nano Banana) iletir. Bunun için fotoğrafın Kie.ai’nin geçici dosya deposunda tutulur ve en geç 3 gün içinde otomatik olarak silinir.'],
+                ['Google LLC (Gemini API, ABD)', 'Fotoğrafının renk ve cilt analizini yapar ve makyaj önizlemelerini oluşturur. Ücretli API katmanında verilerin model eğitiminde kullanılmaz.'],
+                ['Paddle.com Market Ltd (Birleşik Krallık)', 'Web sitesindeki satın almaları satıcı (Merchant of Record) olarak işler: ödeme, fatura, vergi ve iadeler.'],
                 ['RevenueCat, Inc. (ABD)', 'Anonim kullanıcı kimliğinle bağlantılı abonelik durumunu yönetir.'],
               ],
             },
-            'Apple Inc. (App Store) ve Google LLC (Google Play), satın alma ve ödeme işlemlerini kendi gizlilik politikaları kapsamında bağımsız veri sorumlusu olarak yürütür.',
+            'Web sitesindeki satın almalarda Paddle; uygulama içi satın almalarda Apple Inc. (App Store) ve Google LLC (Google Play), ödeme bilgilerini kendi gizlilik politikaları kapsamında bağımsız veri sorumlusu olarak işler. Kart bilgilerin bize hiç ulaşmaz.',
             'Kanunen zorunlu olduğunda verileri yetkili makamlarla paylaşabiliriz. Kişisel verilerini asla satmayız.',
           ],
         },
@@ -329,7 +327,7 @@ export const tr: SiteContent = {
           blocks: [
             {
               rows: [
-                ['Yüz görüntüsü', 'Tarafımızca saklanmaz. Analiz veya önizleme isteği bittiğinde silinir. Kie.ai kullanıldığında onun geçici kopyası en geç 3 gün içinde otomatik olarak silinir.'],
+                ['Yüz görüntüsü', 'Tarafımızca saklanmaz. Analiz veya önizleme isteği bittiğinde silinir.'],
                 ['Analiz sonuçları', 'Yalnızca cihazında, sen silene kadar.'],
                 ['Teknik kayıtlar (fotoğraf içermez)', 'Bir güvenlik olayının incelenmesi gerekmedikçe en fazla 30 gün.'],
                 ['Kullanım sınırı sayaçları (IP adresi veya kullanıcı kimliği)', 'En fazla 1 saat.'],
@@ -404,7 +402,7 @@ export const tr: SiteContent = {
               rows: [
                 ['Veri sorumlusu', `${C.legalName}`],
                 ['Adres', C.address],
-                ['Veri sorumlusu temsilcisi (Türkiye)', C.turkeyRepresentative],
+                ...(C.turkeyRepresentative ? [['Veri sorumlusu temsilcisi (Türkiye)', C.turkeyRepresentative] as [string, string]] : []),
                 ['E-posta', C.privacyEmail],
               ],
             },
@@ -463,7 +461,7 @@ export const tr: SiteContent = {
           id: 'transfer',
           heading: '5. Kişisel verilerin aktarılması (yurt dışına aktarım, md. 9)',
           blocks: [
-            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, ör. Google LLC, ABD), yapay zekâ ile görsel oluşturma (Google LLC veya Features & Labels, Inc. / fal.ai, ABD), yapay zekâ API sağlayıcısı (Kie.ai) ve abonelik yönetimi (RevenueCat, Inc., ABD). Ödemeler Apple Inc. ve Google LLC tarafından işlenir.',
+            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi ve görsel oluşturma (Google LLC, ABD), web ödemeleri (Paddle.com Market Ltd, Birleşik Krallık) ve uygulama aboneliklerinin yönetimi (RevenueCat, Inc., ABD). Uygulama içi ödemeler Apple Inc. ve Google LLC tarafından işlenir.',
             'Yurt dışına aktarımlar KVKK’nın 9. maddesine uygun olarak; öncelikle Kişisel Verileri Koruma Kurulu tarafından ilan edilen standart sözleşmelere dayanılarak ve sözleşmenin imzalanmasından itibaren beş iş günü içinde Kuruma bildirilmesi suretiyle (md. 9/4) gerçekleştirilir. Bu güvencelerin uygulanamadığı hâllerde veriler yalnızca arızi olarak ve açık rızana dayanılarak aktarılır (md. 9/6-a).',
             'Kişisel verilerin, kanunen yetkili kamu kurum ve kuruluşlarıyla, talep hâlinde ve mevzuatın izin verdiği ölçüde paylaşılabilir.',
           ],
@@ -493,7 +491,7 @@ export const tr: SiteContent = {
           id: 'application',
           heading: '7. Başvuru yolu',
           blocks: [
-            `Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca taleplerini; ${C.address} adresine yazılı olarak, ${C.kepAddress} kayıtlı elektronik posta (KEP) adresine ya da daha önce bize bildirdiğin ve sistemimizde kayıtlı e-posta adresinden ${C.privacyEmail} adresine iletebilirsin. Başvurunda adın soyadın, yazılı başvurularda imzan, tebligata esas adresin ve talep konunun açıkça yer alması gerekir.`,
+            `Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca taleplerini; ${C.address} adresine yazılı olarak${C.kepAddress ? `, ${C.kepAddress} kayıtlı elektronik posta (KEP) adresine` : ''} ya da daha önce bize bildirdiğin ve sistemimizde kayıtlı e-posta adresinden ${C.privacyEmail} adresine iletebilirsin. Başvurunda adın soyadın, yazılı başvurularda imzan, tebligata esas adresin ve talep konunun açıkça yer alması gerekir.`,
             'Başvurunu en geç 30 gün içinde ücretsiz olarak sonuçlandırırız. İşlemin ayrıca bir maliyet gerektirmesi hâlinde Kurul tarafından belirlenen tarifedeki ücret alınabilir. Başvurunun reddedilmesi, verilen cevabın yetersiz bulunması veya süresinde cevap verilmemesi hâlinde KVKK md. 14 uyarınca Kişisel Verileri Koruma Kurulu’na şikâyette bulunabilirsin.',
           ],
         },
@@ -525,7 +523,7 @@ export const tr: SiteContent = {
           id: 'transfer',
           heading: '2. Yurt dışına aktarım',
           blocks: [
-            'Analizin yapılabilmesi için fotoğrafımın ve soru cevaplarımın yurt dışında bulunan yapay zekâ hizmet sağlayıcılarına (OpenRouter, Inc. ve yönlendirdiği model sağlayıcı, Google LLC, Features & Labels, Inc. / fal.ai, ABD veya Kie.ai) gönderildiğini ve barındırma hizmetinin Vercel Inc. tarafından sağlandığını biliyorum. Bu aktarımlar öncelikle standart sözleşmelere dayanır. Bu güvencelerin uygulanamadığı hâllerde verilerimin bu amaçlarla arızi olarak yurt dışına aktarılmasına açık rıza veriyorum (KVKK md. 9/6-a).',
+            'Analizin yapılabilmesi için fotoğrafımın ve soru cevaplarımın yurt dışında bulunan yapay zekâ hizmet sağlayıcılarına (Google LLC, ABD) gönderildiğini ve barındırma hizmetinin Vercel Inc. tarafından sağlandığını biliyorum. Bu aktarımlar öncelikle standart sözleşmelere dayanır. Bu güvencelerin uygulanamadığı hâllerde verilerimin bu amaçlarla arızi olarak yurt dışına aktarılmasına açık rıza veriyorum (KVKK md. 9/6-a).',
           ],
         },
         {
@@ -610,8 +608,10 @@ export const tr: SiteContent = {
           id: 'subscriptions',
           heading: '6. Premium abonelikler ve satın almalar',
           blocks: [
-            'Premium; otomatik yenilenen haftalık veya yıllık abonelik olarak ve sunulduğu yerlerde tek seferlik rapor olarak sunulur. Satın almalar Tonelle uygulamasında Apple App Store veya Google Play üzerinden yapılır ve bu mağazaların koşullarına tabidir. Web sitesinde gösterilen fiyatlar bilgilendirme amaçlıdır; ödeme sırasında mağazanın gösterdiği, vergiler dahil fiyat geçerlidir.',
-            'Ödeme, satın almayı onayladığında Apple Kimliği veya Google Play hesabından tahsil edilir.',
+            'Premium; otomatik yenilenen haftalık veya yıllık abonelik olarak ve sunulduğu yerlerde tek seferlik rapor olarak sunulur.',
+            `Web sitesindeki sipariş süreci, çevrim içi satıcımız Paddle.com tarafından yürütülür. Paddle.com (${C.merchantOfRecord}), tüm web siparişlerimizde satıcıdır (Merchant of Record): ödemeyi alır, faturayı keser, vergileri hesaplar ve iade taleplerini yönetir. Web satın almaları ayrıca Paddle’ın alıcı koşullarına tabidir.`,
+            'Tonelle uygulamasındaki satın almalar Apple App Store veya Google Play üzerinden yapılır, bu mağazaların koşullarına tabidir ve ödeme Apple Kimliği veya Google Play hesabından tahsil edilir.',
+            'Ödeme sırasında gösterilen, vergiler dahil fiyat geçerlidir.',
           ],
         },
         {
@@ -626,14 +626,15 @@ export const tr: SiteContent = {
           heading: '8. Otomatik yenileme ve iptal',
           blocks: [
             'Abonelikler iptal edilene kadar her dönemin sonunda aynı süre ve fiyatla otomatik olarak yenilenir. Yenileme ücreti mevcut dönemin bitiminden önceki 24 saat içinde hesabından tahsil edilir.',
-            'Dilediğin zaman App Store veya Google Play hesap ayarlarından iptal edebilirsin. Bir sonraki ücretlendirmeden kaçınmak için iptalin mevcut dönemin bitiminden en az 24 saat önce yapılması gerekir; ödemesini yaptığın dönemin sonuna kadar Premium erişimin devam eder. Uygulamayı veya yerel verilerini silmek aboneliği iptal etmez.',
+            'Web aboneliğini Paddle’ın sipariş e-postasındaki bağlantıdan veya bize yazarak, uygulama aboneliğini App Store ya da Google Play hesap ayarlarından dilediğin zaman iptal edebilirsin. Bir sonraki ücretlendirmeden kaçınmak için iptalin mevcut dönemin bitiminden en az 24 saat önce yapılması gerekir; ödemesini yaptığın dönemin sonuna kadar Premium erişimin devam eder. Uygulamayı veya yerel verilerini silmek aboneliği iptal etmez.',
           ],
         },
         {
           id: 'refunds',
           heading: '9. İadeler',
           blocks: [
-            'Satın almalar Apple veya Google tarafından işlendiğinden, iade talepleri bu şirketlerin iade politikaları kapsamında kendilerine yapılmalıdır (Apple: reportaproblem.apple.com; Google Play: Google Play sipariş geçmişin). Mağaza satın almaları için doğrudan iade yapamayız.',
+            `Web sitesinden yaptığın satın almalarda, ilk ödeme tarihinden itibaren 14 gün içinde gerekçe göstermeden tam iade isteyebilirsin. Talebini ${C.supportEmail} adresine veya Paddle’ın sipariş e-postasındaki bağlantıdan iletebilirsin; iadeyi satıcı olarak Paddle yapar ve ödeme yönteminle aynı yoldan geri gönderir.`,
+            'Uygulama içi satın almalar Apple veya Google tarafından işlendiğinden, bunların iade talepleri ilgili mağazanın iade politikası kapsamında mağazaya yapılmalıdır (Apple: reportaproblem.apple.com; Google Play: Google Play sipariş geçmişin).',
             'Anında ifa edilen dijital içeriklerde cayma hakkı, açık onayın ve bilgin dahilinde ifaya başlanmasıyla sona erebilir (Mesafeli Sözleşmeler Yönetmeliği md. 15). Bu durum, ayıplı dijital içerik dahil tüketici olarak sahip olduğun diğer yasal hakları etkilemez.',
           ],
         },
@@ -695,7 +696,7 @@ export const tr: SiteContent = {
       {
         kind: 'support',
         title: 'Destek',
-        body: 'Uygulama, sonuçların veya aboneliğinle ilgili sorular. İade talepleri için lütfen doğrudan Apple veya Google ile iletişime geç.',
+        body: 'Uygulama, sonuçların veya aboneliğinle ilgili sorular. Web sitesinden yapılan satın almalarda 14 gün içinde iade isteyebilirsin; uygulama içi satın almalar için Apple veya Google ile iletişime geç.',
       },
       {
         kind: 'privacy',

@@ -10,26 +10,28 @@ export const COMPANY = {
   /** Data controller / publisher. */
   legalName: 'Doribleg Trade Ltd',
   brand: 'Tonelle',
-  /** Registered office — placeholder. */
-  address: '[Registered office address, City, Postcode, Country]',
-  /** Company / trade registry number — placeholder. */
-  registrationNumber: '[Company registration number]',
-  /** Jurisdiction whose law governs the Terms — placeholder. */
-  governingLaw: '[Governing law jurisdiction]',
+  /** Registered office (Companies House). */
+  address: 'Suite 10550, 5 Brayford Square, London E1 0SG, United Kingdom',
+  /** Companies House number (England and Wales). */
+  registrationNumber: '17049929',
+  /** Jurisdiction whose law governs the Terms. */
+  governingLaw: 'England and Wales',
+  /** Merchant of Record for web purchases. */
+  merchantOfRecord: 'Paddle.com Market Ltd',
   /** General support contact — placeholder mailbox on the product domain. */
   supportEmail: 'support@tonelleapp.com',
   /** Privacy / data-protection requests (GDPR & KVKK applications). */
   privacyEmail: 'privacy@tonelleapp.com',
-  /** Registered electronic mail (KEP) address for KVKK applications — placeholder. */
-  kepAddress: '[KEP address, if any]',
-  /** Representative in Türkiye (KVKK "veri sorumlusu temsilcisi") — placeholder. */
-  turkeyRepresentative: '[Data controller representative in Türkiye — name and address]',
-  /** EU representative under GDPR Art. 27, if the controller is established outside the EU — placeholder. */
-  euRepresentative: '[EU representative under GDPR Art. 27 — name and address, if required]',
+  /** Registered electronic mail (KEP) address for KVKK applications; empty = none, hidden. */
+  kepAddress: '',
+  /** Representative in Türkiye (KVKK "veri sorumlusu temsilcisi"); empty = not appointed, hidden. */
+  turkeyRepresentative: '',
+  /** EU representative under GDPR Art. 27; empty = not appointed, hidden. */
+  euRepresentative: '',
 } as const;
 
 /** Date the legal documents were last revised (ISO). Shown on every legal page. */
-export const LEGAL_LAST_UPDATED = '2026-09-29';
+export const LEGAL_LAST_UPDATED = '2026-10-11';
 
 /** Canonical site origin, without trailing slash. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tonelleapp.com').replace(/\/+$/, '');

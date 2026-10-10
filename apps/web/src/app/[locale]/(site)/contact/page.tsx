@@ -53,10 +53,18 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
                   </dd>
                   <dt className="caps pt-[3px] text-ink">{contact.registrationLabel}</dt>
                   <dd>{COMPANY.registrationNumber}</dd>
-                  <dt className="caps pt-[3px] text-ink">{contact.kepLabel}</dt>
-                  <dd>{COMPANY.kepAddress}</dd>
-                  <dt className="caps pt-[3px] text-ink">{contact.representativeLabel}</dt>
-                  <dd>{COMPANY.turkeyRepresentative}</dd>
+                  {COMPANY.kepAddress && (
+                    <>
+                      <dt className="caps pt-[3px] text-ink">{contact.kepLabel}</dt>
+                      <dd>{COMPANY.kepAddress}</dd>
+                    </>
+                  )}
+                  {COMPANY.turkeyRepresentative && (
+                    <>
+                      <dt className="caps pt-[3px] text-ink">{contact.representativeLabel}</dt>
+                      <dd>{COMPANY.turkeyRepresentative}</dd>
+                    </>
+                  )}
                 </dl>
               )}
             </li>

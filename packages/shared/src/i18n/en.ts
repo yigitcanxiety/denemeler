@@ -388,6 +388,7 @@ export const en = {
     kvkk: 'KVKK Notice',
     consent: 'Explicit Consent',
     terms: 'Terms of Use',
+    refunds: 'Refund Policy',
     contact: 'Contact',
     copyright: '© {year} Doribleg Trade Ltd. All rights reserved.',
     aiDisclosure: 'Tonelle uses AI to analyse photos and generate makeup previews.',
