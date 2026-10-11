@@ -110,6 +110,7 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: Stripe yedek ödeme hesabı açılıyor (kullanıcı kararı: ikisi paralel, satış Paddle'dan; Stripe yalnız Paddle reddeder/uzarsa). Stripe **Managed Payments** seçildi = Stripe da satıcı kaydı (MoR), vergi Stripe'ta; ek %3,5 ücret, düşük fiyatlı haftalık planda Paddle'dan ucuz olabilir. Stripe kodu yazılmadı.
 - 2026-10-11: Paddle webhook canlıda (`/api/paddle/webhook`, imza doğrulamalı; canlı hedef `ntfset_01m4mkyewbjg1zgfrhtrqzb1s4`, `PADDLE_WEBHOOK_SECRET` Vercel'de). Paddle simülasyonu 200 döndü. Ödeme/deneme olaylarını Meta CAPI'ye iletir (yalnız reklam izni verenler; event_id = txn id). Kalan: `META_CAPI_TOKEN`. Veritabanı hâlâ yok; e-postayla geri yükleme ayrı iş.
 - 2026-10-11: Paddle canlı katalog kuruldu (`paddle-catalog.mjs --live`). Paddle MCP kuruldu (`paddle-sandbox`, `paddle-live`, yalnız silmeyen araçlar; anahtar `~/.config/paddle-mcp/`). Sandbox anahtarı ~2027-01-09 bitiyor (yalnız yerel test ve sandbox MCP etkilenir; yeni anahtar oluşturulur). Canlı anahtar 2027-10-11 bitiyor: ondan önce yenisi oluşturulup Vercel ve `~/.config/paddle-mcp/live.key` güncellenmeli. Onay gelince Vercel'e eklenecek açık değerler:
 
