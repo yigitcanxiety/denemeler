@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Gloock, Plus_Jakarta_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import { LOCALES, isLocale } from '@tonelle/shared';
+import { ConsentBanner } from '@/components/site/ConsentBanner';
 import { RevealObserver } from '@/components/site/RevealObserver';
 import { SITE_URL } from '@/config/company';
 import { getContent } from '@/content';
@@ -81,6 +82,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
         </a>
         {children}
         <RevealObserver />
+        <ConsentBanner locale={locale} copy={content.cookieBanner} />
       </body>
     </html>
   );

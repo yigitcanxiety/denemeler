@@ -3,7 +3,7 @@
 import { PRODUCT_IDS, type PlanId } from '@tonelle/shared';
 import clsx from 'clsx';
 import { BellRing, Check, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { StoreBadge } from '@/components/site/StoreBadges';
 import { Button, Modal, buttonClasses } from '@/components/ui';
 import { COMPANY } from '@/config/company';
@@ -11,6 +11,7 @@ import { apiClient } from '@/lib/api-client';
 import { paymentProvider, type PaymentProvider, type StoreLink } from '@/lib/payments';
 import { getExitOfferDisplay, getPlanDisplays } from '@/lib/pricing-display';
 import { getAppUserId } from '@/lib/storage';
+import { track } from '@/lib/tracking';
 import type { StepProps, StoreCopy } from '../types';
 import { delay } from '../ui';
 
@@ -44,6 +45,8 @@ export function PaywallStep({
     else setCodeError(true);
   };
   const plan = plans.find((p) => p.id === selected) ?? plans[0]!;
+
+  useEffect(() => track('ViewContent', { content_name: 'paywall' }), []);
 
   const features = [
     tt('paywall.featureSeason'),

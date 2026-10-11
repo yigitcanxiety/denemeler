@@ -191,6 +191,12 @@ export const en: SiteContent = {
     body: 'Take one selfie and get your colour season in about a minute. Free, private, no sign-up.',
     button: 'Start my free analysis',
   },
+  cookieBanner: {
+    text: 'We would like to use the Meta Pixel cookie to measure whether our ads work. Your photo and results are never sent to Meta.',
+    accept: 'Accept',
+    decline: 'Decline',
+    more: 'Privacy Policy',
+  },
   footer: {
     tagline: 'AI colour and makeup analysis that shows what suits you, on your own face.',
     productTitle: 'Product',
@@ -300,7 +306,7 @@ export const en: SiteContent = {
           heading: '5. Data stored on your device',
           blocks: [
             'The website stores your latest analysis results, your anonymous app user ID and your language preference in your browser’s local storage or in a strictly necessary cookie (tonelle_locale). Your photo is never stored there. You can delete this data at any time with “Delete my data” on the results page or by clearing your browser data.',
-            'We currently do not use advertising or analytics cookies. If we introduce them, we will ask for your consent first where required.',
+            'To measure our ads, and only if you agree via “Accept” in the cookie notice, we use the Meta Pixel cookie from Meta Platforms Ireland Ltd. The pixel measures page views and steps such as finishing an analysis or starting a trial or purchase; your photo and results are never sent to Meta. If you do not agree, the pixel never loads. You can withdraw consent anytime with “Delete my data” or by clearing your browser data.',
           ],
         },
         {
@@ -312,6 +318,7 @@ export const en: SiteContent = {
               rows: [
                 ['Vercel Inc. (USA; servers in the EU, Frankfurt)', 'Website and API hosting; receives technical data and transiently the photo in transit.'],
                 ['Google LLC (Gemini API, USA)', 'Performs the colour and skin analysis of your photo and creates the makeup previews. On the paid API tier your data is not used to train models.'],
+                ['Meta Platforms Ireland Ltd. (Ireland)', 'Only if you accept cookies: page views and purchase steps for ad measurement (Meta Pixel).'],
                 ['Paddle.com Market Ltd (United Kingdom)', 'Processes website purchases as Merchant of Record: payment, invoicing, tax and refunds.'],
                 ['RevenueCat, Inc. (USA)', 'Manages subscription status linked to your anonymous app user ID.'],
               ],

@@ -1,7 +1,8 @@
-import type { Locale, PlanId } from '@tonelle/shared';
+import { PRICING, regionForLocale, type Locale, type PlanId } from '@tonelle/shared';
 import { apiClient } from './api-client';
 import type { PaymentProvider, PurchaseOutcome, PurchaseRequest } from './payments';
 import { savePaddleRef } from './storage';
+import { track } from './tracking';
 
 /**
  * Web checkout through Paddle.js (overlay). Paddle is the Merchant of Record; after
@@ -76,6 +77,11 @@ export class PaddlePaymentProvider implements PaymentProvider {
       return { status: 'failed', message: error instanceof Error ? error.message : 'Paddle.js failed' };
     }
 
+    // Display price for ad measurement; Paddle charges the buyer's local price.
+    const { amount, currency } = PRICING[regionForLocale(this.locale())][plan];
+    const value = { value: amount, currency, content_ids: [plan] };
+    track('InitiateCheckout', value);
+
     const transactionId = await new Promise<string | null>((resolve) => {
       onEvent = (event) => {
         if (event.name === 'checkout.completed') resolve(event.data?.transaction_id ?? null);
@@ -96,6 +102,8 @@ export class PaddlePaymentProvider implements PaymentProvider {
     paddle.Checkout.close();
     if (!claim.ok) return { status: 'failed', message: claim.error.message };
     savePaddleRef(claim.data.paddleRef);
+    if (plan === 'report') track('Purchase', value, transactionId);
+    else track('StartTrial', { ...value, predicted_ltv: amount }, transactionId);
     return { status: 'purchased' };
   }
 }

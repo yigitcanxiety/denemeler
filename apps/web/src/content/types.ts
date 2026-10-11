@@ -135,6 +135,12 @@ export interface SiteContent {
     body: string;
     button: string;
   };
+  cookieBanner: {
+    text: string;
+    accept: string;
+    decline: string;
+    more: string;
+  };
   footer: {
     tagline: string;
     productTitle: string;

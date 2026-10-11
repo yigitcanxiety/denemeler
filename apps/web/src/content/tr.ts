@@ -191,6 +191,12 @@ export const tr: SiteContent = {
     body: 'Tek bir selfie çek, renk sezonunu yaklaşık bir dakikada öğren. Ücretsiz, gizli, üyeliksiz.',
     button: 'Ücretsiz analizimi başlat',
   },
+  cookieBanner: {
+    text: 'Reklamlarımızın işe yarayıp yaramadığını ölçmek için Meta Pixel çerezi kullanmak istiyoruz. Fotoğrafın ve analiz sonuçların Meta’ya gönderilmez.',
+    accept: 'Kabul et',
+    decline: 'Reddet',
+    more: 'Gizlilik Politikası',
+  },
   footer: {
     tagline: 'Sana neyin yakıştığını kendi yüzünde gösteren yapay zekâ destekli renk ve makyaj analizi.',
     productTitle: 'Ürün',
@@ -294,7 +300,7 @@ export const tr: SiteContent = {
           heading: '5. Cihazında saklanan veriler',
           blocks: [
             'Web sitesi son analiz sonuçlarını, anonim kullanıcı kimliğini ve dil tercihini tarayıcının yerel depolamasında veya zorunlu bir çerezde (tonelle_locale) saklar. Fotoğrafın burada asla saklanmaz. Bu verileri sonuç sayfasındaki “Verilerimi sil” ile veya tarayıcı verilerini temizleyerek dilediğin zaman silebilirsin.',
-            'Şu anda reklam veya analitik çerezleri kullanmıyoruz. Kullanmaya başlarsak, gerekli olduğu durumlarda önce onayını isteriz.',
+            'Reklam ölçümü için, yalnızca çerez bildirimindeki “Kabul et” ile onay verirsen, Meta Platforms Ireland Ltd.’nin Meta Pixel çerezini kullanırız. Pixel sayfa görüntülemelerini ve analiz tamamlama, deneme veya satın alma başlatma gibi adımları ölçer; fotoğrafın ve analiz sonuçların Meta’ya gönderilmez. Onay vermezsen Pixel hiç yüklenmez. Onayını, “Verilerimi sil” ile veya tarayıcı verilerini temizleyerek dilediğin zaman geri alabilirsin.',
           ],
         },
         {
@@ -306,6 +312,7 @@ export const tr: SiteContent = {
               rows: [
                 ['Vercel Inc. (ABD; sunucular AB’de, Frankfurt)', 'Web sitesi ve API barındırma; teknik verileri ve aktarım sırasında geçici olarak fotoğrafı alır.'],
                 ['Google LLC (Gemini API, ABD)', 'Fotoğrafının renk ve cilt analizini yapar ve makyaj önizlemelerini oluşturur. Ücretli API katmanında verilerin model eğitiminde kullanılmaz.'],
+                ['Meta Platforms Ireland Ltd. (İrlanda)', 'Yalnızca çerez onayı verirsen: reklam ölçümü için sayfa görüntülemeleri ve satın alma adımları (Meta Pixel).'],
                 ['Paddle.com Market Ltd (Birleşik Krallık)', 'Web sitesindeki satın almaları satıcı (Merchant of Record) olarak işler: ödeme, fatura, vergi ve iadeler.'],
                 ['RevenueCat, Inc. (ABD)', 'Anonim kullanıcı kimliğinle bağlantılı abonelik durumunu yönetir.'],
               ],

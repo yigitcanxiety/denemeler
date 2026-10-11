@@ -8,6 +8,7 @@ import { LanguageSwitcher } from '@/components/site/LanguageSwitcher';
 import { Logo } from '@/components/site/Logo';
 import { apiClient, type ApiClient } from '@/lib/api-client';
 import { clearAllData, clearAnalysis, loadAnalysis, saveAnalysis } from '@/lib/storage';
+import { track } from '@/lib/tracking';
 import { completeQuiz, flowReducer, initialState, type AnalyzeMode, type FlowEvent } from './machine';
 import { ConsentStep } from './steps/ConsentStep';
 import { PaywallStep } from './steps/PaywallStep';
@@ -94,13 +95,19 @@ export function AnalyzeFlow({
     if (state.mode === 'skin') {
       void client.analyzeSkin(request, { signal: controller.signal }).then(async (res) => {
         if (!(await settle())) return;
-        if (res.ok) dispatch({ type: 'SKIN_SUCCEEDED', response: res.data });
+        if (res.ok) {
+          track('Lead', { content_name: 'skin' });
+          dispatch({ type: 'SKIN_SUCCEEDED', response: res.data });
+        }
         else dispatch({ type: 'ANALYSIS_FAILED', code: res.error.code });
       });
     } else {
       void client.analyze(request, { signal: controller.signal }).then(async (res) => {
         if (!(await settle())) return;
-        if (res.ok) dispatch({ type: 'ANALYSIS_SUCCEEDED', response: res.data });
+        if (res.ok) {
+          track('Lead', { content_name: state.mode });
+          dispatch({ type: 'ANALYSIS_SUCCEEDED', response: res.data });
+        }
         else dispatch({ type: 'ANALYSIS_FAILED', code: res.error.code });
       });
     }
