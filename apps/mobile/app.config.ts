@@ -39,7 +39,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   icon: './assets/images/placeholder-icon.png',
   backgroundColor: PAPER,
   ios: {
-    bundleIdentifier: 'app.tonelle',
+    bundleIdentifier: 'com.tonelleapp.app',
     supportsTablet: false,
     config: { usesNonExemptEncryption: false },
     infoPlist: {
@@ -73,7 +73,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    package: 'app.tonelle',
+    package: 'com.tonelleapp.app',
     adaptiveIcon: {
       foregroundImage: './assets/images/placeholder-adaptive-icon.png',
       monochromeImage: './assets/images/placeholder-monochrome-icon.png',
