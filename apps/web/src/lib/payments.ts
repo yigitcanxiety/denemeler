@@ -1,5 +1,6 @@
 import type { PlanId } from '@tonelle/shared';
 import { STORE_URLS } from '@/config/company';
+import { PADDLE_PUBLIC, PaddlePaymentProvider } from './paddle-checkout';
 
 export type StoreId = 'app_store' | 'play_store';
 
@@ -27,8 +28,8 @@ export interface PurchaseRequest {
 }
 
 /**
- * Seam for web payments. Today only `StoreRedirectPaymentProvider` exists; a Paddle / Stripe
- * provider can implement the same interface later without touching the paywall UI.
+ * Seam for web payments: `PaddlePaymentProvider` (web checkout) or `StoreRedirectPaymentProvider`
+ * (send buyers to the native apps).
  */
 export interface PaymentProvider {
   readonly id: string;
@@ -80,4 +81,5 @@ export class StoreRedirectPaymentProvider implements PaymentProvider {
   }
 }
 
-export const paymentProvider: PaymentProvider = new StoreRedirectPaymentProvider();
+/** Paddle on the web when its client token is configured; otherwise send buyers to the apps. */
+export const paymentProvider: PaymentProvider = PADDLE_PUBLIC.token ? new PaddlePaymentProvider() : new StoreRedirectPaymentProvider();

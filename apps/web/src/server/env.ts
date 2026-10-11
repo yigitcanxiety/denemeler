@@ -28,6 +28,8 @@ export interface ServerConfig {
   freeRenders: boolean;
   /** Invite codes that unlock results without paying (`TONELLE_ACCESS_CODES`, comma separated, case-insensitive). */
   accessCodes: string[];
+  /** Paddle Billing for web purchases; null when PADDLE_API_KEY is missing. */
+  paddle: { apiKey: string; sandbox: boolean } | null;
 }
 
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
@@ -93,6 +95,9 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
     },
     revenueCatSecretKey: read(env, 'REVENUECAT_SECRET_KEY'),
     freeRenders: truthy(read(env, 'TONELLE_FREE_RENDERS')),
+    paddle: read(env, 'PADDLE_API_KEY')
+      ? { apiKey: read(env, 'PADDLE_API_KEY') as string, sandbox: read(env, 'NEXT_PUBLIC_PADDLE_ENV') !== 'production' }
+      : null,
     accessCodes: (read(env, 'TONELLE_ACCESS_CODES') ?? '')
       .split(',')
       .map((c) => c.trim().toUpperCase())
@@ -110,7 +115,7 @@ export function isAnalysisMock(config: ServerConfig): boolean {
  * RevenueCat is not configured (paid renders cannot be verified, so show the free demo instead).
  */
 export function isRenderMock(config: ServerConfig): boolean {
-  if (config.mockForced || (!config.revenueCatSecretKey && !config.freeRenders)) return true;
+  if (config.mockForced || (!config.revenueCatSecretKey && !config.paddle && !config.freeRenders)) return true;
   const key = { fal: config.fal.apiKey, kie: config.kie.apiKey, gemini: config.gemini.apiKey }[config.imageProvider];
   return !key;
 }

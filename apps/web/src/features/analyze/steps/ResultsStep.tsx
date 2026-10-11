@@ -7,7 +7,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { BeforeAfter, Button, FitPill, Modal, ProfileBars, Radar, ShadeTube, SwatchBar } from '@/components/ui';
 import { apiClient, errorMessageKey, type ApiClient } from '@/lib/api-client';
 import { profileView } from '@/lib/profile-view';
-import { getAppUserId } from '@/lib/storage';
+import { getAppUserId, getPaddleRef } from '@/lib/storage';
 import type { StepProps } from '../types';
 import { delay } from '../ui';
 import { ShareCardDialog } from './ShareCard';
@@ -232,7 +232,7 @@ export function ResultsStep({
     inFlight.current = next;
     void client
       .renderLook(
-        { image: photo, lookId: next, analysis: result.analysis, appUserId: getAppUserId(), locale },
+        { image: photo, lookId: next, analysis: result.analysis, appUserId: getAppUserId(), paddleRef: getPaddleRef(), locale },
         { signal: controller.signal },
       )
       .then((res) => {

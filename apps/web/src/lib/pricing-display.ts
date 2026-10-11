@@ -19,8 +19,6 @@ export interface PlanDisplay {
   name: string;
   /** Regular price, formatted (e.g. "₺799,99"). */
   price: string;
-  /** Formatted first-period price when an intro offer applies. */
-  introPrice?: string;
   /** Main line under the name, e.g. "3-day free trial, then ₺799,99/year". */
   headline: string;
   /** Secondary line, e.g. "Only ₺15,38/week". */
@@ -96,23 +94,17 @@ export function getPlanDisplay(locale: Locale, id: PlanId, region: PricingRegion
     };
   }
 
-  // Weekly
-  const intro = plan.introAmount;
-  const introPrice = intro !== undefined ? fmt(intro) : undefined;
+  // Weekly. The app's first-week intro price (introAmount) is store-only: web checkout
+  // (Paddle) charges the regular price, so the site must not advertise the intro.
   return {
     id,
     plan,
     name: t(locale, 'paywall.weeklyName'),
     price,
-    introPrice,
-    headline: introPrice
-      ? t(locale, 'paywall.weeklyIntro', { introPrice, price })
-      : t(locale, 'paywall.perWeek', { price }),
+    headline: t(locale, 'paywall.perWeek', { price }),
     subline: t(locale, 'paywall.cancelAnytime'),
     cta: t(locale, 'paywall.ctaSubscribe'),
-    legal: introPrice
-      ? `${t(locale, 'paywall.legalIntro', { introPrice, price, period })} ${subscriptionLegal}`
-      : subscriptionLegal,
+    legal: subscriptionLegal,
     highlighted: false,
   };
 }

@@ -190,6 +190,8 @@ export const RenderRequestSchema = z.object({
   lookId: LookIdSchema,
   analysis: FaceAnalysisSchema,
   appUserId: z.string().min(1).max(200).optional(),
+  /** Web purchase made through Paddle: its subscription (`sub_…`) or one-time transaction (`txn_…`). */
+  paddleRef: z.string().regex(/^(sub|txn)_[a-z0-9]{10,40}$/).optional(),
   locale: LocaleSchema,
 });
 export type RenderRequest = z.infer<typeof RenderRequestSchema>;
@@ -207,6 +209,7 @@ export const API_ERROR_CODES = [
   'too_large',
   'rate_limited',
   'payment_required',
+  'quota_exceeded',
   'provider_error',
   'internal',
 ] as const;
@@ -228,6 +231,7 @@ export const API_ERROR_STATUS: Record<ApiErrorCode, number> = {
   too_large: 413,
   rate_limited: 429,
   payment_required: 402,
+  quota_exceeded: 403,
   provider_error: 502,
   internal: 500,
 };

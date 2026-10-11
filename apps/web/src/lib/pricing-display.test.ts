@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { getExitOfferDisplay, getPlanDisplays, yearlySavingsPercent } from './pricing-display';
 
 describe('pricing display', () => {
-  it('shows Turkish lira plans for tr, with the weekly intro price and yearly trial', () => {
+  it('shows Turkish lira plans for tr, without the app-only weekly intro price, with the yearly trial', () => {
     const plans = getPlanDisplays('tr');
     expect(plans.map((p) => p.id)).toEqual(['yearly', 'weekly', 'report']);
     const [yearly, weekly, report] = plans;
@@ -10,10 +10,9 @@ describe('pricing display', () => {
     expect(yearly?.price).toContain('799,99');
     expect(yearly?.headline).toMatch(/7 gün/);
     expect(yearly?.legal).toContain('799,99');
-    expect(weekly?.introPrice).toContain('39,99');
-    expect(weekly?.headline).toContain('39,99');
+    expect(weekly?.headline).not.toContain('39,99');
     expect(weekly?.headline).toContain('129,99');
-    expect(weekly?.legal).toContain('39,99');
+    expect(weekly?.legal).not.toContain('39,99');
     expect(report?.plan.autoRenews).toBe(false);
     expect(plans.every((p) => p.plan.currency === 'TRY')).toBe(true);
   });
@@ -23,7 +22,6 @@ describe('pricing display', () => {
     const weekly = plans.find((p) => p.id === 'weekly');
     const yearly = plans.find((p) => p.id === 'yearly');
     expect(plans.every((p) => p.plan.currency === 'EUR')).toBe(true);
-    expect(weekly?.introPrice).toBeUndefined();
     expect(weekly?.headline).toBe('€3.99/week');
     expect(yearly?.headline).toBe('7-day free trial, then €24.99/year');
     expect(yearly?.cta).toBe('Start free trial');

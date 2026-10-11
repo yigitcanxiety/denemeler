@@ -15,6 +15,7 @@ import {
 import { z } from 'zod';
 
 const RedeemResponseSchema = z.object({ ok: z.literal(true) });
+const PaddleClaimResponseSchema = z.object({ paddleRef: z.string() });
 
 /** Error codes the client can surface: the API's own codes plus transport-level failures. */
 export type ClientErrorCode = ApiErrorCode | 'network' | 'invalid_response' | 'aborted';
@@ -128,6 +129,10 @@ export function createApiClient(clientOptions: ApiClientOptions = {}) {
     /** POST /api/analyze-skin — skincare-only analysis; the photo goes only to our own API. */
     analyzeSkin(request: AnalyzeRequest, options: RequestOptions = {}): Promise<ApiResult<SkinAnalyzeResponse>> {
       return postJson('/api/analyze-skin', request, SkinAnalyzeResponseSchema, { ...clientOptions, ...options });
+    },
+    /** POST /api/paddle/claim — confirms a finished Paddle checkout server-side. */
+    claimPaddle(transactionId: string, appUserId: string, options: RequestOptions = {}): Promise<ApiResult<{ paddleRef: string }>> {
+      return postJson('/api/paddle/claim', { transactionId, appUserId }, PaddleClaimResponseSchema, { ...clientOptions, ...options });
     },
     /** POST /api/redeem — invite code that unlocks results without paying. */
     redeem(code: string, options: RequestOptions = {}): Promise<ApiResult<{ ok: true }>> {

@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
 import { Gloock, Plus_Jakarta_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
@@ -69,7 +70,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
   return (
     <html lang={locale} className={`${gloock.variable} ${jakarta.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
+        <Script id="boot" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
       </head>
       <body className="flex min-h-dvh flex-col bg-paper text-ink antialiased">
         <a

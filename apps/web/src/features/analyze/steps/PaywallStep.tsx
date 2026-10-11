@@ -142,9 +142,8 @@ export function PaywallStep({
                 <span className="mt-0.5 block text-[12.5px] leading-snug text-muted">{p.headline}</span>
               </span>
               <span className="shrink-0 text-right">
-                <span className="serif block text-[1.5rem] leading-none text-ink">{p.introPrice ?? p.price}</span>
-                {p.introPrice && <s className="mt-1 block text-[11.5px] text-muted">{p.price}</s>}
-                {!p.introPrice && p.subline && p.id === 'yearly' && <span className="mt-1 block text-[11px] text-muted">{p.subline}</span>}
+                <span className="serif block text-[1.5rem] leading-none text-ink">{p.price}</span>
+                {p.subline && p.id === 'yearly' && <span className="mt-1 block text-[11px] text-muted">{p.subline}</span>}
               </span>
             </button>
           );

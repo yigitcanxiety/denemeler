@@ -19,9 +19,14 @@ import { createImageProvider } from './image-providers';
 import { kieChatUrl, uploadToKie } from './kie';
 import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } from './openrouter';
 import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
+import { claimPurchase, consumeRender } from './paddle';
 import { checkEntitlement } from './revenuecat';
 
 const RedeemRequestSchema = z.object({ code: z.string().min(1).max(64) });
+const ClaimRequestSchema = z.object({
+  transactionId: z.string().regex(/^txn_[a-z0-9]{10,40}$/),
+  appUserId: z.string().min(1).max(200),
+});
 
 /** POST /api/analyze */
 export async function handleAnalyze(request: Request): Promise<Response> {
@@ -112,7 +117,7 @@ export async function handleRenderLook(request: Request): Promise<Response> {
   try {
     const body = await parseJsonBody(request, RenderRequestSchema, MAX_BODY_BYTES);
     if (!body.ok) return body.response;
-    const { image, lookId, analysis, appUserId } = body.data;
+    const { image, lookId, analysis, appUserId, paddleRef } = body.data;
 
     const config = getServerConfig();
     // Free renders are keyed by IP: the app user id comes from the browser and can be rotated.
@@ -131,9 +136,15 @@ export async function handleRenderLook(request: Request): Promise<Response> {
     const limit = (config.freeRenders ? freeRenderRateLimiter : renderRateLimiter).check(rateKey);
     if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
 
-    if (!config.freeRenders) {
+    if (!config.freeRenders && paddleRef && appUserId && config.paddle) {
+      // Web purchase: Paddle says whether it is paid and counts trial / report renders.
+      const allowance = await consumeRender(config.paddle, paddleRef, appUserId);
+      if (allowance === 'quota_exceeded') return errorResponse('quota_exceeded', 'The renders included in this purchase are used up.');
+      if (allowance === 'denied') return errorResponse('payment_required', 'A premium subscription is required.');
+    } else if (!config.freeRenders) {
       if (!config.revenueCatSecretKey) {
-        // Fail closed: rendering costs money and must never be unverified in production.
+        // No web purchase and no app entitlement check: not paid (fail closed, renders cost money).
+        if (config.paddle) return errorResponse('payment_required', 'A premium subscription is required.');
         throw new HttpError('internal', 'Rendering is temporarily unavailable.', 'REVENUECAT_SECRET_KEY is not set');
       }
       const entitled = await checkEntitlement(appUserId as string, config.revenueCatSecretKey);
@@ -164,6 +175,23 @@ export async function handleRedeem(request: Request): Promise<Response> {
     return jsonResponse({ ok: true });
   } catch (error) {
     return handleError(error, 'redeem');
+  }
+}
+
+/** POST /api/paddle/claim: after checkout, links a paid Paddle transaction to this browser. */
+export async function handlePaddleClaim(request: Request): Promise<Response> {
+  try {
+    const body = await parseJsonBody(request, ClaimRequestSchema, 1024);
+    if (!body.ok) return body.response;
+    const limit = analyzeRateLimiter.check(`claim:${clientIp(request)}`);
+    if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
+    const config = getServerConfig();
+    if (!config.paddle) throw new HttpError('internal', 'Payments are temporarily unavailable.', 'PADDLE_API_KEY is not set');
+    const ref = await claimPurchase(config.paddle, body.data.transactionId, body.data.appUserId);
+    if (!ref) return errorResponse('payment_required', 'This purchase could not be confirmed.');
+    return jsonResponse({ paddleRef: ref });
+  } catch (error) {
+    return handleError(error, 'paddle-claim');
   }
 }
 

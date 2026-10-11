@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 const ANALYSIS_KEY = 'tonelle.analysis.v1';
 const APP_USER_KEY = 'tonelle.appUserId';
+const PADDLE_REF_KEY = 'tonelle.paddleRef';
 
 const PersistedAnalysisSchema = z.object({
   version: z.literal(1),
@@ -76,6 +77,23 @@ export function getAppUserId(): string {
     // ignore
   }
   return id;
+}
+
+/** The Paddle subscription / transaction bought in this browser (see server/paddle.ts). */
+export function getPaddleRef(): string | undefined {
+  try {
+    return storage()?.getItem(PADDLE_REF_KEY) ?? undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export function savePaddleRef(ref: string): void {
+  try {
+    storage()?.setItem(PADDLE_REF_KEY, ref);
+  } catch {
+    // ignore
+  }
 }
 
 /** "Delete my data": removes everything Tonelle stored in this browser. */

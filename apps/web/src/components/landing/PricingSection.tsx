@@ -40,8 +40,7 @@ export function PricingSection({ locale, content }: { locale: Locale; content: S
               )}
               <h3 className="text-[1.35rem] text-ink">{plan.name}</h3>
               <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
-                <span className="serif text-[2.6rem] leading-none text-ink">{plan.introPrice ?? plan.price}</span>
-                {plan.introPrice && <s className="text-[14px] text-muted">{plan.price}</s>}
+                <span className="serif text-[2.6rem] leading-none text-ink">{plan.price}</span>
               </p>
               <p className="mt-3 text-[14.5px] font-semibold text-ink">{plan.headline}</p>
               {plan.subline && <p className="mt-1 text-[13.5px] text-muted">{plan.subline}</p>}

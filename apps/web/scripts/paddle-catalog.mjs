@@ -5,7 +5,8 @@
  *   PADDLE_API_KEY=... node scripts/paddle-catalog.mjs          # sandbox (pdl_sdbx_ key)
  *   PADDLE_API_KEY=... node scripts/paddle-catalog.mjs --live   # live account
  *
- * Prints the price IDs to put in NEXT_PUBLIC_PADDLE_PRICE_* env vars. Amounts mirror
+ * Also creates the exit-offer discount and the public client-side token, then prints the
+ * NEXT_PUBLIC_PADDLE_* env vars the web app needs. Amounts mirror
  * packages/shared/src/pricing.ts: EUR is the base price, Türkiye gets a TRY override.
  * Prices are tax inclusive (tax_mode "internal"), like the prices shown on the site.
  */
@@ -78,4 +79,31 @@ for (const { product, prices } of CATALOG) {
   }
 }
 
+// Exit offer (EXIT_OFFER in packages/shared): 50% off the first year of the yearly plan.
+const discounts = await paddle('/discounts?status=active&per_page=200');
+let exit = discounts.find((d) => d.custom_data?.tonelle === 'exit_offer');
+if (!exit) {
+  exit = await paddle('/discounts', {
+    method: 'POST',
+    body: JSON.stringify({
+      description: 'Exit offer: 50% off the first year',
+      type: 'percentage',
+      amount: '50',
+      // No code, so buyers can't type it; Paddle.js applies it by discountId.
+      enabled_for_checkout: true,
+      recur: false,
+      restrict_to: [ids.yearly],
+      custom_data: { tonelle: 'exit_offer' },
+    }),
+  });
+}
+
+// Client-side token for Paddle.js: public by design (it ships in the page), not a secret.
+const tokens = await paddle('/client-tokens?status=active');
+let token = tokens.find((t) => t.name === 'Tonelle web');
+if (!token) token = await paddle('/client-tokens', { method: 'POST', body: JSON.stringify({ name: 'Tonelle web' }) });
+
+console.log(`NEXT_PUBLIC_PADDLE_ENV=${live ? 'production' : 'sandbox'}`);
+console.log(`NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=${token.token}`);
 for (const [plan, id] of Object.entries(ids)) console.log(`NEXT_PUBLIC_PADDLE_PRICE_${plan.toUpperCase()}=${id}`);
+console.log(`NEXT_PUBLIC_PADDLE_DISCOUNT_EXIT=${exit.id}`);
