@@ -110,7 +110,7 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
-- 2026-10-11: Paddle canlı katalog kuruldu (`paddle-catalog.mjs --live`). Paddle MCP kuruldu (`paddle-sandbox`, `paddle-live`, yalnız silmeyen araçlar; anahtar `~/.config/paddle-mcp/`). Sandbox anahtarı ~2027-01-09 bitiyor (yalnız yerel test ve sandbox MCP etkilenir; yeni anahtar oluşturulur). Canlı anahtarın bitiş tarihi kontrol edilecek. Onay gelince Vercel'e eklenecek açık değerler:
+- 2026-10-11: Paddle canlı katalog kuruldu (`paddle-catalog.mjs --live`). Paddle MCP kuruldu (`paddle-sandbox`, `paddle-live`, yalnız silmeyen araçlar; anahtar `~/.config/paddle-mcp/`). Sandbox anahtarı ~2027-01-09 bitiyor (yalnız yerel test ve sandbox MCP etkilenir; yeni anahtar oluşturulur). Canlı anahtar 2027-10-11 bitiyor: ondan önce yenisi oluşturulup Vercel ve `~/.config/paddle-mcp/live.key` güncellenmeli. Onay gelince Vercel'e eklenecek açık değerler:
 
 ```
 NEXT_PUBLIC_PADDLE_ENV=production
