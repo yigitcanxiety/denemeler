@@ -110,6 +110,9 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: Meta Pixel (4429254560625034) canlıda, çerez izni bildirimiyle: "Kabul et" → PageView Meta'ya gitti,
+  "Reddet" → hiç yüklenmiyor (ikisi de tonelleapp.com'da doğrulandı). Olaylar: Lead, ViewContent, InitiateCheckout,
+  StartTrial, Purchase. Kalan: Meta'da alan adı doğrulaması (DNS TXT), Conversions API (webhook ile).
 - 2026-10-11: Paddle web ödemesi yazıldı ve sandbox'ta uçtan uca test edildi (7 gün deneme, claim, gerçek render,
   sayaç 1, başka kullanıcı 402). Canlı için kalan: canlı katalog (`scripts/paddle-catalog.mjs --live`), Vercel'e
   `PADDLE_API_KEY` + `NEXT_PUBLIC_PADDLE_*`, canlıda Default payment link, `TONELLE_FREE_RENDERS` kapatma, alan adı onayı
