@@ -8,7 +8,7 @@ describe('pricing display', () => {
     const [yearly, weekly, report] = plans;
     expect(yearly?.highlighted).toBe(true);
     expect(yearly?.price).toContain('799,99');
-    expect(yearly?.headline).toMatch(/3 gün/);
+    expect(yearly?.headline).toMatch(/7 gün/);
     expect(yearly?.legal).toContain('799,99');
     expect(weekly?.introPrice).toContain('39,99');
     expect(weekly?.headline).toContain('39,99');
@@ -25,7 +25,7 @@ describe('pricing display', () => {
     expect(plans.every((p) => p.plan.currency === 'EUR')).toBe(true);
     expect(weekly?.introPrice).toBeUndefined();
     expect(weekly?.headline).toBe('€3.99/week');
-    expect(yearly?.headline).toBe('3-day free trial, then €24.99/year');
+    expect(yearly?.headline).toBe('7-day free trial, then €24.99/year');
     expect(yearly?.cta).toBe('Start free trial');
     expect(yearly?.subline).toBe('Only €0.48/week');
   });

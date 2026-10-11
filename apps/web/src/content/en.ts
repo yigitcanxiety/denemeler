@@ -133,7 +133,7 @@ export const en: SiteContent = {
     title: 'Your photo stays yours',
     body: 'Your selfie is only used to create your analysis and is not stored on our servers.',
     points: [
-      'We process photos in memory and discard them after the analysis; any temporary provider copy is deleted within 3 days',
+      'We process photos in memory and discard them after the analysis; they are never saved on our servers',
       'Never used to train AI models',
       'Your results are stored only on your device; delete them with one tap',
       'We never rate your looks',
@@ -154,7 +154,7 @@ export const en: SiteContent = {
     items: [
       {
         q: 'Do you store my photo?',
-        a: 'No. Your selfie is sent securely to our AI provider only to create your analysis (and, with Premium, the makeup previews). We process it in memory and discard it as soon as the request finishes (if our AI provider needs a temporary copy, it is deleted automatically within 3 days). It is never saved on our servers and never used to train AI models. Your results are stored only on your device.',
+        a: 'No. Your selfie is sent securely to our AI provider only to create your analysis (and, with Premium, the makeup previews). We process it in memory and discard it as soon as the request finishes. It is never saved on our servers and never used to train AI models. Your results are stored only on your device.',
       },
       {
         q: 'How accurate is the analysis?',
@@ -625,7 +625,7 @@ export const en: SiteContent = {
           id: 'trials',
           heading: '7. Free trials and introductory offers',
           blocks: [
-            'Some plans include a free trial (for example 3 days on the yearly plan) or a discounted introductory price for the first period (for example the first week of the weekly plan). When the trial or introductory period ends, the subscription automatically renews at the regular price unless you cancel at least 24 hours before it ends. Trials are available once per user and store account.',
+            'Some plans include a free trial (for example 7 days on the yearly plan) or a discounted introductory price for the first period (for example the first week of the weekly plan). When the trial or introductory period ends, the subscription automatically renews at the regular price unless you cancel at least 24 hours before it ends. Trials are available once per user and store account.',
           ],
         },
         {

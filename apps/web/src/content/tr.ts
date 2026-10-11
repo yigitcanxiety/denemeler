@@ -133,7 +133,7 @@ export const tr: SiteContent = {
     title: 'Fotoğrafın sende kalır',
     body: 'Selfie’n yalnızca analizini oluşturmak için kullanılır ve sunucularımızda saklanmaz.',
     points: [
-      'Fotoğrafları bellekte işler, analiz bitince sileriz; sağlayıcıdaki geçici kopya en geç 3 günde silinir',
+      'Fotoğrafları bellekte işler, analiz bitince sileriz; sunucularımıza kaydedilmez',
       'Yapay zekâ modellerini eğitmek için asla kullanılmaz',
       'Sonuçların yalnızca cihazında saklanır; tek dokunuşla silebilirsin',
       'Görünüşünü asla puanlamayız',
@@ -154,7 +154,7 @@ export const tr: SiteContent = {
     items: [
       {
         q: 'Fotoğrafımı saklıyor musunuz?',
-        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Biz onu bellekte işler ve istek biter bitmez sileriz (yapay zekâ sağlayıcımız geçici bir kopyaya ihtiyaç duyarsa, bu kopya en geç 3 gün içinde otomatik olarak silinir). Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
+        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Biz onu bellekte işler ve istek biter bitmez sileriz. Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
       },
       {
         q: 'Analiz ne kadar doğru?',
@@ -618,7 +618,7 @@ export const tr: SiteContent = {
           id: 'trials',
           heading: '7. Ücretsiz deneme ve tanıtım teklifleri',
           blocks: [
-            'Bazı planlar ücretsiz deneme (örneğin yıllık planda 3 gün) veya ilk dönem için indirimli tanıtım fiyatı (örneğin haftalık planın ilk haftası) içerir. Deneme veya tanıtım dönemi sona erdiğinde, bitiminden en az 24 saat önce iptal etmediğin sürece abonelik normal fiyattan otomatik olarak yenilenir. Denemeler kullanıcı ve mağaza hesabı başına bir kez sunulur.',
+            'Bazı planlar ücretsiz deneme (örneğin yıllık planda 7 gün) veya ilk dönem için indirimli tanıtım fiyatı (örneğin haftalık planın ilk haftası) içerir. Deneme veya tanıtım dönemi sona erdiğinde, bitiminden en az 24 saat önce iptal etmediğin sürece abonelik normal fiyattan otomatik olarak yenilenir. Denemeler kullanıcı ve mağaza hesabı başına bir kez sunulur.',
           ],
         },
         {

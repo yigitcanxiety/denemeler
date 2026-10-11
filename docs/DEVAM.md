@@ -92,7 +92,7 @@ Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de k
 |---|---|---|---|
 | Ücretsiz | – | 1 | 1 |
 | Haftalık | ₺129,99 (web'de ilk hafta indirimi yok) | haftada 5 | haftada 40 |
-| Yıllık | ₺799,99, 3 gün ücretsiz | haftada 5 | haftada 40 |
+| Yıllık | ₺799,99, 7 gün ücretsiz (2026-10-11 kullanıcı kararı) | haftada 5 | haftada 40 |
 | Tek rapor | ₺199 | 1 | 10 |
 
 Tahmini maliyet: analiz ~₺0,10, görsel ~₺1,70 (~$0,04). Haftalık plan net ~₺80 (KDV ve Paddle sonrası).
