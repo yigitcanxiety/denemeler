@@ -11,6 +11,7 @@ import {
   type PlanPrice,
   type PricingRegion,
 } from '@tonelle/shared';
+import { PADDLE_PUBLIC } from './paddle-checkout';
 
 /** Everything a paywall / pricing card needs to render one plan, already localised. */
 export interface PlanDisplay {
@@ -56,7 +57,10 @@ export function getPlanDisplay(locale: Locale, id: PlanId, region: PricingRegion
   const price = fmt(plan.amount);
   const period = periodLabel(locale, plan);
   const store = storeLabel(locale);
-  const subscriptionLegal = t(locale, 'paywall.legalSubscription', { price, period, store });
+  // Web checkout runs through Paddle when configured; otherwise purchases happen in the apps.
+  const subscriptionLegal = PADDLE_PUBLIC.token
+    ? t(locale, 'paywall.legalSubscriptionWeb', { price, period })
+    : t(locale, 'paywall.legalSubscription', { price, period, store });
 
   if (id === 'report') {
     return {
@@ -94,17 +98,17 @@ export function getPlanDisplay(locale: Locale, id: PlanId, region: PricingRegion
     };
   }
 
-  // Weekly. The app's first-week intro price (introAmount) is store-only: web checkout
-  // (Paddle) charges the regular price, so the site must not advertise the intro.
+  // Weekly
+  const trial = plan.trialDays;
   return {
     id,
     plan,
     name: t(locale, 'paywall.weeklyName'),
     price,
-    headline: t(locale, 'paywall.perWeek', { price }),
+    headline: trial ? t(locale, 'paywall.weeklyTrial', { days: trial, price }) : t(locale, 'paywall.perWeek', { price }),
     subline: t(locale, 'paywall.cancelAnytime'),
-    cta: t(locale, 'paywall.ctaSubscribe'),
-    legal: subscriptionLegal,
+    cta: trial ? t(locale, 'paywall.ctaTrial') : t(locale, 'paywall.ctaSubscribe'),
+    legal: trial ? `${t(locale, 'paywall.legalTrial', { days: trial, price, period })} ${subscriptionLegal}` : subscriptionLegal,
     highlighted: false,
   };
 }

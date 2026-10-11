@@ -206,6 +206,7 @@ export const en = {
     oneTime: '{price} once',
     weeklyIntro: '{introPrice} for the first week, then {price}/week',
     yearlyTrial: '{days}-day free trial, then {price}/year',
+    weeklyTrial: '{days}-day free trial, then {price}/week',
     yearlyEquivalent: 'Only {price}/week',
     bestValue: 'Best value',
     save: 'Save {percent}%',
@@ -218,6 +219,8 @@ export const en = {
     cancelAnytime: 'Cancel anytime',
     legalSubscription:
       'Subscription: {price} per {period}, renews automatically until cancelled. Payment is charged to your {store} account at confirmation of purchase. Your subscription renews automatically unless cancelled at least 24 hours before the end of the current period, and your account is charged for renewal within 24 hours before the end of the period. You can manage or cancel your subscription anytime in your {store} account settings.',
+    legalSubscriptionWeb:
+      'Subscription: {price} per {period}, renews automatically until cancelled. Payment is taken from your card by our reseller Paddle. Your subscription renews unless cancelled before the end of the current period, and you are charged on the renewal date. You can manage or cancel your subscription anytime via the link in Paddle’s order email or by contacting us.',
     legalTrial:
       'Free trial: {days} days free, then {price} per {period}. Cancel at least 24 hours before the trial ends to avoid being charged.',
     legalIntro:

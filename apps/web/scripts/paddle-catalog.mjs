@@ -33,7 +33,14 @@ const CATALOG = [
   {
     product: { name: 'Tonelle Premium', tax_category: 'standard', custom_data: { tonelle: 'premium' } },
     prices: [
-      { plan: 'weekly', description: 'Haftalık / Weekly', eur: 3.99, try: 129.99, billing_cycle: { interval: 'week', frequency: 1 } },
+      {
+        plan: 'weekly',
+        description: 'Haftalık, 7 gün ücretsiz / Weekly, 7-day free trial',
+        eur: 3.99,
+        try: 129.99,
+        billing_cycle: { interval: 'week', frequency: 1 },
+        trial_period: { interval: 'day', frequency: 7 },
+      },
       {
         plan: 'yearly',
         description: 'Yıllık, 7 gün ücretsiz / Yearly, 7-day free trial',

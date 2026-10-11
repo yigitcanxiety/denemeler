@@ -205,6 +205,7 @@ export const tr: Dictionary = {
     oneTime: 'Tek seferlik {price}',
     weeklyIntro: 'İlk hafta {introPrice}, sonra haftalık {price}',
     yearlyTrial: '{days} gün ücretsiz, sonra yıllık {price}',
+    weeklyTrial: '{days} gün ücretsiz, sonra haftalık {price}',
     yearlyEquivalent: 'Haftada sadece {price}',
     bestValue: 'En avantajlı',
     save: '%{percent} tasarruf',
@@ -217,6 +218,8 @@ export const tr: Dictionary = {
     cancelAnytime: 'İstediğin zaman iptal et',
     legalSubscription:
       'Abonelik: {period} başına {price}, iptal edilene kadar otomatik olarak yenilenir. Ödeme, satın alma onaylandığında {store} hesabından tahsil edilir. Mevcut dönemin bitiminden en az 24 saat önce iptal edilmediği sürece abonelik otomatik olarak yenilenir ve yenileme ücreti dönem bitmeden önceki 24 saat içinde hesabından alınır. Aboneliğini dilediğin zaman {store} hesap ayarlarından yönetebilir veya iptal edebilirsin.',
+    legalSubscriptionWeb:
+      'Abonelik: {period} başına {price}, iptal edilene kadar otomatik olarak yenilenir. Ödeme, satıcımız Paddle tarafından kartından tahsil edilir. Mevcut dönemin bitiminden önce iptal edilmediği sürece abonelik yenilenir ve ücret yenileme tarihinde alınır. Aboneliğini Paddle’ın sipariş e-postasındaki bağlantıdan veya bize yazarak dilediğin zaman yönetebilir ya da iptal edebilirsin.',
     legalTrial:
       'Ücretsiz deneme: {days} gün ücretsiz, ardından {period} başına {price}. Ücret ödememek için deneme süresi bitmeden en az 24 saat önce iptal et.',
     legalIntro:

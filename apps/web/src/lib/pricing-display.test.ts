@@ -17,12 +17,12 @@ describe('pricing display', () => {
     expect(plans.every((p) => p.plan.currency === 'TRY')).toBe(true);
   });
 
-  it('shows euro plans for en, without a weekly intro offer', () => {
+  it('shows euro plans for en, both subscriptions with a 7-day trial', () => {
     const plans = getPlanDisplays('en');
     const weekly = plans.find((p) => p.id === 'weekly');
     const yearly = plans.find((p) => p.id === 'yearly');
     expect(plans.every((p) => p.plan.currency === 'EUR')).toBe(true);
-    expect(weekly?.headline).toBe('€3.99/week');
+    expect(weekly?.headline).toBe('7-day free trial, then €3.99/week');
     expect(yearly?.headline).toBe('7-day free trial, then €24.99/year');
     expect(yearly?.cta).toBe('Start free trial');
     expect(yearly?.subline).toBe('Only €0.48/week');

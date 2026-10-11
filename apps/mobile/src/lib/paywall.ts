@@ -220,6 +220,7 @@ export function legalLinesFor(plan: PaywallPlan, t: Translate, platform: StorePl
 /** Short price line shown on a plan card. */
 export function planPriceLine(plan: PaywallPlan, t: Translate): string {
   if (plan.kind === 'weekly') {
+    if (plan.intro?.type === 'trial') return t('paywall.weeklyTrial', { days: plan.intro.days, price: plan.priceString });
     return plan.intro?.type === 'discount'
       ? t('paywall.weeklyIntro', { introPrice: plan.intro.priceString, price: plan.priceString })
       : t('paywall.perWeek', { price: plan.priceString });
@@ -262,8 +263,9 @@ export function devPlans(region: PricingRegion, locale: Locale): PaywallPlan<nul
       price: weekly.amount,
       priceString: fmt(weekly.amount),
       pricePerWeekString: null,
-      intro:
-        weekly.introAmount !== undefined
+      intro: weekly.trialDays
+        ? { type: 'trial', priceString: fmt(0), unit: 'DAY', units: weekly.trialDays, days: weekly.trialDays }
+        : weekly.introAmount !== undefined
           ? { type: 'discount', priceString: fmt(weekly.introAmount), unit: 'WEEK', units: 1, days: 7 }
           : null,
       source: null,

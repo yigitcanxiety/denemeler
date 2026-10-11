@@ -618,7 +618,7 @@ export const tr: SiteContent = {
           id: 'trials',
           heading: '7. Ücretsiz deneme ve tanıtım teklifleri',
           blocks: [
-            'Bazı planlar ücretsiz deneme (örneğin yıllık planda 7 gün) veya ilk dönem için indirimli tanıtım fiyatı (örneğin haftalık planın ilk haftası) içerir. Deneme veya tanıtım dönemi sona erdiğinde, bitiminden en az 24 saat önce iptal etmediğin sürece abonelik normal fiyattan otomatik olarak yenilenir. Denemeler kullanıcı ve mağaza hesabı başına bir kez sunulur.',
+            'Haftalık ve yıllık planlar 7 günlük ücretsiz deneme içerir; bazı kampanyalarda ilk dönem için indirimli tanıtım fiyatı sunulabilir. Deneme veya tanıtım dönemi sona erdiğinde, bitiminden en az 24 saat önce iptal etmediğin sürece abonelik normal fiyattan otomatik olarak yenilenir. Denemeler kullanıcı ve mağaza hesabı başına bir kez sunulur.',
           ],
         },
         {

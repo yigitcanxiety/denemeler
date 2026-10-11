@@ -42,7 +42,7 @@ export const PRICING: Record<PricingRegion, Record<PlanId, PlanPrice>> = {
       period: 'week',
       currency: 'TRY',
       amount: 129.99,
-      introAmount: 39.99,
+      trialDays: 7,
       autoRenews: true,
     },
     yearly: {
@@ -70,6 +70,7 @@ export const PRICING: Record<PricingRegion, Record<PlanId, PlanPrice>> = {
       period: 'week',
       currency: 'EUR',
       amount: 3.99,
+      trialDays: 7,
       autoRenews: true,
     },
     yearly: {

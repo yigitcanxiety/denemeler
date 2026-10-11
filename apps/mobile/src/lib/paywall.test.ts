@@ -117,8 +117,8 @@ describe('dev purchases plans', () => {
     const [y, w] = devPlans('TR', 'tr');
     expect(y?.kind).toBe('yearly');
     expect(y?.intro).toMatchObject({ type: 'trial', days: 7 });
-    expect(w?.intro).toMatchObject({ type: 'discount' });
-    expect(devPlans('EU', 'en')[1]?.intro).toBeNull();
+    expect(w?.intro).toMatchObject({ type: 'trial', days: 7 });
+    expect(devPlans('EU', 'en')[1]?.intro).toMatchObject({ type: 'trial' });
     expect(devPlans('TR', 'tr').map((p) => p.kind)).toEqual(['yearly', 'weekly', 'report']);
     expect(yearlySavingsPercent(devPlans('TR', 'tr'))).toBe(88);
     expect(yearlySavingsPercent([y!])).toBeNull();
