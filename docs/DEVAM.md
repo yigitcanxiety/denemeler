@@ -110,6 +110,17 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: Paddle canlı katalog kuruldu (`paddle-catalog.mjs --live`). Paddle MCP kuruldu (`paddle-sandbox`, `paddle-live`, yalnız silmeyen araçlar; anahtar `~/.config/paddle-mcp/`). Canlı anahtar 2027-10'da yenilenmeli. Onay gelince Vercel'e eklenecek açık değerler:
+
+```
+NEXT_PUBLIC_PADDLE_ENV=production
+NEXT_PUBLIC_PADDLE_CLIENT_TOKEN=live_b2cfd2d1ecd53b2acd89cea1ca4
+NEXT_PUBLIC_PADDLE_PRICE_WEEKLY=pri_01m4mk7g89g1a9aypxx1fazkxy
+NEXT_PUBLIC_PADDLE_PRICE_YEARLY=pri_01m4mk7gdm0vv4camndjdwqwjw
+NEXT_PUBLIC_PADDLE_PRICE_REPORT=pri_01m4mk7gxz8g3gmxgm7cbsf6r7
+NEXT_PUBLIC_PADDLE_DISCOUNT_EXIT=dsc_01m4mk7h7nxfqsrqaf7j2k0s94
+```
+
 - 2026-10-11: Paddle canlı hesap doğrulama formu gönderildi (Doribleg Trade Ltd, 17049929, kuruluş 24.02.2026; kişisel bilgiler Eminhan); durum "We're reviewing your details", Paddle e-postayla dönecek. Ayrı fiyat sayfası `/[locale]/pricing` eklendi (Paddle formunda istendi), fiyat notu Paddle'a göre düzeltildi.
 - 2026-10-11: Meta Pixel (4429254560625034) canlıda, çerez izni bildirimiyle: "Kabul et" → PageView Meta'ya gitti,
   "Reddet" → hiç yüklenmiyor (ikisi de tonelleapp.com'da doğrulandı). Olaylar: Lead, ViewContent, InitiateCheckout,
