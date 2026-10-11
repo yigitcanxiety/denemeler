@@ -25,7 +25,7 @@ export function SiteFooter({ locale, content }: { locale: Locale; content: SiteC
     { href: `/${locale}/analyze`, label: t(locale, 'common.startAnalysis') },
     { href: `${home}#how`, label: content.nav.howItWorks },
     { href: `${home}#try-on`, label: content.nav.looks },
-    { href: `${home}#pricing`, label: content.nav.pricing },
+    { href: `/${locale}/pricing`, label: content.nav.pricing },
     { href: `${home}#faq`, label: content.nav.faq },
   ];
   const year = new Date().getFullYear();

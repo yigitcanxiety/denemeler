@@ -145,7 +145,7 @@ export const tr: SiteContent = {
     title: 'Sade fiyatlandırma',
     subtitle: 'Analiz ücretsiz. Tam raporunu ve kendi yüzündeki görünümleri Premium ile aç.',
     cta: 'Ücretsiz analizi başlat',
-    note: 'Fiyatlara KDV dahildir. Abonelikler Apple veya Google tarafından ücretlendirilir ve yönetilir; ülkene ait kesin fiyatı mağaza gösterir.',
+    note: 'Fiyatlara KDV dahildir. Haftalık ve yıllık planlar 7 gün ücretsizdir; deneme bitmeden iptal edersen ücret alınmaz, sonra plan iptal edilene kadar otomatik yenilenir. Web ödemelerini satıcımız Paddle.com alır; uygulama içi satın almaları Apple veya Google yönetir. Web satın alımlarında 14 gün iade hakkın var.',
   },
   faq: {
     eyebrow: 'SSS',

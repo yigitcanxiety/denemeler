@@ -145,7 +145,7 @@ export const en: SiteContent = {
     title: 'Simple pricing',
     subtitle: 'The analysis is free. Unlock your full report and looks on your own face with Premium.',
     cta: 'Start the free analysis',
-    note: 'Prices include VAT. Subscriptions are charged and managed by Apple or Google; the store shows the exact price for your country.',
+    note: 'Prices include VAT. Weekly and yearly plans start with a 7-day free trial; cancel before it ends and you are not charged, then the plan renews automatically until cancelled. Web payments are processed by our reseller Paddle.com; in-app purchases are handled by Apple or Google. Web purchases come with a 14-day refund.',
   },
   faq: {
     eyebrow: 'FAQ',
