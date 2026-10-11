@@ -69,6 +69,16 @@ export async function claimPurchase(config: PaddleConfig, transactionId: string,
   }
 }
 
+/** The buyer's email, for Meta's hashed matching; null when the customer is gone. */
+export async function getCustomerEmail(config: PaddleConfig, customerId: string): Promise<string | null> {
+  try {
+    return (await api<{ email: string }>(config, `/customers/${customerId}`)).email;
+  } catch (error) {
+    if (error instanceof NotFound) return null;
+    throw error;
+  }
+}
+
 export type RenderAllowance = 'ok' | 'denied' | 'quota_exceeded';
 
 /**

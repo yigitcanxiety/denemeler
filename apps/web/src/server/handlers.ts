@@ -20,6 +20,7 @@ import { kieChatUrl, uploadToKie } from './kie';
 import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } from './openrouter';
 import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
 import { claimPurchase, consumeRender } from './paddle';
+import { forwardToMeta, verifyPaddleSignature, type PaddleTransactionEvent } from './paddle-webhook';
 import { checkEntitlement } from './revenuecat';
 
 const RedeemRequestSchema = z.object({ code: z.string().min(1).max(64) });
@@ -192,6 +193,25 @@ export async function handlePaddleClaim(request: Request): Promise<Response> {
     return jsonResponse({ paddleRef: ref });
   } catch (error) {
     return handleError(error, 'paddle-claim');
+  }
+}
+
+/**
+ * POST /api/paddle/webhook: Paddle notifications. Anything but a valid signature is a 401 so
+ * Paddle keeps retrying a misconfigured secret; handled and ignored events are a 200.
+ */
+export async function handlePaddleWebhook(request: Request): Promise<Response> {
+  try {
+    const config = getServerConfig();
+    if (!config.paddleWebhookSecret) throw new HttpError('internal', 'Webhooks are not configured.', 'PADDLE_WEBHOOK_SECRET is not set');
+    const raw = await request.text();
+    if (raw.length > 256_000 || !verifyPaddleSignature(raw, request.headers.get('paddle-signature'), config.paddleWebhookSecret)) {
+      return new Response(null, { status: 401 });
+    }
+    const result = await forwardToMeta(config, JSON.parse(raw) as PaddleTransactionEvent);
+    return jsonResponse({ ok: true, meta: result });
+  } catch (error) {
+    return handleError(error, 'paddle-webhook');
   }
 }
 

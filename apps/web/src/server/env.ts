@@ -30,6 +30,10 @@ export interface ServerConfig {
   accessCodes: string[];
   /** Paddle Billing for web purchases; null when PADDLE_API_KEY is missing. */
   paddle: { apiKey: string; sandbox: boolean } | null;
+  /** Signing secret of the Paddle notification destination (`PADDLE_WEBHOOK_SECRET`). */
+  paddleWebhookSecret: string | undefined;
+  /** Meta Conversions API; null unless both the pixel id and `META_CAPI_TOKEN` are set. */
+  metaCapi: { pixelId: string; token: string } | null;
 }
 
 export const DEFAULT_ANALYSIS_MODEL = 'stealth/space-bunny-alpha';
@@ -98,6 +102,11 @@ export function getServerConfig(env: Env = process.env): ServerConfig {
     paddle: read(env, 'PADDLE_API_KEY')
       ? { apiKey: read(env, 'PADDLE_API_KEY') as string, sandbox: read(env, 'NEXT_PUBLIC_PADDLE_ENV') !== 'production' }
       : null,
+    paddleWebhookSecret: read(env, 'PADDLE_WEBHOOK_SECRET'),
+    metaCapi:
+      read(env, 'NEXT_PUBLIC_META_PIXEL_ID') && read(env, 'META_CAPI_TOKEN')
+        ? { pixelId: read(env, 'NEXT_PUBLIC_META_PIXEL_ID') as string, token: read(env, 'META_CAPI_TOKEN') as string }
+        : null,
     accessCodes: (read(env, 'TONELLE_ACCESS_CODES') ?? '')
       .split(',')
       .map((c) => c.trim().toUpperCase())

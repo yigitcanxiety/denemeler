@@ -2,7 +2,7 @@ import { PRICING, regionForLocale, type Locale, type PlanId } from '@tonelle/sha
 import { apiClient } from './api-client';
 import type { PaymentProvider, PurchaseOutcome, PurchaseRequest } from './payments';
 import { savePaddleRef } from './storage';
-import { track } from './tracking';
+import { getAdConsent, track } from './tracking';
 
 /**
  * Web checkout through Paddle.js (overlay). Paddle is the Merchant of Record; after
@@ -60,6 +60,15 @@ function loadPaddle(): Promise<PaddleJs> {
   return ready;
 }
 
+/** Meta matching data for the server-side event, only with ad consent (privacy policy §5). */
+function adMatchData(): Record<string, string | boolean> {
+  if (getAdConsent() !== 'granted') return {};
+  const cookie = (name: string) => document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]+)`))?.[1];
+  const fbp = cookie('_fbp');
+  const fbc = cookie('_fbc');
+  return { adConsent: true, ua: navigator.userAgent.slice(0, 300), ...(fbp ? { fbp } : {}), ...(fbc ? { fbc } : {}) };
+}
+
 export class PaddlePaymentProvider implements PaymentProvider {
   readonly id = 'paddle';
 
@@ -89,7 +98,7 @@ export class PaddlePaymentProvider implements PaymentProvider {
       };
       paddle.Checkout.open({
         items: [{ priceId: PADDLE_PUBLIC.prices[plan], quantity: 1 }],
-        customData: { appUserId },
+        customData: { appUserId, ...adMatchData() },
         ...(exitOffer && plan === 'yearly' && PADDLE_PUBLIC.exitDiscount ? { discountId: PADDLE_PUBLIC.exitDiscount } : {}),
         settings: { displayMode: 'overlay', theme: 'light', locale: this.locale() },
       });
