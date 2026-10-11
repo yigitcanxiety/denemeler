@@ -12,8 +12,8 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
  * photos are processed transiently (not collected/stored), purchases are handled by RevenueCat,
  * and there is no tracking (NSPrivacyTracking = false).
  *
- * Assets under assets/images/placeholder-* are generated placeholders
- * (scripts/generate-placeholder-assets.mjs) — replace with final brand artwork.
+ * App icon: the four-season powder compact (assets/images/icon.png, 1024px, no alpha);
+ * adaptive-icon.png is the same art shrunk into Android's safe zone on ICON_BG.
  */
 
 const CAMERA_EN =
@@ -27,6 +27,8 @@ const PHOTOS_TR =
 
 /** v3 "Aura" paper (src/theme.ts). */
 const PAPER = '#FFFFFF';
+/** Lavender behind the compact in the icon art. */
+const ICON_BG = '#D3C2CC';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
@@ -36,7 +38,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   version: '1.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'light',
-  icon: './assets/images/placeholder-icon.png',
+  icon: './assets/images/icon.png',
   backgroundColor: PAPER,
   ios: {
     bundleIdentifier: 'com.tonelleapp.app',
@@ -75,9 +77,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: 'com.tonelleapp.app',
     adaptiveIcon: {
-      foregroundImage: './assets/images/placeholder-adaptive-icon.png',
-      monochromeImage: './assets/images/placeholder-monochrome-icon.png',
-      backgroundColor: '#E9E5FB',
+      foregroundImage: './assets/images/adaptive-icon.png',
+      backgroundColor: ICON_BG,
     },
     // CAMERA is the only runtime permission. (INTERNET and Play BILLING are normal/install-time
     // permissions added by React Native and react-native-purchases.)
@@ -97,7 +98,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   web: {
     // Browser preview (scripts/export-web-preview.mjs): single-page app, no server rendering.
     output: 'single',
-    favicon: './assets/images/placeholder-favicon.png',
+    favicon: './assets/images/favicon.png',
   },
   locales: {
     en: {
@@ -114,9 +115,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: PAPER,
-        image: './assets/images/placeholder-splash.png',
-        imageWidth: 120,
+        backgroundColor: ICON_BG,
+        image: './assets/images/adaptive-icon.png',
+        imageWidth: 200,
       },
     ],
     ['expo-localization', { supportedLocales: { ios: ['en', 'tr'], android: ['en', 'tr'] } }],
