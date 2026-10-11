@@ -95,6 +95,8 @@ Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de k
 | Yıllık | ₺799,99, 7 gün ücretsiz (2026-10-11 kullanıcı kararı) | haftada 5 | haftada 40 |
 | Tek rapor | ₺199 | 1 | 10 |
 
+Deneme süresi sınırı (2026-10-11 kullanıcı kararı): 7 günlük denemede toplam en fazla 10 makyaj görseli; sayaç ödeme entegrasyonuyla birlikte kurulacak (Faz A3/A6).
+
 Tahmini maliyet: analiz ~₺0,10, görsel ~₺1,70 (~$0,04). Haftalık plan net ~₺80 (KDV ve Paddle sonrası).
 Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 görünüm" olarak değişmeli.
 
