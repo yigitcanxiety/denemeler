@@ -108,6 +108,10 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: Paddle web ödemesi yazıldı ve sandbox'ta uçtan uca test edildi (7 gün deneme, claim, gerçek render,
+  sayaç 1, başka kullanıcı 402). Canlı için kalan: canlı katalog (`scripts/paddle-catalog.mjs --live`), Vercel'e
+  `PADDLE_API_KEY` + `NEXT_PUBLIC_PADDLE_*`, canlıda Default payment link, `TONELLE_FREE_RENDERS` kapatma, alan adı onayı
+  ve Eminhan'ın doğrulaması. Webhook henüz yok (RevenueCat bağlanırken eklenecek).
 - 2026-10-11: `tonelleapp.com` alındı, Vercel'e eklendi; koddaki tüm `tonelle.app` adresleri (site, e-postalar,
   mobil API, paylaşım kartı) `tonelleapp.com` yapıldı. DNS bağlandı; bekleyen: e-posta yönlendirme.
 - 2026-10-07: davet kodları (`/api/redeem`, ödeme ekranında kod kutusu).
