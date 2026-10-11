@@ -110,6 +110,7 @@ Sınırlar uygulanınca paywall'daki "Sınırsız görünüm" metni "Haftada 40 
 
 ## 7. Değişiklik günlüğü
 
+- 2026-10-11: Paddle canlı hesap doğrulama formu gönderildi (Doribleg Trade Ltd, 17049929, kuruluş 24.02.2026; kişisel bilgiler Eminhan); durum "We're reviewing your details", Paddle e-postayla dönecek. Ayrı fiyat sayfası `/[locale]/pricing` eklendi (Paddle formunda istendi), fiyat notu Paddle'a göre düzeltildi.
 - 2026-10-11: Meta Pixel (4429254560625034) canlıda, çerez izni bildirimiyle: "Kabul et" → PageView Meta'ya gitti,
   "Reddet" → hiç yüklenmiyor (ikisi de tonelleapp.com'da doğrulandı). Olaylar: Lead, ViewContent, InitiateCheckout,
   StartTrial, Purchase. Kalan: Meta'da alan adı doğrulaması (DNS TXT), Conversions API (webhook ile).
