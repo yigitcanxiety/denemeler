@@ -8,7 +8,7 @@ import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
-import { CoverImage, PORTRAITS } from '@/components/portraits';
+import { CoverImage, LOOK_IMAGES } from '@/components/portraits';
 import { Screen } from '@/components/screen';
 import { ShadeCard } from '@/components/shade-card';
 import { AppText } from '@/components/text';
@@ -120,7 +120,7 @@ function TryOn({ id }: { id: string | undefined }) {
         />
       ) : (
         <View style={[styles.noPhoto, { height: frameH }]}>
-          <CoverImage source={PORTRAITS.three} focusY={0.2} style={StyleSheet.absoluteFill} />
+          <CoverImage source={LOOK_IMAGES[id]} focusY={0.2} style={StyleSheet.absoluteFill} />
           <View style={styles.noPhotoVeil} />
           <View style={styles.noPhotoCard}>
             <Icon name="camera" size={22} color={colors.violet} />

@@ -25,7 +25,7 @@ type Flaw = 'dark' | 'filter' | 'angle';
 export default function TipsScreen() {
   const t = useT();
   const copy = uiCopy(useLocale());
-  const ideal = [PORTRAITS.hero, PORTRAITS.two, PORTRAITS.three];
+  const ideal = [PORTRAITS.four, PORTRAITS.two, PORTRAITS.five];
   const avoid: { source: ImageSourcePropType; flaw: Flaw; label: string }[] = [
     { source: PORTRAITS.two, flaw: 'dark', label: copy.avoidDark },
     { source: PORTRAITS.hero, flaw: 'filter', label: copy.avoidFilter },

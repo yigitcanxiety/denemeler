@@ -1,3 +1,4 @@
+import type { LookId } from '@tonelle/shared';
 import { useState } from 'react';
 import {
   Image,
@@ -18,7 +19,23 @@ export const PORTRAITS = {
   hero: require('../../assets/images/portrait-hero.jpg') as ImageSourcePropType,
   two: require('../../assets/images/portrait-2.jpg') as ImageSourcePropType,
   three: require('../../assets/images/portrait-3.jpg') as ImageSourcePropType,
+  // Deep, light-cool and olive skin tones, so every season is represented (Gemini, 2026-10-15).
+  four: require('../../assets/images/portrait-four.jpg') as ImageSourcePropType,
+  five: require('../../assets/images/portrait-five.jpg') as ImageSourcePropType,
+  six: require('../../assets/images/portrait-six.jpg') as ImageSourcePropType,
 } as const;
+
+/** Example of each makeup look on a model (Gemini edits of the portraits above, 2026-10-15). */
+export const LOOK_IMAGES: Record<LookId, ImageSourcePropType> = {
+  natural_glow: require('../../assets/images/looks/natural_glow.jpg'),
+  office_chic: require('../../assets/images/looks/office_chic.jpg'),
+  soft_glam: require('../../assets/images/looks/soft_glam.jpg'),
+  evening_smoky: require('../../assets/images/looks/evening_smoky.jpg'),
+  bridal: require('../../assets/images/looks/bridal.jpg'),
+  bold_lip: require('../../assets/images/looks/bold_lip.jpg'),
+  no_makeup_makeup: require('../../assets/images/looks/no_makeup_makeup.jpg'),
+  festival_color: require('../../assets/images/looks/festival_color.jpg'),
+};
 
 /**
  * `cover` image with a vertical focus point (RN's Image has no object-position). `focusY` 0 keeps

@@ -7,7 +7,7 @@ import { ProfileBars, RadarChart } from '@/components/charts';
 import { Icon, type IconName } from '@/components/icon';
 import { LockedResult, QualityWarning } from '@/components/locked-result';
 import { PressableScale, Reveal } from '@/components/motion';
-import { CoverImage, PORTRAITS } from '@/components/portraits';
+import { CoverImage, LOOK_IMAGES } from '@/components/portraits';
 import { Screen } from '@/components/screen';
 import { SeasonCard, ShadeCard } from '@/components/shade-card';
 import { AppText } from '@/components/text';
@@ -22,7 +22,6 @@ import { uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
 import { colors, GUTTER, radii, spacing, TAB_CLEARANCE } from '@/theme';
 
-const LOOK_PORTRAITS = [PORTRAITS.three, PORTRAITS.two, PORTRAITS.hero];
 
 /** Sonuçlar tab: empty state, locked result, or the full colour result (DESIGN.md §3.7). */
 export default function ResultsScreen() {
@@ -196,7 +195,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
       <View style={styles.gapSm}>
         <SectionTitle>{t('results.looksTitle')}</SectionTitle>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll} style={styles.bleed}>
-          {lookIds.map((id, i) => {
+          {lookIds.map((id) => {
             const look = lookSummary(id, locale);
             return (
               <PressableScale
@@ -206,7 +205,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
                 accessibilityLabel={`${look.name}. ${t('look.tryOn')}`}
                 style={styles.look}
               >
-                <CoverImage source={LOOK_PORTRAITS[i % LOOK_PORTRAITS.length]!} focusY={0.2} style={styles.lookImg} />
+                <CoverImage source={LOOK_IMAGES[id]} focusY={0.2} style={styles.lookImg} />
                 <View style={styles.lookText}>
                   <AppText variant="label" numberOfLines={1}>
                     {look.name}
