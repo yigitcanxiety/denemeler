@@ -4,6 +4,8 @@ App Store Connect'e kopyala-yapıştır için. ASC uygulama kimliği **682297360
 satıcı Yiğit Gördebil (bireysel). Kurallar: [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/),
 görseller için `DEVAM.md` → "Mağaza görselleri kontrol listesi".
 
+> **Doğruluk (2.3.1):** mobil uygulamada cilt analizi yok (yalnız web'de); mağaza metinleri yalnız uygulamadaki özellikleri anlatır.
+>
 > **İncelemeye gönderme kuralı:** yalnız RevenueCat anahtarıyla (`EXPO_PUBLIC_RC_IOS_KEY`) derlenmiş bir build
 > seçilir. Build 1 (2026-10-15) anahtarsızdır: ödeme ekranı "DEV" modunda, satın alma bedava açılır → 2.1 reddi.
 
@@ -29,13 +31,13 @@ görseller için `DEVAM.md` → "Mağaza görselleri kontrol listesi".
 
 ## Anahtar kelimeler (virgülle, boşluksuz; addaki kelimeleri tekrar etme)
 
-- TR (95/100): `sezon,palet,makyaj,ruj,fondöten,ten rengi,alt ton,cilt,kış,yaz,ilkbahar,sonbahar,güzellik,allık`
+- TR (94/100): `sezon,palet,makyaj,ruj,fondöten,ten rengi,alt ton,kış,yaz,ilkbahar,sonbahar,güzellik,allık,far`
 - EN (96/100): `season,palette,makeup,undertone,lipstick,foundation,skin tone,winter,summer,spring,autumn,beauty`
 
 ## Tanıtım metni (170 karakter, incelemesiz değiştirilebilir)
 
-- TR: `Selfie'den renk sezonunu bul: sana yakışan palet, ruj ve fondöten tonları, cilt analizi ve kendi yüzünde makyaj önizlemeleri.`
-- EN: `Find your colour season from one selfie: your palette, lipstick and foundation shades, skin analysis and makeup previews on your own face.`
+- TR: `Selfie'den renk sezonunu bul: sana yakışan palet, ruj, allık ve fondöten tonları ve kendi yüzünde makyaj önizlemeleri.`
+- EN: `Find your colour season from one selfie: your palette, lipstick, blush and foundation shades and makeup previews on your own face.`
 
 ## Açıklama (TR)
 
@@ -46,7 +48,6 @@ NE ALIRSIN
 • Renk sezonun: İlkbahar, Yaz, Sonbahar ya da Kış ailesinden sana en yakın alt sezon
 • Kişisel paletin: giysi ve aksesuarda sana yakışan renkler, kaçınman gerekenler
 • Makyaj tonların: fondöten alt tonu, ruj, allık ve far önerileri
-• Cilt analizi: cilt tipin ve günlük bakım önerileri
 • Makyaj önizlemeleri: doğal, ofis, akşam gibi hazır görünümleri kendi fotoğrafında gör
 • Kısa test: cilt tipin ve tarzına göre öneriler kişiselleşir
 
@@ -73,7 +74,6 @@ WHAT YOU GET
 • Your colour season: the sub-season of Spring, Summer, Autumn or Winter closest to you
 • Your personal palette: colours that suit you in clothes and accessories, and the ones to avoid
 • Your makeup shades: foundation undertone, lipstick, blush and eyeshadow picks
-• Skin analysis: your skin type and everyday care tips
 • Makeup previews: see ready-made looks such as natural, office or evening on your own photo
 • A short quiz tailors the recommendations to your skin and style
 
