@@ -40,9 +40,12 @@ export function readEnv(raw: RawEnv): AppEnv {
   };
 }
 
-/** Public legal page on the website, e.g. https://tonelleapp.com/tr/kvkk */
+/**
+ * Public legal page on the website, e.g. https://tonelleapp.com/tr/kvkk?app=1. `app=1` hides the
+ * site navigation, so the app never links towards web checkout (App Review 3.1.1).
+ */
 export function legalUrl(siteUrl: string, locale: Locale, page: LegalPage): string {
-  return `${stripTrailingSlash(siteUrl)}/${locale}/${page}`;
+  return `${stripTrailingSlash(siteUrl)}/${locale}/${page}?app=1`;
 }
 
 /** RevenueCat public SDK key for the running platform, or null (→ dev purchases mode). */

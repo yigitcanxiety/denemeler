@@ -83,7 +83,7 @@ export function LegalShell({
       <div className="shell relative">
         <article className="mx-auto max-w-5xl">
           <header className="flex flex-col items-start gap-4 pt-8 pb-10 sm:pt-12">
-            <Link href={`/${locale}`} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-medium text-muted hover:text-ink">
+            <Link href={`/${locale}`} data-app-hide className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-medium text-muted hover:text-ink">
               <ChevronLeft aria-hidden className="size-4" strokeWidth={2} />
               {content.legalCommon.backHome}
             </Link>

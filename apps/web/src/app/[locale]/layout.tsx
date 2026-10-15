@@ -59,9 +59,11 @@ export const viewport: Viewport = {
 
 /**
  * Runs before first paint: marks JS as available, so scroll reveals only hide content when
- * JS runs; a 4 s failsafe shows everything if the observer never starts.
+ * JS runs; a 4 s failsafe shows everything if the observer never starts. Pages the mobile app
+ * opens (`?app=1`, remembered for the browser sheet) get `in-app`, which hides navigation to
+ * web checkout (App Review 3.1.1).
  */
-const BOOT_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!window.__tIO)d.classList.add('no-io')},4000)})();`;
+const BOOT_SCRIPT = `(function(){var d=document.documentElement;d.classList.add('js');try{if(/[?&]app=1/.test(location.search))sessionStorage.setItem('inApp','1');if(sessionStorage.getItem('inApp'))d.classList.add('in-app')}catch(e){}setTimeout(function(){if(!window.__tIO)d.classList.add('no-io')},4000)})();`;
 
 export default async function LocaleLayout({ children, params }: LayoutProps<'/[locale]'>) {
   const { locale } = await params;
@@ -82,7 +84,9 @@ export default async function LocaleLayout({ children, params }: LayoutProps<'/[
         </a>
         {children}
         <RevealObserver />
-        <ConsentBanner locale={locale} copy={content.cookieBanner} />
+        <div data-app-hide className="contents">
+          <ConsentBanner locale={locale} copy={content.cookieBanner} />
+        </div>
       </body>
     </html>
   );

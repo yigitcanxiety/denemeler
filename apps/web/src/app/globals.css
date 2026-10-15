@@ -325,3 +325,8 @@ html.js:not(.no-io) [data-reveal]:not([data-inview]) .bar-fill {
     opacity: 1;
   }
 }
+
+/* Opened from the mobile app: no links towards web checkout (see BOOT_SCRIPT). */
+html.in-app [data-app-hide] {
+  display: none !important;
+}

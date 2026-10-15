@@ -24,8 +24,8 @@ describe('readEnv', () => {
   });
 
   it('builds localized legal URLs', () => {
-    expect(legalUrl('https://tonelleapp.com/', 'tr', 'kvkk')).toBe('https://tonelleapp.com/tr/kvkk');
-    expect(legalUrl('https://tonelleapp.com', 'en', 'terms')).toBe('https://tonelleapp.com/en/terms');
+    expect(legalUrl('https://tonelleapp.com/', 'tr', 'kvkk')).toBe('https://tonelleapp.com/tr/kvkk?app=1');
+    expect(legalUrl('https://tonelleapp.com', 'en', 'terms')).toBe('https://tonelleapp.com/en/terms?app=1');
   });
 });
 

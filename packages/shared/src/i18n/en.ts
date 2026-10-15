@@ -53,7 +53,7 @@ export const en = {
     intro:
       'To analyse your colouring we need to process a photo of your face. Here is exactly what happens to it:',
     pointProcessing:
-      'Your photo is sent securely to our AI provider only to generate your analysis and makeup previews.',
+      'Your photo is sent securely to our AI provider, Google (Gemini API, USA), only to generate your analysis and makeup previews.',
     pointNoStorage:
       'We do not store your photo. It is deleted as soon as the analysis finishes, and it is never used to train AI models.',
     pointOnDevice: 'Your results are saved only on this device. You can delete them at any time in Settings.',
@@ -61,7 +61,7 @@ export const en = {
     ageCheckbox: 'I am 16 or older.',
     termsCheckbox: 'I am 16 or older and I accept the Terms of Use.',
     explicitConsentCheckbox:
-      'I give my explicit consent to the processing of my facial image for colour and makeup analysis, and to its transfer abroad to our AI service providers for this purpose, as described in the Explicit Consent Text.',
+      'I give my explicit consent to the processing of my facial image for colour and makeup analysis, and to its transfer abroad to our AI service provider Google LLC (Gemini API) for this purpose, as described in the Explicit Consent Text.',
     readKvkk: 'Privacy notice (KVKK)',
     readConsent: 'Explicit Consent Text',
     readPrivacy: 'Privacy Policy',

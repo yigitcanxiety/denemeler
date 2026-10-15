@@ -52,7 +52,7 @@ export const tr: Dictionary = {
     intro:
       'Renklerini analiz edebilmemiz için yüzünün fotoğrafını işlememiz gerekiyor. Fotoğrafına tam olarak şunlar olur:',
     pointProcessing:
-      'Fotoğrafın yalnızca analizini ve makyaj önizlemelerini oluşturmak için güvenli şekilde yapay zekâ sağlayıcımıza iletilir.',
+      'Fotoğrafın yalnızca analizini ve makyaj önizlemelerini oluşturmak için güvenli şekilde yapay zekâ sağlayıcımız Google’a (Gemini API, ABD) iletilir.',
     pointNoStorage:
       'Fotoğrafını saklamayız. Analiz biter bitmez silinir ve hiçbir zaman yapay zekâ modeli eğitmek için kullanılmaz.',
     pointOnDevice: 'Sonuçların yalnızca bu cihazda saklanır. Dilediğin zaman Ayarlar’dan silebilirsin.',
@@ -60,7 +60,7 @@ export const tr: Dictionary = {
     ageCheckbox: '16 yaşından büyüğüm.',
     termsCheckbox: '16 yaşından büyüğüm ve Kullanım Koşulları’nı kabul ediyorum.',
     explicitConsentCheckbox:
-      'Yüz fotoğrafımın renk ve makyaj analizi amacıyla işlenmesine ve bu amaçla yurt dışındaki yapay zekâ hizmet sağlayıcılarımıza aktarılmasına, Açık Rıza Metni’nde açıklandığı şekilde açık rızamı veriyorum.',
+      'Yüz fotoğrafımın renk ve makyaj analizi amacıyla işlenmesine ve bu amaçla yurt dışındaki yapay zekâ hizmet sağlayıcımız Google LLC’ye (Gemini API) aktarılmasına, Açık Rıza Metni’nde açıklandığı şekilde açık rızamı veriyorum.',
     readKvkk: 'KVKK Aydınlatma Metni',
     readConsent: 'Açık Rıza Metni',
     readPrivacy: 'Gizlilik Politikası',

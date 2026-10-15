@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet,
 import { BottomSheet } from '@/components/bottom-sheet';
 import { Button, IconButton } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
+import { LegalLinks } from '@/components/legal-links';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
@@ -226,6 +227,8 @@ export default function PaywallScreen() {
               {line}
             </AppText>
           ))}
+          {/* App Review 3.1.2: functional Terms of Use (EULA) and Privacy Policy links in the purchase flow. */}
+          <LegalLinks />
         </View>
       ) : null}
 
@@ -269,6 +272,7 @@ export default function PaywallScreen() {
                 {line}
               </AppText>
             ))}
+            <LegalLinks />
           </>
         ) : null}
       </BottomSheet>

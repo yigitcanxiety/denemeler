@@ -10,9 +10,13 @@ export default async function SiteLayout({ children, params }: LayoutProps<'/[lo
   const content = getContent(locale);
   return (
     <>
-      <SiteHeader locale={locale} content={content} />
+      <div data-app-hide className="contents">
+        <SiteHeader locale={locale} content={content} />
+      </div>
       {children}
-      <SiteFooter locale={locale} content={content} />
+      <div data-app-hide className="contents">
+        <SiteFooter locale={locale} content={content} />
+      </div>
     </>
   );
 }
