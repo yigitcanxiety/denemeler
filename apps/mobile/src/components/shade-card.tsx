@@ -16,7 +16,26 @@ function tint(hex: string, amount: number): string {
   return `rgb(${ch(16)}, ${ch(8)}, ${ch(0)})`;
 }
 
-/** Shade card: "% uyum" pill, colour tube in a tinted well, name and hex. */
+/** Product drawn in the well: lipstick bullet, round blush pan or square eyeshadow pan. */
+function Product({ kind, hex }: { kind: ShadeCardData['kind']; hex: string }) {
+  if (kind === 'lip') {
+    return (
+      <>
+        <View style={[styles.bullet, { backgroundColor: hex }]} />
+        <View style={styles.case} />
+      </>
+    );
+  }
+  return (
+    <View style={[styles.compact, kind === 'eyeshadow' && styles.compactSquare]}>
+      <View style={[kind === 'blush' ? styles.blushPan : styles.shadowPan, { backgroundColor: hex }]}>
+        <View style={styles.sheen} />
+      </View>
+    </View>
+  );
+}
+
+/** Shade card: "% uyum" pill, the product in a tinted well, name and hex. */
 export function ShadeCard({
   shade,
   locale,
@@ -32,8 +51,7 @@ export function ShadeCard({
     <View style={[styles.card, style]} accessible accessibilityLabel={`${name} ${shade.hex}. ${copy.match(percentLabel(shade.match, locale))}`}>
       <MatchPill percent={shade.match} />
       <View style={[styles.well, { backgroundColor: tint(shade.hex, 0.84) }]}>
-        <View style={[styles.bullet, { backgroundColor: shade.hex }]} />
-        <View style={styles.case} />
+        <Product kind={shade.kind} hex={shade.hex} />
       </View>
       <AppText variant="smallStrong" numberOfLines={1}>
         {name}
@@ -74,6 +92,28 @@ const styles = StyleSheet.create({
   well: { height: 66, borderRadius: 11, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 8 },
   bullet: { width: 18, height: 30, borderTopLeftRadius: 9, borderTopRightRadius: 4 },
   case: { width: 24, height: 16, borderRadius: 3, backgroundColor: 'rgba(23,20,31,0.16)' },
+  compact: {
+    width: 46,
+    height: 46,
+    borderRadius: 23,
+    marginBottom: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(23,20,31,0.14)',
+  },
+  compactSquare: { borderRadius: 10 },
+  blushPan: { width: 36, height: 36, borderRadius: 18, overflow: 'hidden' },
+  shadowPan: { width: 34, height: 34, borderRadius: 6, overflow: 'hidden' },
+  sheen: {
+    position: 'absolute',
+    top: 4,
+    left: 6,
+    width: 14,
+    height: 8,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255,255,255,0.35)',
+    transform: [{ rotate: '-25deg' }],
+  },
   season: { borderRadius: radii.xl, padding: 16, gap: 10 },
   seasonName: { fontSize: 34, lineHeight: 38 },
   seasonDesc: { opacity: 0.8 },
