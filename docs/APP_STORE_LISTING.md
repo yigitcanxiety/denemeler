@@ -144,3 +144,11 @@ Contact: support@tonelleapp.com
 
 - TR: `İlk sürüm.`
 - EN: `First release.`
+
+## Ekran görüntüleri (hazır, 2026-10-15)
+
+`apps/mobile/store/screenshots/{tr,en}/01–05.jpg`: 1320×2868 (6,9"), JPEG, alfa yok. 6,9" seti yüklenince küçük
+boyutları Apple ölçekler. Sıra: 1 renk sezonu, 2 palet, 3 ruj/allık/far tonları, 4 makyaj önce/sonra, 5 gizlilik.
+Kurallara uygun: fiyat, deneme, URL, başka platform logosu yok; gerçek uygulama ekranları (tarayıcı önizlemesi, DEMO
+şeridi gizli). Yeniden üretmek için: mobil web önizlemesi + `apps/mobile/store/frame.html?img=…&k=…&t=…&s=…`
+(440×956, 3x ölçek). Örnek analiz metni TR'ye çevrilmiş mock; gerçek yüz yok, görseller Gemini portreleri.

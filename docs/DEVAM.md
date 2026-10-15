@@ -85,7 +85,7 @@ Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de k
 **Mağaza görselleri kontrol listesi** (Apple asset best practices, 2026-10-15; görsel/ikon/video işine başlamadan kullanıcıya hatırlat):
 - iPhone dikey 1320×2868 (6,9") + 1284×2778 (6,5"), PNG, alfa yok, 1–10 adet; iPad yok (`supportsTablet: false`).
 - Görselde **yok**: fiyat, "7 gün ücretsiz", indirim, web adresi, ©, "en doğru AI" gibi doğrulanamaz iddia, Android/Instagram/TikTok logosu. Hepsi 4+ uygun.
-- Gerçek arayüz, en güçlü özellik önce (sezon sonucu → palet → ton önerileri → makyaj önce/sonra → cilt), kısa metin, ortada odak, TR + EN ayrı set, farklı ten tonlarından yüzler.
+- Gerçek arayüz, en güçlü özellik önce (sezon sonucu → palet → ton önerileri → makyaj görünümleri; mobilde cilt analizi yok), kısa metin, ortada odak, TR + EN ayrı set, farklı ten tonlarından yüzler.
 - Önizleme videosu (isteğe bağlı, ≤3): sessiz çalışır, ilk saniyede değer, sorunsuz döngü.
 - Yüklemeden önce App Store Connect ürün sayfası önizleme aracı. Ayrıntı: vault `knowledge/concepts/app-store-gorselleri.md`.
 
