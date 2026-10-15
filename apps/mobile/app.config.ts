@@ -33,6 +33,7 @@ const ICON_BG = '#D3C2CC';
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Tonelle',
+  owner: 'yigitcanxiety',
   slug: 'tonelle',
   scheme: 'tonelle',
   version: '1.0.0',
@@ -149,5 +150,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   extra: {
     ...config.extra,
     publisher: 'Doribleg Trade Ltd',
+    eas: { projectId: '39517736-92a6-4831-b56e-fc618dfd21fd' },
   },
 });
