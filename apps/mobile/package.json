@@ -16,23 +16,24 @@
   "dependencies": {
     "@expo-google-fonts/gloock": "^0.4.2",
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
+    "@expo/metro-runtime": "~57.0.17",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@tonelle/shared": "workspace:*",
-    "expo": "~57.0.26",
+    "expo": "~57.0.29",
     "expo-blur": "~57.0.3",
     "expo-camera": "~57.0.6",
-    "expo-constants": "~57.0.20",
-    "expo-crypto": "~57.0.3",
+    "expo-constants": "~57.0.22",
+    "expo-crypto": "~57.0.4",
     "expo-file-system": "~57.0.7",
     "expo-font": "~57.0.4",
-    "expo-image-manipulator": "~57.0.20",
+    "expo-image-manipulator": "~57.0.21",
     "expo-image-picker": "~57.0.20",
     "expo-linear-gradient": "~57.0.2",
-    "expo-linking": "~57.0.11",
+    "expo-linking": "~57.0.13",
     "expo-localization": "~57.0.2",
-    "expo-router": "~57.0.24",
-    "expo-sharing": "~57.0.22",
-    "expo-splash-screen": "~57.0.9",
+    "expo-router": "~57.0.27",
+    "expo-sharing": "~57.0.23",
+    "expo-splash-screen": "~57.0.10",
     "expo-status-bar": "~57.0.1",
     "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~57.0.3",
@@ -58,5 +59,12 @@
     "react-native-web": "~0.21.3",
     "typescript": "~5.9.3",
     "vitest": "^5.0.1"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "typescript"
+      ]
+    }
   }
 }
