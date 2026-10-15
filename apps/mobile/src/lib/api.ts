@@ -71,6 +71,11 @@ export interface ApiClientOptions {
   /** Default timeouts (ms). */
   analyzeTimeoutMs?: number;
   renderTimeoutMs?: number;
+  /**
+   * Treat `mock: true` responses (backend without an AI key) as a provider error, so a release
+   * build never shows canned results as real ones (App Review 2.1).
+   */
+  rejectMock?: boolean;
 }
 
 export interface RequestOptions {
@@ -151,18 +156,27 @@ export function createApiClient(options: ApiClientOptions) {
   const analyzeTimeout = options.analyzeTimeoutMs ?? DEFAULT_ANALYZE_TIMEOUT_MS;
   const renderTimeout = options.renderTimeoutMs ?? DEFAULT_RENDER_TIMEOUT_MS;
 
+  const checkMock = <T>(response: T): T => {
+    if (options.rejectMock && (response as { mock?: boolean }).mock === true) {
+      throw new ApiClientError('provider_error', 'Backend answered with mock data');
+    }
+    return response;
+  };
+
   return {
     async analyze(request: AnalyzeRequest, opts: RequestOptions = {}): Promise<AnalyzeResponse> {
       assertImage(request.image);
       const body = AnalyzeRequestSchema.safeParse(request);
       if (!body.success) throw new ApiClientError('bad_request', 'Invalid analyze request');
-      return postJson(
-        fetchImpl,
-        `${baseUrl}/api/analyze`,
-        body.data,
-        AnalyzeResponseSchema,
-        opts.timeoutMs ?? analyzeTimeout,
-        opts.signal,
+      return checkMock(
+        await postJson(
+          fetchImpl,
+          `${baseUrl}/api/analyze`,
+          body.data,
+          AnalyzeResponseSchema,
+          opts.timeoutMs ?? analyzeTimeout,
+          opts.signal,
+        ),
       );
     },
 
@@ -170,13 +184,15 @@ export function createApiClient(options: ApiClientOptions) {
       assertImage(request.image);
       const body = RenderRequestSchema.safeParse(request);
       if (!body.success) throw new ApiClientError('bad_request', 'Invalid render request');
-      return postJson(
-        fetchImpl,
-        `${baseUrl}/api/render-look`,
-        body.data,
-        RenderResponseSchema,
-        opts.timeoutMs ?? renderTimeout,
-        opts.signal,
+      return checkMock(
+        await postJson(
+          fetchImpl,
+          `${baseUrl}/api/render-look`,
+          body.data,
+          RenderResponseSchema,
+          opts.timeoutMs ?? renderTimeout,
+          opts.signal,
+        ),
       );
     },
   };

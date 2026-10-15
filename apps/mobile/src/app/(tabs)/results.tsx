@@ -16,7 +16,6 @@ import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import { useStartAnalysis } from '@/hooks/use-start-analysis';
 import { lookSummary, resolveRecommendedLooks } from '@/lib/looks';
-import { displayTrial } from '@/lib/paywall';
 import { completeQuiz } from '@/lib/quiz';
 import { profileBars, profilePoints, traitChips, type TraitChip } from '@/lib/results';
 import { uiCopy } from '@/lib/ui-copy';
@@ -70,7 +69,7 @@ export default function ResultsScreen() {
       <Screen edges={['top']} contentStyle={styles.tabContent}>
         {title}
         <LockedResult analysis={analysis} />
-        <Button label={`${copy.trialCta(displayTrial(locale).days)} ✦`} onPress={() => router.push('/paywall')} />
+        <Button label={`${copy.unlockResults} ✦`} onPress={() => router.push('/paywall')} />
       </Screen>
     );
   }

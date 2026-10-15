@@ -28,6 +28,13 @@ describe('createApiClient.analyze', () => {
     expect(JSON.parse(init.body as string)).toEqual({ image: MOCK_IMAGE_DATA_URL, locale: 'tr' });
   });
 
+  it('rejects mock answers when rejectMock is set', async () => {
+    const fetchImpl = vi.fn<FetchLike>(async () => jsonResponse(200, okResponse));
+    await expect(client(fetchImpl, { rejectMock: true }).analyze({ image: MOCK_IMAGE_DATA_URL, locale: 'tr' })).rejects.toMatchObject({
+      code: 'provider_error',
+    });
+  });
+
   it('maps ApiError bodies to their code', async () => {
     const fetchImpl: FetchLike = async () => jsonResponse(422, { error: { code: 'no_face', message: 'No face' } });
     await expect(client(fetchImpl).analyze({ image: MOCK_IMAGE_DATA_URL, locale: 'en' })).rejects.toMatchObject({

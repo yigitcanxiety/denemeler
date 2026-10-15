@@ -5,7 +5,6 @@ import {
   defaultPlanKey,
   devExitPlan,
   devPlans,
-  displayTrial,
   yearlySavingsPercent,
   exitDiscountPercent,
   exitOfferPlanFrom,
@@ -122,8 +121,6 @@ describe('dev purchases plans', () => {
     expect(devPlans('TR', 'tr').map((p) => p.kind)).toEqual(['yearly', 'weekly', 'report']);
     expect(yearlySavingsPercent(devPlans('TR', 'tr'))).toBe(88);
     expect(yearlySavingsPercent([y!])).toBeNull();
-    expect(displayTrial('tr').days).toBe(7);
-    expect(displayTrial('en').yearlyPrice).toContain('24.99');
     const exit = devExitPlan('EU', 'en');
     expect(exit.price).toBeCloseTo(12.49);
   });

@@ -7,11 +7,9 @@ import { LegalLinks } from '@/components/legal-links';
 import { LockedResult } from '@/components/locked-result';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
-import { AppText } from '@/components/text';
 import { StepBar } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
-import { displayTrial } from '@/lib/paywall';
 import { uiCopy } from '@/lib/ui-copy';
 import { restorePurchases } from '@/purchases/purchases';
 import { useAppStore } from '@/store/app-store';
@@ -28,9 +26,6 @@ export default function TeaserScreen() {
 
   if (!analysis) return <Redirect href="/" />;
   if (premium) return <Redirect href="/results" />;
-
-  // Display prices from the shared list; the paywall shows the live store prices.
-  const { days: trialDays, yearlyPrice } = displayTrial(locale);
 
   const restore = async () => {
     setRestoring(true);
@@ -55,10 +50,8 @@ export default function TeaserScreen() {
       }
       footer={
         <>
-          <Button label={`${copy.trialCta(trialDays)} ✦`} onPress={() => router.push('/paywall')} />
-          <AppText variant="caption" align="center">
-            {`${t('paywall.yearlyTrial', { days: trialDays, price: yearlyPrice })} · ${t('paywall.cancelAnytime')}`}
-          </AppText>
+          {/* Prices and trial terms appear only on the paywall, from the store (3.1.2). */}
+          <Button label={`${copy.unlockResults} ✦`} onPress={() => router.push('/paywall')} />
           <LegalLinks onRestore={() => void restore()} restoring={restoring} />
         </>
       }

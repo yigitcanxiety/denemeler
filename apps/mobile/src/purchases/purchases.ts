@@ -1,6 +1,7 @@
 import { ENTITLEMENT_ID, regionForLocale, type Locale } from '@tonelle/shared';
 import { Platform } from 'react-native';
 import Purchases, {
+  INTRO_ELIGIBILITY_STATUS,
   LOG_LEVEL,
   PURCHASES_ERROR_CODE,
   type CustomerInfo,
@@ -84,7 +85,28 @@ export async function loadPaywall(locale: Locale): Promise<PaywallData> {
     return { plans: devPlans(region, locale), exitOffer: devExitPlan(region, locale) };
   }
   const offerings = await Purchases.getOfferings();
-  return { plans: plansFromOfferings(offerings), exitOffer: exitOfferPlanFrom(offerings) };
+  const plans = plansFromOfferings(offerings);
+  const exitOffer = exitOfferPlanFrom(offerings);
+  return Platform.OS === 'ios' ? withIosTrialEligibility(plans, exitOffer) : { plans, exitOffer };
+}
+
+/**
+ * iOS lists the trial on every product, even for people who already used it. Show it only when
+ * StoreKit confirms eligibility; unknown → regular price, as RevenueCat advises (App Review 3.1.2).
+ */
+async function withIosTrialEligibility(plans: Plan[], exitOffer: Plan | null): Promise<PaywallData> {
+  const all = exitOffer ? [...plans, exitOffer] : plans;
+  const ids = all.flatMap((p) => (p.intro && p.source ? [p.source.product.identifier] : []));
+  if (!ids.length) return { plans, exitOffer };
+  const eligibility = await Purchases.checkTrialOrIntroductoryPriceEligibility(ids).catch(() => ({}));
+  const keep = (plan: Plan): Plan =>
+    plan.intro &&
+    plan.source &&
+    (eligibility as Record<string, { status: INTRO_ELIGIBILITY_STATUS } | undefined>)[plan.source.product.identifier]?.status !==
+      INTRO_ELIGIBILITY_STATUS.INTRO_ELIGIBILITY_STATUS_ELIGIBLE
+      ? { ...plan, intro: null }
+      : plan;
+  return { plans: plans.map(keep), exitOffer: exitOffer && keep(exitOffer) };
 }
 
 function isCancelled(error: unknown): boolean {

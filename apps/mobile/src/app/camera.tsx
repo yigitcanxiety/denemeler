@@ -209,14 +209,17 @@ export default function CameraScreen() {
             {t('camera.title')}
           </AppText>
         </View>
-        <View style={{ position: 'absolute', left: 0, right: 0, top: circle.cy + circle.r + 22 }} pointerEvents="none">
-          <AppText variant="label" align="center">
-            {t('camera.frameHint')}
-          </AppText>
-          <AppText variant="small" align="center">
-            {t('camera.hintLight')}
-          </AppText>
-        </View>
+        {/* Hidden while an error shows: on small screens the notice grows into the hint. */}
+        {error ? null : (
+          <View style={{ position: 'absolute', left: 0, right: 0, top: circle.cy + circle.r + 22 }} pointerEvents="none">
+            <AppText variant="label" align="center">
+              {t('camera.frameHint')}
+            </AppText>
+            <AppText variant="small" align="center">
+              {t('camera.hintLight')}
+            </AppText>
+          </View>
+        )}
         <View style={styles.flex} />
         <View style={styles.bottom}>
           {error ? <Notice tone="warning" message={error} /> : null}

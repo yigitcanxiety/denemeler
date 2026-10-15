@@ -3,7 +3,6 @@ import {
   PRICING,
   PRODUCT_IDS,
   formatPrice,
-  regionForLocale,
   weeklyEquivalent,
   type Locale,
   type PlanId,
@@ -231,12 +230,6 @@ export function planPriceLine(plan: PaywallPlan, t: Translate): string {
       : t('paywall.perYear', { price: plan.priceString });
   }
   return t('paywall.oneTime', { price: plan.priceString });
-}
-
-/** Trial length and yearly price from the shared price list, for copy shown before the paywall. */
-export function displayTrial(locale: Locale): { days: number; yearlyPrice: string } {
-  const { yearly } = PRICING[regionForLocale(locale)];
-  return { days: yearly.trialDays ?? 0, yearlyPrice: formatPrice(yearly.amount, yearly.currency, locale) };
 }
 
 /* ---------- Dev purchases mode ---------- */

@@ -12,7 +12,6 @@ describe('ui-copy', () => {
   it('provides both locales', () => {
     expect(uiCopy('tr').tabToday).toBe('Bugün');
     expect(uiCopy('en').tabResults).toBe('Results');
-    expect(uiCopy('tr').trialCta(3)).toBe('3 gün ücretsiz dene');
   });
 
   it('formats percentages per locale', () => {

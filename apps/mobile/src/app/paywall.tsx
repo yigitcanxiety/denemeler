@@ -301,9 +301,16 @@ function PlanCard({
       : plan.kind === 'weekly' && plan.intro?.type === 'discount'
         ? copy.firstWeek(plan.intro.priceString)
         : planPriceLine(plan, t);
-  // Yearly shows its weekly equivalent as the big number (DESIGN.md §3.6).
-  const big = plan.kind === 'yearly' && plan.pricePerWeekString ? plan.pricePerWeekString : plan.priceString;
-  const unit = plan.kind === 'report' ? copy.once : plan.kind === 'yearly' && !plan.pricePerWeekString ? t('paywall.periodYear') : copy.perWeekShort;
+  // App Review 3.1.2: the billed amount is the most prominent price; the weekly equivalent is secondary.
+  const big = plan.priceString;
+  const unit =
+    plan.kind === 'report'
+      ? copy.once
+      : plan.kind === 'yearly'
+        ? plan.pricePerWeekString
+          ? `${copy.perYearShort} · ${copy.aboutPerWeek(plan.pricePerWeekString)}`
+          : copy.perYearShort
+        : copy.perWeekShort;
 
   return (
     <PressableScale
