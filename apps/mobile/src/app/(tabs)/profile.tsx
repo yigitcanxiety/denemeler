@@ -2,7 +2,7 @@ import { LOCALES, type Locale } from '@tonelle/shared';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Platform, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
@@ -61,6 +61,12 @@ export default function ProfileScreen() {
     void switchUser(newId);
     setMessage({ text: t('settings.deleteDataDone'), tone: 'success' });
     router.navigate('/');
+  };
+
+  // Pre-filled support mail: app version and device help us reproduce a problem.
+  const contact = () => {
+    const body = `\n\n—\nTonelle ${version} · ${Platform.OS} ${String(Platform.Version)} · ${locale}`;
+    void Linking.openURL(`mailto:support@tonelleapp.com?subject=${encodeURIComponent('Tonelle')}&body=${encodeURIComponent(body)}`).catch(() => undefined);
   };
 
   const confirmDelete = () => {
@@ -124,6 +130,7 @@ export default function ProfileScreen() {
 
       <View style={styles.list}>
         <Row icon="sliders" title={copy.preferences} body={copy.preferencesBody} onPress={() => router.push('/quiz')} />
+        <Row icon="alert" title={t('settings.contact')} body="support@tonelleapp.com" onPress={contact} />
         <Row icon="trash" title={t('settings.deleteData')} onPress={confirmDelete} danger />
       </View>
 

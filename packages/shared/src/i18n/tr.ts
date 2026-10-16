@@ -132,7 +132,7 @@ export const tr: Dictionary = {
   camera: {
     title: 'Bir selfie çek',
     subtitle: 'Net ve iyi aydınlatılmış bir fotoğraf en doğru sonucu verir.',
-    frameHint: 'Yüzünü ovalin içine yerleştir',
+    frameHint: 'Yüzünü çerçeveye ortala',
     hintLight: 'Pencereye ya da yumuşak gün ışığına dön',
     hintNoMakeup: 'Makyajsız ya da hafif makyajlı cilt en iyi sonucu verir',
     hintNoFilter: 'Filtreleri ve güzellik modunu kapat',

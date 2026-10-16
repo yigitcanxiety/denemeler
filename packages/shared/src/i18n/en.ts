@@ -133,7 +133,7 @@ export const en = {
   camera: {
     title: 'Take a selfie',
     subtitle: 'A clear, well-lit photo gives the most accurate result.',
-    frameHint: 'Fit your face inside the oval',
+    frameHint: 'Centre your face in the frame',
     hintLight: 'Face a window or soft daylight',
     hintNoMakeup: 'Bare skin or light makeup works best',
     hintNoFilter: 'Turn off filters and beauty mode',

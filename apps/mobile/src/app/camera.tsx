@@ -6,7 +6,7 @@ import { Image, Linking, Platform, Pressable, StyleSheet, View, useWindowDimensi
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Button, IconButton } from '@/components/button';
-import { FaceGuide, faceCircle } from '@/components/face-guide';
+import { FaceGuide, faceOval } from '@/components/face-guide';
 import { Icon } from '@/components/icon';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
@@ -186,7 +186,7 @@ export default function CameraScreen() {
   }
 
   /* ---------- Live camera ---------- */
-  const circle = faceCircle(width, height);
+  const oval = faceOval(width, height);
   return (
     <View style={styles.cameraRoot}>
       <CameraView
@@ -211,11 +211,11 @@ export default function CameraScreen() {
         </View>
         {/* Hidden while an error shows: on small screens the notice grows into the hint. */}
         {error ? null : (
-          <View style={{ position: 'absolute', left: 0, right: 0, top: circle.cy + circle.r + 22 }} pointerEvents="none">
-            <AppText variant="label" align="center">
+          <View style={{ position: 'absolute', left: 0, right: 0, top: oval.cy + oval.ry + 44 }} pointerEvents="none">
+            <AppText variant="label" align="center" color={colors.paper}>
               {t('camera.frameHint')}
             </AppText>
-            <AppText variant="small" align="center">
+            <AppText variant="small" align="center" color={colors.paper} style={styles.dim}>
               {t('camera.hintLight')}
             </AppText>
           </View>
@@ -233,7 +233,7 @@ export default function CameraScreen() {
               <View style={styles.sideIcon}>
                 <Icon name="image" size={20} color={colors.violet} />
               </View>
-              <AppText variant="caption" color={colors.ink} align="center" numberOfLines={1}>
+              <AppText variant="caption" color={colors.paper} align="center" numberOfLines={1}>
                 {t('camera.upload')}
               </AppText>
             </PressableScale>
@@ -249,7 +249,7 @@ export default function CameraScreen() {
             </Pressable>
             <View style={styles.sideButton} />
           </View>
-          <AppText variant="caption" align="center">
+          <AppText variant="caption" align="center" color={colors.paper} style={styles.dim}>
             {t('common.privacyBadge')}
           </AppText>
         </View>
@@ -285,10 +285,11 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   dropHint: { paddingHorizontal: 28 },
-  cameraRoot: { flex: 1, backgroundColor: colors.paper },
+  cameraRoot: { flex: 1, backgroundColor: colors.ink },
+  dim: { opacity: 0.8 },
   cameraUi: { flex: 1 },
   topRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: GUTTER, paddingTop: spacing.sm },
-  cameraTitle: { fontSize: 22 },
+  cameraTitle: { fontSize: 22, color: colors.paper },
   bottom: { paddingHorizontal: GUTTER, paddingBottom: spacing.md, gap: spacing.md },
   controls: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   sideButton: { width: 84, minHeight: 44, alignItems: 'center', justifyContent: 'center', gap: 4 },
