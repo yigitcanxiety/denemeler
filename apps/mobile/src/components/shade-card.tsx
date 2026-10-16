@@ -71,7 +71,7 @@ export function ShadeCard({
       <View style={[styles.well, { backgroundColor: tint(shade.hex, 0.84) }]}>
         <Product kind={shade.kind} hex={shade.hex} />
       </View>
-      <AppText variant="smallStrong" numberOfLines={1}>
+      <AppText variant="smallStrong" numberOfLines={2} style={styles.name}>
         {colour}
       </AppText>
       <View style={styles.storeRow}>
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: colors.paper,
   },
+  name: { minHeight: 34 },
   storeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   flexShrink: { flexShrink: 1 },
   well: { height: 66, borderRadius: 11, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 8 },
