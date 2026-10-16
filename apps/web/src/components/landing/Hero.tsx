@@ -1,9 +1,8 @@
 import type { CoreLocale } from '@tonelle/shared';
 import { Check, Palette, WandSparkles } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
-import { StoreBadges } from '@/components/site/StoreBadges';
-import { ButtonLink, Eyebrow, FitPill, MiniRing, ShadeTube, delay } from '@/components/ui';
+import { AppStoreCta } from '@/components/site/AppStoreCta';
+import { Eyebrow, FitPill, MiniRing, ShadeTube, delay } from '@/components/ui';
 import type { SiteContent } from '@/content';
 import { landingSample } from './sample';
 
@@ -52,23 +51,10 @@ export function Hero({ locale, content }: { locale: CoreLocale; content: SiteCon
             {hero.subtitle}
           </p>
           <div className="enter mt-7 flex flex-wrap items-center justify-center gap-3" style={delay(180)}>
-            <ButtonLink href={`/${locale}/analyze`} size="lg" icon={<span aria-hidden>✦</span>}>
-              {hero.cta}
-            </ButtonLink>
-            <StoreBadges labels={content.stores} />
+            <AppStoreCta labels={content.stores} />
           </div>
           <p className="enter mt-3 text-[12.5px] text-muted" style={delay(220)}>
             {hero.ctaNote}
-          </p>
-          <p className="enter mt-2 flex flex-wrap items-center justify-center gap-x-1 text-[13.5px] text-muted" style={delay(240)}>
-            {hero.modesLabel}
-            <Link href={`/${locale}/analyze/color`} className="inline-flex min-h-9 items-center px-1 font-semibold text-violet hover:underline">
-              {hero.colorOnly}
-            </Link>
-            ·
-            <Link href={`/${locale}/analyze/skin`} className="inline-flex min-h-9 items-center px-1 font-semibold text-violet hover:underline">
-              {hero.skinOnly}
-            </Link>
           </p>
         </div>
 

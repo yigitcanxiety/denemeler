@@ -15,4 +15,9 @@ describe('locale helpers', () => {
     expect(pickLocale('xx', 'tr')).toBe('tr');
     expect(pickLocale(undefined, null)).toBe('tr');
   });
+
+  it('falls back to en when Accept-Language has neither tr nor en', () => {
+    expect(pickLocale(undefined, 'de-DE')).toBe('en');
+    expect(pickLocale(undefined, 'de-DE,tr;q=0.5')).toBe('tr');
+  });
 });

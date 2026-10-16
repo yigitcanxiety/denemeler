@@ -1,9 +1,7 @@
-import { AnalyzePage, analyzeMetadata } from '@/features/analyze/AnalyzePage';
+import { redirect } from 'next/navigation';
 
-export function generateMetadata({ params }: PageProps<'/[locale]/analyze/skin'>) {
-  return analyzeMetadata(params, 'skin');
-}
-
-export default function Page({ params }: PageProps<'/[locale]/analyze/skin'>) {
-  return <AnalyzePage params={params} mode="skin" />;
+/** The analysis lives in the iOS app; the website only points to it. */
+export default async function Page({ params }: PageProps<'/[locale]/analyze/skin'>) {
+  const { locale } = await params;
+  redirect(`/${locale}`);
 }

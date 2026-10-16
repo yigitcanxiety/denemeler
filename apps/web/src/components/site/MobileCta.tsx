@@ -1,11 +1,12 @@
 'use client';
 
 import clsx from 'clsx';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import type { SiteContent } from '@/content';
+import { AppStoreCta } from './AppStoreCta';
 
 /** Simple sticky CTA bar for small screens (DESIGN §4). Shows after the hero, hides near the footer. */
-export function MobileCta({ href, label, note, showAfterId, hideNearId }: { href: string; label: string; note: string; showAfterId: string; hideNearId: string }) {
+export function MobileCta({ stores, note, showAfterId, hideNearId }: { stores: SiteContent['stores']; note: string; showAfterId: string; hideNearId: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -34,15 +35,9 @@ export function MobileCta({ href, label, note, showAfterId, hideNearId }: { href
         visible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-full opacity-0',
       )}
       aria-hidden={!visible}
+      inert={!visible}
     >
-      <Link
-        href={href}
-        tabIndex={visible ? undefined : -1}
-        className="press flex h-[52px] items-center justify-center gap-2 rounded-pill bg-violet px-6 text-[15px] font-semibold text-white shadow-violet"
-      >
-        <span aria-hidden>✦</span>
-        {label}
-      </Link>
+      <AppStoreCta labels={stores} fullWidth />
       <p className="mt-1.5 text-center text-[11.5px] text-muted">{note}</p>
     </div>
   );

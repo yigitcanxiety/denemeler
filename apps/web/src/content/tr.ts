@@ -7,7 +7,7 @@ export const tr: SiteContent = {
   meta: {
     homeTitle: 'Tonelle · Sana yakışan makyajı kendi yüzünde gör',
     homeDescription:
-      'Tek bir selfie çek. Tonelle alt tonunu ve renk sezonunu bulur, kişisel paletini çıkarır ve makyaj görünümlerini kendi yüzünde gösterir. Fotoğrafını saklamayız.',
+      'Tonelle iPhone uygulamasıyla tek bir selfie çek: alt tonunu ve renk sezonunu bulur, kişisel paletini çıkarır, makyaj görünümlerini kendi yüzünde gösterir. Fotoğrafını saklamayız.',
     analyzeTitle: 'Ücretsiz renk ve makyaj analizi',
     analyzeDescription:
       'Renk sezonunu, alt tonunu ve sana yakışan makyaj tonlarını yaklaşık bir dakikada öğren. Fotoğrafını saklamayız.',
@@ -33,7 +33,6 @@ export const tr: SiteContent = {
     looks: 'Makyaj denemesi',
     pricing: 'Fiyatlar',
     faq: 'SSS',
-    startCta: 'Analizi başlat',
     primaryNavLabel: 'Ana menü',
     menu: 'Menü',
     closeMenu: 'Menüyü kapat',
@@ -43,12 +42,8 @@ export const tr: SiteContent = {
     eyebrow: 'Kendini keşfet',
     title: 'Sana yakışan makyajı kendi yüzünde gör',
     subtitle:
-      'Tek bir selfie yeterli. Tonelle alt tonunu okur, renk sezonunu bulur ve makyaj görünümlerini kendi yüzünde gösterir.',
-    cta: 'Ücretsiz analizimi başlat',
-    ctaNote: 'Ücretsiz analiz · Yaklaşık 1 dakika · Üyelik yok',
-    modesLabel: 'Ya da yalnızca:',
-    colorOnly: 'Renk analizi',
-    skinOnly: 'Cilt analizi',
+      'Tonelle iPhone uygulamasında tek bir selfie yeterli. Alt tonunu okur, renk sezonunu bulur ve makyaj görünümlerini kendi yüzünde gösterir.',
+    ctaNote: 'iPhone için · Yaklaşık 1 dakikada analiz · Üyelik yok',
     trustPoints: ['Fotoğrafını saklamayız', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
     storesLabel: 'Telefonunda da',
     portraitAlt: 'Tonelle ile analiz edilen bir portre; alt ton, renk sezonu ve uyum bilgileri fotoğrafın üzerinde.',
@@ -86,7 +81,7 @@ export const tr: SiteContent = {
     starsLabel: '5 üzerinden 5 yıldız',
   },
   dock: {
-    note: 'Ücretsiz · ~1 dk · Üyelik yok',
+    note: 'iPhone için · Fotoğrafını saklamayız',
   },
   how: {
     eyebrow: 'Nasıl çalışır',
@@ -113,7 +108,6 @@ export const tr: SiteContent = {
     eyebrow: 'Görünümler',
     title: 'Renklerine göre hazırlanmış görünümler',
     subtitle: 'Her görünüm paletinden seçilmiş tonlar ve seviyene uygun adım adım bir rehberle gelir.',
-    cta: 'Görünümlerimi bul',
   },
   profile: {
     eyebrow: 'Renk profili',
@@ -143,9 +137,8 @@ export const tr: SiteContent = {
   pricing: {
     eyebrow: 'Fiyatlar',
     title: 'Sade fiyatlandırma',
-    subtitle: 'Analiz ücretsiz. Tam raporunu ve kendi yüzündeki görünümleri Premium ile aç.',
-    cta: 'Ücretsiz analizi başlat',
-    note: 'Fiyatlara KDV dahildir. Haftalık ve yıllık planlar 7 gün ücretsizdir; deneme bitmeden iptal edersen ücret alınmaz, sonra plan iptal edilene kadar otomatik yenilenir. Web ödemelerini satıcımız Paddle.com alır; uygulama içi satın almaları Apple veya Google yönetir. Web satın alımlarında 14 gün iade hakkın var.',
+    subtitle: 'Abonelikler Tonelle iOS uygulamasında, Apple (App Store) üzerinden satın alınır. Tam raporunu ve kendi yüzündeki görünümleri Premium ile aç.',
+    note: 'Siteden satın alma yapılmaz: abonelikler yalnızca iOS uygulamasında Apple üzerinden satın alınır ve Apple Kimliğin üzerinden tahsil edilir. Kesin fiyat, deneme süresi ve vergiler satın alma ekranında App Store’un gösterdiği gibidir. Plan, iptal edilmezse otomatik yenilenir; yenilemeden en az 24 saat önce App Store hesap ayarlarından dilediğin zaman iptal edebilirsin.',
   },
   faq: {
     eyebrow: 'SSS',
@@ -170,7 +163,7 @@ export const tr: SiteContent = {
       },
       {
         q: 'Aboneliğimi nasıl iptal ederim?',
-        a: 'Abonelikler Apple veya Google tarafından yönetilir. Tekrar ücretlendirilmemek için mevcut dönemin (veya ücretsiz denemenin) bitiminden en az 24 saat önce App Store ya da Google Play hesap ayarlarından dilediğin zaman iptal edebilirsin. Uygulamayı silmek aboneliği iptal etmez.',
+        a: 'Abonelikler Apple tarafından yönetilir. Tekrar ücretlendirilmemek için mevcut dönemin (veya ücretsiz denemenin) bitiminden en az 24 saat önce iPhone’da Ayarlar → Apple Kimliği → Abonelikler bölümünden dilediğin zaman iptal edebilirsin. Uygulamayı silmek aboneliği iptal etmez.',
       },
       {
         q: 'Zeytin ve koyu tenlerde de çalışıyor mu?',
@@ -188,8 +181,7 @@ export const tr: SiteContent = {
   },
   finalCta: {
     title: 'Renklerinle tanışmaya hazır mısın?',
-    body: 'Tek bir selfie çek, renk sezonunu yaklaşık bir dakikada öğren. Ücretsiz, gizli, üyeliksiz.',
-    button: 'Ücretsiz analizimi başlat',
+    body: 'Tonelle’i iPhone’una indir, tek bir selfie ile renk sezonunu yaklaşık bir dakikada öğren. Üyelik gerekmez, fotoğrafını saklamayız.',
   },
   cookieBanner: {
     text: 'Reklamlarımızın işe yarayıp yaramadığını ölçmek için Meta Pixel çerezi kullanmak istiyoruz. Fotoğrafın ve analiz sonuçların Meta’ya gönderilmez.',
@@ -205,6 +197,8 @@ export const tr: SiteContent = {
     registration: 'Sicil no.',
   },
   stores: {
+    download: 'App Store’dan indir',
+    soon: 'Yakında App Store’da',
     appStoreTop: 'İndirin',
     appStoreBottom: 'App Store',
     playTop: 'Hemen edinin',

@@ -7,7 +7,7 @@ export const en: SiteContent = {
   meta: {
     homeTitle: 'Tonelle · See the makeup that suits you, on your own face',
     homeDescription:
-      'Take one selfie. Tonelle finds your undertone and colour season, builds your personal palette and shows makeup looks on your own face. We don’t keep your photo.',
+      'Take one selfie in the Tonelle iPhone app: it finds your undertone and colour season, builds your personal palette and shows makeup looks on your own face. We don’t keep your photo.',
     analyzeTitle: 'Free colour & makeup analysis',
     colorTitle: 'Free colour analysis',
     colorDescription: 'Find your colour season, undertone and the colours that suit you from one selfie. We never store your photo.',
@@ -33,7 +33,6 @@ export const en: SiteContent = {
     looks: 'Makeup try-on',
     pricing: 'Pricing',
     faq: 'FAQ',
-    startCta: 'Start analysis',
     primaryNavLabel: 'Main',
     menu: 'Menu',
     closeMenu: 'Close menu',
@@ -43,12 +42,8 @@ export const en: SiteContent = {
     eyebrow: 'Discover yourself',
     title: 'See the makeup that suits you, on your own face',
     subtitle:
-      'One selfie is all it takes. Tonelle reads your undertone, finds your colour season and shows makeup looks on your own face.',
-    cta: 'Start my free analysis',
-    ctaNote: 'Free analysis · About 1 minute · No sign-up',
-    modesLabel: 'Or just:',
-    colorOnly: 'Colour analysis',
-    skinOnly: 'Skin analysis',
+      'One selfie in the Tonelle iPhone app is all it takes. It reads your undertone, finds your colour season and shows makeup looks on your own face.',
+    ctaNote: 'For iPhone · Analysis in about 1 minute · No sign-up',
     trustPoints: ['We don’t keep your photo', '12 colour seasons', 'Made for warm & olive skin'],
     storesLabel: 'Also on your phone',
     portraitAlt: 'A portrait analysed with Tonelle, with undertone, colour season and fit details over the photo.',
@@ -86,7 +81,7 @@ export const en: SiteContent = {
     starsLabel: '5 out of 5 stars',
   },
   dock: {
-    note: 'Free · ~1 min · No sign-up',
+    note: 'For iPhone · We don’t keep your photo',
   },
   how: {
     eyebrow: 'How it works',
@@ -113,7 +108,6 @@ export const en: SiteContent = {
     eyebrow: 'Looks',
     title: 'Looks made for your colours',
     subtitle: 'Every look comes with shades picked from your palette and a step-by-step guide for your level.',
-    cta: 'Find my looks',
   },
   profile: {
     eyebrow: 'Colour profile',
@@ -143,9 +137,8 @@ export const en: SiteContent = {
   pricing: {
     eyebrow: 'Pricing',
     title: 'Simple pricing',
-    subtitle: 'The analysis is free. Unlock your full report and looks on your own face with Premium.',
-    cta: 'Start the free analysis',
-    note: 'Prices include VAT. Weekly and yearly plans start with a 7-day free trial; cancel before it ends and you are not charged, then the plan renews automatically until cancelled. Web payments are processed by our reseller Paddle.com; in-app purchases are handled by Apple or Google. Web purchases come with a 14-day refund.',
+    subtitle: 'Subscriptions are bought in the Tonelle iOS app, through Apple (App Store). Unlock your full report and looks on your own face with Premium.',
+    note: 'You can’t buy on this website: subscriptions are purchased only in the iOS app through Apple and charged to your Apple ID. The final price, trial length and taxes are shown on the purchase screen by the App Store. Plans renew automatically unless cancelled; cancel anytime in your App Store account settings at least 24 hours before renewal.',
   },
   faq: {
     eyebrow: 'FAQ',
@@ -170,7 +163,7 @@ export const en: SiteContent = {
       },
       {
         q: 'How do I cancel my subscription?',
-        a: 'Subscriptions are managed by Apple or Google. Cancel anytime in your App Store or Google Play account settings, at least 24 hours before the end of the current period (or the free trial) to avoid being charged again. Deleting the app does not cancel a subscription.',
+        a: 'Subscriptions are managed by Apple. Cancel anytime on your iPhone in Settings → Apple ID → Subscriptions, at least 24 hours before the end of the current period (or the free trial) to avoid being charged again. Deleting the app does not cancel a subscription.',
       },
       {
         q: 'Does it work for olive and darker skin tones?',
@@ -188,8 +181,7 @@ export const en: SiteContent = {
   },
   finalCta: {
     title: 'Ready to meet your colours?',
-    body: 'Take one selfie and get your colour season in about a minute. Free, private, no sign-up.',
-    button: 'Start my free analysis',
+    body: 'Download Tonelle on your iPhone and get your colour season from one selfie in about a minute. No sign-up, and we don’t keep your photo.',
   },
   cookieBanner: {
     text: 'We would like to use the Meta Pixel cookie to measure whether our ads work. Your photo and results are never sent to Meta.',
@@ -205,6 +197,8 @@ export const en: SiteContent = {
     registration: 'Registration no.',
   },
   stores: {
+    download: 'Download on the App Store',
+    soon: 'Coming soon to the App Store',
     appStoreTop: 'Download on the',
     appStoreBottom: 'App Store',
     playTop: 'Get it on',

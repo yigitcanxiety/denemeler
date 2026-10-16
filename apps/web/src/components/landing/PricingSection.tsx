@@ -1,7 +1,7 @@
 import { t, type CoreLocale } from '@tonelle/shared';
 import clsx from 'clsx';
 import { Check } from 'lucide-react';
-import Link from 'next/link';
+import { AppStoreCta } from '@/components/site/AppStoreCta';
 import { SectionHeading, delay } from '@/components/ui';
 import type { SiteContent } from '@/content';
 import { getPlanDisplays } from '@/lib/pricing-display';
@@ -56,15 +56,13 @@ export function PricingSection({ locale, content }: { locale: CoreLocale; conten
                   ))}
                 </ul>
               )}
-              <Link
-                href={`/${locale}/analyze`}
-                className={clsx(
-                  'press mt-6 flex h-12 items-center justify-center rounded-pill px-5 text-[14.5px] font-semibold',
-                  plan.highlighted ? 'bg-violet text-white shadow-violet hover:bg-[#6446ec]' : 'bg-paper text-violet ring-[1.5px] ring-violet-soft ring-inset hover:bg-mist',
-                )}
-              >
-                {content.pricing.cta}
-              </Link>
+              <AppStoreCta
+                labels={content.stores}
+                variant={plan.highlighted ? 'dark' : 'secondary'}
+                size="md"
+                fullWidth
+                className="mt-6"
+              />
             </li>
           ))}
         </ul>

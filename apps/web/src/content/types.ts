@@ -41,7 +41,6 @@ export interface SiteContent {
     looks: string;
     pricing: string;
     faq: string;
-    startCta: string;
     primaryNavLabel: string;
     menu: string;
     closeMenu: string;
@@ -51,12 +50,7 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     subtitle: string;
-    cta: string;
     ctaNote: string;
-    /** Links to the single colour / skin analyses under the main CTA. */
-    modesLabel: string;
-    colorOnly: string;
-    skinOnly: string;
     trustPoints: string[];
     storesLabel: string;
     portraitAlt: string;
@@ -99,7 +93,6 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     subtitle: string;
-    cta: string;
   };
   profile: {
     eyebrow: string;
@@ -121,7 +114,6 @@ export interface SiteContent {
     eyebrow: string;
     title: string;
     subtitle: string;
-    cta: string;
     note: string;
   };
   faq: {
@@ -133,7 +125,6 @@ export interface SiteContent {
   finalCta: {
     title: string;
     body: string;
-    button: string;
   };
   cookieBanner: {
     text: string;
@@ -149,6 +140,9 @@ export interface SiteContent {
     registration: string;
   };
   stores: {
+    /** App Store CTA: link text once the app is live, plain label before launch. */
+    download: string;
+    soon: string;
     appStoreTop: string;
     appStoreBottom: string;
     playTop: string;

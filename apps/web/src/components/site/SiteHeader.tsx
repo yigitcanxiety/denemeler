@@ -14,15 +14,14 @@ export function SiteHeader({ locale, content }: { locale: CoreLocale; content: S
   return (
     <HeaderBar
       locale={locale}
-      ctaHref={`/${locale}/analyze`}
       links={links}
+      stores={content.stores}
       legal={legalLinks(locale)}
       labels={{
         home: content.nav.home,
         menu: content.nav.menu,
         closeMenu: content.nav.closeMenu,
         menuTitle: content.nav.menuTitle,
-        startCta: content.nav.startCta,
         primaryNavLabel: content.nav.primaryNavLabel,
         legalTitle: content.footer.legalTitle,
       }}

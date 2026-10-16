@@ -1,7 +1,8 @@
 import { LOOKS, LOOK_IDS, localized, t, type CoreLocale, type LookId } from '@tonelle/shared';
 import Image from 'next/image';
-import { ButtonLink, SectionHeading, delay } from '@/components/ui';
+import { SectionHeading, delay } from '@/components/ui';
 import type { SiteContent } from '@/content';
+import { AppStoreCta } from '@/components/site/AppStoreCta';
 import { LOOK_VISUALS } from './look-visuals';
 
 /** Featured looks, each paired with the portrait that fits it best. */
@@ -58,9 +59,7 @@ export function LooksGallery({ locale, content }: { locale: CoreLocale; content:
           ))}
         </ul>
         <div className="mt-8 flex justify-center">
-          <ButtonLink href={`/${locale}/analyze`} variant="secondary" size="lg" icon={<span aria-hidden>✦</span>}>
-            {content.looks.cta}
-          </ButtonLink>
+          <AppStoreCta labels={content.stores} />
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { COMPANY } from '@/config/company';
 import type { SiteContent } from '@/content';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
-import { StoreBadges } from './StoreBadges';
+import { AppStoreCta } from './AppStoreCta';
 
 export function legalLinks(locale: CoreLocale) {
   return [
@@ -22,7 +22,6 @@ export function legalLinks(locale: CoreLocale) {
 export function SiteFooter({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const home = `/${locale}`;
   const product = [
-    { href: `/${locale}/analyze`, label: t(locale, 'common.startAnalysis') },
     { href: `${home}#how`, label: content.nav.howItWorks },
     { href: `${home}#try-on`, label: content.nav.looks },
     { href: `/${locale}/pricing`, label: content.nav.pricing },
@@ -46,13 +45,7 @@ export function SiteFooter({ locale, content }: { locale: CoreLocale; content: S
               {content.finalCta.title}
             </h2>
             <p className="max-w-md text-muted">{content.finalCta.body}</p>
-            <Link
-              href={`/${locale}/analyze`}
-              className="press inline-flex h-[52px] items-center gap-2 rounded-pill bg-violet px-6 text-[15px] font-semibold text-white shadow-violet hover:bg-[#6446ec]"
-            >
-              <span aria-hidden>✦</span>
-              {content.finalCta.button}
-            </Link>
+            <AppStoreCta labels={content.stores} />
           </div>
           <div className="relative hidden min-h-[320px] sm:block">
             <Image src="/images/portrait-2.jpg" alt="" fill sizes="(min-width: 640px) 40vw, 1px" className="object-cover object-top" />
@@ -65,7 +58,7 @@ export function SiteFooter({ locale, content }: { locale: CoreLocale; content: S
         <div className="flex flex-col items-start gap-4">
           <Logo className="text-[2rem]" />
           <p className="max-w-xs text-[14px] text-muted">{content.footer.tagline}</p>
-          <StoreBadges labels={content.stores} />
+          <AppStoreCta labels={content.stores} size="md" />
           <LanguageSwitcher locale={locale} compact />
         </div>
         <nav aria-labelledby="footer-product">

@@ -11,8 +11,9 @@ import { ProfileSection } from '@/components/landing/ProfileSection';
 import { Reviews } from '@/components/landing/Reviews';
 import { TryOnSection } from '@/components/landing/TryOnSection';
 import { MobileCta } from '@/components/site/MobileCta';
-import { COMPANY, SITE_URL, STORE_URLS } from '@/config/company';
+import { COMPANY, SITE_URL } from '@/config/company';
 import { getContent } from '@/content';
+import { APP_STORE_LIVE, APP_STORE_URL } from '@/lib/app-store';
 import { absoluteUrl, jsonLd, pageMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
@@ -40,7 +41,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       '@type': 'SoftwareApplication',
       name: 'Tonelle',
       applicationCategory: 'LifestyleApplication',
-      operatingSystem: 'iOS, Android, Web',
+      operatingSystem: 'iOS',
       inLanguage: locale,
       url: absoluteUrl(`/${locale}`),
       description: content.meta.homeDescription,
@@ -50,9 +51,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
         { '@type': 'Offer', name: t(locale, 'paywall.weeklyName'), price: region.weekly.amount, priceCurrency: region.weekly.currency },
         { '@type': 'Offer', name: t(locale, 'paywall.yearlyName'), price: region.yearly.amount, priceCurrency: region.yearly.currency },
       ],
-      ...(STORE_URLS.appStore || STORE_URLS.playStore
-        ? { sameAs: [STORE_URLS.appStore, STORE_URLS.playStore].filter(Boolean) }
-        : {}),
+      ...(APP_STORE_LIVE ? { downloadUrl: APP_STORE_URL } : {}),
     },
     {
       '@context': 'https://schema.org',
@@ -79,7 +78,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
         <PrivacyStrip locale={locale} content={content} />
         <Faq content={content} />
       </main>
-      <MobileCta href={`/${locale}/analyze`} label={content.hero.cta} note={content.dock.note} showAfterId="hero-end" hideNearId="site-footer" />
+      <MobileCta stores={content.stores} note={content.dock.note} showAfterId="hero-end" hideNearId="site-footer" />
     </>
   );
 }

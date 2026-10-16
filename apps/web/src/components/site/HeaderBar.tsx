@@ -4,6 +4,8 @@ import type { CoreLocale } from '@tonelle/shared';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import type { SiteContent } from '@/content';
+import { AppStoreCta } from './AppStoreCta';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
 
@@ -12,7 +14,6 @@ export interface HeaderLabels {
   menu: string;
   closeMenu: string;
   menuTitle: string;
-  startCta: string;
   primaryNavLabel: string;
   legalTitle: string;
 }
@@ -20,8 +21,7 @@ export interface HeaderLabels {
 type NavLink = { href: string; label: string };
 
 /**
- * Aura header: serif wordmark, centred nav (desktop), language switch and a violet
- * "✦ Analizi başlat" pill. On small screens a round violet button opens a full-screen
+ * Aura header: serif wordmark, centred nav (desktop), language switch and the App Store CTA. On small screens a round violet button opens a full-screen
  * menu (native <dialog>: focus trap, Esc).
  */
 export function HeaderBar({
@@ -29,13 +29,13 @@ export function HeaderBar({
   labels,
   links,
   legal,
-  ctaHref,
+  stores,
 }: {
   locale: CoreLocale;
   labels: HeaderLabels;
   links: NavLink[];
   legal: NavLink[];
-  ctaHref: string;
+  stores: SiteContent['stores'];
 }) {
   const [open, setOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -76,13 +76,9 @@ export function HeaderBar({
           </nav>
           <div className="flex items-center gap-2">
             <LanguageSwitcher locale={locale} compact className="hidden sm:inline-flex" />
-            <Link
-              href={ctaHref}
-              className="press hidden h-11 items-center gap-2 rounded-pill bg-violet px-5 text-[14.5px] font-semibold whitespace-nowrap text-white shadow-violet hover:bg-[#6446ec] sm:inline-flex"
-            >
-              <span aria-hidden>✦</span>
-              {labels.startCta}
-            </Link>
+            <div className="hidden sm:block">
+              <AppStoreCta labels={stores} size="sm" />
+            </div>
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -151,14 +147,9 @@ export function HeaderBar({
                 ))}
               </ul>
             </div>
-            <Link
-              href={ctaHref}
-              onClick={close}
-              className="press mt-auto flex h-[52px] items-center justify-center gap-2 rounded-pill bg-violet px-6 text-[15px] font-semibold text-white shadow-violet"
-            >
-              <span aria-hidden>✦</span>
-              {labels.startCta}
-            </Link>
+            <div className="mt-auto">
+              <AppStoreCta labels={stores} fullWidth />
+            </div>
           </div>
         </div>
       </dialog>
