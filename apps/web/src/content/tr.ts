@@ -181,7 +181,7 @@ export const tr: SiteContent = {
   },
   finalCta: {
     title: 'Renklerinle tanışmaya hazır mısın?',
-    body: 'Tonelle’i iPhone’una indir, tek bir selfie ile renk sezonunu yaklaşık bir dakikada öğren. Üyelik gerekmez, fotoğrafını saklamayız.',
+    body: 'Tonelle’i iPhone’una indir, tek bir selfie ile renk sezonunu yaklaşık bir dakikada öğren. Hesap açman gerekmez, fotoğrafını saklamayız.',
   },
   cookieBanner: {
     text: 'Reklamlarımızın işe yarayıp yaramadığını ölçmek için Meta Pixel çerezi kullanmak istiyoruz. Fotoğrafın ve analiz sonuçların Meta’ya gönderilmez.',
