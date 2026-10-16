@@ -12,7 +12,8 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
  * photos are processed transiently (not collected/stored), purchases are handled by RevenueCat,
  * and there is no tracking (NSPrivacyTracking = false).
  *
- * App icon: the four-season powder compact (assets/images/icon.png, 1024px, no alpha);
+ * App icon: glass compact with four brand-colour pans on lavender (assets/images/icon.png,
+ * 1024px, no alpha);
  * adaptive-icon.png is the same art shrunk into Android's safe zone on ICON_BG.
  */
 
@@ -28,7 +29,7 @@ const PHOTOS_TR =
 /** v3 "Aura" paper (src/theme.ts). */
 const PAPER = '#FFFFFF';
 /** Lavender behind the compact in the icon art. */
-const ICON_BG = '#D3C2CC';
+const ICON_BG = '#E4DCEC';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
