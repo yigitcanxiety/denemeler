@@ -1,11 +1,13 @@
-import type { FaceAnalysis, Locale } from '@tonelle/shared';
+import { shadeName, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Linking, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { seasonText, type ShadeCard as ShadeCardData } from '@/lib/results';
 import { percentLabel, uiCopy } from '@/lib/ui-copy';
 import { colors, radii, seasonGradient } from '@/theme';
 
+import { Icon } from './icon';
+import { PressableScale } from './motion';
 import { AppText } from './text';
 import { Eyebrow, MatchPill, SwatchRow } from './ui';
 
@@ -35,7 +37,13 @@ function Product({ kind, hex }: { kind: ShadeCardData['kind']; hex: string }) {
   );
 }
 
-/** Shade card: "% uyum" pill, the product in a tinted well, name and hex. */
+/** Store search for a colour + product type: Trendyol in Turkish, Google Shopping otherwise. */
+export function storeSearchUrl(query: string, locale: Locale): string {
+  const q = encodeURIComponent(query);
+  return locale === 'tr' ? `https://www.trendyol.com/sr?q=${q}` : `https://www.google.com/search?tbm=shop&q=${q}`;
+}
+
+/** Shade card: "% uyum" pill, the product in a tinted well, colour name and kind; tap opens a store search. */
 export function ShadeCard({
   shade,
   locale,
@@ -46,18 +54,30 @@ export function ShadeCard({
   style?: StyleProp<ViewStyle>;
 }) {
   const copy = uiCopy(locale);
-  const name = copy[shade.kind];
+  const kind = copy[shade.kind];
+  const colour = shadeName(shade.hex, locale);
+  const openStore = () => void Linking.openURL(storeSearchUrl(`${colour} ${kind}`, locale)).catch(() => undefined);
   return (
-    <View style={[styles.card, style]} accessible accessibilityLabel={`${name} ${shade.hex}. ${copy.match(percentLabel(shade.match, locale))}`}>
+    <PressableScale
+      onPress={openStore}
+      accessibilityRole="link"
+      accessibilityLabel={`${colour} ${kind}. ${copy.match(percentLabel(shade.match, locale))}. ${copy.findInStore}`}
+      style={[styles.card, style]}
+    >
       <MatchPill percent={shade.match} />
       <View style={[styles.well, { backgroundColor: tint(shade.hex, 0.84) }]}>
         <Product kind={shade.kind} hex={shade.hex} />
       </View>
       <AppText variant="smallStrong" numberOfLines={1}>
-        {name}
+        {colour}
       </AppText>
-      <AppText variant="caption">{shade.hex.toUpperCase()}</AppText>
-    </View>
+      <View style={styles.storeRow}>
+        <AppText variant="caption" numberOfLines={1} style={styles.flexShrink}>
+          {kind}
+        </AppText>
+        <Icon name="arrow" size={10} color={colors.muted} />
+      </View>
+    </PressableScale>
   );
 }
 
@@ -89,6 +109,8 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: colors.paper,
   },
+  storeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  flexShrink: { flexShrink: 1 },
   well: { height: 66, borderRadius: 11, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 8 },
   bullet: { width: 18, height: 30, borderTopLeftRadius: 9, borderTopRightRadius: 4 },
   case: { width: 24, height: 16, borderRadius: 3, backgroundColor: 'rgba(23,20,31,0.16)' },

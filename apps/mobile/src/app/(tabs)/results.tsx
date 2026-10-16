@@ -1,4 +1,4 @@
-import { shadeMatch, type FaceAnalysis, type Locale } from '@tonelle/shared';
+import { jewelleryMetal, shadeMatch, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
@@ -170,6 +170,19 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
         </View>
       </Card>
 
+      <Card style={styles.foundation}>
+        <View style={[styles.foundationIcon, styles.metalIcon]}>
+          <Icon name="sparkle" size={18} color={colors.butterInk} />
+        </View>
+        <View style={styles.flex}>
+          <AppText variant="label">{copy.metalTitle}</AppText>
+          <AppText variant="smallStrong" color={colors.ink}>
+            {copy.metal[jewelleryMetal(analysis)].name}
+          </AppText>
+          <AppText variant="small">{copy.metal[jewelleryMetal(analysis)].body}</AppText>
+        </View>
+      </Card>
+
       <View style={styles.gapSm}>
         <SectionTitle>{copy.shadesTitle}</SectionTitle>
         {categories.map((cat) => (
@@ -190,6 +203,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
             </ScrollView>
           </View>
         ))}
+        <AppText variant="caption">{copy.storeNote}</AppText>
       </View>
 
       <View style={styles.gapSm}>
@@ -276,6 +290,7 @@ const styles = StyleSheet.create({
   summary: { lineHeight: 19 },
   avoid: { opacity: 0.9 },
   foundation: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
+  metalIcon: { backgroundColor: colors.butter },
   foundationIcon: {
     width: 36,
     height: 36,

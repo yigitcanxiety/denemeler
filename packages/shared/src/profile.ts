@@ -1,4 +1,4 @@
-import type { Contrast, FaceAnalysis, Localized, SkinDepth, Undertone } from './schemas';
+import type { Contrast, FaceAnalysis, Locale, Localized, SkinDepth, Undertone } from './schemas';
 import { getSeason } from './seasons';
 
 /** Axes of the colour-profile radar shown on the results screen. Descriptive, never a beauty score. */
@@ -64,4 +64,71 @@ export function shadeMatch(hex: string, analysis: FaceAnalysis): number {
   const base = 98 - (best / 300) * 38;
   const penalty = avoid < best ? 8 : 0;
   return Math.max(60, Math.min(98, Math.round(base - penalty)));
+}
+
+/** Everyday makeup colour names; a shade is labelled with the nearest one. */
+const NAMED_SHADES: readonly [hex: string, tr: string, en: string][] = [
+  ['#D2A48C', 'Nude', 'Nude'],
+  ['#F1DDBE', 'Şampanya', 'Champagne'],
+  ['#FFB38A', 'Şeftali', 'Peach'],
+  ['#F5A065', 'Kayısı', 'Apricot'],
+  ['#F39A80', 'Somon', 'Salmon'],
+  ['#F7786B', 'Mercan', 'Coral'],
+  ['#C0583F', 'Kiremit', 'Terracotta'],
+  ['#E0442E', 'Domates kırmızısı', 'Tomato red'],
+  ['#C41E3A', 'Klasik kırmızı', 'Classic red'],
+  ['#9E1B32', 'Kiraz', 'Cherry'],
+  ['#7B1E2D', 'Bordo', 'Burgundy'],
+  ['#5E1A2C', 'Şarap', 'Wine'],
+  ['#6B2D4E', 'Erik', 'Plum'],
+  ['#4E2A4F', 'Mürdüm', 'Aubergine'],
+  ['#B9784E', 'Karamel', 'Caramel'],
+  ['#A0673F', 'Bronz', 'Bronze'],
+  ['#8B4A2B', 'Tarçın', 'Cinnamon'],
+  ['#5C3A2E', 'Çikolata', 'Chocolate'],
+  ['#C08081', 'Gül kurusu', 'Dusty rose'],
+  ['#B07A8C', 'Mor gül', 'Mauve'],
+  ['#E4718A', 'Gül pembesi', 'Rose'],
+  ['#F2B8C0', 'Pudra pembe', 'Powder pink'],
+  ['#F7C6D0', 'Bebek pembe', 'Baby pink'],
+  ['#F06C9B', 'Şeker pembe', 'Candy pink'],
+  ['#D7347E', 'Fuşya', 'Fuchsia'],
+  ['#C72C5B', 'Ahududu', 'Raspberry'],
+  ['#C8A2C8', 'Leylak', 'Lilac'],
+  ['#B39DDB', 'Lavanta', 'Lavender'],
+  ['#7E57C2', 'Menekşe', 'Violet'],
+  ['#D4AF37', 'Altın', 'Gold'],
+  ['#8B7D73', 'Vizon', 'Taupe'],
+  ['#7A7A4E', 'Haki', 'Khaki'],
+  ['#6B6B30', 'Zeytin', 'Olive'],
+  ['#2E7D5B', 'Zümrüt', 'Emerald'],
+  ['#1F6F78', 'Petrol mavisi', 'Teal'],
+  ['#1F2A55', 'Lacivert', 'Navy'],
+  ['#A9C8E8', 'Buz mavisi', 'Icy blue'],
+  ['#8C8C94', 'Gri', 'Grey'],
+  ['#36363C', 'Füme', 'Charcoal'],
+];
+
+/** Human colour name for a shade hex ("Gül kurusu" / "Dusty rose"): the nearest named makeup colour. */
+export function shadeName(hex: string, locale: Locale): string {
+  let best = NAMED_SHADES[0]!;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (const named of NAMED_SHADES) {
+    const d = distance(hex, named[0]);
+    if (d < bestDistance) {
+      best = named;
+      bestDistance = d;
+    }
+  }
+  return locale === 'tr' ? best[1] : best[2];
+}
+
+/** Jewellery metal that usually flatters a season, from its colour temperature. */
+export type JewelleryMetal = 'gold' | 'silver' | 'gold_rose' | 'silver_white';
+
+export function jewelleryMetal(analysis: FaceAnalysis): JewelleryMetal {
+  const temperature = getSeason(analysis.season).temperature;
+  if (temperature === 'warm') return 'gold';
+  if (temperature === 'cool') return 'silver';
+  return temperature === 'neutral_warm' ? 'gold_rose' : 'silver_white';
 }

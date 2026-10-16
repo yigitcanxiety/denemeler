@@ -76,6 +76,15 @@ const COPY = {
     blush: 'Allık',
     eyeshadow: 'Far',
     foundation: 'Fondöten',
+    findInStore: 'Mağazada bul',
+    storeNote: 'Bir tona dokununca o renk için mağaza araması açılır. Tonelle mağazalarla iş birliği yapmaz.',
+    metalTitle: 'Takı rengin',
+    metal: {
+      gold: { name: 'Altın', body: 'Sarı altın ve bronz tonlu takılar sıcak alt tonunu canlandırır.' },
+      silver: { name: 'Gümüş', body: 'Gümüş, platin ve beyaz altın soğuk alt tonunla uyum sağlar.' },
+      gold_rose: { name: 'Altın ve rose gold', body: 'Yumuşak sarı altın ve rose gold en iyisi; çok parlak gümüş seni soluk gösterebilir.' },
+      silver_white: { name: 'Gümüş ve beyaz altın', body: 'Gümüş ve beyaz altın en iyisi; rose gold da yakışır, koyu sarı altın ağır kalabilir.' },
+    },
     noResultTitle: 'Henüz bir analizin yok',
     noResultBody: 'Bir selfie ile renk sezonunu ve sana yakışan makyajı keşfet.',
 
@@ -163,6 +172,15 @@ const COPY = {
     blush: 'Blush',
     eyeshadow: 'Eyeshadow',
     foundation: 'Foundation',
+    findInStore: 'Find in store',
+    storeNote: 'Tap a shade to search for that colour in a store. Tonelle isn’t affiliated with any store.',
+    metalTitle: 'Your jewellery metal',
+    metal: {
+      gold: { name: 'Gold', body: 'Yellow gold and bronze tones bring your warm undertone to life.' },
+      silver: { name: 'Silver', body: 'Silver, platinum and white gold suit your cool undertone.' },
+      gold_rose: { name: 'Gold and rose gold', body: 'Soft yellow gold and rose gold work best; very bright silver can wash you out.' },
+      silver_white: { name: 'Silver and white gold', body: 'Silver and white gold work best; rose gold suits you too, deep yellow gold can feel heavy.' },
+    },
     noResultTitle: 'No analysis yet',
     noResultBody: 'Discover your colour season and the makeup that suits you with one selfie.',
 
