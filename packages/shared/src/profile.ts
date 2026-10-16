@@ -99,6 +99,11 @@ const NAMED_SHADES: readonly [hex: string, tr: string, en: string][] = [
   ['#7E57C2', 'Menekşe', 'Violet'],
   ['#D4AF37', 'Altın', 'Gold'],
   ['#8B7D73', 'Vizon', 'Taupe'],
+  ['#9CAF88', 'Adaçayı', 'Sage'],
+  ['#C19A6B', 'Kamel', 'Camel'],
+  ['#D8A390', 'Pembe bej', 'Rosy beige'],
+  ['#A04A3A', 'Tuğla', 'Brick'],
+  ['#7B5544', 'Kakao', 'Cocoa'],
   ['#7A7A4E', 'Haki', 'Khaki'],
   ['#6B6B30', 'Zeytin', 'Olive'],
   ['#2E7D5B', 'Zümrüt', 'Emerald'],
@@ -109,18 +114,58 @@ const NAMED_SHADES: readonly [hex: string, tr: string, en: string][] = [
   ['#36363C', 'Füme', 'Charcoal'],
 ];
 
-/** Human colour name for a shade hex ("Gül kurusu" / "Dusty rose"): the nearest named makeup colour. */
+/** sRGB hex → CIELAB (D65), so colour names follow perceived difference rather than raw RGB. */
+function lab(hex: string): [number, number, number] {
+  const [x, y, z] = rgb(hex)
+    .map((c) => {
+      const v = c / 255;
+      return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+    })
+    .reduce<[number, number, number]>(
+      (acc, v, i) => {
+        const m = [
+          [0.4124 / 0.95047, 0.2126, 0.0193 / 1.08883],
+          [0.3576 / 0.95047, 0.7152, 0.1192 / 1.08883],
+          [0.1805 / 0.95047, 0.0722, 0.9505 / 1.08883],
+        ][i]!;
+        return [acc[0] + v * m[0]!, acc[1] + v * m[1]!, acc[2] + v * m[2]!];
+      },
+      [0, 0, 0],
+    )
+    .map((t) => (t > 216 / 24389 ? Math.cbrt(t) : (24389 / 27 * t + 16) / 116)) as [number, number, number];
+  return [116 * y - 16, 500 * (x - y), 200 * (y - z)];
+}
+
+/** Human colour name for a shade hex ("Gül kurusu" / "Dusty rose"): the nearest named makeup colour (ΔE76). */
 export function shadeName(hex: string, locale: Locale): string {
+  const [l1, a1, b1] = lab(hex);
   let best = NAMED_SHADES[0]!;
   let bestDistance = Number.POSITIVE_INFINITY;
   for (const named of NAMED_SHADES) {
-    const d = distance(hex, named[0]);
+    const [l2, a2, b2] = lab(named[0]);
+    const d = (l1 - l2) ** 2 + (a1 - a2) ** 2 + (b1 - b2) ** 2;
     if (d < bestDistance) {
       best = named;
       bestDistance = d;
     }
   }
   return locale === 'tr' ? best[1] : best[2];
+}
+
+/** Names for a row of shades; repeated names get "Açık"/"Koyu" (Light/Deep) by lightness so cards stay distinct. */
+export function shadeNames(hexes: readonly string[], locale: Locale): string[] {
+  const names = hexes.map((hex) => shadeName(hex, locale));
+  return names.map((name, i) => {
+    const twins = hexes.filter((_, j) => names[j] === name);
+    if (twins.length < 2) return name;
+    const l = lab(hexes[i]!)[0];
+    const lightest = Math.max(...twins.map((h) => lab(h)[0]));
+    const darkest = Math.min(...twins.map((h) => lab(h)[0]));
+    const lower = name.toLocaleLowerCase(locale);
+    if (l === lightest) return locale === 'tr' ? `Açık ${lower}` : `Light ${lower}`;
+    if (l === darkest) return locale === 'tr' ? `Koyu ${lower}` : `Deep ${lower}`;
+    return name;
+  });
 }
 
 /** Jewellery metal that usually flatters a season, from its colour temperature. */

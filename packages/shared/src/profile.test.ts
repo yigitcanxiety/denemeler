@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { MOCK_ANALYSIS } from './fixtures';
-import { PROFILE_AXES, colorProfile, jewelleryMetal, shadeMatch, shadeName } from './profile';
+import { PROFILE_AXES, colorProfile, jewelleryMetal, shadeMatch, shadeName, shadeNames } from './profile';
 
 describe('colorProfile', () => {
   it('returns every axis within 0..100', () => {
@@ -33,6 +33,7 @@ describe('shadeName', () => {
     expect(shadeName('#C41E3A', 'tr')).toBe('Klasik kırmızı');
     expect(shadeName('#C3818A', 'en')).toBe('Dusty rose');
     expect(shadeName('#FFB490', 'tr')).toBe('Şeftali');
+    expect(shadeName('#8A9A5B', 'tr')).not.toBe('Vizon');
   });
 });
 
@@ -41,5 +42,11 @@ describe('jewelleryMetal', () => {
     expect(jewelleryMetal({ ...MOCK_ANALYSIS, season: 'true_autumn' })).toBe('gold');
     expect(jewelleryMetal({ ...MOCK_ANALYSIS, season: 'true_winter' })).toBe('silver');
     expect(jewelleryMetal({ ...MOCK_ANALYSIS, season: 'light_spring' })).toBe('gold_rose');
+  });
+});
+
+describe('shadeNames', () => {
+  it('keeps repeated names apart by lightness', () => {
+    expect(shadeNames(['#B5655B', '#9E5A4F', '#C41E3A'], 'tr')).toEqual(['Açık tuğla', 'Koyu tuğla', 'Klasik kırmızı']);
   });
 });

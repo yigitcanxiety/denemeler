@@ -1,4 +1,4 @@
-import { jewelleryMetal, shadeMatch, type FaceAnalysis, type Locale } from '@tonelle/shared';
+import { jewelleryMetal, shadeMatch, shadeNames, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
@@ -194,12 +194,15 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
               contentContainerStyle={styles.hScroll}
               style={styles.bleed}
             >
-              {[...cat.hexes]
-                .map((hex) => ({ kind: cat.kind, hex, match: shadeMatch(hex, analysis) }))
-                .sort((a, b) => b.match - a.match)
-                .map((shade) => (
-                  <ShadeCard key={shade.hex} shade={shade} locale={locale} style={styles.shade} />
-                ))}
+              {(() => {
+                const names = shadeNames(cat.hexes, locale);
+                return cat.hexes
+                  .map((hex, i) => ({ kind: cat.kind, hex, match: shadeMatch(hex, analysis), name: names[i] }))
+                  .sort((a, b) => b.match - a.match)
+                  .map(({ name, ...shade }) => (
+                    <ShadeCard key={shade.hex} shade={shade} name={name} locale={locale} style={styles.shade} />
+                  ));
+              })()}
             </ScrollView>
           </View>
         ))}

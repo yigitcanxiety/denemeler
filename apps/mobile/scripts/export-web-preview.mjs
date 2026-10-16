@@ -55,7 +55,9 @@ for (const file of walk(outDir).filter((f) => f.endsWith('.js'))) {
 // Route segments (from src/app) are stripped from the URL to find the base on deep links.
 const routes = walk(path.join(projectRoot, 'src/app'))
   .map((f) => path.relative(path.join(projectRoot, 'src/app'), f).replace(/\.tsx?$/, ''))
-  .filter((r) => !r.startsWith('_') && r !== 'index' && !r.includes('+'))
+  // Route groups like "(tabs)/" are not part of the URL; layouts and index files add no segment.
+  .map((r) => r.replace(/\([^)]+\)\//g, '').replace(/(^|\/)(index|_layout)$/, ''))
+  .filter((r) => r && !r.startsWith('_') && !r.includes('+'))
   .map((r) => r.replace(/\[[^\]]+\]/g, '[^/]+').replace(/\//g, '\\/'));
 
 const indexPath = path.join(outDir, 'index.html');

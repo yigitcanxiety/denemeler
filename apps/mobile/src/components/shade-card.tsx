@@ -47,15 +47,18 @@ export function storeSearchUrl(query: string, locale: Locale): string {
 export function ShadeCard({
   shade,
   locale,
+  name,
   style,
 }: {
   shade: ShadeCardData;
   locale: Locale;
+  /** Colour name; defaults to the nearest named shade. */
+  name?: string;
   style?: StyleProp<ViewStyle>;
 }) {
   const copy = uiCopy(locale);
   const kind = copy[shade.kind];
-  const colour = shadeName(shade.hex, locale);
+  const colour = name ?? shadeName(shade.hex, locale);
   const openStore = () => void Linking.openURL(storeSearchUrl(`${colour} ${kind}`, locale)).catch(() => undefined);
   return (
     <PressableScale
