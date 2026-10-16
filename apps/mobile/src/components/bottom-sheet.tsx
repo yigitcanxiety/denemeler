@@ -7,11 +7,15 @@ import { colors, radii, spacing } from '@/theme';
 export function BottomSheet({
   visible,
   onDismiss,
+  onDismissed,
   children,
   dismissLabel,
 }: {
   visible: boolean;
+  /** The user asked to close the sheet (backdrop, back button). */
   onDismiss: () => void;
+  /** The sheet has finished closing (iOS only; Android never calls it). */
+  onDismissed?: () => void;
   children: React.ReactNode;
   dismissLabel: string;
 }) {
@@ -23,6 +27,7 @@ export function BottomSheet({
       transparent
       animationType={reduced ? 'fade' : 'slide'}
       onRequestClose={onDismiss}
+      onDismiss={onDismissed}
       statusBarTranslucent
     >
       <View style={styles.root}>

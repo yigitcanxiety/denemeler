@@ -7,9 +7,9 @@ import { LegalLinks } from '@/components/legal-links';
 import { LockedResult } from '@/components/locked-result';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
-import { StepBar } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
+import { purchaseMessageKey } from '@/lib/purchase-error';
 import { uiCopy } from '@/lib/ui-copy';
 import { restorePurchases } from '@/purchases/purchases';
 import { useAppStore } from '@/store/app-store';
@@ -31,10 +31,10 @@ export default function TeaserScreen() {
     setRestoring(true);
     setMessage(null);
     try {
-      if (await restorePurchases()) router.replace('/results');
+      if (await restorePurchases()) router.dismissTo('/results');
       else setMessage(t('paywall.restoreNone'));
-    } catch {
-      setMessage(t('errors.generic'));
+    } catch (error) {
+      setMessage(t(purchaseMessageKey(error, 'errors.generic')));
     } finally {
       setRestoring(false);
     }
@@ -44,7 +44,6 @@ export default function TeaserScreen() {
     <Screen
       header={
         <View style={styles.top}>
-          <StepBar current={1} total={6} />
           <IconButton icon="close" label={t('common.close')} size={32} onPress={() => router.dismissTo('/')} />
         </View>
       }
@@ -63,5 +62,5 @@ export default function TeaserScreen() {
 }
 
 const styles = StyleSheet.create({
-  top: { flexDirection: 'row', alignItems: 'center', gap: 16 },
+  top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' },
 });

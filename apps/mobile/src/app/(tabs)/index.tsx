@@ -61,9 +61,11 @@ export default function TodayScreen() {
       </Reveal>
 
       <Reveal delay={80}>
-        <View style={[styles.hero, { height: heroH }]} accessible accessibilityLabel={copy.heroImageLabel}>
+        <View style={[styles.hero, { height: heroH }]} accessible accessibilityLabel={analysis ? copy.heroImageLabel : `${copy.heroImageLabel} (${copy.sample})`}>
           <LinearGradient colors={['#FFFFFF', '#F3F0FF']} style={StyleSheet.absoluteFill} />
           <CoverImage source={PORTRAITS.hero} focusY={0.18} style={StyleSheet.absoluteFill} />
+
+          {analysis ? null : <Pill tone="butter" label={copy.sample} style={styles.sample} />}
 
           <FloatChip style={styles.chipUndertone}>
             <AppText style={styles.chipLabel}>{copy.chipUndertone}</AppText>
@@ -190,6 +192,7 @@ const styles = StyleSheet.create({
   intro: { alignItems: 'center', gap: spacing.sm, paddingHorizontal: spacing.sm },
   title: { fontSize: 28, lineHeight: 31 },
   hero: { borderRadius: radii.xl, overflow: 'hidden', backgroundColor: colors.mist },
+  sample: { position: 'absolute', right: 10, top: 10 },
   chipUndertone: { left: 10, top: 28 },
   chipSeason: { right: 10, top: '30%' },
   chipFit: { left: 10, bottom: 18, alignItems: 'center' },

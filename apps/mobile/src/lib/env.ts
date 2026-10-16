@@ -11,6 +11,7 @@ export const env = readEnv({
   EXPO_PUBLIC_SITE_URL: process.env.EXPO_PUBLIC_SITE_URL,
   EXPO_PUBLIC_RC_IOS_KEY: process.env.EXPO_PUBLIC_RC_IOS_KEY,
   EXPO_PUBLIC_RC_ANDROID_KEY: process.env.EXPO_PUBLIC_RC_ANDROID_KEY,
+  EXPO_PUBLIC_ALLOW_DEV_PURCHASES: process.env.EXPO_PUBLIC_ALLOW_DEV_PURCHASES,
 });
 
 /** Browser preview without an API: flows run on the shared mock analysis (labelled DEMO in the UI). */

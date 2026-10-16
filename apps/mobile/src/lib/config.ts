@@ -12,6 +12,8 @@ export interface AppEnv {
   siteUrl: string;
   rcIosKey: string | null;
   rcAndroidKey: string | null;
+  /** Explicit opt-in (`EXPO_PUBLIC_ALLOW_DEV_PURCHASES=1`) for free dev purchases in a release build. */
+  allowDevPurchases: boolean;
 }
 
 export interface RawEnv {
@@ -19,6 +21,7 @@ export interface RawEnv {
   EXPO_PUBLIC_SITE_URL?: string | undefined;
   EXPO_PUBLIC_RC_IOS_KEY?: string | undefined;
   EXPO_PUBLIC_RC_ANDROID_KEY?: string | undefined;
+  EXPO_PUBLIC_ALLOW_DEV_PURCHASES?: string | undefined;
 }
 
 function clean(value: string | undefined): string | null {
@@ -37,6 +40,7 @@ export function readEnv(raw: RawEnv): AppEnv {
     apiUrl: stripTrailingSlash(clean(raw.EXPO_PUBLIC_API_URL) ?? siteUrl),
     rcIosKey: clean(raw.EXPO_PUBLIC_RC_IOS_KEY),
     rcAndroidKey: clean(raw.EXPO_PUBLIC_RC_ANDROID_KEY),
+    allowDevPurchases: clean(raw.EXPO_PUBLIC_ALLOW_DEV_PURCHASES) === '1',
   };
 }
 
@@ -48,7 +52,7 @@ export function legalUrl(siteUrl: string, locale: Locale, page: LegalPage): stri
   return `${stripTrailingSlash(siteUrl)}/${locale}/${page}?app=1`;
 }
 
-/** RevenueCat public SDK key for the running platform, or null (→ dev purchases mode). */
+/** RevenueCat public SDK key for the running platform, or null (→ dev / unavailable purchases mode). */
 export function revenueCatKeyFor(env: AppEnv, platform: MobilePlatform): string | null {
   if (platform === 'ios') return env.rcIosKey;
   if (platform === 'android') return env.rcAndroidKey;

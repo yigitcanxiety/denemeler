@@ -15,6 +15,7 @@ import { Card, Pill, Segmented, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import type { LegalPage } from '@/lib/config';
+import { purchaseMessageKey } from '@/lib/purchase-error';
 import { uiCopy } from '@/lib/ui-copy';
 import { isDevPurchases, manageSubscriptions, restorePurchases, switchUser } from '@/purchases/purchases';
 import { openLegal } from '@/services/legal';
@@ -49,8 +50,8 @@ export default function ProfileScreen() {
       setMessage(
         active ? { text: t('paywall.restoreSuccess'), tone: 'success' } : { text: t('paywall.restoreNone'), tone: 'info' },
       );
-    } catch {
-      setMessage({ text: t('errors.generic'), tone: 'error' });
+    } catch (error) {
+      setMessage({ text: t(purchaseMessageKey(error, 'errors.generic')), tone: 'error' });
     } finally {
       setRestoring(false);
     }

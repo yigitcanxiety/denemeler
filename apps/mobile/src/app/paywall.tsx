@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { BottomSheet } from '@/components/bottom-sheet';
@@ -19,15 +19,18 @@ import {
   planPriceLine,
   yearlySavingsPercent,
 } from '@/lib/paywall';
+import { purchaseMessageKey } from '@/lib/purchase-error';
 import { percentLabel, uiCopy } from '@/lib/ui-copy';
 import {
   isDevPurchases,
+  isUnavailablePurchases,
   loadPaywall,
   purchasePlan,
   restorePurchases,
   type PaywallData,
   type Plan,
 } from '@/purchases/purchases';
+import { useAppStore } from '@/store/app-store';
 import { colors, fonts, radii, spacing, typography } from '@/theme';
 
 const FEATURES = [
@@ -52,6 +55,8 @@ export default function PaywallScreen() {
   const [exitVisible, setExitVisible] = useState(false);
   const [exitShown, setExitShown] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  const hasAnalysis = useAppStore((s) => s.analysis !== null);
+  const pendingNav = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -86,11 +91,30 @@ export default function PaywallScreen() {
       ? 'ios'
       : 'android';
 
-  const onSuccess = () => {
-    setExitVisible(false);
-    Alert.alert(t('paywall.purchaseSuccess'));
-    router.replace('/results');
+  /** Runs the queued navigation once (called when the exit sheet has dismissed, or by the fallback timer). */
+  const runPendingNav = () => {
+    const go = pendingNav.current;
+    pendingNav.current = null;
+    go?.();
   };
+
+  /** Navigates only after the exit-offer Modal is gone: leaving while it is still up strands it on screen. */
+  const leave = (go: () => void) => {
+    if (!exitVisible) return go();
+    pendingNav.current = go;
+    setExitVisible(false);
+    // iOS calls the Modal's onDismiss; Android never does, so a timer covers it.
+    setTimeout(runPendingNav, 700);
+  };
+
+  /** After unlocking: the report if there is one, else home (nothing to show on an empty Results screen). */
+  const goAfterUnlock = () => router.dismissTo(hasAnalysis ? '/results' : '/');
+
+  const onSuccess = () =>
+    leave(() => {
+      Alert.alert(t('paywall.purchaseSuccess'));
+      goAfterUnlock();
+    });
 
   const buy = async (plan: Plan | null) => {
     if (!plan || busy) return;
@@ -100,8 +124,10 @@ export default function PaywallScreen() {
       const outcome = await purchasePlan(plan);
       if (outcome === 'success') onSuccess();
       else setMessage({ text: t('paywall.purchaseCancelled'), tone: 'info' });
-    } catch {
-      setMessage({ text: t('paywall.purchaseFailed'), tone: 'error' });
+    } catch (error) {
+      // Pending approval is not a failure; unavailable / not-active get their own copy.
+      const key = purchaseMessageKey(error, 'paywall.purchaseFailed');
+      setMessage({ text: t(key), tone: key === 'paywall.purchasePending' ? 'info' : 'error' });
     } finally {
       setBusy(null);
     }
@@ -113,13 +139,15 @@ export default function PaywallScreen() {
     setMessage(null);
     try {
       if (await restorePurchases()) {
-        Alert.alert(t('paywall.restoreSuccess'));
-        router.replace('/results');
+        leave(() => {
+          Alert.alert(t('paywall.restoreSuccess'));
+          goAfterUnlock();
+        });
       } else {
         setMessage({ text: t('paywall.restoreNone'), tone: 'info' });
       }
-    } catch {
-      setMessage({ text: t('errors.generic'), tone: 'error' });
+    } catch (error) {
+      setMessage({ text: t(purchaseMessageKey(error, 'errors.generic')), tone: 'error' });
     } finally {
       setBusy(null);
     }
@@ -129,6 +157,7 @@ export default function PaywallScreen() {
     // Exit offer: shown once per paywall visit, only when an "exit_offer" offering exists.
     if (data.exitOffer && !exitShown && status === 'ready') {
       setExitShown(true);
+      setMessage(null);
       setExitVisible(true);
       return;
     }
@@ -187,7 +216,7 @@ export default function PaywallScreen() {
 
       <Reveal style={styles.intro}>
         <AppText variant="display" accessibilityRole="header">
-          {copy.paywallTitle}
+          {hasAnalysis ? copy.paywallTitle : t('paywall.titleNeutral')}
         </AppText>
         <View style={styles.features}>
           {FEATURES.map((key) => (
@@ -200,8 +229,8 @@ export default function PaywallScreen() {
         <ActivityIndicator color={colors.violet} style={styles.loader} accessibilityLabel={t('common.loading')} />
       ) : status === 'error' ? (
         <View style={styles.errorBox}>
-          <Notice tone="error" message={t('errors.network')} />
-          <Button label={t('common.retry')} variant="ghost" onPress={reload} />
+          <Notice tone="error" message={t(isUnavailablePurchases ? 'paywall.purchaseUnavailable' : 'errors.network')} />
+          {isUnavailablePurchases ? null : <Button label={t('common.retry')} variant="ghost" onPress={reload} />}
         </View>
       ) : (
         <View style={styles.plans} accessibilityRole="radiogroup">
@@ -218,7 +247,7 @@ export default function PaywallScreen() {
         </View>
       )}
 
-      {message ? <Notice tone={message.tone} message={message.text} /> : null}
+      {message && !exitVisible ? <Notice tone={message.tone} message={message.text} /> : null}
 
       {selected ? (
         <View style={styles.legal}>
@@ -234,10 +263,8 @@ export default function PaywallScreen() {
 
       <BottomSheet
         visible={exitVisible}
-        onDismiss={() => {
-          setExitVisible(false);
-          router.back();
-        }}
+        onDismiss={() => leave(() => router.back())}
+        onDismissed={runPendingNav}
         dismissLabel={t('paywall.exitDismiss')}
       >
         {data.exitOffer ? (
@@ -250,6 +277,7 @@ export default function PaywallScreen() {
               <AppText style={styles.exitPercent}>{`−${percentLabel(exitPercent, locale)}`}</AppText>
               <Pill tone="violet" label={t('paywall.yearlyName')} size="md" />
             </View>
+            {message ? <Notice tone={message.tone} message={message.text} /> : null}
             <AppText variant="bodyMuted">
               {t('paywall.exitBody', { percent: exitPercent, price: data.exitOffer.priceString })}
             </AppText>
@@ -262,10 +290,7 @@ export default function PaywallScreen() {
               label={t('paywall.exitDismiss')}
               variant="quiet"
               compact
-              onPress={() => {
-                setExitVisible(false);
-                router.back();
-              }}
+              onPress={() => leave(() => router.back())}
             />
             {legalLinesFor(data.exitOffer, t, platform).map((line) => (
               <AppText key={line} variant="caption" style={styles.legalText}>

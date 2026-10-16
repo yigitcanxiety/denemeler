@@ -71,7 +71,8 @@ export default function AnalyzingScreen() {
         // Let the ring reach 100% before moving on.
         await new Promise((r) => setTimeout(r, 450));
         if (controller.signal.aborted) return;
-        router.replace(getIsPremium() ? '/results' : '/teaser');
+        if (getIsPremium()) router.dismissTo('/results');
+        else router.replace('/teaser');
       } catch (error) {
         if (controller.signal.aborted) return;
         if (isApiClientError(error) && error.code === 'no_face') {
@@ -97,6 +98,9 @@ export default function AnalyzingScreen() {
     setAttempt((a) => a + 1);
   };
 
+  /** Leaves the screen; unmounting aborts the in-flight request (effect cleanup). */
+  const cancel = () => (router.canGoBack() ? router.back() : router.replace('/'));
+
   const stepIndex = done ? ANALYZING_STEPS.length : analyzingStepIndex(elapsed);
   const progress = analyzingProgress(elapsed, done);
   const size = Math.min(width - 96, 260);
@@ -110,7 +114,9 @@ export default function AnalyzingScreen() {
             <Button label={t('common.retry')} onPress={retry} icon="refresh" />
             <Button label={t('camera.retake')} variant="ghost" onPress={() => router.replace('/camera')} />
           </>
-        ) : null
+        ) : done ? null : (
+          <Button label={t('common.cancel')} variant="ghost" onPress={cancel} />
+        )
       }
     >
       <View style={styles.head}>

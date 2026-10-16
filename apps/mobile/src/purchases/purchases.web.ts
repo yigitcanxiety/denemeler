@@ -10,6 +10,7 @@ import { useAppStore } from '@/store/app-store';
  */
 export const purchasesMode = 'dev' as const;
 export const isDevPurchases = true;
+export const isUnavailablePurchases = false;
 
 export type Plan = PaywallPlan<null>;
 export type PurchaseOutcome = 'success' | 'cancelled';

@@ -2,11 +2,16 @@ import { ENTITLEMENT_ID } from '@tonelle/shared';
 
 import { revenueCatKeyFor, type AppEnv, type MobilePlatform } from './config';
 
-/** 'revenuecat' when a RevenueCat key is configured for the platform, else local 'dev' purchases. */
-export type PurchasesMode = 'revenuecat' | 'dev';
+/**
+ * 'revenuecat' when a RevenueCat key is configured for the platform; else local free 'dev'
+ * purchases, but only in a dev build or with EXPO_PUBLIC_ALLOW_DEV_PURCHASES=1; otherwise
+ * 'unavailable' (a release build without a key must never unlock anything).
+ */
+export type PurchasesMode = 'revenuecat' | 'dev' | 'unavailable';
 
-export function purchasesModeFor(env: AppEnv, platform: MobilePlatform): PurchasesMode {
-  return revenueCatKeyFor(env, platform) ? 'revenuecat' : 'dev';
+export function purchasesModeFor(env: AppEnv, platform: MobilePlatform, isDevBuild: boolean): PurchasesMode {
+  if (revenueCatKeyFor(env, platform)) return 'revenuecat';
+  return isDevBuild || env.allowDevPurchases ? 'dev' : 'unavailable';
 }
 
 /** Minimal structural view of RevenueCat's CustomerInfo. */
@@ -32,5 +37,6 @@ export interface PremiumInputs {
 
 /** Single source of truth for "is the user premium?" across both purchase modes. */
 export function isPremium({ mode, revenueCatActive, devEntitlement }: PremiumInputs): boolean {
+  if (mode === 'unavailable') return false;
   return mode === 'dev' ? devEntitlement : revenueCatActive;
 }

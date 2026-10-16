@@ -83,8 +83,9 @@ export interface RequestOptions {
   timeoutMs?: number;
 }
 
-export const DEFAULT_ANALYZE_TIMEOUT_MS = 60_000;
-export const DEFAULT_RENDER_TIMEOUT_MS = 120_000;
+/** Just under the server's 120 s `maxDuration`, so a slow-but-successful request is not cut off. */
+export const DEFAULT_ANALYZE_TIMEOUT_MS = 110_000;
+export const DEFAULT_RENDER_TIMEOUT_MS = 110_000;
 
 async function postJson<S extends z.ZodType>(
   fetchImpl: FetchLike,
@@ -104,28 +105,37 @@ async function postJson<S extends z.ZodType>(
   if (externalSignal?.aborted) controller.abort();
   externalSignal?.addEventListener('abort', onExternalAbort);
 
+  const abortError = (): ApiClientError | null =>
+    timedOut
+      ? new ApiClientError('timeout', `Request timed out after ${timeoutMs} ms`)
+      : externalSignal?.aborted
+        ? new ApiClientError('aborted', 'Request aborted')
+        : null;
+
   let response: Response;
+  let json: unknown = null;
+  // The timeout and abort listener stay armed until the body is parsed: it can stall too.
   try {
-    response = await fetchImpl(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(body),
-      signal: controller.signal,
-    });
-  } catch (error) {
-    if (timedOut) throw new ApiClientError('timeout', `Request timed out after ${timeoutMs} ms`);
-    if (externalSignal?.aborted) throw new ApiClientError('aborted', 'Request aborted');
-    throw new ApiClientError('network', error instanceof Error ? error.message : 'Network request failed');
+    try {
+      response = await fetchImpl(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+    } catch (error) {
+      throw abortError() ?? new ApiClientError('network', error instanceof Error ? error.message : 'Network request failed');
+    }
+    try {
+      json = await response.json();
+    } catch {
+      const aborted = abortError();
+      if (aborted) throw aborted;
+      json = null;
+    }
   } finally {
     clearTimeout(timer);
     externalSignal?.removeEventListener('abort', onExternalAbort);
-  }
-
-  let json: unknown = null;
-  try {
-    json = await response.json();
-  } catch {
-    json = null;
   }
 
   if (!response.ok) {

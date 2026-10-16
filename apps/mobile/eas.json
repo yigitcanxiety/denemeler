@@ -3,11 +3,11 @@
   "build": {
     "preview": {
       "distribution": "internal",
-      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com", "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1" }
     },
     "production": {
       "autoIncrement": true,
-      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com" }
+      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com", "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1" }
     }
   },
   "submit": { "production": {} }

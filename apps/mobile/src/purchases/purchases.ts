@@ -19,16 +19,20 @@ import {
   plansFromOfferings,
   type PaywallPlan,
 } from '@/lib/paywall';
+import { PurchaseFailureError } from '@/lib/purchase-error';
 import { useAppStore } from '@/store/app-store';
 
 /**
  * Purchases facade.
  * - 'revenuecat': real store purchases through RevenueCat (keys from EXPO_PUBLIC_RC_*_KEY).
- * - 'dev': no keys configured → plans come from the shared price list and "purchasing"
- *   only flips a local flag. Clearly labelled DEV in the UI. Never ship without keys.
+ * - 'dev': no key, and either a dev build or EXPO_PUBLIC_ALLOW_DEV_PURCHASES=1 → plans come
+ *   from the shared price list and "purchasing" only flips a local flag (labelled DEV in the UI).
+ * - 'unavailable': release build without a key and without the flag → nothing can be bought
+ *   or unlocked.
  */
-export const purchasesMode = purchasesModeFor(env, Platform.OS as MobilePlatform);
+export const purchasesMode = purchasesModeFor(env, Platform.OS as MobilePlatform, __DEV__);
 export const isDevPurchases = purchasesMode === 'dev';
+export const isUnavailablePurchases = purchasesMode === 'unavailable';
 
 export type Plan = PaywallPlan<PurchasesPackage | null>;
 export type PurchaseOutcome = 'success' | 'cancelled';
@@ -80,6 +84,7 @@ export interface PaywallData {
 }
 
 export async function loadPaywall(locale: Locale): Promise<PaywallData> {
+  if (isUnavailablePurchases) return { plans: [], exitOffer: null };
   if (isDevPurchases) {
     const region = regionForLocale(locale);
     return { plans: devPlans(region, locale), exitOffer: devExitPlan(region, locale) };
@@ -116,8 +121,12 @@ function isCancelled(error: unknown): boolean {
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** Purchases a plan. Resolves 'cancelled' when the user backs out; throws on real failures. */
+/**
+ * Purchases a plan. Resolves 'cancelled' when the user backs out; throws on real failures
+ * (a PurchaseFailureError for unavailable / pending approval / entitlement not yet active).
+ */
 export async function purchasePlan(plan: Plan): Promise<PurchaseOutcome> {
+  if (isUnavailablePurchases) throw new PurchaseFailureError('unavailable');
   if (isDevPurchases || !plan.source) {
     await wait(600);
     useAppStore.getState().setDevEntitlement(true);
@@ -125,16 +134,22 @@ export async function purchasePlan(plan: Plan): Promise<PurchaseOutcome> {
   }
   try {
     const { customerInfo } = await Purchases.purchasePackage(plan.source);
-    if (!applyCustomerInfo(customerInfo)) throw new Error('Entitlement not active after purchase');
+    // StoreKit may have charged already: do not claim otherwise, point to "Restore purchases".
+    if (!applyCustomerInfo(customerInfo)) throw new PurchaseFailureError('not_active');
     return 'success';
   } catch (error) {
     if (isCancelled(error)) return 'cancelled';
+    // Ask to Buy / deferred payment: the entitlement arrives later via the customer-info listener.
+    if ((error as Partial<PurchasesError> | null)?.code === PURCHASES_ERROR_CODE.PAYMENT_PENDING_ERROR) {
+      throw new PurchaseFailureError('pending');
+    }
     throw error;
   }
 }
 
 /** Restores purchases; resolves true when the premium entitlement is active afterwards. */
 export async function restorePurchases(): Promise<boolean> {
+  if (isUnavailablePurchases) throw new PurchaseFailureError('unavailable');
   if (isDevPurchases) {
     await wait(400);
     return useAppStore.getState().devEntitlement;

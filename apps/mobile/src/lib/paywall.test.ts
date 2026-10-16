@@ -109,6 +109,16 @@ describe('paywall copy', () => {
     expect(weeklyLines.join(' ')).toContain('Google Play');
     expect(weeklyLines.join(' ')).not.toContain('{');
   });
+
+  it('describes the intro offer in its own period, not the plan period', () => {
+    const intro = (unit: 'DAY' | 'WEEK', units: number) => ({
+      ...plansFromOfferings(offerings)[1]!,
+      kind: 'yearly' as const,
+      intro: { type: 'discount' as const, priceString: '$1', unit, units, days: units * (unit === 'DAY' ? 1 : 7) },
+    });
+    expect(legalLinesFor(intro('DAY', 7), tEn, 'ios')[0]).toContain('$1 for the first 7 days, then ₺129,99 per year');
+    expect(legalLinesFor(intro('WEEK', 1), createTranslator('tr'), 'ios')[0]).toContain('ilk 1 hafta $1, ardından iptal edilene kadar yıl başına');
+  });
 });
 
 describe('dev purchases plans', () => {

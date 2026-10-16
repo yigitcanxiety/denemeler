@@ -199,6 +199,13 @@ function periodLabel(t: Translate, kind: PlanKind): string {
   return kind === 'weekly' ? t('paywall.periodWeek') : t('paywall.periodYear');
 }
 
+/** Intro offer length in its own unit, e.g. "7 gün", "1 hafta" (days fallback for unknown units). */
+function introPeriodLabel(t: Translate, intro: IntroOffer): string {
+  const [unit, count] = intro.unit === 'UNKNOWN' ? (['DAY', intro.days] as const) : ([intro.unit, intro.units] as const);
+  const name = ({ DAY: 'Day', WEEK: 'Week', MONTH: 'Month', YEAR: 'Year' } as const)[unit];
+  return t(`paywall.intro${name}${count === 1 ? '' : 's'}`, { count });
+}
+
 /** Auto-renewal disclosure lines required by Apple/Google for the selected plan. */
 export function legalLinesFor(plan: PaywallPlan, t: Translate, platform: StorePlatform): string[] {
   const store = platform === 'ios' ? t('paywall.storeApple') : t('paywall.storeGoogle');
@@ -210,7 +217,12 @@ export function legalLinesFor(plan: PaywallPlan, t: Translate, platform: StorePl
   if (plan.intro?.type === 'trial') {
     lines.push(t('paywall.legalTrial', { days: plan.intro.days, price: plan.priceString, period }));
   } else if (plan.intro?.type === 'discount') {
-    lines.push(t('paywall.legalIntro', { introPrice: plan.intro.priceString, price: plan.priceString, period }));
+    lines.push(t('paywall.legalIntro', {
+        introPeriod: introPeriodLabel(t, plan.intro),
+        introPrice: plan.intro.priceString,
+        price: plan.priceString,
+        period,
+      }));
   }
   lines.push(t('paywall.legalSubscription', { price: plan.priceString, period, store }));
   return lines;

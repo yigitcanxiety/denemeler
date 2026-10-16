@@ -63,20 +63,29 @@ export default function CameraScreen() {
   };
 
   const pick = async () => {
+    if (busy) return;
     setError(null);
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      quality: 1,
-      allowsEditing: false,
-      exif: false,
-    });
-    const asset = result.canceled ? null : result.assets[0];
-    if (!asset) return;
-    if (asset.mimeType && !/^image\/(jpeg|jpg|png|webp|heic|heif)$/i.test(asset.mimeType)) {
+    setBusy(true);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        quality: 1,
+        allowsEditing: false,
+        exif: false,
+      });
+      const asset = result.canceled ? null : result.assets[0];
+      if (!asset) return;
+      if (asset.mimeType && !/^image\/(jpeg|jpg|png|webp|heic|heif)$/i.test(asset.mimeType)) {
+        setError(t('errors.unsupportedFile'));
+        return;
+      }
+      await handleImage(asset.uri, asset.width, asset.height);
+    } catch {
+      // Picker failed to open (permissions revoked, no library): same message as an unreadable file.
       setError(t('errors.unsupportedFile'));
-      return;
+    } finally {
+      setBusy(false);
     }
-    await handleImage(asset.uri, asset.width, asset.height);
   };
 
   const usePhoto = () => {
@@ -162,6 +171,7 @@ export default function CameraScreen() {
         </AppText>
         <PressableScale
           onPress={() => void pick()}
+          disabled={busy}
           accessibilityRole="button"
           accessibilityLabel={t('camera.upload')}
           style={[styles.dropzone, { width: size, height: size, borderRadius: size / 2 }]}
@@ -226,6 +236,7 @@ export default function CameraScreen() {
           <View style={styles.controls}>
             <PressableScale
               onPress={() => void pick()}
+              disabled={busy}
               accessibilityRole="button"
               accessibilityLabel={t('camera.upload')}
               style={styles.sideButton}

@@ -48,6 +48,7 @@ ile aynı; fiyat değişirse orası da güncellenir.
 ## 3. Anahtarlar
 - **Herkese açık iOS SDK anahtarı** (`appl_` ile başlar; gizli değildir, uygulamanın içine gömülür):
   kullanıcı Claude'a verir, Claude `apps/mobile/eas.json` → production/preview `env.EXPO_PUBLIC_RC_IOS_KEY` olarak ekler.
+  **Aynı commit'te** `EXPO_PUBLIC_ALLOW_DEV_PURCHASES` satırı `eas.json`'dan silinir (şimdilik TestFlight'ta ücretsiz deneme için açık; anahtarsız ve bayraksız sürümde satın alma kapalı kalır, hiçbir şey ücretsiz açılmaz).
 - **Gizli anahtar** (`sk_` ile başlar, API Keys → Secret, v1): **yalnız kullanıcı** Vercel → Settings →
   Environment Variables → `REVENUECAT_SECRET_KEY` (Production) olarak ekler. Claude'a yapıştırılmaz.
 

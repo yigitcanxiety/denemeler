@@ -18,6 +18,7 @@ const COPY = {
     discover: 'Kendini keşfet',
     heroTitle: 'Yapay Zekâ ile Yüz Taraması, Anında Sonuç',
     heroLead: 'Sana yakışan renkleri ve makyajı kendi yüzünde gör.',
+    sample: 'Örnek',
     heroImageLabel: 'Örnek portre, yüzen analiz etiketleriyle',
     chipUndertone: 'Alt ton',
     chipSeason: 'Renk sezonu',
@@ -66,7 +67,7 @@ const COPY = {
     once: 'bir kez',
     noSubscription: 'Abonelik yok',
     firstWeek: (price: string) => `İlk hafta ${price}`,
-    trialFine: 'Deneme bitmeden iptal edersen ücret alınmaz.',
+    trialFine: 'Deneme bitmeden en az 24 saat önce iptal edersen ücret alınmaz.',
     dev: 'DEV',
 
     radarTitle: 'Renk profilin',
@@ -114,6 +115,7 @@ const COPY = {
     discover: 'Discover yourself',
     heroTitle: 'AI Face Scan, Instant Results',
     heroLead: 'See the colours and makeup that suit you, on your own face.',
+    sample: 'Sample',
     heroImageLabel: 'Sample portrait with floating analysis labels',
     chipUndertone: 'Undertone',
     chipSeason: 'Colour season',
@@ -162,7 +164,7 @@ const COPY = {
     once: 'one-time',
     noSubscription: 'No subscription',
     firstWeek: (price: string) => `First week ${price}`,
-    trialFine: 'Cancel before the trial ends and you won’t be charged.',
+    trialFine: 'Cancel at least 24 hours before the trial ends and you won’t be charged.',
     dev: 'DEV',
 
     radarTitle: 'Your colour profile',
