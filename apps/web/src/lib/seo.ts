@@ -1,11 +1,11 @@
-import { DEFAULT_LOCALE, LOCALES, type Locale } from '@tonelle/shared';
+import { DEFAULT_LOCALE, CORE_LOCALES, type CoreLocale } from '@tonelle/shared';
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/config/company';
 
-export const OG_LOCALE: Record<Locale, string> = { tr: 'tr_TR', en: 'en_GB' };
+export const OG_LOCALE: Record<CoreLocale, string> = { tr: 'tr_TR', en: 'en_GB' };
 
 /** `/tr/privacy`-style path for a locale; `path` is '' or starts with '/'. */
-export function localePath(locale: Locale, path = ''): string {
+export function localePath(locale: CoreLocale, path = ''): string {
   return `/${locale}${path}`;
 }
 
@@ -16,7 +16,7 @@ export function absoluteUrl(path: string): string {
 /** hreflang map for a page, including x-default (Turkish, the default market). */
 export function languageAlternates(path = ''): Record<string, string> {
   return {
-    ...Object.fromEntries(LOCALES.map((l) => [l, localePath(l, path)])),
+    ...Object.fromEntries(CORE_LOCALES.map((l) => [l, localePath(l, path)])),
     'x-default': localePath(DEFAULT_LOCALE, path),
   };
 }
@@ -30,7 +30,7 @@ export function pageMetadata({
   absoluteTitle = false,
   keywords,
 }: {
-  locale: Locale;
+  locale: CoreLocale;
   path?: string;
   title: string;
   description: string;
@@ -52,7 +52,7 @@ export function pageMetadata({
       description,
       url,
       locale: OG_LOCALE[locale],
-      alternateLocale: LOCALES.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
+      alternateLocale: CORE_LOCALES.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
       images: [image],
     },
     twitter: { card: 'summary_large_image', title, description, images: [image.url] },

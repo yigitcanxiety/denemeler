@@ -47,7 +47,8 @@ interface SessionState {
 }
 
 interface Actions {
-  setLocale(locale: Locale): void;
+  /** `null` follows the device language. */
+  setLocale(locale: Locale | null): void;
   ensureAnonId(): string;
   acceptConsent(): void;
   setQuizAnswer<K extends keyof QuizAnswers>(key: K, value: QuizAnswers[K]): void;

@@ -1,8 +1,8 @@
-import { SEASONS, localized, mockAnalysisFor, shadeMatch, t, type Locale } from '@tonelle/shared';
+import { SEASONS, localized, mockAnalysisFor, shadeMatch, t, type CoreLocale } from '@tonelle/shared';
 import { profileView } from '@/lib/profile-view';
 
 /** Illustrative "sample result" used on the landing page (the shared mock analysis, Soft Autumn). */
-export function landingSample(locale: Locale) {
+export function landingSample(locale: CoreLocale) {
   const analysis = mockAnalysisFor(locale);
   const season = SEASONS[analysis.season];
   const shades = [

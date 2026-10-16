@@ -1,4 +1,4 @@
-import { isLocale, type Locale } from '@tonelle/shared';
+import { isCoreLocale, type CoreLocale } from '@tonelle/shared';
 import type { Metadata } from 'next';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ import { pageMetadata } from '@/lib/seo';
 
 export type LegalDocKey = keyof SiteContent['legal'];
 
-export function formatLegalDate(locale: Locale, iso: string = LEGAL_LAST_UPDATED): string {
+export function formatLegalDate(locale: CoreLocale, iso: string = LEGAL_LAST_UPDATED): string {
   return new Intl.DateTimeFormat(locale === 'tr' ? 'tr-TR' : 'en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(
     new Date(`${iso}T00:00:00Z`),
   );
@@ -68,7 +68,7 @@ export function LegalShell({
   children,
   toc,
 }: {
-  locale: Locale;
+  locale: CoreLocale;
   content: SiteContent;
   title: string;
   path: string;
@@ -150,7 +150,7 @@ export function LegalShell({
   );
 }
 
-export function LegalDocumentView({ locale, doc, path }: { locale: Locale; doc: LegalDoc; path: string }) {
+export function LegalDocumentView({ locale, doc, path }: { locale: CoreLocale; doc: LegalDoc; path: string }) {
   const content = getContent(locale);
   return (
     <LegalShell locale={locale} content={content} title={doc.title} path={path} toc={doc.sections}>
@@ -187,13 +187,13 @@ export function legalRoute(key: LegalDocKey) {
   const path = `/${key}`;
   async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
     const { locale } = await params;
-    if (!isLocale(locale)) return {};
+    if (!isCoreLocale(locale)) return {};
     const doc = getContent(locale).legal[key];
     return pageMetadata({ locale, path, title: doc.title, description: doc.metaDescription });
   }
   async function Page({ params }: { params: Promise<{ locale: string }> }) {
     const { locale } = await params;
-    if (!isLocale(locale)) notFound();
+    if (!isCoreLocale(locale)) notFound();
     return <LegalDocumentView locale={locale} doc={getContent(locale).legal[key]} path={path} />;
   }
   return { generateMetadata, Page };

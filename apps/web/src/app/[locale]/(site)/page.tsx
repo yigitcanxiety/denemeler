@@ -1,4 +1,4 @@
-import { PRICING, isLocale, regionForLocale, t } from '@tonelle/shared';
+import { PRICING, isCoreLocale, regionForLocale, t } from '@tonelle/shared';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { Faq } from '@/components/landing/Faq';
@@ -17,7 +17,7 @@ import { absoluteUrl, jsonLd, pageMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]'>): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale)) return {};
+  if (!isCoreLocale(locale)) return {};
   const content = getContent(locale);
   return pageMetadata({
     locale,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps<'/[locale]'>): Prom
 
 export default async function HomePage({ params }: PageProps<'/[locale]'>) {
   const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isCoreLocale(locale)) notFound();
   const content = getContent(locale);
   const region = PRICING[regionForLocale(locale)];
 

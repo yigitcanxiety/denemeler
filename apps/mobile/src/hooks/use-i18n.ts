@@ -7,7 +7,7 @@ import { useAppStore } from '@/store/app-store';
 
 let cachedDeviceLocale: Locale | null = null;
 
-/** Locale derived from the device settings (tr on Turkish devices, else en). */
+/** Locale derived from the device settings: the first supported device language, else en. */
 export function deviceLocale(): Locale {
   if (!cachedDeviceLocale) {
     let tags: string[] = [];

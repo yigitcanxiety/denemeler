@@ -1,10 +1,10 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import { ArrowRight, Check, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import type { SiteContent } from '@/content';
 
 /** Compact privacy promise card. */
-export function PrivacyStrip({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function PrivacyStrip({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { privacy } = content;
   return (
     <section aria-labelledby="privacy-title" className="pb-4">

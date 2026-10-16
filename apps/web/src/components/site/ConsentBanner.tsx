@@ -1,6 +1,6 @@
 'use client';
 
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import type { SiteContent } from '@/content/types';
 import { META_PIXEL_ID, getAdConsent, loadPixel, setAdConsent, track } from '@/lib/tracking';
 
 /** Asks once for ad-cookie consent and loads the Meta Pixel only after "Accept". */
-export function ConsentBanner({ locale, copy }: { locale: Locale; copy: SiteContent['cookieBanner'] }) {
+export function ConsentBanner({ locale, copy }: { locale: CoreLocale; copy: SiteContent['cookieBanner'] }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const firstPath = useRef(true);

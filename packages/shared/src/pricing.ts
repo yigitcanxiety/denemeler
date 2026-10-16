@@ -1,3 +1,4 @@
+import { intlTag } from './i18n';
 import type { Locale } from './schemas';
 
 /**
@@ -107,7 +108,7 @@ export function regionForLocale(locale: Locale): PricingRegion {
 }
 
 export function formatPrice(amount: number, currency: Currency, locale: Locale): string {
-  return new Intl.NumberFormat(locale === 'tr' ? 'tr-TR' : 'en-IE', {
+  return new Intl.NumberFormat(locale === 'en' ? 'en-IE' : intlTag(locale), {
     style: 'currency',
     currency,
     minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,

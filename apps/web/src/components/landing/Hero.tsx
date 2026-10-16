@@ -1,4 +1,4 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import { Check, Palette, WandSparkles } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -32,7 +32,7 @@ function MeshDots() {
   );
 }
 
-export function Hero({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function Hero({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { hero, analyze } = content;
   const sample = landingSample(locale);
   const lip = sample.shades[0]!;

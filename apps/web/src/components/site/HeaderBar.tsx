@@ -1,6 +1,6 @@
 'use client';
 
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import { ArrowUpRight, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -31,7 +31,7 @@ export function HeaderBar({
   legal,
   ctaHref,
 }: {
-  locale: Locale;
+  locale: CoreLocale;
   labels: HeaderLabels;
   links: NavLink[];
   legal: NavLink[];

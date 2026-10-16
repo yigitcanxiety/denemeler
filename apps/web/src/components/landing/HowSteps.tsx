@@ -1,4 +1,4 @@
-import { LOOKS, localized, type Locale } from '@tonelle/shared';
+import { LOOKS, localized, type CoreLocale } from '@tonelle/shared';
 import { Check } from 'lucide-react';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -9,7 +9,7 @@ import { landingSample } from './sample';
 const THUMBS = ['/images/portrait-hero.jpg', '/images/portrait-2.jpg', '/images/portrait-3.jpg'];
 
 /** Three steps (selfie → analiz → yüzünde dene), each with a small UI snippet. */
-export function HowSteps({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function HowSteps({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { how, analyze } = content;
   const sample = landingSample(locale);
 

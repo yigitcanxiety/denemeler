@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { SEASONS, isLocale } from '@tonelle/shared';
+import { SEASONS, isCoreLocale } from '@tonelle/shared';
 import { ImageResponse } from 'next/og';
 import { getContent } from '@/content';
 
@@ -10,7 +10,7 @@ export const contentType = 'image/png';
 
 export default async function OpengraphImage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: raw } = await params;
-  const locale = isLocale(raw) ? raw : 'tr';
+  const locale = isCoreLocale(raw) ? raw : 'tr';
   const content = getContent(locale);
   const palette = SEASONS.soft_autumn.palette;
   const portrait = await readFile(join(process.cwd(), 'public/images/portrait-hero.jpg'))

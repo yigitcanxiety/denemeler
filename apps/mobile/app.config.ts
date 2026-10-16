@@ -1,10 +1,14 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
 
+import en from './locales/en.json';
+
 /**
  * Tonelle mobile app config.
  *
- * Permission copy: English is the base string; Turkish is provided through `locales`
- * (compiled into tr.lproj/InfoPlist.strings by expo prebuild).
+ * App languages: one locales/<lang>.json per language holds the localized display name and
+ * permission texts (compiled into <lang>.lproj/InfoPlist.strings by expo prebuild); English is
+ * the base string. LANGUAGES also feeds CFBundleLocalizations, so iOS Settings shows the
+ * per-app Language option. Values are written verbatim into .strings files: no double quotes.
  *
  * Privacy manifest: the entries below cover the "required reason" APIs used by React Native,
  * AsyncStorage and Expo modules. Expo/RevenueCat SDKs ship their own PrivacyInfo.xcprivacy that
@@ -17,14 +21,11 @@ import type { ConfigContext, ExpoConfig } from 'expo/config';
  * adaptive-icon.png is the same art shrunk into Android's safe zone on ICON_BG.
  */
 
-const CAMERA_EN =
-  'Tonelle uses your camera to take a selfie for your colour and makeup analysis. The photo is not stored.';
-const PHOTOS_EN =
-  'Tonelle lets you choose a selfie from your library for your colour and makeup analysis. The photo is not stored.';
-const CAMERA_TR =
-  'Tonelle, renk ve makyaj analizin için selfie çekmek amacıyla kamerana erişir. Fotoğrafın saklanmaz.';
-const PHOTOS_TR =
-  'Tonelle, renk ve makyaj analizin için galerinden bir selfie seçmene olanak tanır. Fotoğrafın saklanmaz.';
+const CAMERA_EN = en.ios.NSCameraUsageDescription;
+const PHOTOS_EN = en.ios.NSPhotoLibraryUsageDescription;
+
+/** Same languages as LOCALES in @tonelle/shared (Brazilian Portuguese is the pt-BR lproj). */
+const LANGUAGES = ['en', 'tr', 'es', 'pt-BR', 'de', 'fr', 'it', 'ja', 'ko'] as const;
 
 /** v3 "Aura" paper (src/theme.ts). */
 const PAPER = '#FFFFFF';
@@ -102,14 +103,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     output: 'single',
     favicon: './assets/images/favicon.png',
   },
-  locales: {
-    en: {
-      ios: { NSCameraUsageDescription: CAMERA_EN, NSPhotoLibraryUsageDescription: PHOTOS_EN },
-    },
-    tr: {
-      ios: { NSCameraUsageDescription: CAMERA_TR, NSPhotoLibraryUsageDescription: PHOTOS_TR },
-    },
-  },
+  locales: Object.fromEntries(LANGUAGES.map((lang) => [lang, `./locales/${lang}.json`])),
   plugins: [
     'expo-router',
     'expo-font',
@@ -122,7 +116,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         imageWidth: 200,
       },
     ],
-    ['expo-localization', { supportedLocales: { ios: ['en', 'tr'], android: ['en', 'tr'] } }],
+    ['expo-localization', { supportedLocales: { ios: [...LANGUAGES], android: [...LANGUAGES] } }],
     [
       'expo-camera',
       {

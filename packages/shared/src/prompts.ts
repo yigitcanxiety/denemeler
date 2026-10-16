@@ -24,7 +24,17 @@ export interface AnalysisPrompt {
   user: string;
 }
 
-const LANGUAGE_NAMES: Record<Locale, string> = { tr: 'Turkish', en: 'English' };
+const LANGUAGE_NAMES: Record<Locale, string> = {
+  tr: 'Turkish',
+  en: 'English',
+  es: 'Spanish',
+  pt: 'Brazilian Portuguese',
+  de: 'German',
+  fr: 'French',
+  it: 'Italian',
+  ja: 'Japanese',
+  ko: 'Korean',
+};
 
 const oneOf = (values: readonly string[]) => values.map((v) => `"${v}"`).join(' | ');
 

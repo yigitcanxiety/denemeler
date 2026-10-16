@@ -1,0 +1,7 @@
+{
+  "ios": {
+    "CFBundleDisplayName": "Tonelle",
+    "NSCameraUsageDescription": "Tonelle, renk ve makyaj analizin için selfie çekmek amacıyla kamerana erişir. Fotoğrafın saklanmaz.",
+    "NSPhotoLibraryUsageDescription": "Tonelle, renk ve makyaj analizin için galerinden bir selfie seçmene olanak tanır. Fotoğrafın saklanmaz."
+  }
+}

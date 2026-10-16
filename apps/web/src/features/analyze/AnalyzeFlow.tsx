@@ -1,6 +1,6 @@
 'use client';
 
-import { createTranslator, type Locale } from '@tonelle/shared';
+import { createTranslator, type CoreLocale } from '@tonelle/shared';
 import clsx from 'clsx';
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function AnalyzeFlow({
   mode = 'full',
   client = apiClient,
 }: {
-  locale: Locale;
+  locale: CoreLocale;
   mode?: AnalyzeMode;
   copy: AnalyzeCopy;
   stores: StoreCopy;

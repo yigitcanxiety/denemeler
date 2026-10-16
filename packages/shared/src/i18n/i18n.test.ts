@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { API_ERROR_CODES, QUALITY_ISSUES } from '../schemas';
-import { en, interpolate, resolveLocale, t, tr, type TranslationKey } from './index';
+import { API_ERROR_CODES, CORE_LOCALES, LOCALES, QUALITY_ISSUES } from '../schemas';
+import { dictionaries, en, interpolate, resolveCoreLocale, resolveLocale, t, type TranslationKey } from './index';
 
 function leafKeys(obj: object, prefix = ''): string[] {
   return Object.entries(obj).flatMap(([key, value]) => {
@@ -10,31 +10,38 @@ function leafKeys(obj: object, prefix = ''): string[] {
 }
 
 describe('dictionaries', () => {
-  it('tr and en have identical key sets', () => {
-    expect(leafKeys(tr).sort()).toEqual(leafKeys(en).sort());
-  });
-
-  it('has no empty strings', () => {
-    for (const dict of [en, tr]) {
-      for (const key of leafKeys(dict)) expect(t(dict === en ? 'en' : 'tr', key as TranslationKey)).not.toBe('');
+  it('every locale has the same key set as en', () => {
+    for (const locale of LOCALES) {
+      expect(leafKeys(dictionaries[locale]).sort(), locale).toEqual(leafKeys(en).sort());
     }
   });
 
-  it('uses the same placeholders in both locales', () => {
+  it('has no empty strings', () => {
+    for (const locale of LOCALES) {
+      for (const key of leafKeys(dictionaries[locale])) expect(t(locale, key as TranslationKey), `${locale}:${key}`).not.toBe('');
+    }
+  });
+
+  it('uses the same placeholders in every locale', () => {
     const placeholders = (s: string) => (s.match(/\{\w+\}/g) ?? []).sort();
-    for (const key of leafKeys(en) as TranslationKey[]) {
-      expect(placeholders(t('tr', key)), key).toEqual(placeholders(t('en', key)));
+    for (const locale of LOCALES) {
+      for (const key of leafKeys(en) as TranslationKey[]) {
+        expect(placeholders(t(locale, key)), `${locale}:${key}`).toEqual(placeholders(t('en', key)));
+      }
+    }
+  });
+
+  it('names every language by its own name in every locale', () => {
+    for (const locale of LOCALES) {
+      for (const code of LOCALES) expect(t(locale, `language.${code}`), `${locale}:${code}`).toBe(t('en', `language.${code}`));
     }
   });
 
   it('has an error message for every ApiError code and quality issue', () => {
-    for (const code of API_ERROR_CODES) {
-      expect(en.errors[code]).toBeTruthy();
-      expect(tr.errors[code]).toBeTruthy();
-    }
-    for (const issue of QUALITY_ISSUES) {
-      expect(en.camera.qualityIssues[issue]).toBeTruthy();
-      expect(tr.camera.qualityIssues[issue]).toBeTruthy();
+    for (const locale of LOCALES) {
+      const dict = dictionaries[locale] as typeof en;
+      for (const code of API_ERROR_CODES) expect(dict.errors[code], `${locale}:${code}`).toBeTruthy();
+      for (const issue of QUALITY_ISSUES) expect(dict.camera.qualityIssues[issue], `${locale}:${issue}`).toBeTruthy();
     }
   });
 });
@@ -58,10 +65,24 @@ describe('t', () => {
 describe('resolveLocale', () => {
   it('parses Accept-Language with q-values', () => {
     expect(resolveLocale('en-US,en;q=0.9,tr;q=0.8')).toBe('en');
-    expect(resolveLocale('de-DE,tr;q=0.5,en;q=0.9')).toBe('en');
+    expect(resolveLocale('nl-NL,tr;q=0.5,en;q=0.9')).toBe('en');
     expect(resolveLocale('tr-TR')).toBe('tr');
-    expect(resolveLocale('fr-FR')).toBe('tr');
-    expect(resolveLocale(null)).toBe('tr');
     expect(resolveLocale(['EN_gb'])).toBe('en');
+  });
+
+  it('knows all mobile locales and falls back as asked', () => {
+    expect(resolveLocale('fr-FR')).toBe('fr');
+    expect(resolveLocale(['pt-BR'])).toBe('pt');
+    expect(resolveLocale(['ja-JP', 'en'])).toBe('ja');
+    expect(resolveLocale(['nl-NL'], 'en')).toBe('en');
+    expect(resolveLocale(null, 'en')).toBe('en');
+    expect(resolveLocale(['nl-NL'])).toBe('tr');
+  });
+
+  it('resolveCoreLocale only returns the website locales', () => {
+    expect(resolveCoreLocale('fr-FR')).toBe('tr');
+    expect(resolveCoreLocale('de-DE,tr;q=0.5,en;q=0.9')).toBe('en');
+    expect(resolveCoreLocale(null)).toBe('tr');
+    expect(CORE_LOCALES).toEqual(['tr', 'en']);
   });
 });

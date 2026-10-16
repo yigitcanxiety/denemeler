@@ -1,4 +1,4 @@
-import { LOCALES, type Locale } from '@tonelle/shared';
+import { LOCALES } from '@tonelle/shared';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ import { PressableScale } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
 import { AppText } from '@/components/text';
-import { Card, Pill, Segmented, SectionTitle } from '@/components/ui';
+import { Card, Pill, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import type { LegalPage } from '@/lib/config';
@@ -33,6 +33,7 @@ const LEGAL: { page: LegalPage; key: 'legal.privacy' | 'legal.kvkk' | 'legal.con
 export default function ProfileScreen() {
   const t = useT();
   const locale = useLocale();
+  const chosenLocale = useAppStore((s) => s.locale);
   const copy = uiCopy(locale);
   const premium = usePremium();
   const setLocale = useAppStore((s) => s.setLocale);
@@ -93,11 +94,12 @@ export default function ProfileScreen() {
 
       <Card style={styles.gap}>
         <SectionTitle>{t('settings.language')}</SectionTitle>
-        <Segmented<Locale>
-          options={LOCALES.map((code: Locale) => ({ key: code, label: t(`language.${code}`) }))}
-          value={locale}
-          onChange={setLocale}
-        />
+        <View style={styles.list}>
+          <LanguageRow label={t('language.auto')} selected={chosenLocale === null} onPress={() => setLocale(null)} />
+          {LOCALES.map((code) => (
+            <LanguageRow key={code} label={t(`language.${code}`)} selected={chosenLocale === code} onPress={() => setLocale(code)} />
+          ))}
+        </View>
       </Card>
 
       <Card style={styles.gap}>
@@ -160,6 +162,24 @@ export default function ProfileScreen() {
   );
 }
 
+/** One option of the language picker; native language names, check mark on the active choice. */
+function LanguageRow({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+  return (
+    <PressableScale
+      onPress={onPress}
+      accessibilityRole="radio"
+      accessibilityState={{ selected, checked: selected }}
+      accessibilityLabel={label}
+      style={[styles.row, styles.langRow, selected && styles.langRowOn]}
+    >
+      <AppText variant="label" color={selected ? colors.ink : colors.muted} style={styles.flex}>
+        {label}
+      </AppText>
+      {selected ? <Icon name="check" size={16} color={colors.violet} strokeWidth={2.2} /> : null}
+    </PressableScale>
+  );
+}
+
 function Row({
   icon,
   title,
@@ -215,6 +235,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 10,
   },
+  langRow: { minHeight: 48 },
+  langRowOn: { borderColor: colors.violet, backgroundColor: colors.violetSoft },
   rowIcon: { width: 32, height: 32, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   about: { gap: 2, paddingVertical: spacing.md },
 });

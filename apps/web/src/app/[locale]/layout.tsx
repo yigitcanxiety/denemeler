@@ -2,7 +2,7 @@ import Script from 'next/script';
 import type { Metadata, Viewport } from 'next';
 import { Gloock, Plus_Jakarta_Sans } from 'next/font/google';
 import { notFound } from 'next/navigation';
-import { LOCALES, isLocale } from '@tonelle/shared';
+import { CORE_LOCALES, isCoreLocale } from '@tonelle/shared';
 import { ConsentBanner } from '@/components/site/ConsentBanner';
 import { RevealObserver } from '@/components/site/RevealObserver';
 import { SITE_URL } from '@/config/company';
@@ -26,12 +26,12 @@ const jakarta = Plus_Jakarta_Sans({
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return LOCALES.map((locale) => ({ locale }));
+  return CORE_LOCALES.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({ params }: LayoutProps<'/[locale]'>): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale)) return {};
+  if (!isCoreLocale(locale)) return {};
   const content = getContent(locale);
   return {
     metadataBase: new URL(SITE_URL),
@@ -67,7 +67,7 @@ const BOOT_SCRIPT = `(function(){var d=document.documentElement;d.classList.add(
 
 export default async function LocaleLayout({ children, params }: LayoutProps<'/[locale]'>) {
   const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isCoreLocale(locale)) notFound();
   const content = getContent(locale);
 
   return (

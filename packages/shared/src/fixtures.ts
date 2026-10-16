@@ -1,4 +1,6 @@
-import type { FaceAnalysis, Locale, SkinAnalysis } from './schemas';
+import { CONTENT_OVERLAYS } from './i18n/content';
+import { isCoreLocale } from './i18n';
+import type { CoreLocale, FaceAnalysis, Locale, SkinAnalysis } from './schemas';
 
 /** Deterministic analysis used in mock mode and tests (Soft Autumn). */
 export const MOCK_ANALYSIS: FaceAnalysis = {
@@ -24,7 +26,7 @@ export const MOCK_ANALYSIS: FaceAnalysis = {
     'Your colouring is soft and gently warm, which places you in Soft Autumn. Muted earthy shades like camel, sage and dusty rose harmonise with your skin, while very bright or icy colours can feel harsh next to your face.',
 };
 
-const MOCK_LOCALIZED_TEXT: Record<Locale, Pick<FaceAnalysis, 'foundation' | 'summary'>> = {
+const MOCK_LOCALIZED_TEXT: Record<CoreLocale, Pick<FaceAnalysis, 'foundation' | 'summary'>> = {
   en: { foundation: MOCK_ANALYSIS.foundation, summary: MOCK_ANALYSIS.summary },
   tr: {
     foundation: {
@@ -38,14 +40,14 @@ const MOCK_LOCALIZED_TEXT: Record<Locale, Pick<FaceAnalysis, 'foundation' | 'sum
 
 /** `MOCK_ANALYSIS` with its human-readable text in the requested locale. */
 export function mockAnalysisFor(locale: Locale): FaceAnalysis {
-  return { ...MOCK_ANALYSIS, ...MOCK_LOCALIZED_TEXT[locale] };
+  return { ...MOCK_ANALYSIS, ...(isCoreLocale(locale) ? MOCK_LOCALIZED_TEXT[locale] : CONTENT_OVERLAYS[locale].mock.analysis) };
 }
 
 /** 1×1 transparent PNG, handy as a placeholder image in mock mode and tests. */
 export const MOCK_IMAGE_DATA_URL =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
-const MOCK_SKIN_TEXT: Record<Locale, Pick<SkinAnalysis, 'routine' | 'ingredients' | 'summary'>> = {
+const MOCK_SKIN_TEXT: Record<CoreLocale, Pick<SkinAnalysis, 'routine' | 'ingredients' | 'summary'>> = {
   en: {
     routine: {
       morning: ['Gentle gel cleanser', 'Light hydrating serum', 'Oil-free moisturiser', 'SPF 50 sunscreen'],
@@ -73,6 +75,6 @@ export function mockSkinAnalysisFor(locale: Locale): SkinAnalysis {
     qualityIssues: [],
     skinType: 'combination',
     concerns: { hydration: 'medium', oiliness: 'medium', pores: 'medium', redness: 'low', pigmentation: 'low', texture: 'low' },
-    ...MOCK_SKIN_TEXT[locale],
+    ...(isCoreLocale(locale) ? MOCK_SKIN_TEXT[locale] : CONTENT_OVERLAYS[locale].mock.skin),
   };
 }

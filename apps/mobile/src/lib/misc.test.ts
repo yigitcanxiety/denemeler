@@ -7,10 +7,14 @@ import { isLookId, localizedSteps, lookShades, lookSummary, resolveRecommendedLo
 import { confidencePercent, profileBars, profilePoints, seasonText, topShades, traitChips } from './results';
 
 describe('pickDeviceLocale', () => {
-  it('uses Turkish on Turkish devices, English otherwise', () => {
+  it('follows the first supported device language, English otherwise', () => {
     expect(pickDeviceLocale(['tr-TR'])).toBe('tr');
-    expect(pickDeviceLocale(['de-DE', 'tr'])).toBe('tr');
-    expect(pickDeviceLocale(['de-DE'])).toBe('en');
+    expect(pickDeviceLocale(['nl-NL', 'tr'])).toBe('tr');
+    expect(pickDeviceLocale(['de-DE'])).toBe('de');
+    expect(pickDeviceLocale(['pt-BR'])).toBe('pt');
+    expect(pickDeviceLocale(['ko-KR', 'en'])).toBe('ko');
+    expect(pickDeviceLocale(['nl-NL'])).toBe('en');
+    expect(pickDeviceLocale(['zh-Hans-CN'])).toBe('en');
     expect(pickDeviceLocale(['en_US'])).toBe('en');
     expect(pickDeviceLocale([null, undefined])).toBe('en');
     expect(pickDeviceLocale([])).toBe('en');

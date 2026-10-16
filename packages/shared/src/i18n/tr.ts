@@ -28,8 +28,16 @@ export const tr: Dictionary = {
 
   language: {
     label: 'Dil',
+    auto: 'Otomatik (cihaz dili)',
     tr: 'Türkçe',
     en: 'English',
+    es: 'Español',
+    pt: 'Português (Brasil)',
+    de: 'Deutsch',
+    fr: 'Français',
+    it: 'Italiano',
+    ja: '日本語',
+    ko: '한국어',
   },
 
   onboarding: {

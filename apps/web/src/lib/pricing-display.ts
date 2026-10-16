@@ -6,7 +6,7 @@ import {
   regionForLocale,
   t,
   weeklyEquivalent,
-  type Locale,
+  type CoreLocale,
   type PlanId,
   type PlanPrice,
   type PricingRegion,
@@ -37,11 +37,11 @@ export interface PlanDisplay {
 /** Plans in display order: yearly (highlighted), weekly, one-time report. */
 export const PLAN_ORDER: PlanId[] = ['yearly', 'weekly', 'report'];
 
-function periodLabel(locale: Locale, plan: PlanPrice): string {
+function periodLabel(locale: CoreLocale, plan: PlanPrice): string {
   return plan.period === 'week' ? t(locale, 'paywall.periodWeek') : t(locale, 'paywall.periodYear');
 }
 
-function storeLabel(locale: Locale): string {
+function storeLabel(locale: CoreLocale): string {
   return `${t(locale, 'paywall.storeApple')} / ${t(locale, 'paywall.storeGoogle')}`;
 }
 
@@ -51,7 +51,7 @@ export function yearlySavingsPercent(region: PricingRegion): number {
   return Math.floor((1 - yearly.amount / (weekly.amount * 52)) * 100);
 }
 
-export function getPlanDisplay(locale: Locale, id: PlanId, region: PricingRegion = regionForLocale(locale)): PlanDisplay {
+export function getPlanDisplay(locale: CoreLocale, id: PlanId, region: PricingRegion = regionForLocale(locale)): PlanDisplay {
   const plan = PRICING[region][id];
   const fmt = (amount: number) => formatPrice(amount, plan.currency, locale);
   const price = fmt(plan.amount);
@@ -114,7 +114,7 @@ export function getPlanDisplay(locale: Locale, id: PlanId, region: PricingRegion
 }
 
 /** Localised plan cards for a locale's default region (TR → ₺, everything else → €). */
-export function getPlanDisplays(locale: Locale, region: PricingRegion = regionForLocale(locale)): PlanDisplay[] {
+export function getPlanDisplays(locale: CoreLocale, region: PricingRegion = regionForLocale(locale)): PlanDisplay[] {
   return PLAN_ORDER.map((id) => getPlanDisplay(locale, id, region));
 }
 
@@ -127,7 +127,7 @@ export interface ExitOfferDisplay {
   dismiss: string;
 }
 
-export function getExitOfferDisplay(locale: Locale, region: PricingRegion = regionForLocale(locale)): ExitOfferDisplay {
+export function getExitOfferDisplay(locale: CoreLocale, region: PricingRegion = regionForLocale(locale)): ExitOfferDisplay {
   const plan = PRICING[region][EXIT_OFFER.plan];
   const percent = EXIT_OFFER.discountPercent;
   const price = formatPrice(exitOfferAmount(region), plan.currency, locale);

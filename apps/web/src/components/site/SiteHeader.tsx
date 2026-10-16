@@ -1,9 +1,9 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import type { SiteContent } from '@/content';
 import { HeaderBar } from './HeaderBar';
 import { legalLinks } from './SiteFooter';
 
-export function SiteHeader({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function SiteHeader({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const home = `/${locale}`;
   const links = [
     { href: `${home}#how`, label: content.nav.howItWorks },

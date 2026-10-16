@@ -1,4 +1,4 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 
 /**
  * "How people use Tonelle" entries.
@@ -20,8 +20,8 @@ export interface Testimonial {
   avatar: 0 | 1 | 2;
   name: string;
   age: number;
-  role: Record<Locale, string>;
-  quote: Record<Locale, string>;
+  role: Record<CoreLocale, string>;
+  quote: Record<CoreLocale, string>;
 }
 
 export const TESTIMONIALS: Testimonial[] = [

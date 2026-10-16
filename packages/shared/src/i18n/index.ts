@@ -1,5 +1,12 @@
-import { DEFAULT_LOCALE, LOCALES, type Locale } from '../schemas';
+import { CORE_LOCALES, DEFAULT_LOCALE, LOCALES, type CoreLocale, type Locale } from '../schemas';
+import { de } from './de';
 import { en, type Dictionary } from './en';
+import { es } from './es';
+import { fr } from './fr';
+import { it } from './it';
+import { ja } from './ja';
+import { ko } from './ko';
+import { pt } from './pt';
 import { tr } from './tr';
 
 export type { Dictionary };
@@ -15,20 +22,59 @@ type LeafPaths<T> = {
 export type TranslationVars = Record<string, string | number>;
 
 /**
- * All locale dictionaries. `en` is the complete reference; future locales may be partial
- * and fall back to English key by key.
+ * All locale dictionaries. `en` is the complete reference; every locale file is typed as the full
+ * `Dictionary`, but lookups still fall back to English key by key.
  */
-export const dictionaries: { en: Dictionary } & Record<Locale, DeepPartial<Dictionary>> = { en, tr };
+export const dictionaries: { en: Dictionary } & Record<Locale, DeepPartial<Dictionary>> = {
+  en,
+  tr,
+  es,
+  pt,
+  de,
+  fr,
+  it,
+  ja,
+  ko,
+};
 
-export { en, tr };
+export { de, en, es, fr, it, ja, ko, pt, tr };
 
 export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (LOCALES as readonly string[]).includes(value);
 }
 
-/** Picks the best supported locale from an Accept-Language header or a list of language tags. */
-export function resolveLocale(input: string | readonly string[] | null | undefined): Locale {
-  if (!input) return DEFAULT_LOCALE;
+const INTL_TAGS: Record<Locale, string> = {
+  tr: 'tr-TR',
+  en: 'en-GB',
+  es: 'es-ES',
+  pt: 'pt-BR',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  it: 'it-IT',
+  ja: 'ja-JP',
+  ko: 'ko-KR',
+};
+
+/** BCP-47 tag for Intl APIs (number, date and case formatting). */
+export function intlTag(locale: Locale): string {
+  return INTL_TAGS[locale];
+}
+
+/** True for the locales the website serves (tr, en). */
+export function isCoreLocale(value: unknown): value is CoreLocale {
+  return typeof value === 'string' && (CORE_LOCALES as readonly string[]).includes(value);
+}
+
+/**
+ * Picks the best supported locale from an Accept-Language header or a list of language tags.
+ * `fallback` is returned when no tag matches (mobile passes 'en'); `supported` narrows the candidates.
+ */
+export function resolveLocale(
+  input: string | readonly string[] | null | undefined,
+  fallback: Locale = DEFAULT_LOCALE,
+  supported: readonly Locale[] = LOCALES,
+): Locale {
+  if (!input) return fallback;
   const tags =
     typeof input === 'string'
       ? input
@@ -43,9 +89,14 @@ export function resolveLocale(input: string | readonly string[] | null | undefin
       : input;
   for (const tag of tags) {
     const base = tag.toLowerCase().split(/[-_]/)[0];
-    if (isLocale(base)) return base;
+    if (isLocale(base) && supported.includes(base)) return base;
   }
-  return DEFAULT_LOCALE;
+  return fallback;
+}
+
+/** `resolveLocale` for the website: only tr/en, defaulting to Turkish. */
+export function resolveCoreLocale(input: string | readonly string[] | null | undefined): CoreLocale {
+  return resolveLocale(input, DEFAULT_LOCALE, CORE_LOCALES) as CoreLocale;
 }
 
 function lookup(dict: unknown, key: string): string | undefined {

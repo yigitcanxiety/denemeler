@@ -1,4 +1,4 @@
-import { t, type Locale } from '@tonelle/shared';
+import { t, type CoreLocale } from '@tonelle/shared';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Eyebrow } from '@/components/ui';
@@ -8,7 +8,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { Logo } from './Logo';
 import { StoreBadges } from './StoreBadges';
 
-export function legalLinks(locale: Locale) {
+export function legalLinks(locale: CoreLocale) {
   return [
     { href: `/${locale}/privacy`, label: t(locale, 'legal.privacy') },
     { href: `/${locale}/kvkk`, label: t(locale, 'legal.kvkk') },
@@ -19,7 +19,7 @@ export function legalLinks(locale: Locale) {
   ];
 }
 
-export function SiteFooter({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function SiteFooter({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const home = `/${locale}`;
   const product = [
     { href: `/${locale}/analyze`, label: t(locale, 'common.startAnalysis') },

@@ -1,5 +1,6 @@
 import {
   LOOK_IDS,
+  type CoreLocalized,
   type ExperienceLevel,
   type FaceAnalysis,
   type Localized,
@@ -7,6 +8,7 @@ import {
   type Occasion,
   type QuizAnswers,
 } from './schemas';
+import { withOverlays } from './i18n/content';
 import { SEASONS } from './seasons';
 
 export type LookIntensity = 'subtle' | 'medium' | 'bold';
@@ -35,9 +37,17 @@ export interface Look {
   promptTemplate: string;
 }
 
-const step = (area: LookStepArea, title: Localized, body: Localized): LookStep => ({ area, title, body });
+type CoreLookStep = Omit<LookStep, 'title' | 'body'> & { title: CoreLocalized; body: CoreLocalized };
+type CoreLook = Omit<Look, 'name' | 'description' | 'steps'> & {
+  name: CoreLocalized;
+  description: CoreLocalized;
+  steps: CoreLookStep[];
+};
 
-export const LOOKS: Record<LookId, Look> = {
+const step = (area: LookStepArea, title: CoreLocalized, body: CoreLocalized): CoreLookStep => ({ area, title, body });
+
+/** tr/en are written inline; every other locale comes from i18n/content/<locale>.ts. */
+const CORE_LOOKS: Record<LookId, CoreLook> = {
   natural_glow: {
     id: 'natural_glow',
     name: { tr: 'Doğal Işıltı', en: 'Natural Glow' },
@@ -481,6 +491,25 @@ export const LOOKS: Record<LookId, Look> = {
 };
 
 /** All looks in canonical order. */
+export const LOOKS = Object.fromEntries(
+  LOOK_IDS.map((id) => {
+    const core = CORE_LOOKS[id];
+    return [
+      id,
+      {
+        ...core,
+        name: withOverlays(core.name, (o) => o.looks[id].name),
+        description: withOverlays(core.description, (o) => o.looks[id].description),
+        steps: core.steps.map((st, i) => ({
+          area: st.area,
+          title: withOverlays(st.title, (o) => o.looks[id].steps[i]!.title),
+          body: withOverlays(st.body, (o) => o.looks[id].steps[i]!.body),
+        })),
+      },
+    ];
+  }),
+) as Record<LookId, Look>;
+
 export const LOOK_LIST: Look[] = LOOK_IDS.map((id) => LOOKS[id]);
 
 export function getLook(id: LookId): Look {

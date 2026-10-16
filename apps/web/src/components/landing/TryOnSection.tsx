@@ -1,11 +1,11 @@
-import { t, type Locale } from '@tonelle/shared';
+import { t, type CoreLocale } from '@tonelle/shared';
 import Image from 'next/image';
 import { BeforeAfter, FitPill, SectionHeading, ShadeTube } from '@/components/ui';
 import type { SiteContent } from '@/content';
 import { landingSample } from './sample';
 
 /** "Önce / Sonra" section modelled on the Aura tablet screen: story · slider · shade cards. */
-export function TryOnSection({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function TryOnSection({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { beforeAfter: copy, analyze } = content;
   const sample = landingSample(locale);
 

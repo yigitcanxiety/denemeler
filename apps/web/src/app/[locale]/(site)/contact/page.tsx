@@ -1,4 +1,4 @@
-import { isLocale } from '@tonelle/shared';
+import { isCoreLocale } from '@tonelle/shared';
 import { Building2, LifeBuoy, ShieldCheck } from 'lucide-react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -9,7 +9,7 @@ import { pageMetadata } from '@/lib/seo';
 
 export async function generateMetadata({ params }: PageProps<'/[locale]/contact'>): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale)) return {};
+  if (!isCoreLocale(locale)) return {};
   const { contact } = getContent(locale);
   return pageMetadata({ locale, path: '/contact', title: contact.title, description: contact.metaDescription });
 }
@@ -19,7 +19,7 @@ const EMAILS = { support: COMPANY.supportEmail, privacy: COMPANY.privacyEmail, c
 
 export default async function ContactPage({ params }: PageProps<'/[locale]/contact'>) {
   const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isCoreLocale(locale)) notFound();
   const content = getContent(locale);
   const { contact } = content;
 

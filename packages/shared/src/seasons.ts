@@ -1,4 +1,5 @@
-import type { Localized, Season } from './schemas';
+import { withOverlays } from './i18n/content';
+import { SEASON_IDS, type CoreLocalized, type Localized, type Season } from './schemas';
 
 export type SeasonFamily = 'spring' | 'summer' | 'autumn' | 'winter';
 
@@ -17,7 +18,10 @@ export interface SeasonInfo {
   avoid: string[];
 }
 
-export const SEASONS: Record<Season, SeasonInfo> = {
+type CoreSeasonInfo = Omit<SeasonInfo, 'name' | 'description'> & { name: CoreLocalized; description: CoreLocalized };
+
+/** tr/en are written inline; every other locale comes from i18n/content/<locale>.ts. */
+const CORE_SEASONS: Record<Season, CoreSeasonInfo> = {
   light_spring: {
     id: 'light_spring',
     family: 'spring',
@@ -175,6 +179,20 @@ export const SEASONS: Record<Season, SeasonInfo> = {
     avoid: ['#C2B280', '#8B7D6B', '#D2B48C', '#A67B5B'],
   },
 };
+
+export const SEASONS = Object.fromEntries(
+  SEASON_IDS.map((id) => {
+    const core = CORE_SEASONS[id];
+    return [
+      id,
+      {
+        ...core,
+        name: withOverlays(core.name, (o) => o.seasons[id].name),
+        description: withOverlays(core.description, (o) => o.seasons[id].description),
+      },
+    ];
+  }),
+) as Record<Season, SeasonInfo>;
 
 /** All seasons in canonical order. */
 export const SEASON_LIST: SeasonInfo[] = Object.values(SEASONS);

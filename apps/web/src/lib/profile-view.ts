@@ -1,4 +1,4 @@
-import { PROFILE_AXES, PROFILE_AXIS_LABELS, colorProfile, localized, type FaceAnalysis, type Locale } from '@tonelle/shared';
+import { PROFILE_AXES, PROFILE_AXIS_LABELS, colorProfile, localized, type FaceAnalysis, type CoreLocale } from '@tonelle/shared';
 
 export const BAR_COLORS = {
   warmth: 'var(--color-chart-warmth)',
@@ -7,7 +7,7 @@ export const BAR_COLORS = {
 } as const;
 
 /** Radar axes + the three coloured bars for an analysis (shared by the landing and results). */
-export function profileView(analysis: FaceAnalysis, locale: Locale) {
+export function profileView(analysis: FaceAnalysis, locale: CoreLocale) {
   const profile = colorProfile(analysis);
   const axes = PROFILE_AXES.map((axis) => ({ label: localized(PROFILE_AXIS_LABELS[axis], locale), value: profile[axis] }));
   const bars = (['warmth', 'contrast', 'softness'] as const).map((axis) => ({

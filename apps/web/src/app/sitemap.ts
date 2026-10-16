@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { LOCALES } from '@tonelle/shared';
+import { CORE_LOCALES } from '@tonelle/shared';
 import { LEGAL_LAST_UPDATED } from '@/config/company';
 import { absoluteUrl, localePath } from '@/lib/seo';
 
@@ -18,13 +18,13 @@ const PAGES: { path: string; priority: number; changeFrequency: 'weekly' | 'mont
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PAGES.flatMap((page) =>
-    LOCALES.map((locale) => ({
+    CORE_LOCALES.map((locale) => ({
       url: absoluteUrl(localePath(locale, page.path)),
       lastModified: page.legal ? new Date(`${LEGAL_LAST_UPDATED}T00:00:00Z`) : new Date(),
       changeFrequency: page.changeFrequency,
       priority: page.priority,
       alternates: {
-        languages: Object.fromEntries(LOCALES.map((l) => [l, absoluteUrl(localePath(l, page.path))])),
+        languages: Object.fromEntries(CORE_LOCALES.map((l) => [l, absoluteUrl(localePath(l, page.path))])),
       },
     })),
   );

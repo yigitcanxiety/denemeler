@@ -1,4 +1,4 @@
-import { AnalyzeResponseSchema, MAX_BODY_BYTES, MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL } from '@tonelle/shared';
+import { AnalyzeResponseSchema, LOCALES, MAX_BODY_BYTES, MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL } from '@tonelle/shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { analyzeRateLimiter } from '@/server/rate-limit';
 import { OPTIONS, POST } from './route';
@@ -35,6 +35,13 @@ describe('POST /api/analyze', () => {
     expect(json.recommendedLookIds).toHaveLength(3);
     expect(json.analysis.summary).not.toBe(MOCK_ANALYSIS.summary); // Turkish text
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('accepts every mobile app locale', async () => {
+    for (const locale of LOCALES) {
+      const res = await post(JSON.stringify({ image: MOCK_IMAGE_DATA_URL, locale }));
+      expect(res.status, locale).toBe(200);
+    }
   });
 
   it('rejects invalid bodies with 400', async () => {

@@ -1,13 +1,20 @@
-import type { Locale } from '@tonelle/shared';
+import { intlTag, type CoreLocale, type Locale } from '@tonelle/shared';
 
-import { intlTag } from './locale';
+import { de } from './ui-copy/de';
+import { es } from './ui-copy/es';
+import { fr } from './ui-copy/fr';
+import { it } from './ui-copy/it';
+import { ja } from './ui-copy/ja';
+import { ko } from './ui-copy/ko';
+import { pt } from './ui-copy/pt';
 
 /**
  * Short, design-specific copy for the v3 mobile screens that is not part of the shared
- * dictionary (chips, tab labels, card captions). Bilingual (TR default + EN); longer product
+ * dictionary (chips, tab labels, card captions). TR and EN are written inline below; every other
+ * locale lives in ./ui-copy/<locale>.ts and must be complete (typed as `UiCopy`). Longer product
  * copy belongs in @tonelle/shared.
  */
-const COPY = {
+const CORE_COPY = {
   tr: {
     tabToday: 'Bugün',
     tabResults: 'Sonuçlar',
@@ -202,9 +209,18 @@ const COPY = {
     shareEyebrow: 'My colour season',
     match: (percent: string) => `${percent} match`,
   },
-} as const satisfies Record<Locale, unknown>;
+} as const satisfies Record<CoreLocale, unknown>;
 
-export type UiCopy = (typeof COPY)[Locale];
+type Widen<T> = T extends string
+  ? string
+  : T extends (...args: infer A) => infer R
+    ? (...args: A) => R
+    : { -readonly [K in keyof T]: Widen<T[K]> };
+
+/** Shape of the short UI copy, derived from the English block; every locale file must be complete. */
+export type UiCopy = Widen<(typeof CORE_COPY)['en']>;
+
+const COPY: Record<Locale, UiCopy> = { ...CORE_COPY, es, pt, de, fr, it, ja, ko };
 
 export function uiCopy(locale: Locale): UiCopy {
   return COPY[locale] ?? COPY.en;
@@ -215,10 +231,9 @@ export function upper(text: string, locale: Locale): string {
   return text.toLocaleUpperCase(intlTag(locale));
 }
 
-/** Percent in local style: "%95" in Turkish, "95%" in English. */
+/** Percent in local style: "%95" in Turkish, "95%" in English, "95 %" in German/French. */
 export function percentLabel(value: number, locale: Locale): string {
-  const n = Math.round(value);
-  return locale === 'tr' ? `%${n}` : `${n}%`;
+  return new Intl.NumberFormat(intlTag(locale), { style: 'percent', maximumFractionDigits: 0 }).format(Math.round(value) / 100);
 }
 
 export type MatchTone = 'high' | 'mid' | 'low';

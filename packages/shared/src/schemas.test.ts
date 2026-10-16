@@ -45,7 +45,8 @@ describe('request/response schemas', () => {
     expect(AnalyzeRequestSchema.safeParse({ image: 'data:image/gif;base64,R0lGOD==', locale: 'en' }).success).toBe(
       false,
     );
-    expect(AnalyzeRequestSchema.safeParse({ image: MOCK_IMAGE_DATA_URL, locale: 'de' }).success).toBe(false);
+    expect(AnalyzeRequestSchema.safeParse({ image: MOCK_IMAGE_DATA_URL, locale: 'nl' }).success).toBe(false);
+    expect(AnalyzeRequestSchema.safeParse({ image: MOCK_IMAGE_DATA_URL, locale: 'de' }).success).toBe(true);
   });
 
   it('rejects images over 4 MB decoded', () => {

@@ -1,4 +1,4 @@
-import { LOOKS, LOOK_IDS, localized, t, type Locale, type LookId } from '@tonelle/shared';
+import { LOOKS, LOOK_IDS, localized, t, type CoreLocale, type LookId } from '@tonelle/shared';
 import Image from 'next/image';
 import { ButtonLink, SectionHeading, delay } from '@/components/ui';
 import type { SiteContent } from '@/content';
@@ -12,7 +12,7 @@ const FEATURED: { id: LookId; src: string }[] = [
 ];
 
 /** Looks gallery: portrait cards with the look name and its colour trio, then the other looks as chips. */
-export function LooksGallery({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function LooksGallery({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const rest = LOOK_IDS.filter((id) => !FEATURED.some((f) => f.id === id));
   return (
     <section id="looks" aria-labelledby="looks-title" className="scroll-mt-20 py-16 sm:py-24">

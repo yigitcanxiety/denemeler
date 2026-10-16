@@ -1,4 +1,4 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
 import { SectionHeading, delay } from '@/components/ui';
@@ -11,7 +11,7 @@ const AVATARS = ['/images/portrait-hero.jpg', '/images/portrait-2.jpg', '/images
  * Aura-style review cards. The entries are illustrative scenarios, so the
  * "Örnek kullanıcı senaryoları" caption is always shown with them (see testimonials.ts).
  */
-export function Reviews({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function Reviews({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { people } = content;
   return (
     <section id="stories" aria-labelledby="stories-title" className="scroll-mt-20 bg-mist py-16 sm:py-24">

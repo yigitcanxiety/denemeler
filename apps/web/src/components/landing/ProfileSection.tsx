@@ -1,11 +1,11 @@
-import type { Locale } from '@tonelle/shared';
+import type { CoreLocale } from '@tonelle/shared';
 import { Check } from 'lucide-react';
 import { Eyebrow, ProfileBars, Radar } from '@/components/ui';
 import type { SiteContent } from '@/content';
 import { landingSample } from './sample';
 
 /** Colour-profile section: lavender band, radar + bars + palette in a white card. */
-export function ProfileSection({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function ProfileSection({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const { profile } = content;
   const sample = landingSample(locale);
 

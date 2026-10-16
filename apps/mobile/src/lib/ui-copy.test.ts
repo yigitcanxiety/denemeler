@@ -1,3 +1,4 @@
+import { LOCALES } from '@tonelle/shared';
 import { describe, expect, it } from 'vitest';
 
 import { matchTone, percentLabel, uiCopy, upper } from './ui-copy';
@@ -14,9 +15,15 @@ describe('ui-copy', () => {
     expect(uiCopy('en').tabResults).toBe('Results');
   });
 
+  it('has complete copy for every locale', () => {
+    const shape = (copy: object): string[] => Object.entries(copy).flatMap(([k, v]) => (typeof v === 'object' ? shape(v).map((s) => `${k}.${s}`) : [`${k}:${typeof v}`])).sort();
+    for (const locale of LOCALES) expect(shape(uiCopy(locale)), locale).toEqual(shape(uiCopy('en')));
+  });
+
   it('formats percentages per locale', () => {
     expect(percentLabel(95.4, 'tr')).toBe('%95');
     expect(percentLabel(88, 'en')).toBe('88%');
+    expect(percentLabel(88, 'ja')).toBe('88%');
     expect(uiCopy('tr').match(percentLabel(92, 'tr'))).toBe('%92 uyum');
   });
 

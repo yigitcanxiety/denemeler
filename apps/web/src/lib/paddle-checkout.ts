@@ -1,4 +1,4 @@
-import { PRICING, regionForLocale, type Locale, type PlanId } from '@tonelle/shared';
+import { PRICING, regionForLocale, type CoreLocale, type PlanId } from '@tonelle/shared';
 import { apiClient } from './api-client';
 import type { PaymentProvider, PurchaseOutcome, PurchaseRequest } from './payments';
 import { savePaddleRef } from './storage';
@@ -72,7 +72,7 @@ function adMatchData(): Record<string, string | boolean> {
 export class PaddlePaymentProvider implements PaymentProvider {
   readonly id = 'paddle';
 
-  constructor(private readonly locale: () => Locale = () => (document.documentElement.lang === 'en' ? 'en' : 'tr')) {}
+  constructor(private readonly locale: () => CoreLocale = () => (document.documentElement.lang === 'en' ? 'en' : 'tr')) {}
 
   isAvailable(): boolean {
     return Boolean(PADDLE_PUBLIC.token);

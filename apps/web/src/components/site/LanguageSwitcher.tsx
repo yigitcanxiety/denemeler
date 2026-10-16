@@ -1,12 +1,12 @@
 'use client';
 
-import { LOCALES, t, type Locale } from '@tonelle/shared';
+import { CORE_LOCALES, t, type CoreLocale } from '@tonelle/shared';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LOCALE_COOKIE } from '@/lib/locale';
 
-function swapLocale(pathname: string, target: Locale): string {
+function swapLocale(pathname: string, target: CoreLocale): string {
   const parts = pathname.split('/');
   parts[1] = target;
   return parts.join('/') || `/${target}`;
@@ -19,7 +19,7 @@ export function LanguageSwitcher({
   compact = false,
   onNavigate,
 }: {
-  locale: Locale;
+  locale: CoreLocale;
   className?: string;
   /** Show language codes (TR / EN) instead of names. */
   compact?: boolean;
@@ -34,7 +34,7 @@ export function LanguageSwitcher({
         className,
       )}
     >
-      {LOCALES.map((l) => {
+      {CORE_LOCALES.map((l) => {
         const active = l === locale;
         return (
           <Link

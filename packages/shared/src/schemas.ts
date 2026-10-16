@@ -1,10 +1,21 @@
 import { z } from 'zod';
 
-/** Supported UI / content locales. Add a code here plus a dictionary to add a language. */
-export const LOCALES = ['tr', 'en'] as const;
+/**
+ * Supported UI / content locales (the mobile app). Add a code here plus a dictionary, a content
+ * overlay (i18n/content) and a ui-copy file (apps/mobile) to add a language.
+ */
+export const LOCALES = ['tr', 'en', 'es', 'pt', 'de', 'fr', 'it', 'ja', 'ko'] as const;
 export const LocaleSchema = z.enum(LOCALES);
 export type Locale = z.infer<typeof LocaleSchema>;
-export const DEFAULT_LOCALE: Locale = 'tr';
+/** Default for the website (and the fallback for API callers that send nothing); mobile falls back to 'en'. */
+export const DEFAULT_LOCALE: CoreLocale = 'tr';
+
+/** Locales whose copy is written inline in the catalogues; the website supports only these. */
+export const CORE_LOCALES = ['tr', 'en'] as const;
+export type CoreLocale = (typeof CORE_LOCALES)[number];
+/** Locales added through per-language overlay files (mobile only). */
+export type ExtraLocale = Exclude<Locale, CoreLocale>;
+export const EXTRA_LOCALES = LOCALES.filter((l): l is ExtraLocale => !(CORE_LOCALES as readonly string[]).includes(l));
 
 export const SEASON_IDS = [
   'light_spring',
@@ -246,3 +257,5 @@ export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 
 /** A value provided for every supported locale (content catalogues must be complete). */
 export type Localized<T = string> = Record<Locale, T>;
+/** Inline form of `Localized`: only tr/en are written in the catalogue, extra locales come from overlays. */
+export type CoreLocalized<T = string> = Record<CoreLocale, T>;

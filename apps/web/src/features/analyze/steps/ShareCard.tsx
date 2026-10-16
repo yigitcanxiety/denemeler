@@ -1,6 +1,6 @@
 'use client';
 
-import { SEASONS, localized, t, type FaceAnalysis, type Locale } from '@tonelle/shared';
+import { SEASONS, localized, t, type FaceAnalysis, type CoreLocale } from '@tonelle/shared';
 import { Download, Share2 } from 'lucide-react';
 import { forwardRef, useRef, useState } from 'react';
 import { Button, Modal } from '@/components/ui';
@@ -13,7 +13,7 @@ const PREVIEW_SCALE = 0.25;
 const BG = '#F6F4FE';
 
 /** 1080×1920 story card (DESIGN §3): white/lavender, serif season name, palette, portrait, wordmark. */
-export const SeasonShareCard = forwardRef<HTMLDivElement, { locale: Locale; analysis: FaceAnalysis; photo?: string | null }>(
+export const SeasonShareCard = forwardRef<HTMLDivElement, { locale: CoreLocale; analysis: FaceAnalysis; photo?: string | null }>(
   function SeasonShareCard({ locale, analysis, photo }, ref) {
     const season = SEASONS[analysis.season];
     const name = localized(season.name, locale);
@@ -88,7 +88,7 @@ export function ShareCardDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  locale: Locale;
+  locale: CoreLocale;
   analysis: FaceAnalysis;
   photo?: string | null;
   copy: AnalyzeCopy;

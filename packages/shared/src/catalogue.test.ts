@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { MOCK_ANALYSIS } from './fixtures';
+import { MOCK_ANALYSIS, mockAnalysisFor, mockSkinAnalysisFor } from './fixtures';
+import { CONTENT_OVERLAYS } from './i18n/content';
+import { PROFILE_AXES, PROFILE_AXIS_LABELS, shadeName, shadeNames } from './profile';
 import { LOOKS, LOOK_LIST, recommendLooks } from './looks';
-import { EXPERIENCE_LEVELS, LOCALES, LOOK_IDS, OCCASIONS, SEASON_IDS, type FaceAnalysis } from './schemas';
+import { EXPERIENCE_LEVELS, EXTRA_LOCALES, LOCALES, LOOK_IDS, OCCASIONS, SEASON_IDS, type FaceAnalysis } from './schemas';
 import { SEASONS } from './seasons';
 
 const HEX = /^#[0-9A-F]{6}$/;
@@ -88,6 +90,25 @@ describe('recommendLooks', () => {
         experience: 'intermediate',
       });
       expect(LOOK_LIST.find((l) => l.id === first)!.occasions).toContain(occasion);
+    }
+  });
+});
+
+describe('content overlays', () => {
+  it('has an overlay for every extra locale with one entry per look step', () => {
+    expect(Object.keys(CONTENT_OVERLAYS).sort()).toEqual([...EXTRA_LOCALES].sort());
+    for (const locale of EXTRA_LOCALES) {
+      for (const id of LOOK_IDS) expect(CONTENT_OVERLAYS[locale].looks[id].steps, `${locale}:${id}`).toHaveLength(LOOKS[id].steps.length);
+    }
+  });
+
+  it('localizes axis labels, shade names and mock text for every locale', () => {
+    for (const locale of LOCALES) {
+      for (const axis of PROFILE_AXES) expect(PROFILE_AXIS_LABELS[axis][locale].trim(), `${locale}:${axis}`).not.toBe('');
+      expect(shadeName('#C08081', locale).trim(), locale).not.toBe('');
+      expect(shadeNames(['#C08081', '#C08181'], locale)).toHaveLength(2);
+      expect(mockAnalysisFor(locale).summary.trim()).not.toBe('');
+      expect(mockSkinAnalysisFor(locale).summary.trim()).not.toBe('');
     }
   });
 });

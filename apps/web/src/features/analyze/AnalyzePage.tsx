@@ -1,4 +1,4 @@
-import { isLocale } from '@tonelle/shared';
+import { isCoreLocale } from '@tonelle/shared';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -13,7 +13,7 @@ const PATHS: Record<AnalyzeMode, string> = { full: '/analyze', color: '/analyze/
 /** Shared metadata for the three analyze pages. */
 export async function analyzeMetadata(params: Promise<{ locale: string }>, mode: AnalyzeMode): Promise<Metadata> {
   const { locale } = await params;
-  if (!isLocale(locale)) return {};
+  if (!isCoreLocale(locale)) return {};
   const { meta } = getContent(locale);
   const [title, description] =
     mode === 'color'
@@ -27,7 +27,7 @@ export async function analyzeMetadata(params: Promise<{ locale: string }>, mode:
 /** Page body shared by the full, colour-only and skin-only analyses. */
 export async function AnalyzePage({ params, mode }: { params: Promise<{ locale: string }>; mode: AnalyzeMode }) {
   const { locale } = await params;
-  if (!isLocale(locale)) notFound();
+  if (!isCoreLocale(locale)) notFound();
   const content = getContent(locale);
 
   return (

@@ -1,4 +1,4 @@
-import { t, type Locale } from '@tonelle/shared';
+import { t, type CoreLocale } from '@tonelle/shared';
 import clsx from 'clsx';
 import { Check } from 'lucide-react';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import type { SiteContent } from '@/content';
 import { getPlanDisplays } from '@/lib/pricing-display';
 
 /** Pricing as the app's plan cards: yearly highlighted with a badge and a big serif price. */
-export function PricingSection({ locale, content }: { locale: Locale; content: SiteContent }) {
+export function PricingSection({ locale, content }: { locale: CoreLocale; content: SiteContent }) {
   const plans = getPlanDisplays(locale);
   const features = [
     t(locale, 'paywall.featureSeason'),

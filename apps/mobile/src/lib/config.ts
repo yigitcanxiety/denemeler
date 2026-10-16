@@ -1,4 +1,4 @@
-import type { Locale } from '@tonelle/shared';
+import { isCoreLocale, type Locale } from '@tonelle/shared';
 
 export const DEFAULT_SITE_URL = 'https://tonelleapp.com';
 
@@ -45,11 +45,12 @@ export function readEnv(raw: RawEnv): AppEnv {
 }
 
 /**
- * Public legal page on the website, e.g. https://tonelleapp.com/tr/kvkk?app=1. `app=1` hides the
+ * Public legal page on the website, e.g. https://tonelleapp.com/tr/kvkk?app=1 (English for non-tr/en app languages). `app=1` hides the
  * site navigation, so the app never links towards web checkout (App Review 3.1.1).
  */
 export function legalUrl(siteUrl: string, locale: Locale, page: LegalPage): string {
-  return `${stripTrailingSlash(siteUrl)}/${locale}/${page}?app=1`;
+  // The site only exists in Turkish and English; every other app language reads the English page.
+  return `${stripTrailingSlash(siteUrl)}/${isCoreLocale(locale) ? locale : 'en'}/${page}?app=1`;
 }
 
 /** RevenueCat public SDK key for the running platform, or null (→ dev / unavailable purchases mode). */

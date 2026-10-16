@@ -1,4 +1,6 @@
-import type { Contrast, FaceAnalysis, Locale, Localized, SkinDepth, Undertone } from './schemas';
+import { CONTENT_OVERLAYS, withOverlays } from './i18n/content';
+import { interpolate, isCoreLocale } from './i18n';
+import type { Contrast, CoreLocalized, FaceAnalysis, Locale, Localized, SkinDepth, Undertone } from './schemas';
 import { getSeason } from './seasons';
 
 /** Axes of the colour-profile radar shown on the results screen. Descriptive, never a beauty score. */
@@ -6,7 +8,7 @@ export const PROFILE_AXES = ['warmth', 'depth', 'contrast', 'clarity', 'softness
 export type ProfileAxis = (typeof PROFILE_AXES)[number];
 export type ColorProfile = Record<ProfileAxis, number>;
 
-export const PROFILE_AXIS_LABELS: Record<ProfileAxis, Localized> = {
+const CORE_AXIS_LABELS: Record<ProfileAxis, CoreLocalized> = {
   warmth: { tr: 'Sıcaklık', en: 'Warmth' },
   depth: { tr: 'Derinlik', en: 'Depth' },
   contrast: { tr: 'Kontrast', en: 'Contrast' },
@@ -14,6 +16,10 @@ export const PROFILE_AXIS_LABELS: Record<ProfileAxis, Localized> = {
   softness: { tr: 'Yumuşaklık', en: 'Softness' },
   lightness: { tr: 'Açıklık', en: 'Lightness' },
 };
+
+export const PROFILE_AXIS_LABELS = Object.fromEntries(
+  PROFILE_AXES.map((axis) => [axis, withOverlays(CORE_AXIS_LABELS[axis], (o) => o.profileAxes[axis])]),
+) as Record<ProfileAxis, Localized>;
 
 const WARMTH: Record<Undertone, number> = { warm: 82, olive: 64, neutral: 50, cool: 22 };
 const DEPTH: Record<SkinDepth, number> = { fair: 12, light: 26, light_medium: 42, medium: 58, tan: 74, deep: 90 };
@@ -67,7 +73,7 @@ export function shadeMatch(hex: string, analysis: FaceAnalysis): number {
 }
 
 /** Everyday makeup colour names; a shade is labelled with the nearest one. */
-const NAMED_SHADES: readonly [hex: string, tr: string, en: string][] = [
+const NAMED_SHADES = [
   ['#D2A48C', 'Nude', 'Nude'],
   ['#F1DDBE', 'Şampanya', 'Champagne'],
   ['#FFB38A', 'Şeftali', 'Peach'],
@@ -112,7 +118,10 @@ const NAMED_SHADES: readonly [hex: string, tr: string, en: string][] = [
   ['#A9C8E8', 'Buz mavisi', 'Icy blue'],
   ['#8C8C94', 'Gri', 'Grey'],
   ['#36363C', 'Füme', 'Charcoal'],
-];
+] as const satisfies readonly (readonly [hex: string, tr: string, en: string])[];
+
+/** English name of a makeup colour; the key of `ContentOverlay.shades`. */
+export type ShadeName = (typeof NAMED_SHADES)[number][2];
 
 /** sRGB hex → CIELAB (D65), so colour names follow perceived difference rather than raw RGB. */
 function lab(hex: string): [number, number, number] {
@@ -139,7 +148,7 @@ function lab(hex: string): [number, number, number] {
 /** Human colour name for a shade hex ("Gül kurusu" / "Dusty rose"): the nearest named makeup colour (ΔE76). */
 export function shadeName(hex: string, locale: Locale): string {
   const [l1, a1, b1] = lab(hex);
-  let best = NAMED_SHADES[0]!;
+  let best: (typeof NAMED_SHADES)[number] = NAMED_SHADES[0];
   let bestDistance = Number.POSITIVE_INFINITY;
   for (const named of NAMED_SHADES) {
     const [l2, a2, b2] = lab(named[0]);
@@ -149,7 +158,8 @@ export function shadeName(hex: string, locale: Locale): string {
       bestDistance = d;
     }
   }
-  return locale === 'tr' ? best[1] : best[2];
+  if (isCoreLocale(locale)) return locale === 'tr' ? best[1] : best[2];
+  return CONTENT_OVERLAYS[locale].shades[best[2]];
 }
 
 /** Names for a row of shades; repeated names get "Açık"/"Koyu" (Light/Deep) by lightness so cards stay distinct. */
@@ -161,10 +171,13 @@ export function shadeNames(hexes: readonly string[], locale: Locale): string[] {
     const l = lab(hexes[i]!)[0];
     const lightest = Math.max(...twins.map((h) => lab(h)[0]));
     const darkest = Math.min(...twins.map((h) => lab(h)[0]));
-    const lower = name.toLocaleLowerCase(locale);
-    if (l === lightest) return locale === 'tr' ? `Açık ${lower}` : `Light ${lower}`;
-    if (l === darkest) return locale === 'tr' ? `Koyu ${lower}` : `Deep ${lower}`;
-    return name;
+    const modifier = l === lightest ? 'light' : l === darkest ? 'deep' : null;
+    if (!modifier) return name;
+    if (isCoreLocale(locale)) {
+      const lower = name.toLocaleLowerCase(locale);
+      return locale === 'tr' ? `${modifier === 'light' ? 'Açık' : 'Koyu'} ${lower}` : `${modifier === 'light' ? 'Light' : 'Deep'} ${lower}`;
+    }
+    return interpolate(CONTENT_OVERLAYS[locale].shadeModifiers[modifier], { name });
   });
 }
 
