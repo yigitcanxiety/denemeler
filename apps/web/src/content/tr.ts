@@ -43,7 +43,7 @@ export const tr: SiteContent = {
     title: 'Sana yakışan makyajı kendi yüzünde gör',
     subtitle:
       'Tonelle iPhone uygulamasında tek bir selfie yeterli. Alt tonunu okur, renk sezonunu bulur ve makyaj görünümlerini kendi yüzünde gösterir.',
-    ctaNote: 'iPhone için · Yaklaşık 1 dakikada analiz · Üyelik yok',
+    ctaNote: 'iPhone için · Yaklaşık 1 dakikada analiz · Hesap açmadan',
     trustPoints: ['Fotoğrafını saklamayız', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
     storesLabel: 'Telefonunda da',
     portraitAlt: 'Tonelle ile analiz edilen bir portre; alt ton, renk sezonu ve uyum bilgileri fotoğrafın üzerinde.',
