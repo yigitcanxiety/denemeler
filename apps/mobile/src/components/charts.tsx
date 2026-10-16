@@ -18,7 +18,11 @@ export function RadarChart({ points, width }: { points: ProfilePoint[]; width: n
   const height = Math.round(width * 0.66);
   const cx = width / 2;
   const cy = height / 2;
-  const R = Math.min(height / 2 - 18, width / 2 - 70);
+  // Leave room for the longest side label (11px text; CJK glyphs are about twice as wide as Latin).
+  const labelWidth = Math.max(
+    ...points.map((p) => [...`${p.label} ${p.value}`].reduce((w, ch) => w + (ch.charCodeAt(0) > 0x2e80 ? 11 : 6.4), 0)),
+  );
+  const R = Math.max(40, Math.min(height / 2 - 18, width / 2 - Math.max(70, labelWidth + 10)));
   const n = points.length;
   const pt = (i: number, r: number) => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;

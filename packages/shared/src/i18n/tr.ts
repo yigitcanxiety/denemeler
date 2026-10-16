@@ -285,6 +285,7 @@ export const tr: Dictionary = {
     seeLook: 'Görünümü incele',
     newAnalysis: 'Yeni analiz',
     savedOnDevice: 'Yalnızca bu cihazda saklanır',
+    otherLanguage: 'Bu özet başka bir dilde ({language}) yazıldı. Kendi dilinde görmek için yeniden analiz et.',
     copyHex: 'Renk kodunu kopyala',
     copied: 'Kopyalandı',
     disclaimer:

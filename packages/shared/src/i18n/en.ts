@@ -286,6 +286,7 @@ export const en = {
     seeLook: 'See the look',
     newAnalysis: 'New analysis',
     savedOnDevice: 'Saved on this device only',
+    otherLanguage: 'This summary was written in another language ({language}). Run a new analysis to see it in yours.',
     copyHex: 'Copy colour code',
     copied: 'Copied',
     disclaimer:

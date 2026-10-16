@@ -8,6 +8,7 @@ import { Icon, type IconName } from '@/components/icon';
 import { LockedResult, QualityWarning } from '@/components/locked-result';
 import { PressableScale, Reveal } from '@/components/motion';
 import { CoverImage, LOOK_IMAGES } from '@/components/portraits';
+import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
 import { SeasonCard, ShadeCard } from '@/components/shade-card';
 import { AppText } from '@/components/text';
@@ -83,6 +84,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
   const serverLookIds = useAppStore((s) => s.recommendedLookIds);
   const quiz = useAppStore((s) => s.quiz);
   const startAnalysis = useStartAnalysis();
+  const analysisLocale = useAppStore((s) => s.analysisLocale);
   const contentW = Math.min(width, 600) - GUTTER * 2;
   const chips = traitChips(analysis, t);
   const byId = (id: TraitChip['id']) => chips.find((c) => c.id === id)!;
@@ -138,6 +140,13 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
           ))}
         </View>
       </View>
+
+      {analysisLocale && analysisLocale !== locale ? (
+        <View style={styles.gapXs}>
+          <Notice message={t('results.otherLanguage', { language: t(`language.${analysisLocale}`) })} />
+          <Button label={t('results.newAnalysis')} variant="ghost" icon="refresh" onPress={startAnalysis} />
+        </View>
+      ) : null}
 
       <Card tone="mist" style={styles.gapSm}>
         <AppText variant="label">{t('results.summaryTitle')}</AppText>

@@ -66,7 +66,7 @@ export default function AnalyzingScreen() {
         const remaining = ANALYZING_MIN_MS - (Date.now() - started);
         if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
         if (controller.signal.aborted) return;
-        setAnalysis(response);
+        setAnalysis(response, locale);
         setDone(true);
         // Let the ring reach 100% before moving on.
         await new Promise((r) => setTimeout(r, 450));

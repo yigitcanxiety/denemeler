@@ -1,7 +1,7 @@
 {
   "ios": {
     "CFBundleDisplayName": "Tonelle",
-    "NSCameraUsageDescription": "Tonelle uses your camera to take a selfie for your colour and makeup analysis. The photo is not stored.",
-    "NSPhotoLibraryUsageDescription": "Tonelle lets you choose a selfie from your library for your colour and makeup analysis. The photo is not stored."
+    "NSCameraUsageDescription": "O Tonelle usa a sua câmera para tirar uma selfie para a sua análise de cores e maquiagem. A foto não é armazenada.",
+    "NSPhotoLibraryUsageDescription": "O Tonelle permite escolher uma selfie da sua galeria para a sua análise de cores e maquiagem. A foto não é armazenada."
   }
 }

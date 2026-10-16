@@ -33,6 +33,8 @@ interface PersistedState {
   analysis: FaceAnalysis | null;
   recommendedLookIds: LookId[] | null;
   analyzedAt: string | null;
+  /** Language the AI-written analysis text (summary, foundation labels) came back in. */
+  analysisLocale: Locale | null;
   /** Dev purchases mode only: locally unlocked premium. */
   devEntitlement: boolean;
 }
@@ -53,7 +55,7 @@ interface Actions {
   acceptConsent(): void;
   setQuizAnswer<K extends keyof QuizAnswers>(key: K, value: QuizAnswers[K]): void;
   setPhoto(photo: SessionPhoto | null): void;
-  setAnalysis(response: AnalyzeResponse): void;
+  setAnalysis(response: AnalyzeResponse, locale: Locale): void;
   setRender(lookId: LookId, dataUrl: string): void;
   setRevenueCatPremium(active: boolean): void;
   setDevEntitlement(active: boolean): void;
@@ -71,6 +73,7 @@ const initialPersisted: PersistedState = {
   analysis: null,
   recommendedLookIds: null,
   analyzedAt: null,
+  analysisLocale: null,
   devEntitlement: false,
 };
 
@@ -88,6 +91,7 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
     analysis: analysis.success ? analysis.data : null,
     recommendedLookIds: analysis.success && lookIds.success ? lookIds.data : null,
     analyzedAt: analysis.success && typeof raw.analyzedAt === 'string' ? raw.analyzedAt : null,
+    analysisLocale: analysis.success && isLocale(raw.analysisLocale) ? raw.analysisLocale : null,
     devEntitlement: raw.devEntitlement === true,
   };
 }
@@ -112,11 +116,12 @@ export const useAppStore = create<AppState>()(
       acceptConsent: () => set({ consentAt: new Date().toISOString() }),
       setQuizAnswer: (key, value) => set((state) => ({ quiz: { ...state.quiz, [key]: value } })),
       setPhoto: (photo) => set({ photo, renders: {} }),
-      setAnalysis: (response) =>
+      setAnalysis: (response, locale) =>
         set({
           analysis: response.analysis,
           recommendedLookIds: response.recommendedLookIds,
           analyzedAt: new Date().toISOString(),
+          analysisLocale: locale,
         }),
       setRender: (lookId, dataUrl) => set((state) => ({ renders: { ...state.renders, [lookId]: dataUrl } })),
       setRevenueCatPremium: (active) => set({ revenueCatPremium: active }),
@@ -140,6 +145,7 @@ export const useAppStore = create<AppState>()(
         analysis: state.analysis,
         recommendedLookIds: state.recommendedLookIds,
         analyzedAt: state.analyzedAt,
+        analysisLocale: state.analysisLocale,
         devEntitlement: state.devEntitlement,
       }),
       // Drop saved data that no longer matches the shared schemas (e.g. after an app update).
