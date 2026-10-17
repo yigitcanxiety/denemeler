@@ -1,3 +1,7 @@
 packages:
   - packages/*
   - apps/*
+
+# One @types/react for the whole workspace (two copies broke the web typecheck).
+overrides:
+  '@types/react': 19.2.18
