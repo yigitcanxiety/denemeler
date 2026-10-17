@@ -1,6 +1,6 @@
 import type { ReactNode, RefObject } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, type Edge } from 'react-native-safe-area-context';
 
 import { colors, GUTTER, spacing } from '@/theme';
 
@@ -20,7 +20,11 @@ export interface ScreenProps {
   scrollRef?: RefObject<ScrollView | null>;
 }
 
-/** White app surface with a 16 px gutter, an optional pinned header and footer. */
+/**
+ * White app surface with a 16 px gutter, an optional pinned header and footer.
+ * Insets come from the root provider: the native SafeAreaView measured 0 inside the sliding
+ * full-screen paywall modal, which put the close button under the status bar.
+ */
 export function Screen({
   children,
   scroll = true,
@@ -32,8 +36,15 @@ export function Screen({
   overlay,
   scrollRef,
 }: ScreenProps) {
+  const insets = useSafeAreaInsets();
+  const pad = {
+    paddingTop: edges.includes('top') ? insets.top : 0,
+    paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
+    paddingLeft: edges.includes('left') ? insets.left : 0,
+    paddingRight: edges.includes('right') ? insets.right : 0,
+  };
   return (
-    <SafeAreaView edges={edges} style={[styles.root, { backgroundColor: background }]}>
+    <View style={[styles.root, pad, { backgroundColor: background }]}>
       {header ? <View style={styles.header}>{header}</View> : null}
       {scroll ? (
         <ScrollView
@@ -50,7 +61,7 @@ export function Screen({
       )}
       {footer ? <View style={[styles.footer, { backgroundColor: background }]}>{footer}</View> : null}
       {overlay}
-    </SafeAreaView>
+    </View>
   );
 }
 
