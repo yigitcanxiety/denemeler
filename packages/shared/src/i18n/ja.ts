@@ -389,7 +389,6 @@ export const ja: Dictionary = {
     legalSection: '法的情報',
     contact: 'お問い合わせ',
     version: 'バージョン {version}',
-    publisher: '提供：Doribleg Trade Ltd.',
   },
 
   errors: {
@@ -414,7 +413,7 @@ export const ja: Dictionary = {
     terms: '利用規約',
     refunds: '返金ポリシー',
     contact: 'お問い合わせ',
-    copyright: '© {year} Doribleg Trade Ltd. 無断転載を禁じます。',
+    copyright: '© {year} Tonelle 無断転載を禁じます。',
     aiDisclosure: 'Tonelleは、写真の分析とメイクのプレビュー生成にAIを使用しています。',
   },
 

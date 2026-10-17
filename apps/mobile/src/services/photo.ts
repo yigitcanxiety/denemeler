@@ -1,7 +1,7 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { File } from 'expo-file-system';
 
-import { UPLOAD_JPEG_QUALITY, resizeForUpload, toDataUrl } from '@/lib/image';
+import { UPLOAD_JPEG_QUALITY, resizeForUpload, toDataUrl, type CropRect } from '@/lib/image';
 import type { SessionPhoto } from '@/store/app-store';
 
 /** Best-effort removal of a temporary image file (camera/picker/manipulator cache). */
@@ -16,14 +16,16 @@ export function deleteTempFile(uri: string | null | undefined): void {
 }
 
 /**
- * Downscales a captured/picked photo to max 1024 px (long edge), re-encodes it as JPEG 0.85 and
+ * Optionally crops (camera shots: the framed face area), then downscales a captured/picked photo
+ * to max 1024 px (long edge), re-encodes it as JPEG 0.85 and
  * returns it as a data URL. Temporary files are deleted right away; the photo only lives in
  * memory for the current session and is never persisted.
  */
-export async function preparePhoto(uri: string, width: number, height: number): Promise<SessionPhoto> {
+export async function preparePhoto(uri: string, width: number, height: number, crop?: CropRect | null): Promise<SessionPhoto> {
   const context = ImageManipulator.manipulate(uri);
   try {
-    const resize = resizeForUpload({ width, height });
+    if (crop) context.crop(crop);
+    const resize = resizeForUpload(crop ? { width: crop.width, height: crop.height } : { width, height });
     if (resize) context.resize(resize);
     const rendered = await context.renderAsync();
     const result = await rendered.saveAsync({ format: SaveFormat.JPEG, compress: UPLOAD_JPEG_QUALITY, base64: true });

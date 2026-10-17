@@ -1,4 +1,4 @@
-import { LOCALES } from '@tonelle/shared';
+import { LOCALES, type Locale } from '@tonelle/shared';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -86,6 +86,13 @@ export default function ProfileScreen() {
     ]);
   };
 
+  const [langOpen, setLangOpen] = useState(false);
+  const currentLanguage = chosenLocale === null ? t('language.auto') : t(`language.${chosenLocale}`);
+  const chooseLocale = (code: Locale | null) => {
+    setLocale(code);
+    setLangOpen(false);
+  };
+
   return (
     <Screen edges={['top']} contentStyle={styles.tabContent}>
       <View style={styles.top}>
@@ -96,13 +103,30 @@ export default function ProfileScreen() {
       </View>
 
       <Card style={styles.gap}>
-        <SectionTitle>{t('settings.language')}</SectionTitle>
-        <View style={styles.list}>
-          <LanguageRow label={t('language.auto')} selected={chosenLocale === null} onPress={() => setLocale(null)} />
-          {LOCALES.map((code) => (
-            <LanguageRow key={code} label={t(`language.${code}`)} selected={chosenLocale === code} onPress={() => setLocale(code)} />
-          ))}
-        </View>
+        <PressableScale
+          onPress={() => setLangOpen((v) => !v)}
+          accessibilityRole="button"
+          accessibilityState={{ expanded: langOpen }}
+          accessibilityLabel={`${t('settings.language')}: ${currentLanguage}`}
+          style={styles.langHeader}
+        >
+          <Icon name="globe" size={18} color={colors.violet} />
+          <View style={styles.flex}>
+            <AppText variant="label">{t('settings.language')}</AppText>
+            <AppText variant="small" numberOfLines={1}>
+              {currentLanguage}
+            </AppText>
+          </View>
+          <Icon name={langOpen ? 'chevronDown' : 'chevronRight'} size={18} color={colors.muted} />
+        </PressableScale>
+        {langOpen ? (
+          <View style={styles.list}>
+            <LanguageRow label={t('language.auto')} selected={chosenLocale === null} onPress={() => chooseLocale(null)} />
+            {LOCALES.map((code) => (
+              <LanguageRow key={code} label={t(`language.${code}`)} selected={chosenLocale === code} onPress={() => chooseLocale(code)} />
+            ))}
+          </View>
+        ) : null}
       </Card>
 
       <Card style={styles.gap}>
@@ -179,9 +203,6 @@ export default function ProfileScreen() {
           {t('settings.version', { version })}
         </AppText>
         <AppText variant="caption" align="center">
-          {t('settings.publisher')}
-        </AppText>
-        <AppText variant="caption" align="center">
           {t('legal.copyright', { year: new Date().getFullYear() })}
         </AppText>
       </View>
@@ -251,6 +272,7 @@ const styles = StyleSheet.create({
   gap: { gap: spacing.md },
   gapSm: { gap: 10 },
   list: { gap: 8 },
+  langHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 44 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

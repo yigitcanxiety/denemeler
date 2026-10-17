@@ -389,7 +389,6 @@ export const de: Dictionary = {
     legalSection: 'Rechtliches',
     contact: 'Kontakt',
     version: 'Version {version}',
-    publisher: 'Anbieter: Doribleg Trade Ltd.',
   },
 
   errors: {
@@ -414,7 +413,7 @@ export const de: Dictionary = {
     terms: 'Nutzungsbedingungen',
     refunds: 'Erstattungsrichtlinie',
     contact: 'Kontakt',
-    copyright: '© {year} Doribleg Trade Ltd. Alle Rechte vorbehalten.',
+    copyright: '© {year} Tonelle. Alle Rechte vorbehalten.',
     aiDisclosure: 'Tonelle nutzt KI, um Fotos zu analysieren und Make-up-Vorschauen zu erstellen.',
   },
 

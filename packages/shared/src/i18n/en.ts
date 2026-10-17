@@ -390,7 +390,6 @@ export const en = {
     legalSection: 'Legal',
     contact: 'Contact us',
     version: 'Version {version}',
-    publisher: 'Published by Doribleg Trade Ltd.',
   },
 
   errors: {
@@ -415,7 +414,7 @@ export const en = {
     terms: 'Terms of Use',
     refunds: 'Refund Policy',
     contact: 'Contact',
-    copyright: '© {year} Doribleg Trade Ltd. All rights reserved.',
+    copyright: '© {year} Tonelle. All rights reserved.',
     aiDisclosure: 'Tonelle uses AI to analyse photos and generate makeup previews.',
   },
 

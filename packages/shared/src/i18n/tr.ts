@@ -389,7 +389,6 @@ export const tr: Dictionary = {
     legalSection: 'Yasal',
     contact: 'Bize ulaş',
     version: 'Sürüm {version}',
-    publisher: 'Yayıncı: Doribleg Trade Ltd.',
   },
 
   errors: {
@@ -414,7 +413,7 @@ export const tr: Dictionary = {
     terms: 'Kullanım Koşulları',
     refunds: 'İade Politikası',
     contact: 'İletişim',
-    copyright: '© {year} Doribleg Trade Ltd. Tüm hakları saklıdır.',
+    copyright: '© {year} Tonelle. Tüm hakları saklıdır.',
     aiDisclosure: 'Tonelle, fotoğrafları analiz etmek ve makyaj önizlemeleri oluşturmak için yapay zekâ kullanır.',
   },
 

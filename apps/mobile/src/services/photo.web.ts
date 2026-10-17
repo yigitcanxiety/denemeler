@@ -1,4 +1,4 @@
-import { UPLOAD_JPEG_QUALITY, scaledSize } from '@/lib/image';
+import { UPLOAD_JPEG_QUALITY, scaledSize, type CropRect } from '@/lib/image';
 import type { SessionPhoto } from '@/store/app-store';
 
 /**
@@ -18,7 +18,8 @@ function loadImage(uri: string): Promise<HTMLImageElement> {
   });
 }
 
-export async function preparePhoto(uri: string, width: number, height: number): Promise<SessionPhoto> {
+// The browser preview has no live camera, so there is never a face crop to apply.
+export async function preparePhoto(uri: string, width: number, height: number, _crop?: CropRect | null): Promise<SessionPhoto> {
   try {
     const img = await loadImage(uri);
     const source = { width: img.naturalWidth || width, height: img.naturalHeight || height };

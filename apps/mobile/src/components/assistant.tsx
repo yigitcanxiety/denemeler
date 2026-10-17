@@ -130,6 +130,8 @@ export interface AssistantProps {
   stack?: boolean;
   /** Small bar under the header instead of the bottom-right corner (camera). */
   compact?: boolean;
+  /** Called when the tip bubble opens or closes (the camera hides its title meanwhile). */
+  onOpenChange?: (open: boolean) => void;
 }
 
 /**
@@ -137,7 +139,7 @@ export interface AssistantProps {
  * hides (Home keeps a small replay button). Render it as a sibling after the screen content; it
  * is an absolute overlay below modals, so it never appears over the paywall, consent or share.
  */
-export function Assistant({ screen, stack = false, compact = false }: AssistantProps) {
+export function Assistant({ screen, stack = false, compact = false, onOpenChange }: AssistantProps) {
   const t = useT();
   const insets = useSafeAreaInsets();
   const enabled = useAppStore((s) => s.tipsEnabled);
@@ -174,6 +176,10 @@ export function Assistant({ screen, stack = false, compact = false }: AssistantP
   useEffect(() => {
     if (open) void AccessibilityInfo.announceForAccessibility?.(text);
   }, [open, text]);
+  const visible = open && enabled && focused;
+  useEffect(() => {
+    onOpenChange?.(visible);
+  }, [visible, onOpenChange]);
 
   if (!enabled || !focused) return null; // `open` is reset on blur; disabling hides the bubble here
   const persistent = screen === PERSISTENT_SCREEN;
@@ -201,7 +207,7 @@ export function Assistant({ screen, stack = false, compact = false }: AssistantP
       style={[
         styles.layer,
         compact
-          ? { top: insets.top + spacing.sm, left: 64, alignItems: 'flex-start' }
+          ? { top: insets.top + spacing.sm, left: 64, alignItems: 'center' }
           : { bottom: (stack ? insets.bottom : 0) + spacing.md, alignItems: 'flex-end' },
       ]}
     >
@@ -265,7 +271,7 @@ function TipBubble({
 
   return (
     <Animated.View
-      style={[styles.bubble, { transformOrigin: compact ? 'top right' : 'bottom right' }, animated]}
+      style={[styles.bubble, compact && styles.bubbleCompact, { transformOrigin: compact ? 'top right' : 'bottom right' }, animated]}
       accessibilityLiveRegion="polite"
     >
       {compact ? (
@@ -339,6 +345,8 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     ...shadows.float,
   },
+  // Camera bar: fill the row between the back button and the character (its text is flex: 1).
+  bubbleCompact: { flex: 1, maxWidth: undefined },
   text: { fontFamily: fonts.medium, fontSize: 14, lineHeight: 20, color: colors.ink },
   footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   actions: { flexDirection: 'row', alignItems: 'center', gap: 4 },

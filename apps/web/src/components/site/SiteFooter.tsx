@@ -1,6 +1,5 @@
 import { t, type CoreLocale } from '@tonelle/shared';
 import Link from 'next/link';
-import { COMPANY } from '@/config/company';
 import type { SiteContent } from '@/content';
 
 /** Every legal page, used by the legal documents' "other documents" lists. */
@@ -38,7 +37,7 @@ export function SiteFooter({ locale, content }: { locale: CoreLocale; content: S
           </ul>
         </nav>
         <div className="flex flex-col gap-1 sm:flex-row sm:justify-between sm:gap-6">
-          <p className="text-[12.5px] text-muted">© {new Date().getFullYear()} Tonelle · {COMPANY.legalName}</p>
+          <p className="text-[12.5px] text-muted">© {new Date().getFullYear()} Tonelle</p>
           <p className="text-[12.5px] text-muted sm:text-right">{t(locale, 'legal.aiDisclosure')}</p>
         </div>
       </div>

@@ -386,7 +386,6 @@ export const ko: Dictionary = {
     legalSection: '법적 고지',
     contact: '문의하기',
     version: '버전 {version}',
-    publisher: '배포: Doribleg Trade Ltd.',
   },
 
   errors: {
@@ -411,7 +410,7 @@ export const ko: Dictionary = {
     terms: '이용약관',
     refunds: '환불 정책',
     contact: '문의',
-    copyright: '© {year} Doribleg Trade Ltd. 모든 권리 보유.',
+    copyright: '© {year} Tonelle 모든 권리 보유.',
     aiDisclosure: 'Tonelle은 AI를 사용해 사진을 분석하고 메이크업 미리 보기를 만들어요.',
   },
 

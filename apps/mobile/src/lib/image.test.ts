@@ -1,7 +1,7 @@
 import { MOCK_IMAGE_DATA_URL } from '@tonelle/shared';
 import { describe, expect, it } from 'vitest';
 
-import { checkUploadImage, dataUrlBytes, resizeForUpload, scaledSize, toDataUrl } from './image';
+import { checkUploadImage, dataUrlBytes, faceCrop, resizeForUpload, scaledSize, toDataUrl } from './image';
 
 describe('resizeForUpload', () => {
   it('limits the long edge to 1024 px', () => {
@@ -39,5 +39,28 @@ describe('data URLs', () => {
   it('estimates decoded bytes', () => {
     expect(dataUrlBytes('data:image/jpeg;base64,QUJD')).toBe(3);
     expect(dataUrlBytes('nope')).toBe(0);
+  });
+});
+
+describe('faceCrop', () => {
+  const screen = { width: 390, height: 844 };
+  const oval = { cx: 195, cy: 337, rx: 128.7, ry: 167.3 };
+
+  it('crops a portrait camera photo to a 4:5 box around the face oval', () => {
+    const crop = faceCrop(screen, { width: 3024, height: 4032 }, oval);
+    expect(crop).not.toBeNull();
+    const c = crop!;
+    expect(c.width / c.height).toBeCloseTo(0.8, 2);
+    expect(c.originX).toBeGreaterThanOrEqual(0);
+    expect(c.originY).toBeGreaterThanOrEqual(0);
+    expect(c.originX + c.width).toBeLessThanOrEqual(3024);
+    expect(c.originY + c.height).toBeLessThanOrEqual(4032);
+    // Horizontally centred on the oval, and well inside the full frame.
+    expect(c.originX + c.width / 2).toBeCloseTo(1512, -1);
+    expect(c.width).toBeLessThan(3024);
+  });
+
+  it('returns null for unknown sizes', () => {
+    expect(faceCrop(screen, { width: 0, height: 0 }, oval)).toBeNull();
   });
 });

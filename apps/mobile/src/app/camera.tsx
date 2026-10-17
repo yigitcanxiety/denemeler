@@ -16,6 +16,7 @@ import { AppText } from '@/components/text';
 import { BackTitle, Pill, Ring } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { uiCopy } from '@/lib/ui-copy';
+import { faceCrop, type CropRect } from '@/lib/image';
 import { deleteTempFile, preparePhoto } from '@/services/photo';
 import { useAppStore, type SessionPhoto } from '@/store/app-store';
 import { colors, GUTTER, spacing } from '@/theme';
@@ -33,15 +34,17 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [cameraReady, setCameraReady] = useState(false);
+  /** The helper's tip bar sits where the title is; hide the title while it shows. */
+  const [tipOpen, setTipOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<SessionPhoto | null>(null);
   const [error, setError] = useState<string | null>(errorParam === 'no_face' ? t('errors.no_face') : null);
 
-  const handleImage = async (uri: string, w: number, h: number) => {
+  const handleImage = async (uri: string, w: number, h: number, crop?: CropRect | null) => {
     setBusy(true);
     setError(null);
     try {
-      setPreview(await preparePhoto(uri, w, h));
+      setPreview(await preparePhoto(uri, w, h, crop));
     } catch {
       deleteTempFile(uri);
       setError(t('errors.unsupportedFile'));
@@ -56,7 +59,9 @@ export default function CameraScreen() {
     try {
       const shot = await cameraRef.current.takePictureAsync({ quality: 0.9, exif: false });
       if (!shot) throw new Error('No picture');
-      await handleImage(shot.uri, shot.width, shot.height);
+      // Keep only the framed face area so the analysis and makeup render match the oval guide.
+      const crop = faceCrop({ width, height }, { width: shot.width, height: shot.height }, faceOval(width, height));
+      await handleImage(shot.uri, shot.width, shot.height, crop);
     } catch {
       setError(t('errors.cameraUnavailable'));
       setBusy(false);
@@ -216,7 +221,7 @@ export default function CameraScreen() {
       <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom']}>
         <View style={styles.topRow}>
           <IconButton icon="back" label={t('common.back')} onPress={() => router.back()} tone="glass" size={40} />
-          <AppText variant="h2" style={styles.cameraTitle}>
+          <AppText variant="h2" style={[styles.cameraTitle, tipOpen && styles.hidden]}>
             {t('camera.title')}
           </AppText>
         </View>
@@ -266,7 +271,7 @@ export default function CameraScreen() {
           </AppText>
         </View>
       </SafeAreaView>
-      <Assistant screen="camera" compact />
+      <Assistant screen="camera" compact onOpenChange={setTipOpen} />
     </View>
   );
 }
@@ -299,6 +304,7 @@ const styles = StyleSheet.create({
   },
   dropHint: { paddingHorizontal: 28 },
   cameraRoot: { flex: 1, backgroundColor: colors.ink },
+  hidden: { opacity: 0 },
   dim: { opacity: 0.8 },
   cameraUi: { flex: 1 },
   topRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: GUTTER, paddingTop: spacing.sm },
