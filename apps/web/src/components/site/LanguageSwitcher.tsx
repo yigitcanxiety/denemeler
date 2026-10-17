@@ -30,7 +30,7 @@ export function LanguageSwitcher({
     <nav
       aria-label={t(locale, 'language.label')}
       className={clsx(
-        'inline-flex items-center gap-0.5 rounded-pill bg-mist p-1 text-[12.5px] font-semibold ring-1 ring-line ring-inset',
+        'inline-flex items-center gap-0.5 rounded-pill bg-mist p-0.5 text-[12.5px] font-semibold ring-1 ring-line ring-inset',
         className,
       )}
     >
@@ -48,7 +48,7 @@ export function LanguageSwitcher({
               onNavigate?.();
             }}
             className={clsx(
-              'press grid h-10 min-w-11 place-items-center rounded-pill px-3 tracking-[0.04em]',
+              'press grid h-11 min-w-11 place-items-center rounded-pill px-3 tracking-[0.04em]',
               active ? 'bg-paper text-ink shadow-[0_1px_3px_rgb(23_20_31/0.12)]' : 'text-muted hover:text-ink',
             )}
           >

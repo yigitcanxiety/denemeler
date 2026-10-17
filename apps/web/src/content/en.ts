@@ -5,9 +5,9 @@ const C = COMPANY;
 
 export const en: SiteContent = {
   meta: {
-    homeTitle: 'Tonelle · See the makeup that suits you, on your own face',
+    homeTitle: 'Tonelle · Discover the colours that suit you, from one selfie',
     homeDescription:
-      'Take one selfie in the Tonelle iPhone app: it finds your undertone and colour season, builds your personal palette and shows makeup looks on your own face. We don’t keep your photo.',
+      'Take one selfie in the Tonelle iPhone app: learn your undertone and colour season, get your personal palette and try makeup looks on your own face. No account needed, and we don’t keep your photo.',
     analyzeTitle: 'Free colour & makeup analysis',
     colorTitle: 'Free colour analysis',
     colorDescription: 'Find your colour season, undertone and the colours that suit you from one selfie. We never store your photo.',
@@ -29,110 +29,49 @@ export const en: SiteContent = {
   nav: {
     skipToContent: 'Skip to content',
     home: 'Tonelle home',
-    howItWorks: 'How it works',
-    looks: 'Makeup try-on',
-    pricing: 'Pricing',
-    faq: 'FAQ',
-    primaryNavLabel: 'Main',
-    menu: 'Menu',
-    closeMenu: 'Close menu',
-    menuTitle: 'Menu',
+    ctaDownload: 'Get',
+    ctaSoon: 'Soon',
   },
   hero: {
-    eyebrow: 'Discover yourself',
-    title: 'See the makeup that suits you, on your own face',
+    eyebrow: 'Personal colour analysis',
+    title: 'Discover the colours that truly suit you, from one selfie',
     subtitle:
-      'One selfie in the Tonelle iPhone app is all it takes. It reads your undertone, finds your colour season and shows makeup looks on your own face.',
-    ctaNote: 'For iPhone · Analysis in about 1 minute · No sign-up',
-    trustPoints: ['We don’t keep your photo', '12 colour seasons', 'Made for warm & olive skin'],
-    storesLabel: 'Also on your phone',
-    portraitAlt: 'A portrait analysed with Tonelle, with undertone, colour season and fit details over the photo.',
+      'Tonelle reads your undertone and colour season from a single selfie, builds your personal palette and shows makeup looks on your own face.',
+    ctaNote: 'For iPhone · No account needed · We don’t store your photo',
     undertoneChip: 'Undertone',
     seasonChip: 'Colour season',
-    fitChip: 'Fit',
-    colorCard: {
-      title: 'Colour analysis',
-      body: 'Find your season, undertone and personal palette.',
-    },
-    makeupCard: {
-      title: 'Makeup try-on',
-      body: 'Looks on your own face, before and after.',
-      shade: 'Matte lip · Dusty rose',
-    },
-  },
-  beforeAfter: {
-    eyebrow: 'Makeup try-on',
-    title: 'Before and after, on your own face',
-    storyTitle: 'See it on your face before you buy',
-    body: [
-      'Natural, office, glam or evening: the look you pick is applied to your own photo. Drag the slider and see the difference instantly.',
-      'Every look comes with shades chosen for your colour season and a step-by-step guide for your level.',
-    ],
-    shadesTitle: 'Your shades for this look',
-    beforeAlt: 'Portrait without makeup',
-    afterAlt: 'The same portrait with the suggested shades',
-    sliderLabel: 'Before and after comparison slider',
-    aiNote: 'Sample images are illustrative; the app uses your own photo.',
-  },
-  people: {
-    eyebrow: 'Stories',
-    title: 'How people use Tonelle',
-    caption: 'Example user scenarios',
-    starsLabel: '5 out of 5 stars',
-  },
-  dock: {
-    note: 'For iPhone · We don’t keep your photo',
+    sliderLabel: 'Selfie and analysis result comparison slider',
+    sliderBefore: 'Selfie',
+    sliderAfter: 'Analysis',
+    sliderHint: 'Drag to compare · Illustrative example',
+    beforeAlt: 'A plain selfie',
+    afterAlt: 'The same selfie with undertone and colour season details on top of the photo.',
   },
   how: {
     eyebrow: 'How it works',
-    title: 'From selfie to personal guide in three steps',
-    subtitle: 'It takes about a minute. Your photo is only used for the analysis; we don’t keep it.',
+    title: 'Your own colours in three steps',
     steps: [
       {
         title: 'Take a selfie',
-        body: 'Face soft daylight and switch off filters. The tips help you take the ideal photo.',
+        body: 'One filter-free selfie in soft daylight is all it takes. The app guides you with simple tips.',
       },
       {
-        title: 'We read your colours',
-        body: 'AI reads your undertone, skin depth and contrast and matches you with one of 12 seasons.',
+        title: 'Learn your colour season',
+        body: 'Your undertone, skin depth and contrast are read and matched to one of 12 colour seasons, and your personal palette is built.',
       },
       {
-        title: 'Try it on your face',
-        body: 'See the looks that suit you on your own photo and explore lip, blush and eyeshadow shades with their fit.',
+        title: 'Try the makeup on your own face',
+        body: 'See looks that suit you on your own photo; explore lip, blush and eyeshadow shades with fit scores.',
       },
     ],
-    snippetGood: 'Ideal selfie',
-    snippetScanning: 'Reading undertone',
   },
   looks: {
     eyebrow: 'Looks',
-    title: 'Looks made for your colours',
-    subtitle: 'Every look comes with shades picked from your palette and a step-by-step guide for your level.',
-  },
-  profile: {
-    eyebrow: 'Colour profile',
-    title: 'Your colours at a glance',
-    body: 'Tonelle doesn’t stop at a single label. It maps your colour profile across warmth, contrast and softness, and picks your palette and shades from it. It is tuned for the warm, olive and golden undertones common in Turkish and Mediterranean skin.',
-    points: [
-      'Recognises olive undertones, not just “warm” or “cool”',
-      'Foundation guidance for every skin depth, fair to deep',
-      'Never rates your looks; it only shows colour fit',
-    ],
-    radarTitle: 'Colour profile',
-    seasonLabel: 'Colour season',
-    paletteTitle: 'Personal palette',
-    sampleNote: 'Sample result',
-  },
-  privacy: {
-    title: 'Your photo stays yours',
-    body: 'Your selfie is only used to create your analysis and is not stored on our servers.',
-    points: [
-      'We process photos in memory and discard them after the analysis; they are never saved on our servers',
-      'Never used to train AI models',
-      'Your results are stored only on your device; delete them with one tap',
-      'We never rate your looks',
-    ],
-    link: 'Read the Privacy Policy',
+    title: 'Try the looks on your own face',
+    subtitle: 'Natural, office, evening, bridal… every look comes with shades picked for your colour season.',
+    note: 'Example images are AI-generated.',
+    pause: 'Pause scrolling',
+    play: 'Resume scrolling',
   },
   pricing: {
     eyebrow: 'Pricing',
@@ -142,46 +81,41 @@ export const en: SiteContent = {
   },
   faq: {
     eyebrow: 'FAQ',
-    title: 'Questions, answered',
-    subtitle: 'Everything to know before you take your selfie.',
+    title: 'Good to know',
     items: [
       {
+        q: 'Do I need an account?',
+        a: 'No. You don’t have to sign up or give your name or email. Purchases are tied to an anonymous ID and your store account.',
+      },
+      {
+        q: 'Is it free?',
+        a: 'Tonelle is free to download, and your colour analysis and season are free too. The full report and makeup looks on your own face are unlocked in the app with Premium, an Apple subscription. Current pricing and any trial are shown by the App Store at purchase.',
+      },
+      {
         q: 'Do you store my photo?',
-        a: 'No. Your selfie is sent securely to our AI provider only to create your analysis (and, with Premium, the makeup previews). We process it in memory and discard it as soon as the request finishes. It is never saved on our servers and never used to train AI models. Your results are stored only on your device.',
+        a: 'No. Your selfie is securely sent to our AI provider only to produce your analysis (and makeup previews in Premium). We process it in memory and delete it as soon as the request finishes. It isn’t saved on our servers or used to train AI models. Your results are stored on your device only.',
       },
       {
-        q: 'How accurate is the analysis?',
-        a: 'Tonelle gives you a well-grounded starting point, not a verdict. Lighting, camera quality, filters and makeup all affect colours in a photo, so for the best result take your selfie in soft daylight with bare skin. The analysis is guidance to help you choose shades; it is not a professional or medical assessment.',
+        q: 'Which phones does it work on?',
+        a: 'Tonelle is designed for iPhone (iOS). There is no Android version for now.',
       },
       {
-        q: 'Are the makeup images real?',
-        a: 'No, and we always say so. Makeup previews are generated by AI from your photo and are labelled “AI-generated”. They simulate how a look could appear; real products and application will look slightly different.',
-      },
-      {
-        q: 'What is free and what is Premium?',
-        a: 'Your colour analysis and season are free. Premium unlocks your full report: best and avoid colours, foundation range, lip, blush and eyeshadow shades, looks rendered on your own photo and step-by-step guides.',
+        q: 'Will it work in my language?',
+        a: 'The app follows your phone’s language: Turkish, English, Spanish, Portuguese, German, French, Italian, Japanese and Korean.',
       },
       {
         q: 'How do I cancel my subscription?',
-        a: 'Subscriptions are managed by Apple. Cancel anytime on your iPhone in Settings → Apple ID → Subscriptions, at least 24 hours before the end of the current period (or the free trial) to avoid being charged again. Deleting the app does not cancel a subscription.',
-      },
-      {
-        q: 'Does it work for olive and darker skin tones?',
-        a: 'Yes. Tonelle is designed with Turkish and Mediterranean colouring in mind and recognises olive undertones and skin depths from fair to deep.',
-      },
-      {
-        q: 'Do I need an account?',
-        a: 'No. You don’t need to sign up or give us your name or email. Purchases are linked to an anonymous ID and your store account.',
-      },
-      {
-        q: 'Is this medical or skincare advice?',
-        a: 'No. Tonelle offers cosmetic colour and makeup suggestions only. If you have a skin condition, allergy or irritation, talk to a dermatologist and always patch-test new products.',
+        a: 'Subscriptions are managed by Apple. To avoid being charged again, cancel any time at least 24 hours before the current period (or free trial) ends, on your iPhone under Settings → Apple ID → Subscriptions. Deleting the app does not cancel the subscription.',
       },
     ],
   },
   finalCta: {
     title: 'Ready to meet your colours?',
     body: 'Download Tonelle on your iPhone and get your colour season from one selfie in about a minute. No sign-up, and we don’t keep your photo.',
+  },
+  inAppNotice: {
+    text: 'To open the App Store, tap “Open in browser” at the top right.',
+    close: 'Close',
   },
   cookieBanner: {
     text: 'We would like to use the Meta Pixel cookie to measure whether our ads work. Your photo and results are never sent to Meta.',
@@ -190,11 +124,7 @@ export const en: SiteContent = {
     more: 'Privacy Policy',
   },
   footer: {
-    tagline: 'AI colour and makeup analysis that shows what suits you, on your own face.',
-    productTitle: 'Product',
     legalTitle: 'Legal',
-    companyTitle: 'Company',
-    registration: 'Registration no.',
   },
   stores: {
     download: 'Download on the App Store',

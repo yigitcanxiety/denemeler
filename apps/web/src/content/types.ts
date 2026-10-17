@@ -37,78 +37,36 @@ export interface SiteContent {
   nav: {
     skipToContent: string;
     home: string;
-    howItWorks: string;
-    looks: string;
-    pricing: string;
-    faq: string;
-    primaryNavLabel: string;
-    menu: string;
-    closeMenu: string;
-    menuTitle: string;
+    /** Compact header CTA labels (live / before launch). */
+    ctaDownload: string;
+    ctaSoon: string;
   };
   hero: {
     eyebrow: string;
     title: string;
     subtitle: string;
     ctaNote: string;
-    trustPoints: string[];
-    storesLabel: string;
-    portraitAlt: string;
     undertoneChip: string;
     seasonChip: string;
-    fitChip: string;
-    colorCard: { title: string; body: string };
-    makeupCard: { title: string; body: string; shade: string };
-  };
-  beforeAfter: {
-    eyebrow: string;
-    title: string;
-    storyTitle: string;
-    body: string[];
-    shadesTitle: string;
+    sliderLabel: string;
+    sliderBefore: string;
+    sliderAfter: string;
+    sliderHint: string;
     beforeAlt: string;
     afterAlt: string;
-    sliderLabel: string;
-    aiNote: string;
-  };
-  people: {
-    eyebrow: string;
-    title: string;
-    /** Small disclosure shown whenever placeholder testimonials are displayed. */
-    caption: string;
-    starsLabel: string;
-  };
-  dock: {
-    note: string;
   };
   how: {
     eyebrow: string;
     title: string;
-    subtitle: string;
     steps: { title: string; body: string }[];
-    snippetGood: string;
-    snippetScanning: string;
   };
   looks: {
     eyebrow: string;
     title: string;
     subtitle: string;
-  };
-  profile: {
-    eyebrow: string;
-    title: string;
-    body: string;
-    points: string[];
-    radarTitle: string;
-    seasonLabel: string;
-    paletteTitle: string;
-    sampleNote: string;
-  };
-  privacy: {
-    title: string;
-    body: string;
-    points: string[];
-    link: string;
+    note: string;
+    pause: string;
+    play: string;
   };
   pricing: {
     eyebrow: string;
@@ -119,12 +77,15 @@ export interface SiteContent {
   faq: {
     eyebrow: string;
     title: string;
-    subtitle: string;
     items: { q: string; a: string }[];
   };
   finalCta: {
     title: string;
     body: string;
+  };
+  inAppNotice: {
+    text: string;
+    close: string;
   };
   cookieBanner: {
     text: string;
@@ -133,11 +94,7 @@ export interface SiteContent {
     more: string;
   };
   footer: {
-    tagline: string;
-    productTitle: string;
     legalTitle: string;
-    companyTitle: string;
-    registration: string;
   };
   stores: {
     /** App Store CTA: link text once the app is live, plain label before launch. */

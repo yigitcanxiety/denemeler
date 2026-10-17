@@ -5,9 +5,9 @@ const C = COMPANY;
 
 export const tr: SiteContent = {
   meta: {
-    homeTitle: 'Tonelle · Sana yakışan makyajı kendi yüzünde gör',
+    homeTitle: 'Tonelle · Sana yakışan renkleri bir selfie ile keşfet',
     homeDescription:
-      'Tonelle iPhone uygulamasıyla tek bir selfie çek: alt tonunu ve renk sezonunu bulur, kişisel paletini çıkarır, makyaj görünümlerini kendi yüzünde gösterir. Fotoğrafını saklamayız.',
+      'Tonelle iPhone uygulamasıyla tek bir selfie çek: alt tonunu ve renk sezonunu öğren, kişisel paletini çıkar, makyaj görünümlerini kendi yüzünde dene. Hesap açmadan, fotoğrafını saklamadan.',
     analyzeTitle: 'Ücretsiz renk ve makyaj analizi',
     analyzeDescription:
       'Renk sezonunu, alt tonunu ve sana yakışan makyaj tonlarını yaklaşık bir dakikada öğren. Fotoğrafını saklamayız.',
@@ -29,110 +29,49 @@ export const tr: SiteContent = {
   nav: {
     skipToContent: 'İçeriğe geç',
     home: 'Tonelle ana sayfa',
-    howItWorks: 'Nasıl çalışır',
-    looks: 'Makyaj denemesi',
-    pricing: 'Fiyatlar',
-    faq: 'SSS',
-    primaryNavLabel: 'Ana menü',
-    menu: 'Menü',
-    closeMenu: 'Menüyü kapat',
-    menuTitle: 'Menü',
+    ctaDownload: 'İndir',
+    ctaSoon: 'Yakında',
   },
   hero: {
-    eyebrow: 'Kendini keşfet',
-    title: 'Sana yakışan makyajı kendi yüzünde gör',
+    eyebrow: 'Kişisel renk analizi',
+    title: 'Sana gerçekten yakışan renkleri bir selfie ile keşfet',
     subtitle:
-      'Tonelle iPhone uygulamasında tek bir selfie yeterli. Alt tonunu okur, renk sezonunu bulur ve makyaj görünümlerini kendi yüzünde gösterir.',
-    ctaNote: 'iPhone için · Yaklaşık 1 dakikada analiz · Hesap açmadan',
-    trustPoints: ['Fotoğrafını saklamayız', '12 renk sezonu', 'Sıcak ve zeytin tenler için'],
-    storesLabel: 'Telefonunda da',
-    portraitAlt: 'Tonelle ile analiz edilen bir portre; alt ton, renk sezonu ve uyum bilgileri fotoğrafın üzerinde.',
+      'Tonelle tek bir selfie’den alt tonunu ve renk sezonunu okur, sana özel paletini çıkarır ve makyaj görünümlerini kendi yüzünde gösterir.',
+    ctaNote: 'iPhone için · Hesap açmadan · Fotoğrafını saklamayız',
     undertoneChip: 'Alt ton',
     seasonChip: 'Renk sezonu',
-    fitChip: 'Uyum',
-    colorCard: {
-      title: 'Renk analizi',
-      body: 'Sezonunu, alt tonunu ve kişisel paletini bul.',
-    },
-    makeupCard: {
-      title: 'Makyaj denemesi',
-      body: 'Görünümleri kendi yüzünde, önce ve sonra.',
-      shade: 'Mat ruj · Gül kurusu',
-    },
-  },
-  beforeAfter: {
-    eyebrow: 'Makyaj denemesi',
-    title: 'Önce ve sonra, kendi yüzünde',
-    storyTitle: 'Rujunu almadan önce yüzünde gör',
-    body: [
-      'Doğal, ofis, glam ya da gece: seçtiğin görünüm kendi fotoğrafına uygulanır. Kaydırıcıyı sürükle, farkı anında gör.',
-      'Her görünüm renk sezonuna göre seçilmiş tonlarla ve seviyene uygun adım adım bir rehberle gelir.',
-    ],
-    shadesTitle: 'Bu görünüm için tonların',
-    beforeAlt: 'Makyajsız portre',
-    afterAlt: 'Aynı portre, önerilen tonlarla makyajlı',
-    sliderLabel: 'Önce ve sonra karşılaştırma kaydırıcısı',
-    aiNote: 'Örnek görseller temsilîdir; uygulamada kendi fotoğrafın kullanılır.',
-  },
-  people: {
-    eyebrow: 'Deneyimler',
-    title: 'Tonelle’i nasıl kullanıyorlar',
-    caption: 'Örnek kullanıcı senaryoları',
-    starsLabel: '5 üzerinden 5 yıldız',
-  },
-  dock: {
-    note: 'iPhone için · Fotoğrafını saklamayız',
+    sliderLabel: 'Selfie ve analiz sonucu karşılaştırma kaydırıcısı',
+    sliderBefore: 'Selfie',
+    sliderAfter: 'Analiz',
+    sliderHint: 'Kaydırarak karşılaştır · Örnek gösterim',
+    beforeAlt: 'Düz bir selfie',
+    afterAlt: 'Aynı selfie; alt ton ve renk sezonu bilgileri fotoğrafın üzerinde.',
   },
   how: {
     eyebrow: 'Nasıl çalışır',
-    title: 'Selfie’den kişisel rehbere üç adım',
-    subtitle: 'Yaklaşık bir dakika sürer. Fotoğrafın yalnızca analiz için kullanılır, biz saklamayız.',
+    title: 'Üç adımda kendi renklerin',
     steps: [
       {
-        title: 'Bir selfie çek',
-        body: 'Yumuşak gün ışığına dön, filtreyi kapat. İpuçları ideal fotoğrafı çekmene yardım eder.',
+        title: 'Selfie çek',
+        body: 'Yumuşak gün ışığında, filtresiz bir selfie yeterli. Uygulama ipuçlarıyla seni yönlendirir.',
       },
       {
-        title: 'Renklerin okunur',
-        body: 'Yapay zekâ alt tonunu, ten derinliğini ve kontrastını okuyup seni 12 sezondan biriyle eşleştirir.',
+        title: 'Renk sezonunu öğren',
+        body: 'Alt tonun, ten derinliğin ve kontrastın okunur; 12 renk sezonundan biriyle eşleşir ve kişisel paletin çıkar.',
       },
       {
-        title: 'Yüzünde dene',
+        title: 'Makyajı kendi yüzünde dene',
         body: 'Sana uygun görünümleri kendi fotoğrafında gör; ruj, allık ve far tonlarını uyum oranlarıyla keşfet.',
       },
     ],
-    snippetGood: 'İdeal selfie',
-    snippetScanning: 'Alt ton okunuyor',
   },
   looks: {
     eyebrow: 'Görünümler',
-    title: 'Renklerine göre hazırlanmış görünümler',
-    subtitle: 'Her görünüm paletinden seçilmiş tonlar ve seviyene uygun adım adım bir rehberle gelir.',
-  },
-  profile: {
-    eyebrow: 'Renk profili',
-    title: 'Renklerin, tek bakışta',
-    body: 'Tonelle sonucunu tek bir etiketle bırakmaz. Sıcaklık, kontrast ve yumuşaklık gibi eksenlerde renk profilini çıkarır; paletin ve ton önerilerin buna göre seçilir. Türk ve Akdeniz tenlerinde sık görülen sıcak, zeytin ve altın alt tonlara göre ayarlandı.',
-    points: [
-      'Sadece “sıcak” ya da “soğuk” değil, zeytin alt tonu da tanır',
-      'Açıktan koyuya her ten için fondöten rehberi',
-      'Görünüşünü asla puanlamaz; yalnızca renk uyumunu gösterir',
-    ],
-    radarTitle: 'Renk profili',
-    seasonLabel: 'Renk sezonu',
-    paletteTitle: 'Kişisel palet',
-    sampleNote: 'Örnek sonuç',
-  },
-  privacy: {
-    title: 'Fotoğrafın sende kalır',
-    body: 'Selfie’n yalnızca analizini oluşturmak için kullanılır ve sunucularımızda saklanmaz.',
-    points: [
-      'Fotoğrafları bellekte işler, analiz bitince sileriz; sunucularımıza kaydedilmez',
-      'Yapay zekâ modellerini eğitmek için asla kullanılmaz',
-      'Sonuçların yalnızca cihazında saklanır; tek dokunuşla silebilirsin',
-      'Görünüşünü asla puanlamayız',
-    ],
-    link: 'Gizlilik Politikası’nı oku',
+    title: 'Görünümleri kendi yüzünde dene',
+    subtitle: 'Doğal, ofis, gece, gelin… Her görünüm renk sezonuna göre seçilmiş tonlarla gelir.',
+    note: 'Örnek görseller yapay zekâ ile oluşturulmuştur.',
+    pause: 'Kaydırmayı durdur',
+    play: 'Kaydırmayı başlat',
   },
   pricing: {
     eyebrow: 'Fiyatlar',
@@ -143,45 +82,40 @@ export const tr: SiteContent = {
   faq: {
     eyebrow: 'SSS',
     title: 'Merak edilenler',
-    subtitle: 'Selfie’ni çekmeden önce bilmen gereken her şey.',
     items: [
-      {
-        q: 'Fotoğrafımı saklıyor musunuz?',
-        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Biz onu bellekte işler ve istek biter bitmez sileriz. Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
-      },
-      {
-        q: 'Analiz ne kadar doğru?',
-        a: 'Tonelle sana sağlam bir başlangıç noktası sunar, kesin bir hüküm değil. Işık, kamera kalitesi, filtreler ve makyaj fotoğraftaki renkleri etkiler; en iyi sonuç için selfie’ni yumuşak gün ışığında, makyajsız çek. Analiz ton seçimine yardımcı bir rehberdir; profesyonel ya da tıbbi bir değerlendirme değildir.',
-      },
-      {
-        q: 'Makyajlı görseller gerçek mi?',
-        a: 'Hayır ve bunu her zaman belirtiyoruz. Makyaj önizlemeleri fotoğrafından yapay zekâ ile oluşturulur ve “AI ile oluşturuldu” etiketi taşır. Bir görünümün nasıl durabileceğini simüle eder; gerçek ürünler ve uygulama biraz farklı görünebilir.',
-      },
-      {
-        q: 'Neler ücretsiz, neler Premium?',
-        a: 'Renk analizin ve sezonun ücretsizdir. Premium tam raporunu açar: en iyi ve kaçınman gereken renkler, fondöten aralığı, ruj, allık ve far tonları, kendi fotoğrafında görünümler ve adım adım rehberler.',
-      },
-      {
-        q: 'Aboneliğimi nasıl iptal ederim?',
-        a: 'Abonelikler Apple tarafından yönetilir. Tekrar ücretlendirilmemek için mevcut dönemin (veya ücretsiz denemenin) bitiminden en az 24 saat önce iPhone’da Ayarlar → Apple Kimliği → Abonelikler bölümünden dilediğin zaman iptal edebilirsin. Uygulamayı silmek aboneliği iptal etmez.',
-      },
-      {
-        q: 'Zeytin ve koyu tenlerde de çalışıyor mu?',
-        a: 'Evet. Tonelle Türk ve Akdeniz renk özellikleri düşünülerek tasarlandı; zeytin alt tonları ve açıktan koyuya tüm ten derinliklerini tanır.',
-      },
       {
         q: 'Hesap açmam gerekiyor mu?',
         a: 'Hayır. Üye olman ya da adını veya e-postanı vermen gerekmez. Satın almalar anonim bir kimlik ve mağaza hesabınla ilişkilendirilir.',
       },
       {
-        q: 'Bu tıbbi ya da cilt bakımı tavsiyesi mi?',
-        a: 'Hayır. Tonelle yalnızca kozmetik renk ve makyaj önerileri sunar. Bir cilt rahatsızlığın, alerjin ya da tahrişin varsa bir dermatoloğa danış ve yeni ürünleri mutlaka önce küçük bir alanda dene.',
+        q: 'Ücretsiz mi?',
+        a: 'Tonelle’i indirmek ücretsizdir; renk analizin ve sezonun da ücretsizdir. Tam rapor ve kendi yüzündeki makyaj görünümleri uygulama içinde, Apple aboneliğiyle çalışan Premium ile açılır. Güncel fiyat ve deneme bilgisi satın alma ekranında App Store tarafından gösterilir.',
+      },
+      {
+        q: 'Fotoğrafımı saklıyor musunuz?',
+        a: 'Hayır. Selfie’n yalnızca analizini (ve Premium’da makyaj önizlemelerini) oluşturmak için yapay zekâ sağlayıcımıza güvenli şekilde gönderilir. Biz onu bellekte işler ve istek biter bitmez sileriz. Sunucularımıza kaydedilmez ve yapay zekâ modellerini eğitmek için kullanılmaz. Sonuçların yalnızca cihazında saklanır.',
+      },
+      {
+        q: 'Hangi telefonlarda çalışır?',
+        a: 'Tonelle iPhone (iOS) için tasarlandı. Şimdilik Android sürümü yok.',
+      },
+      {
+        q: 'Kendi dilimde çalışır mı?',
+        a: 'Uygulama telefonunun diline uyar: Türkçe, İngilizce, İspanyolca, Portekizce, Almanca, Fransızca, İtalyanca, Japonca ve Korece.',
+      },
+      {
+        q: 'Aboneliğimi nasıl iptal ederim?',
+        a: 'Abonelikler Apple tarafından yönetilir. Tekrar ücretlendirilmemek için mevcut dönemin (veya ücretsiz denemenin) bitiminden en az 24 saat önce iPhone’da Ayarlar → Apple Kimliği → Abonelikler bölümünden dilediğin zaman iptal edebilirsin. Uygulamayı silmek aboneliği iptal etmez.',
       },
     ],
   },
   finalCta: {
     title: 'Renklerinle tanışmaya hazır mısın?',
     body: 'Tonelle’i iPhone’una indir, tek bir selfie ile renk sezonunu yaklaşık bir dakikada öğren. Hesap açman gerekmez, fotoğrafını saklamayız.',
+  },
+  inAppNotice: {
+    text: 'Uygulama mağazasını açmak için sağ üstten “Tarayıcıda aç”ı seç.',
+    close: 'Kapat',
   },
   cookieBanner: {
     text: 'Reklamlarımızın işe yarayıp yaramadığını ölçmek için Meta Pixel çerezi kullanmak istiyoruz. Fotoğrafın ve analiz sonuçların Meta’ya gönderilmez.',
@@ -190,11 +124,7 @@ export const tr: SiteContent = {
     more: 'Gizlilik Politikası',
   },
   footer: {
-    tagline: 'Sana neyin yakıştığını kendi yüzünde gösteren yapay zekâ destekli renk ve makyaj analizi.',
-    productTitle: 'Ürün',
     legalTitle: 'Yasal',
-    companyTitle: 'Şirket',
-    registration: 'Sicil no.',
   },
   stores: {
     download: 'App Store’dan indir',

@@ -268,32 +268,12 @@ html.js:not(.no-io) [data-reveal]:not([data-inview]) .bar-fill {
   animation: t-rise 250ms var(--ease-out) both;
 }
 
-.menu-sheet {
-  margin: 0;
-  width: 100%;
-  max-width: 100%;
-  height: 100dvh;
-  max-height: 100dvh;
-  padding: 0;
-  border: 0;
-  background: var(--color-paper);
-  color: var(--color-ink);
-  overflow-y: auto;
-}
-.menu-sheet::backdrop {
-  background: transparent;
-}
-.menu-sheet[open] {
-  animation: t-rise 250ms var(--ease-out) both;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .press:active:not(:disabled) {
     transform: none;
   }
   .enter,
-  .tonelle-dialog[open],
-  .menu-sheet[open] {
+  .tonelle-dialog[open] {
     animation: t-fade 200ms ease both;
   }
   [data-reveal] {
@@ -323,6 +303,43 @@ html.js:not(.no-io) [data-reveal]:not([data-inview]) .bar-fill {
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Looks marquee: two identical sets, the track slides by -50 % for a seamless loop. */
+@keyframes t-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-viewport {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: t-marquee 55s linear infinite;
+}
+.marquee[data-paused] .marquee-track {
+  animation-play-state: paused;
+}
+@media (hover: hover) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-viewport {
+    overflow-x: auto;
+    padding-inline: 16px;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .marquee-set[data-dup],
+  .marquee-toggle {
+    display: none;
   }
 }
 
