@@ -17,7 +17,6 @@ export const COMPANY = {
   /** Jurisdiction whose law governs the Terms. */
   governingLaw: 'England and Wales',
   /** Merchant of Record for web purchases. */
-  merchantOfRecord: 'Paddle.com Market Ltd',
   /** General support contact — placeholder mailbox on the product domain. */
   supportEmail: 'support@tonelleapp.com',
   /** Privacy / data-protection requests (GDPR & KVKK applications). */
@@ -31,7 +30,7 @@ export const COMPANY = {
 } as const;
 
 /** Date the legal documents were last revised (ISO). Shown on every legal page. */
-export const LEGAL_LAST_UPDATED = '2026-10-11';
+export const LEGAL_LAST_UPDATED = '2026-10-17';
 
 /** Canonical site origin, without trailing slash. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tonelleapp.com').replace(/\/+$/, '');

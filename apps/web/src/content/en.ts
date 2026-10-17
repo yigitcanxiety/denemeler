@@ -170,7 +170,7 @@ export const en: SiteContent = {
                 'Analysis results: derived information such as undertone, skin depth, contrast, face and eye shape, colour season and suggested shades. These are generated from your photo and stored only on your device.',
                 'Questionnaire answers: skin type, eye colour, occasion, budget and experience level, sent together with your photo to tailor results.',
                 'Anonymous app user ID: a random identifier created on your device, used only to check whether you have an active Premium subscription.',
-                'Purchase and subscription status: whether a subscription or one-time purchase is active, its product, and renewal dates. Payment details are handled by Apple or Google; we never see your card details.',
+                'Purchase and subscription status: whether a subscription or one-time purchase is active, its product, and renewal dates. Payment details are handled by Apple; we never see your card details.',
                 'Technical data: IP address, browser or device type, operating system, and request timestamps, used for security, rate limiting and troubleshooting.',
                 'Communications: your email address and message if you contact us.',
               ],
@@ -243,11 +243,10 @@ export const en: SiteContent = {
                 ['Vercel Inc. (USA; servers in the EU, Frankfurt)', 'Website and API hosting; receives technical data and transiently the photo in transit.'],
                 ['Google LLC (Gemini API, USA)', 'Performs the colour and skin analysis of your photo and creates the makeup previews. On the paid API tier your data is not used to train models.'],
                 ['Meta Platforms Ireland Ltd. (Ireland)', 'Only if you accept cookies: page views and purchase steps for ad measurement (Meta Pixel).'],
-                ['Paddle.com Market Ltd (United Kingdom)', 'Processes website purchases as Merchant of Record: payment, invoicing, tax and refunds.'],
                 ['RevenueCat, Inc. (USA)', 'Manages subscription status linked to your anonymous app user ID.'],
               ],
             },
-            'For website purchases Paddle, and for in-app purchases Apple Inc. (App Store) and Google LLC (Google Play), process your payment details as independent controllers under their own privacy policies. Your card details never reach us.',
+            'For in-app purchases Apple Inc. (App Store) processes your payment details as an independent controller under their own privacy policies. Your card details never reach us.',
             'We may disclose data to authorities where required by law. We never sell your personal data.',
           ],
         },
@@ -398,7 +397,7 @@ export const en: SiteContent = {
           id: 'transfer',
           heading: '5. Transfer of personal data (including abroad, Art. 9)',
           blocks: [
-            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis and image generation (Google LLC, USA), website payments (Paddle.com Market Ltd, United Kingdom) and app subscription management (RevenueCat, Inc., USA). In-app payments are processed by Apple Inc. and Google LLC.',
+            'To provide the Service we transfer personal data to service providers located abroad: hosting (Vercel Inc., servers in the EU), AI analysis and image generation (Google LLC, USA) and app subscription management (RevenueCat, Inc., USA). In-app payments are processed by Apple Inc.',
             'Transfers abroad are carried out in accordance with KVKK Article 9: primarily on the basis of standard contracts announced by the Personal Data Protection Board and notified to the Authority within five business days of signature (Art. 9(4)). Where such safeguards cannot be applied, data is transferred only occasionally and with your explicit consent (Art. 9(6)(a)).',
             'Personal data may also be shared with authorised public institutions where required by law.',
           ],
@@ -547,8 +546,7 @@ export const en: SiteContent = {
           heading: '6. Premium subscriptions and purchases',
           blocks: [
             'Premium is available as an auto-renewing weekly or yearly subscription and, where offered, as a one-time report.',
-            `Our order process on the website is conducted by our online reseller Paddle.com. Paddle.com (${C.merchantOfRecord}) is the Merchant of Record for all our website orders: it takes payment, issues invoices, handles tax and manages refund requests. Website purchases are also subject to Paddle’s buyer terms.`,
-            'Purchases in the Tonelle app are made through the Apple App Store or Google Play, are subject to their terms, and are charged to your Apple ID or Google Play account.',
+            'Purchases are made only in the Tonelle app through the Apple App Store, are subject to the App Store terms, and are charged to your Apple ID.',
             'The price shown at checkout, including applicable taxes, applies.',
           ],
         },
@@ -564,15 +562,14 @@ export const en: SiteContent = {
           heading: '8. Automatic renewal and cancellation',
           blocks: [
             'Subscriptions renew automatically at the end of each period for the same length and price until cancelled. Your account is charged for renewal within 24 hours before the end of the current period.',
-            'You can cancel a website subscription at any time via the link in Paddle’s order email or by contacting us, and an app subscription in your App Store or Google Play account settings. Cancellation must be made at least 24 hours before the end of the current period to avoid the next charge; you keep Premium access until the end of the period you paid for. Deleting the app or your local data does not cancel a subscription.',
+            'You can cancel your subscription at any time on your iPhone in Settings > Apple ID > Subscriptions. Cancellation must be made at least 24 hours before the end of the current period to avoid the next charge; you keep Premium access until the end of the period you paid for. Deleting the app or your local data does not cancel a subscription.',
           ],
         },
         {
           id: 'refunds',
           heading: '9. Refunds',
           blocks: [
-            `For purchases made on our website you can request a full refund, without giving a reason, within 14 days of your first payment. Send your request to ${C.supportEmail} or use the link in Paddle’s order email; Paddle, as Merchant of Record, issues the refund to your original payment method.`,
-            'In-app purchases are processed by Apple or Google, so refund requests for them must be made to the store under its refund policy (Apple: reportaproblem.apple.com; Google Play: your Google Play order history).',
+            'In-app purchases are processed by Apple, so refund requests must be made to Apple under its refund policy (reportaproblem.apple.com).',
             'For digital content supplied immediately, the statutory right of withdrawal may end once supply begins with your prior express consent and acknowledgement. This does not affect your other statutory rights as a consumer, including in case of defective digital content.',
           ],
         },
@@ -634,7 +631,7 @@ export const en: SiteContent = {
       {
         kind: 'support',
         title: 'Support',
-        body: 'Questions about the app, your results or your subscription. Website purchases can be refunded within 14 days; for in-app purchases, please contact Apple or Google.',
+        body: 'Questions about the app, your results or your subscription. For refunds, please contact Apple (reportaproblem.apple.com).',
       },
       {
         kind: 'privacy',
@@ -691,7 +688,7 @@ export const en: SiteContent = {
     paywallPlansLabel: 'Choose a plan',
     chooseStoreTitle: 'Continue in the Tonelle app',
     chooseStoreBody:
-      'Plans are purchased securely through the App Store or Google Play. Download the app to unlock your full report.',
+      'Plans are purchased securely through the App Store. Download the app to unlock your full report.',
     comingSoonTitle: 'The Tonelle app is coming soon',
     comingSoonBody:
       'Premium purchases open when our app launches. Leave us a note and we’ll tell you the moment it’s live.',

@@ -170,7 +170,7 @@ export const tr: SiteContent = {
                 'Analiz sonuçları: alt ton, ten derinliği, kontrast, yüz ve göz şekli, renk sezonu ve önerilen tonlar gibi fotoğrafından türetilen bilgiler. Yalnızca cihazında saklanır.',
                 'Soru cevapları: sonuçları kişiselleştirmek için fotoğrafınla birlikte gönderilen cilt tipi, göz rengi, kullanım amacı, bütçe ve deneyim düzeyi.',
                 'Anonim uygulama kullanıcı kimliği: cihazında oluşturulan ve yalnızca aktif bir Premium aboneliğin olup olmadığını kontrol etmek için kullanılan rastgele bir tanımlayıcı.',
-                'Satın alma ve abonelik durumu: bir abonelik veya tek seferlik satın almanın aktif olup olmadığı, ürünü ve yenileme tarihleri. Ödeme bilgilerini Apple veya Google işler; kart bilgilerini asla görmeyiz.',
+                'Satın alma ve abonelik durumu: bir abonelik veya tek seferlik satın almanın aktif olup olmadığı, ürünü ve yenileme tarihleri. Ödeme bilgilerini Apple işler; kart bilgilerini asla görmeyiz.',
                 'Teknik veriler: güvenlik, kullanım sınırı ve hata giderme için IP adresi, tarayıcı veya cihaz türü, işletim sistemi ve istek zamanları.',
                 'İletişim: bize yazarsan e-posta adresin ve mesajın.',
               ],
@@ -237,11 +237,10 @@ export const tr: SiteContent = {
                 ['Vercel Inc. (ABD; sunucular AB’de, Frankfurt)', 'Web sitesi ve API barındırma; teknik verileri ve aktarım sırasında geçici olarak fotoğrafı alır.'],
                 ['Google LLC (Gemini API, ABD)', 'Fotoğrafının renk ve cilt analizini yapar ve makyaj önizlemelerini oluşturur. Ücretli API katmanında verilerin model eğitiminde kullanılmaz.'],
                 ['Meta Platforms Ireland Ltd. (İrlanda)', 'Yalnızca çerez onayı verirsen: reklam ölçümü için sayfa görüntülemeleri ve satın alma adımları (Meta Pixel).'],
-                ['Paddle.com Market Ltd (Birleşik Krallık)', 'Web sitesindeki satın almaları satıcı (Merchant of Record) olarak işler: ödeme, fatura, vergi ve iadeler.'],
                 ['RevenueCat, Inc. (ABD)', 'Anonim kullanıcı kimliğinle bağlantılı abonelik durumunu yönetir.'],
               ],
             },
-            'Web sitesindeki satın almalarda Paddle; uygulama içi satın almalarda Apple Inc. (App Store) ve Google LLC (Google Play), ödeme bilgilerini kendi gizlilik politikaları kapsamında bağımsız veri sorumlusu olarak işler. Kart bilgilerin bize hiç ulaşmaz.',
+            'Uygulama içi satın almalarda Apple Inc. (App Store), ödeme bilgilerini kendi gizlilik politikaları kapsamında bağımsız veri sorumlusu olarak işler. Kart bilgilerin bize hiç ulaşmaz.',
             'Kanunen zorunlu olduğunda verileri yetkili makamlarla paylaşabiliriz. Kişisel verilerini asla satmayız.',
           ],
         },
@@ -392,7 +391,7 @@ export const tr: SiteContent = {
           id: 'transfer',
           heading: '5. Kişisel verilerin aktarılması (yurt dışına aktarım, md. 9)',
           blocks: [
-            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi ve görsel oluşturma (Google LLC, ABD), web ödemeleri (Paddle.com Market Ltd, Birleşik Krallık) ve uygulama aboneliklerinin yönetimi (RevenueCat, Inc., ABD). Uygulama içi ödemeler Apple Inc. ve Google LLC tarafından işlenir.',
+            'Hizmeti sunabilmek için kişisel verilerini yurt dışında bulunan hizmet sağlayıcılara aktarırız: barındırma (Vercel Inc., sunucular AB’de), yapay zekâ analizi ve görsel oluşturma (Google LLC, ABD) ve uygulama aboneliklerinin yönetimi (RevenueCat, Inc., ABD). Uygulama içi ödemeler Apple Inc. tarafından işlenir.',
             'Yurt dışına aktarımlar KVKK’nın 9. maddesine uygun olarak; öncelikle Kişisel Verileri Koruma Kurulu tarafından ilan edilen standart sözleşmelere dayanılarak ve sözleşmenin imzalanmasından itibaren beş iş günü içinde Kuruma bildirilmesi suretiyle (md. 9/4) gerçekleştirilir. Bu güvencelerin uygulanamadığı hâllerde veriler yalnızca arızi olarak ve açık rızana dayanılarak aktarılır (md. 9/6-a).',
             'Kişisel verilerin, kanunen yetkili kamu kurum ve kuruluşlarıyla, talep hâlinde ve mevzuatın izin verdiği ölçüde paylaşılabilir.',
           ],
@@ -540,8 +539,7 @@ export const tr: SiteContent = {
           heading: '6. Premium abonelikler ve satın almalar',
           blocks: [
             'Premium; otomatik yenilenen haftalık veya yıllık abonelik olarak ve sunulduğu yerlerde tek seferlik rapor olarak sunulur.',
-            `Web sitesindeki sipariş süreci, çevrim içi satıcımız Paddle.com tarafından yürütülür. Paddle.com (${C.merchantOfRecord}), tüm web siparişlerimizde satıcıdır (Merchant of Record): ödemeyi alır, faturayı keser, vergileri hesaplar ve iade taleplerini yönetir. Web satın almaları ayrıca Paddle’ın alıcı koşullarına tabidir.`,
-            'Tonelle uygulamasındaki satın almalar Apple App Store veya Google Play üzerinden yapılır, bu mağazaların koşullarına tabidir ve ödeme Apple Kimliği veya Google Play hesabından tahsil edilir.',
+            'Satın almalar yalnız Tonelle uygulamasında, Apple App Store üzerinden yapılır, App Store koşullarına tabidir ve ödeme Apple Kimliğinden tahsil edilir.',
             'Ödeme sırasında gösterilen, vergiler dahil fiyat geçerlidir.',
           ],
         },
@@ -557,15 +555,14 @@ export const tr: SiteContent = {
           heading: '8. Otomatik yenileme ve iptal',
           blocks: [
             'Abonelikler iptal edilene kadar her dönemin sonunda aynı süre ve fiyatla otomatik olarak yenilenir. Yenileme ücreti mevcut dönemin bitiminden önceki 24 saat içinde hesabından tahsil edilir.',
-            'Web aboneliğini Paddle’ın sipariş e-postasındaki bağlantıdan veya bize yazarak, uygulama aboneliğini App Store ya da Google Play hesap ayarlarından dilediğin zaman iptal edebilirsin. Bir sonraki ücretlendirmeden kaçınmak için iptalin mevcut dönemin bitiminden en az 24 saat önce yapılması gerekir; ödemesini yaptığın dönemin sonuna kadar Premium erişimin devam eder. Uygulamayı veya yerel verilerini silmek aboneliği iptal etmez.',
+            'Aboneliğini iPhone’unda Ayarlar > Apple Kimliği > Abonelikler bölümünden dilediğin zaman iptal edebilirsin. Bir sonraki ücretlendirmeden kaçınmak için iptalin mevcut dönemin bitiminden en az 24 saat önce yapılması gerekir; ödemesini yaptığın dönemin sonuna kadar Premium erişimin devam eder. Uygulamayı veya yerel verilerini silmek aboneliği iptal etmez.',
           ],
         },
         {
           id: 'refunds',
           heading: '9. İadeler',
           blocks: [
-            `Web sitesinden yaptığın satın almalarda, ilk ödeme tarihinden itibaren 14 gün içinde gerekçe göstermeden tam iade isteyebilirsin. Talebini ${C.supportEmail} adresine veya Paddle’ın sipariş e-postasındaki bağlantıdan iletebilirsin; iadeyi satıcı olarak Paddle yapar ve ödeme yönteminle aynı yoldan geri gönderir.`,
-            'Uygulama içi satın almalar Apple veya Google tarafından işlendiğinden, bunların iade talepleri ilgili mağazanın iade politikası kapsamında mağazaya yapılmalıdır (Apple: reportaproblem.apple.com; Google Play: Google Play sipariş geçmişin).',
+            'Uygulama içi satın almalar Apple tarafından işlendiğinden, iade talepleri Apple’ın iade politikası kapsamında Apple’a yapılmalıdır (reportaproblem.apple.com).',
             'Anında ifa edilen dijital içeriklerde cayma hakkı, açık onayın ve bilgin dahilinde ifaya başlanmasıyla sona erebilir (Mesafeli Sözleşmeler Yönetmeliği md. 15). Bu durum, ayıplı dijital içerik dahil tüketici olarak sahip olduğun diğer yasal hakları etkilemez.',
           ],
         },
@@ -627,7 +624,7 @@ export const tr: SiteContent = {
       {
         kind: 'support',
         title: 'Destek',
-        body: 'Uygulama, sonuçların veya aboneliğinle ilgili sorular. Web sitesinden yapılan satın almalarda 14 gün içinde iade isteyebilirsin; uygulama içi satın almalar için Apple veya Google ile iletişime geç.',
+        body: 'Uygulama, sonuçların veya aboneliğinle ilgili sorular. İade talepleri için Apple ile iletişime geç (reportaproblem.apple.com).',
       },
       {
         kind: 'privacy',
@@ -684,7 +681,7 @@ export const tr: SiteContent = {
     paywallPlansLabel: 'Bir plan seç',
     chooseStoreTitle: 'Tonelle uygulamasında devam et',
     chooseStoreBody:
-      'Planlar App Store veya Google Play üzerinden güvenle satın alınır. Tam raporunu açmak için uygulamayı indir.',
+      'Planlar App Store üzerinden güvenle satın alınır. Tam raporunu açmak için uygulamayı indir.',
     comingSoonTitle: 'Tonelle uygulaması çok yakında',
     comingSoonBody:
       'Premium satın alma, uygulamamızın yayına girmesiyle birlikte açılacak. Bize bir not bırak, yayına girdiği an haber verelim.',
