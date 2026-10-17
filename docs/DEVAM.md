@@ -93,20 +93,26 @@ Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de k
 
 Önce PL, ES, IT (ucuz gösterim), sonra DE, FR, NL. Çeviri + yerel kreatif.
 
-## 5. Fiyat ve sınır kararları (önerilen, henüz uygulanmadı)
+## 5. Fiyat ve sınır kararları
 
-| Plan | Fiyat (TR) | Analiz | Makyaj görseli |
-|---|---|---|---|
-| Ücretsiz | – | 1 | 1 |
-| Haftalık | ₺129,99, 7 gün ücretsiz (2026-10-11 kullanıcı kararı; ilk hafta ₺39,99 indirimi kaldırıldı) | haftada 5 | haftada 40 |
-| Yıllık | ₺799,99, 7 gün ücretsiz (2026-10-11 kullanıcı kararı) | haftada 5 | haftada 40 |
-| Tek rapor | ₺199 | 1 | 10 |
+Makyaj görseli sınırı uygulandı (2026-10-17, `apps/web/src/server/revenuecat.ts` `RENDER_LIMITS`; sayaç RevenueCat
+abone özelliğinde, veritabanı yok). RevenueCat anahtarı girilip `TONELLE_FREE_RENDERS` kapanınca devreye girer.
+
+| Plan | Fiyat (TR) | Apple sonrası net (%30 / %15) | Makyaj görseli | En kötü maliyet |
+|---|---|---|---|---|
+| Deneme (7 gün) | ücretsiz | 0 | toplam 10 | ₺20 |
+| Haftalık | ₺129,99 | ₺76 / ₺92 haftada | haftada 20 | ₺40 / hafta |
+| Yıllık | ₺799,99 | ₺467 / ₺567 yılda (≈₺9/hafta) | 30 günde 8 | ₺192 / yıl |
+| Yıllık, çıkış teklifi | ₺399,99 | ₺233 / ₺283 yılda | 30 günde 8 | ₺192 / yıl |
+| Tek rapor | ₺199 | ₺116 / ₺141 | toplam 10 | ₺20 |
+
+Varsayım: görsel ~$0,04, ₺45/$ ve yeniden denemelerle ₺2. Analiz ~₺0,50 (ücretsiz, IP başı saatte 10). KDV %20 fiyatın içinde.
+Kural: limitini sonuna kadar kullanan kullanıcı bile net gelirin yarısından fazlasına mal olmaz.
+Sabit giderler: Apple Developer $99/yıl, Vercel Pro $20/ay (ticari kullanım), RevenueCat aylık $2.500 gelire kadar ücretsiz, sonra %1.
 
 İptal yolu (2026-10-11 kullanıcı kararı): sitede belirgin iptal düğmesi yok; Paddle'ın sipariş e-postasındaki bağlantı + koşullardaki "bize yaz" yeterli (Apple'daki gibi). Faz E'de Almanya'ya satış açılınca oradaki zorunlu "Kündigungsbutton" yalnız DE kullanıcılarına eklenecek.
 
-Deneme süresi sınırı (2026-10-11 kullanıcı kararı): 7 günlük denemede toplam en fazla 10 makyaj görseli; sayaç ödeme entegrasyonuyla birlikte kurulacak (Faz A3/A6).
-
-Tahmini maliyet: analiz ~₺0,10, görsel ~₺1,70 (~$0,04). Haftalık plan net ~₺80 (KDV ve Paddle sonrası).
+Deneme süresi sınırı (2026-10-11 kullanıcı kararı): 7 günlük denemede toplam en fazla 10 makyaj görseli (uygulandı 2026-10-17).
 Paywall metni 2026-10-15'te "Tüm makyaj görünümleri kendi fotoğrafında" oldu (App Review: "sınırsız" iddiası yok); sınırlar gelince "Haftada N görünüm" yazılabilir.
 
 ## 6. Ortam değişkenleri (Vercel, Production)

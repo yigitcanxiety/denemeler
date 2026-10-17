@@ -21,7 +21,7 @@ import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } fro
 import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
 import { claimPurchase, consumeRender } from './paddle';
 import { forwardToMeta, verifyPaddleSignature, type PaddleTransactionEvent } from './paddle-webhook';
-import { checkEntitlement } from './revenuecat';
+import { consumeAppRender } from './revenuecat';
 
 const RedeemRequestSchema = z.object({ code: z.string().min(1).max(64) });
 const ClaimRequestSchema = z.object({
@@ -148,8 +148,9 @@ export async function handleRenderLook(request: Request): Promise<Response> {
         if (config.paddle) return errorResponse('payment_required', 'A premium subscription is required.');
         throw new HttpError('internal', 'Rendering is temporarily unavailable.', 'REVENUECAT_SECRET_KEY is not set');
       }
-      const entitled = await checkEntitlement(appUserId as string, config.revenueCatSecretKey);
-      if (!entitled) return errorResponse('payment_required', 'A premium subscription is required.');
+      const allowance = await consumeAppRender(appUserId as string, config.revenueCatSecretKey);
+      if (allowance === 'quota_exceeded') return errorResponse('quota_exceeded', 'You have used this period\'s makeup looks.');
+      if (allowance === 'denied') return errorResponse('payment_required', 'A premium subscription is required.');
     }
 
     const provider = createImageProvider(config);

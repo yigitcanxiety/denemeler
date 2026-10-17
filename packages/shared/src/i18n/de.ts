@@ -397,7 +397,7 @@ export const de: Dictionary = {
     too_large: 'Dieses Foto ist zu groß. Bitte verwende ein Bild unter 4 MB.',
     rate_limited: 'Du hast viele Anfragen gesendet. Bitte warte kurz und versuch es dann nochmal.',
     payment_required: 'Für diese Funktion brauchst du Premium. Schalte es frei, um fortzufahren.',
-    quota_exceeded: 'Du hast die in deiner Testphase enthaltenen Looks aufgebraucht. Sobald dein Abo startet, kannst du weitere erstellen.',
+    quota_exceeded: 'Du hast die Looks für diesen Zeitraum aufgebraucht. Im nächsten Zeitraum kannst du weitere erstellen.',
     provider_error: 'Unser KI-Dienst ist gerade ausgelastet. Bitte versuch es gleich nochmal.',
     internal: 'Bei uns ist etwas schiefgelaufen. Bitte versuch es nochmal.',
     network: 'Keine Verbindung. Prüfe deine Internetverbindung und versuch es nochmal.',

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { checkEntitlement, clearEntitlementCache, hasActiveEntitlement } from './revenuecat';
+import { consumeAppRender, hasActiveEntitlement, renderPeriod } from './revenuecat';
 
 const NOW = Date.parse('2026-09-29T12:00:00Z');
 const subscriber = (entitlements: Record<string, unknown>) => ({ subscriber: { entitlements } });
@@ -33,39 +33,76 @@ describe('hasActiveEntitlement', () => {
   });
 });
 
-describe('checkEntitlement', () => {
+describe('renderPeriod', () => {
+  const sub = (premium: Record<string, unknown>, periodType = 'normal') => ({
+    subscriber: {
+      entitlements: { premium },
+      subscriptions: { [String(premium.product_identifier)]: { period_type: periodType } },
+    },
+  });
+  const weekly = { product_identifier: 'tonelle_weekly', purchase_date: '2026-09-29T00:00:00Z', expires_date: '2026-10-06T00:00:00Z' };
+  const yearly = { product_identifier: 'tonelle_yearly', purchase_date: '2026-01-01T00:00:00Z', expires_date: '2027-01-01T00:00:00Z' };
+
+  it('gives each plan its own quota', () => {
+    expect(renderPeriod(sub(weekly), NOW)?.limit).toBe(20);
+    expect(renderPeriod(sub(weekly, 'trial'), NOW)?.limit).toBe(10);
+    expect(renderPeriod(sub(yearly), NOW)?.limit).toBe(8);
+    expect(renderPeriod(sub({ product_identifier: 'tonelle_report', expires_date: null }), NOW)?.limit).toBe(10);
+    expect(renderPeriod(subscriber({}), NOW)).toBeNull();
+  });
+
+  it('starts a new yearly period every 30 days', () => {
+    const a = renderPeriod(sub(yearly), NOW)!.key;
+    expect(renderPeriod(sub(yearly), NOW + 86_400_000)!.key).toBe(a);
+    expect(renderPeriod(sub(yearly), NOW + 31 * 86_400_000)!.key).not.toBe(a);
+  });
+});
+
+describe('consumeAppRender', () => {
   const fetchMock = vi.fn<typeof fetch>();
   beforeEach(() => {
-    clearEntitlementCache();
     fetchMock.mockReset();
     vi.stubGlobal('fetch', fetchMock);
   });
   afterEach(() => vi.unstubAllGlobals());
 
-  it('calls the v1 subscribers endpoint with a bearer key and caches positive results', async () => {
-    fetchMock.mockImplementation(async () => Response.json(subscriber({ premium: { expires_date: null } })));
-    expect(await checkEntitlement('user 1', 'sk_test', NOW)).toBe(true);
-    expect(await checkEntitlement('user 1', 'sk_test', NOW + 60_000)).toBe(true);
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+  const lifetime = (counter?: string) => ({
+    subscriber: {
+      entitlements: { premium: { product_identifier: 'tonelle_report', expires_date: null } },
+      subscriber_attributes: counter ? { tonelle_renders: { value: counter } } : {},
+    },
+  });
+
+  it('counts a render in a subscriber attribute', async () => {
+    fetchMock.mockResolvedValueOnce(Response.json(lifetime())).mockResolvedValueOnce(Response.json({}));
+    expect(await consumeAppRender('user 1', 'sk_test', NOW)).toBe('ok');
     const [url, init] = fetchMock.mock.calls[0]!;
     expect(url).toBe('https://api.revenuecat.com/v1/subscribers/user%201');
     expect((init?.headers as Record<string, string>).Authorization).toBe('Bearer sk_test');
-    // Cache expires after 5 minutes.
-    await checkEntitlement('user 1', 'sk_test', NOW + 6 * 60_000);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const [writeUrl, write] = fetchMock.mock.calls[1]!;
+    expect(writeUrl).toBe('https://api.revenuecat.com/v1/subscribers/user%201/attributes');
+    expect(JSON.parse(write!.body as string).attributes.tonelle_renders.value).toBe('once:0:0|1');
   });
 
-  it('does not cache negative results', async () => {
-    fetchMock.mockImplementation(async () => Response.json(subscriber({})));
-    expect(await checkEntitlement('u', 'sk', NOW)).toBe(false);
-    expect(await checkEntitlement('u', 'sk', NOW)).toBe(false);
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+  it('stops at the limit and resets in a new period', async () => {
+    fetchMock.mockResolvedValueOnce(Response.json(lifetime('once:0:0|10')));
+    expect(await consumeAppRender('u', 'sk', NOW)).toBe('quota_exceeded');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    fetchMock.mockResolvedValueOnce(Response.json(lifetime('weekly:1:3|20'))).mockResolvedValueOnce(Response.json({}));
+    expect(await consumeAppRender('u', 'sk', NOW)).toBe('ok');
   });
 
-  it('treats 404 as not entitled and other errors as provider errors', async () => {
+  it('fails closed when the counter cannot be written', async () => {
+    fetchMock.mockResolvedValueOnce(Response.json(lifetime())).mockResolvedValueOnce(new Response('x', { status: 500 }));
+    await expect(consumeAppRender('u', 'sk', NOW)).rejects.toMatchObject({ code: 'provider_error' });
+  });
+
+  it('treats 404 and inactive entitlements as denied and other errors as provider errors', async () => {
     fetchMock.mockResolvedValueOnce(new Response('nope', { status: 404 }));
-    expect(await checkEntitlement('u', 'sk', NOW)).toBe(false);
+    expect(await consumeAppRender('u', 'sk', NOW)).toBe('denied');
+    fetchMock.mockResolvedValueOnce(Response.json(subscriber({})));
+    expect(await consumeAppRender('u', 'sk', NOW)).toBe('denied');
     fetchMock.mockResolvedValueOnce(new Response('secret details', { status: 500 }));
-    await expect(checkEntitlement('u', 'sk', NOW)).rejects.toMatchObject({ code: 'provider_error' });
+    await expect(consumeAppRender('u', 'sk', NOW)).rejects.toMatchObject({ code: 'provider_error' });
   });
 });

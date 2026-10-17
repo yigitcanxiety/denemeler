@@ -397,7 +397,7 @@ export const tr: Dictionary = {
     too_large: 'Bu fotoğraf çok büyük. Lütfen 4 MB’tan küçük bir görsel kullan.',
     rate_limited: 'Çok fazla istek gönderdin. Lütfen biraz bekleyip tekrar dene.',
     payment_required: 'Bu özellik Premium gerektiriyor. Devam etmek için kilidini aç.',
-    quota_exceeded: 'Deneme süresindeki görsel hakkın doldu. Aboneliğin başlayınca yeni görünümler oluşturmaya devam edebilirsin.',
+    quota_exceeded: 'Bu dönemdeki makyaj görseli hakkın doldu. Yeni dönem başlayınca yeni görünümler oluşturabilirsin.',
     provider_error: 'Yapay zekâ servisimiz şu anda yoğun. Lütfen birazdan tekrar dene.',
     internal: 'Bizim tarafımızda bir sorun oluştu. Lütfen tekrar dene.',
     network: 'Bağlantı kurulamadı. İnternet bağlantını kontrol edip tekrar dene.',

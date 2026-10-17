@@ -397,7 +397,7 @@ export const es: Dictionary = {
     too_large: 'Esta foto es demasiado grande. Usa una imagen de menos de 4 MB.',
     rate_limited: 'Hiciste muchas solicitudes. Espera un poco y vuelve a intentarlo.',
     payment_required: 'Esta función requiere Premium. Desbloquéala para continuar.',
-    quota_exceeded: 'Ya usaste los looks incluidos en tu prueba. Podrás crear más cuando empiece tu suscripción.',
+    quota_exceeded: 'Ya usaste los looks incluidos en este periodo. Podrás crear más cuando empiece el siguiente.',
     provider_error: 'Nuestro servicio de IA está saturado ahora mismo. Inténtalo de nuevo en un momento.',
     internal: 'Algo salió mal por nuestra parte. Inténtalo de nuevo.',
     network: 'No hay conexión. Revisa tu conexión a internet y vuelve a intentarlo.',

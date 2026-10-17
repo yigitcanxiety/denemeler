@@ -1,13 +1,15 @@
 import { ENTITLEMENT_ID } from '@tonelle/shared';
 import { ProviderError } from './errors';
 import { fetchWithTimeout, readProviderJson } from './fetch';
+import { INCLUDED_RENDERS, type RenderAllowance } from './paddle';
 
 export const REVENUECAT_API = 'https://api.revenuecat.com/v1/subscribers/';
 const REVENUECAT_TIMEOUT_MS = 10_000;
-/** Positive results are cached briefly to avoid a RevenueCat round-trip per render. */
-export const ENTITLEMENT_CACHE_TTL_MS = 5 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 interface EntitlementPayload {
+  product_identifier?: string;
+  purchase_date?: string;
   expires_date?: string | null;
   grace_period_expires_date?: string | null;
 }
@@ -32,44 +34,85 @@ export function hasActiveEntitlement(payload: unknown, entitlementId: string = E
   return isFuture(entitlement.expires_date) || isFuture(entitlement.grace_period_expires_date);
 }
 
-const positiveCache = new Map<string, number>();
+/**
+ * Render allowance per plan (2026-10-17). Worst case cost stays under half of Apple's net
+ * proceeds: a render is ~$0.04 (~₺2 with retries), weekly nets ~₺76, yearly ~₺467/yr (~₺233
+ * with the exit offer). Trials and lifetime purchases share the Paddle trial / report quota.
+ */
+export const RENDER_LIMITS = {
+  trial: { limit: INCLUDED_RENDERS, periodMs: Infinity },
+  once: { limit: INCLUDED_RENDERS, periodMs: Infinity },
+  weekly: { limit: 20, periodMs: 7 * DAY_MS },
+  yearly: { limit: 8, periodMs: 30 * DAY_MS },
+} as const;
 
-export function clearEntitlementCache(): void {
-  positiveCache.clear();
+/** Subscriber attribute holding `<period key>|<renders used>`. */
+const COUNTER_ATTRIBUTE = 'tonelle_renders';
+
+interface SubscriberPayload {
+  subscriber?: {
+    entitlements?: Record<string, EntitlementPayload>;
+    subscriptions?: Record<string, { period_type?: string }>;
+    subscriber_attributes?: Record<string, { value?: string }>;
+  };
 }
 
-/** Checks the `premium` entitlement via the RevenueCat REST API v1. */
-export async function checkEntitlement(
-  appUserId: string,
-  secretKey: string,
-  now: number = Date.now(),
-): Promise<boolean> {
-  const cachedUntil = positiveCache.get(appUserId);
-  if (cachedUntil !== undefined) {
-    if (cachedUntil > now) return true;
-    positiveCache.delete(appUserId);
-  }
+/** Which quota applies and which period it counts in, or null when not entitled. */
+export function renderPeriod(payload: unknown, now = Date.now()): { key: string; limit: number } | null {
+  if (!hasActiveEntitlement(payload, ENTITLEMENT_ID, now)) return null;
+  const subscriber = (payload as SubscriberPayload).subscriber!;
+  const entitlement = subscriber.entitlements![ENTITLEMENT_ID]!;
+  const product = entitlement.product_identifier ?? '';
+  const start = Date.parse(entitlement.purchase_date ?? '') || 0;
+  const plan =
+    entitlement.expires_date === null
+      ? 'once'
+      : subscriber.subscriptions?.[product]?.period_type === 'trial'
+        ? 'trial'
+        : product.includes('yearly')
+          ? 'yearly'
+          : 'weekly';
+  const { limit, periodMs } = RENDER_LIMITS[plan];
+  const bucket = Number.isFinite(periodMs) ? Math.floor(Math.max(0, now - start) / periodMs) : 0;
+  return { key: `${plan}:${start}:${bucket}`, limit };
+}
 
-  const response = await fetchWithTimeout(
-    REVENUECAT_API + encodeURIComponent(appUserId),
-    { method: 'GET', headers: { Authorization: `Bearer ${secretKey}`, Accept: 'application/json' } },
-    REVENUECAT_TIMEOUT_MS,
-    'revenuecat',
-  );
+/**
+ * Checks the `premium` entitlement via the RevenueCat REST API v1 and consumes one render from
+ * the plan's quota. The counter lives in a subscriber attribute, so no database is needed.
+ * ponytail: read-then-write counter, two parallel renders can both pass at the limit; the
+ * client renders one look at a time, move to Redis if that ever matters.
+ */
+export async function consumeAppRender(appUserId: string, secretKey: string, now: number = Date.now()): Promise<RenderAllowance> {
+  const url = REVENUECAT_API + encodeURIComponent(appUserId);
+  const headers = { Authorization: `Bearer ${secretKey}`, Accept: 'application/json', 'Content-Type': 'application/json' };
+  const response = await fetchWithTimeout(url, { method: 'GET', headers }, REVENUECAT_TIMEOUT_MS, 'revenuecat');
 
   if (response.status === 404) {
     await response.body?.cancel().catch(() => undefined);
-    return false;
+    return 'denied';
   }
   if (!response.ok) {
     await response.body?.cancel().catch(() => undefined);
     throw new ProviderError(`revenuecat: HTTP ${response.status}`, 'Could not verify your subscription. Please try again.');
   }
 
-  const active = hasActiveEntitlement(await readProviderJson(response, 'revenuecat'), ENTITLEMENT_ID, now);
-  if (active) {
-    if (positiveCache.size > 10_000) positiveCache.clear();
-    positiveCache.set(appUserId, now + ENTITLEMENT_CACHE_TTL_MS);
-  }
-  return active;
+  const payload = (await readProviderJson(response, 'revenuecat')) as SubscriberPayload;
+  const period = renderPeriod(payload, now);
+  if (!period) return 'denied';
+
+  const [key, count] = (payload.subscriber?.subscriber_attributes?.[COUNTER_ATTRIBUTE]?.value ?? '').split('|');
+  const used = key === period.key ? Number(count) || 0 : 0;
+  if (used >= period.limit) return 'quota_exceeded';
+
+  const write = await fetchWithTimeout(
+    `${url}/attributes`,
+    { method: 'POST', headers, body: JSON.stringify({ attributes: { [COUNTER_ATTRIBUTE]: { value: `${period.key}|${used + 1}` } } }) },
+    REVENUECAT_TIMEOUT_MS,
+    'revenuecat',
+  );
+  await write.body?.cancel().catch(() => undefined);
+  // Fail closed: an uncounted render would be a free one.
+  if (!write.ok) throw new ProviderError(`revenuecat attributes: HTTP ${write.status}`, 'Could not verify your subscription. Please try again.');
+  return 'ok';
 }

@@ -398,7 +398,7 @@ export const en = {
     too_large: 'This photo is too large. Please use an image under 4 MB.',
     rate_limited: 'You’ve made a lot of requests. Please wait a little and try again.',
     payment_required: 'This feature needs Premium. Unlock it to continue.',
-    quota_exceeded: 'You have used the looks included in your trial. You can create more once your subscription starts.',
+    quota_exceeded: 'You have used the makeup looks included for this period. You can create more when the next period starts.',
     provider_error: 'Our AI service is busy right now. Please try again in a moment.',
     internal: 'Something went wrong on our side. Please try again.',
     network: 'Can’t connect. Check your internet connection and try again.',

@@ -1,7 +1,6 @@
 import { MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL, RenderResponseSchema } from '@tonelle/shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderRateLimiter } from '@/server/rate-limit';
-import { clearEntitlementCache } from '@/server/revenuecat';
 import { OPTIONS, POST } from './route';
 
 const post = (body: unknown) =>
@@ -24,7 +23,6 @@ describe('POST /api/render-look', () => {
   const fetchMock = vi.fn<typeof fetch>();
   beforeEach(() => {
     renderRateLimiter.reset();
-    clearEntitlementCache();
     fetchMock.mockReset();
     fetchMock.mockRejectedValue(new Error('network must not be used'));
     vi.stubGlobal('fetch', fetchMock);
@@ -91,19 +89,21 @@ describe('POST /api/render-look', () => {
     it('renders through the provider when entitled', async () => {
       fetchMock
         .mockResolvedValueOnce(Response.json({ subscriber: { entitlements: { premium: { expires_date: null } } } }))
+        .mockResolvedValueOnce(Response.json({}))
         .mockResolvedValueOnce(
           Response.json({ candidates: [{ content: { parts: [{ inlineData: { mimeType: 'image/png', data: 'QUJD' } }] } }] }),
         );
       const res = await post(request({ appUserId: 'rc_user_2' }));
       expect(res.status).toBe(200);
       expect(await res.json()).toEqual({ image: 'data:image/png;base64,QUJD', lookId: 'soft_glam', mock: false });
-      const prompt = JSON.parse(fetchMock.mock.calls[1]![1]!.body as string).contents[0].parts[1].text as string;
+      const prompt = JSON.parse(fetchMock.mock.calls[2]![1]!.body as string).contents[0].parts[1].text as string;
       expect(prompt).toContain('makeup');
     });
 
     it('returns 502 when the provider fails', async () => {
       fetchMock
         .mockResolvedValueOnce(Response.json({ subscriber: { entitlements: { premium: { expires_date: null } } } }))
+        .mockResolvedValueOnce(Response.json({}))
         .mockResolvedValueOnce(new Response('quota exceeded for key AIza-secret', { status: 429 }));
       const res = await post(request({ appUserId: 'rc_user_3' }));
       expect(res.status).toBe(502);

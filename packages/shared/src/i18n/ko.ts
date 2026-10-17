@@ -394,7 +394,7 @@ export const ko: Dictionary = {
     too_large: '사진 용량이 너무 커요. 4MB 미만의 이미지를 사용해 주세요.',
     rate_limited: '요청이 너무 많아요. 잠시 후 다시 시도해 주세요.',
     payment_required: 'Premium이 필요한 기능이에요. 계속하려면 Premium을 시작해 주세요.',
-    quota_exceeded: '체험 기간에 포함된 룩을 모두 사용했어요. 구독이 시작되면 더 만들 수 있어요.',
+    quota_exceeded: '이번 기간에 포함된 룩을 모두 사용했어요. 다음 기간이 시작되면 더 만들 수 있어요.',
     provider_error: '지금 AI 서비스가 혼잡해요. 잠시 후 다시 시도해 주세요.',
     internal: '저희 쪽에 문제가 생겼어요. 다시 시도해 주세요.',
     network: '연결할 수 없어요. 인터넷 연결을 확인하고 다시 시도해 주세요.',
