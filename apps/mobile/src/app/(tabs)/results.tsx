@@ -2,6 +2,7 @@ import { jewelleryMetal, shadeMatch, shadeNames, type FaceAnalysis, type Locale 
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
+import { Assistant } from '@/components/assistant';
 import { Button, IconButton } from '@/components/button';
 import { ProfileBars, RadarChart } from '@/components/charts';
 import { Icon, type IconName } from '@/components/icon';
@@ -102,7 +103,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
   ];
 
   return (
-    <Screen edges={['top']} contentStyle={styles.tabContent}>
+    <Screen edges={['top']} contentStyle={styles.tabContent} overlay={<Assistant screen="results" />}>
       <View style={styles.top}>
         <AppText variant="h2" accessibilityRole="header">
           {t('results.title')}

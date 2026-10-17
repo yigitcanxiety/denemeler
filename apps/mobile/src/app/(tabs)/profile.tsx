@@ -2,7 +2,7 @@ import { LOCALES } from '@tonelle/shared';
 import Constants from 'expo-constants';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Linking, Platform, StyleSheet, View } from 'react-native';
+import { Alert, Linking, Platform, StyleSheet, Switch, View } from 'react-native';
 
 import { Button } from '@/components/button';
 import { DevBanner } from '@/components/dev-banner';
@@ -39,6 +39,9 @@ export default function ProfileScreen() {
   const setLocale = useAppStore((s) => s.setLocale);
   const deleteAllData = useAppStore((s) => s.deleteAllData);
   const setDevEntitlement = useAppStore((s) => s.setDevEntitlement);
+  const tipsEnabled = useAppStore((s) => s.tipsEnabled);
+  const setTipsEnabled = useAppStore((s) => s.setTipsEnabled);
+  const resetTips = useAppStore((s) => s.resetTips);
   const [restoring, setRestoring] = useState(false);
   const [message, setMessage] = useState<{ text: string; tone: 'info' | 'success' | 'error' } | null>(null);
   const version = Constants.expoConfig?.version ?? '1.0.0';
@@ -133,6 +136,30 @@ export default function ProfileScreen() {
 
       <View style={styles.list}>
         <Row icon="sliders" title={copy.preferences} body={copy.preferencesBody} onPress={() => router.push('/quiz')} />
+        <View style={styles.row}>
+          <View style={[styles.rowIcon, { backgroundColor: colors.violetSoft }]}>
+            <Icon name="sparkle" size={16} color={colors.violet} />
+          </View>
+          <View style={styles.flex}>
+            <AppText variant="label">{t('assistant.settingsTitle')}</AppText>
+            <AppText variant="caption">{t('assistant.settingsBody')}</AppText>
+          </View>
+          <Switch
+            value={tipsEnabled}
+            onValueChange={setTipsEnabled}
+            trackColor={{ true: colors.violet, false: colors.line }}
+            accessibilityLabel={t('assistant.settingsTitle')}
+          />
+        </View>
+        <Row
+          icon="refresh"
+          title={t('assistant.replayTitle')}
+          body={t('assistant.replayBody')}
+          onPress={() => {
+            resetTips();
+            setMessage({ text: t('assistant.replayDone'), tone: 'success' });
+          }}
+        />
         <Row icon="alert" title={t('settings.contact')} body="support@tonelleapp.com" onPress={contact} />
         <Row icon="trash" title={t('settings.deleteData')} onPress={confirmDelete} danger />
       </View>

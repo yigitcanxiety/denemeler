@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
+import { Assistant } from '@/components/assistant';
 import { IconButton } from '@/components/button';
 import { Icon, type IconName } from '@/components/icon';
 import { PressableScale, Reveal } from '@/components/motion';
@@ -44,7 +45,7 @@ export default function TodayScreen() {
   };
 
   return (
-    <Screen edges={['top']} contentStyle={styles.tabContent}>
+    <Screen edges={['top']} contentStyle={styles.tabContent} overlay={<Assistant screen="home" />}>
       <View style={styles.top}>
         <Wordmark size={26} />
         <IconButton icon="menu" label={copy.menu} tone="violet" onPress={() => router.navigate('/profile')} />

@@ -3,6 +3,7 @@ import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
+import { Assistant } from '@/components/assistant';
 import { BeforeAfter } from '@/components/before-after';
 import { Button } from '@/components/button';
 import { Icon } from '@/components/icon';
@@ -86,7 +87,10 @@ function TryOn({ id }: { id: string | undefined }) {
   };
 
   return (
-    <Screen header={<BackTitle title={copy.tryOnTitle} onBack={() => router.back()} backLabel={t('common.back')} />}>
+    <Screen
+      header={<BackTitle title={copy.tryOnTitle} onBack={() => router.back()} backLabel={t('common.back')} />}
+      overlay={<Assistant screen="look" stack />}
+    >
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

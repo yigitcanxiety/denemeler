@@ -417,4 +417,35 @@ export const fr: Dictionary = {
     copyright: '© {year} Doribleg Trade Ltd. Tous droits réservés.',
     aiDisclosure: 'Tonelle utilise l’IA pour analyser les photos et générer des aperçus maquillage.',
   },
+
+  assistant: {
+    replay: 'Afficher les conseils',
+    next: 'Suivant',
+    gotIt: 'Compris',
+    close: 'Fermer le conseil',
+    settingsTitle: 'Conseils de l’assistant',
+    settingsBody: 'Un petit assistant te donne de courts conseils sur chaque écran',
+    replayTitle: 'Revoir les conseils',
+    replayBody: 'Réaffiche les conseils de tous les écrans',
+    replayDone: 'Les conseils s’afficheront à nouveau.',
+    home: {
+      tip1: 'Tonelle analyse ton teint et te montre les couleurs et le maquillage qui te vont bien.',
+      tip2: 'Pour commencer, touche le bouton caméra au centre et prends un selfie.',
+      tip3: 'Tes résultats restent uniquement sur cet appareil ; nous ne gardons pas ta photo.',
+    },
+    camera: {
+      tip1: 'Face à la fenêtre ou à la lumière du jour.',
+      tip2: 'Pas de filtre ni de maquillage appuyé.',
+      tip3: 'Place ton visage dans l’ovale.',
+    },
+    results: {
+      tip1: 'La carte du haut est ta saison de couleur ; ta palette en découle.',
+      tip2: 'Touche une teinte pour la chercher en boutique. « Ton métal pour les bijoux » indique or ou argent.',
+      tip3: 'Plus bas, tu peux essayer les looks conseillés sur ton propre visage.',
+    },
+    look: {
+      tip1: 'Fais glisser le curseur pour comparer l’avant et l’après.',
+      tip2: 'Les étapes ci-dessous montrent comment appliquer ce look.',
+    },
+  },
 };

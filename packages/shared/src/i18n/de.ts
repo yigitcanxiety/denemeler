@@ -417,4 +417,35 @@ export const de: Dictionary = {
     copyright: '© {year} Doribleg Trade Ltd. Alle Rechte vorbehalten.',
     aiDisclosure: 'Tonelle nutzt KI, um Fotos zu analysieren und Make-up-Vorschauen zu erstellen.',
   },
+
+  assistant: {
+    replay: 'Tipps anzeigen',
+    next: 'Weiter',
+    gotIt: 'Verstanden',
+    close: 'Tipp schließen',
+    settingsTitle: 'Hilfreiche Tipps',
+    settingsBody: 'Ein kleiner Helfer gibt dir auf jedem Bildschirm kurze Tipps',
+    replayTitle: 'Tipps erneut zeigen',
+    replayBody: 'Die Tipps auf allen Bildschirmen wieder einblenden',
+    replayDone: 'Die Tipps werden wieder angezeigt.',
+    home: {
+      tip1: 'Tonelle analysiert deinen Hautton und zeigt dir die Farben und das Make-up, die zu dir passen.',
+      tip2: 'Tippe zum Starten auf die Kamera-Taste in der Mitte und mach ein Selfie.',
+      tip3: 'Deine Ergebnisse bleiben nur auf diesem Gerät; dein Foto speichern wir nicht.',
+    },
+    camera: {
+      tip1: 'Dreh dich zum Fenster oder Tageslicht.',
+      tip2: 'Keine Filter, kein kräftiges Make-up.',
+      tip3: 'Platziere dein Gesicht im Oval.',
+    },
+    results: {
+      tip1: 'Die obere Karte zeigt deinen Farbtyp; deine Palette baut darauf auf.',
+      tip2: 'Tippe auf eine Nuance, um sie im Shop zu suchen. „Dein Schmuckmetall“ sagt Gold oder Silber.',
+      tip3: 'Weiter unten kannst du empfohlene Looks an deinem eigenen Gesicht ausprobieren.',
+    },
+    look: {
+      tip1: 'Zieh den Regler, um Vorher und Nachher zu vergleichen.',
+      tip2: 'Die Schritte darunter zeigen dir, wie du diesen Look aufträgst.',
+    },
+  },
 };

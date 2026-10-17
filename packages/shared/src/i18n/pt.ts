@@ -417,4 +417,35 @@ export const pt: Dictionary = {
     copyright: '© {year} Doribleg Trade Ltd. Todos os direitos reservados.',
     aiDisclosure: 'O Tonelle usa IA para analisar fotos e gerar prévias de maquiagem.',
   },
+
+  assistant: {
+    replay: 'Mostrar dicas',
+    next: 'Próxima',
+    gotIt: 'Entendi',
+    close: 'Fechar dica',
+    settingsTitle: 'Dicas do ajudante',
+    settingsBody: 'Um pequeno ajudante dá dicas rápidas em cada tela',
+    replayTitle: 'Rever as dicas',
+    replayBody: 'Mostra de novo as dicas de todas as telas',
+    replayDone: 'As dicas vão aparecer de novo.',
+    home: {
+      tip1: 'O Tonelle analisa o tom da sua pele e mostra as cores e a maquiagem que combinam com você.',
+      tip2: 'Para começar, toque no botão da câmera no centro e tire uma selfie.',
+      tip3: 'Seus resultados ficam só neste aparelho; não guardamos sua foto.',
+    },
+    camera: {
+      tip1: 'Fique de frente para a janela ou a luz do dia.',
+      tip2: 'Sem filtros nem maquiagem pesada.',
+      tip3: 'Encaixe seu rosto dentro do oval.',
+    },
+    results: {
+      tip1: 'O cartão do topo é a sua estação de cor; sua paleta nasce dela.',
+      tip2: 'Toque em um tom para buscá-lo em uma loja. “Seu metal de joias” mostra se é ouro ou prata.',
+      tip3: 'Mais abaixo, você pode testar os looks sugeridos no seu próprio rosto.',
+    },
+    look: {
+      tip1: 'Arraste o controle deslizante para comparar o antes e o depois.',
+      tip2: 'Os passos abaixo mostram como aplicar este look.',
+    },
+  },
 };

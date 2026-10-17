@@ -5,6 +5,7 @@ import { useRef, useState } from 'react';
 import { Image, Linking, Platform, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Assistant } from '@/components/assistant';
 import { Button, IconButton } from '@/components/button';
 import { FaceGuide, faceOval } from '@/components/face-guide';
 import { Icon } from '@/components/icon';
@@ -265,6 +266,7 @@ export default function CameraScreen() {
           </AppText>
         </View>
       </SafeAreaView>
+      <Assistant screen="camera" compact />
     </View>
   );
 }

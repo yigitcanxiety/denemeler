@@ -418,6 +418,37 @@ export const en = {
     copyright: '© {year} Doribleg Trade Ltd. All rights reserved.',
     aiDisclosure: 'Tonelle uses AI to analyse photos and generate makeup previews.',
   },
+
+  assistant: {
+    replay: 'Show tips',
+    next: 'Next',
+    gotIt: 'Got it',
+    close: 'Close tip',
+    settingsTitle: 'Helper tips',
+    settingsBody: 'A little helper gives short tips on each screen',
+    replayTitle: 'Replay tips',
+    replayBody: 'Show the tips on every screen again',
+    replayDone: 'Tips will show again.',
+    home: {
+      tip1: 'Tonelle reads your skin tone and shows the colours and makeup that suit you.',
+      tip2: 'To start, tap the camera button in the middle and take a selfie.',
+      tip3: 'Your results stay on this device only; we don’t keep your photo.',
+    },
+    camera: {
+      tip1: 'Face a window or daylight.',
+      tip2: 'No filters or heavy makeup.',
+      tip3: 'Fit your face inside the oval.',
+    },
+    results: {
+      tip1: 'The top card is your colour season; your palette is built from it.',
+      tip2: 'Tap a shade card to search it in a store. “Your jewellery metal” tells gold from silver.',
+      tip3: 'Further down, you can try the suggested looks on your own face.',
+    },
+    look: {
+      tip1: 'Drag the slider to compare before and after.',
+      tip2: 'The steps below show how to apply this look.',
+    },
+  },
 };
 
 /** Shape every complete locale dictionary must implement. */

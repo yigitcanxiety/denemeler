@@ -37,6 +37,9 @@ interface PersistedState {
   analysisLocale: Locale | null;
   /** Dev purchases mode only: locally unlocked premium. */
   devEntitlement: boolean;
+  /** Helper character ("asistan") tips: on/off and the screens whose tips were already shown. */
+  tipsEnabled: boolean;
+  seenTips: Record<string, true>;
 }
 
 interface SessionState {
@@ -59,6 +62,10 @@ interface Actions {
   setRender(lookId: LookId, dataUrl: string): void;
   setRevenueCatPremium(active: boolean): void;
   setDevEntitlement(active: boolean): void;
+  setTipsEnabled(enabled: boolean): void;
+  markTipSeen(screen: string): void;
+  /** Show every screen's tips again. */
+  resetTips(): void;
   /** "Delete my data": wipes analysis, answers, ids, photo and preferences. Returns the new anon id. */
   deleteAllData(): string;
 }
@@ -75,6 +82,8 @@ const initialPersisted: PersistedState = {
   analyzedAt: null,
   analysisLocale: null,
   devEntitlement: false,
+  tipsEnabled: true,
+  seenTips: {},
 };
 
 function sanitizePersisted(value: unknown): Partial<PersistedState> {
@@ -83,6 +92,7 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
   const analysis = FaceAnalysisSchema.safeParse(raw.analysis);
   const lookIds = z.array(LookIdSchema).safeParse(raw.recommendedLookIds);
   const quiz = QuizAnswersSchema.partial().safeParse(raw.quiz);
+  const seenTips = z.record(z.string(), z.literal(true)).safeParse(raw.seenTips);
   return {
     locale: isLocale(raw.locale) ? raw.locale : null,
     anonId: typeof raw.anonId === 'string' && raw.anonId ? raw.anonId : null,
@@ -93,6 +103,8 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
     analyzedAt: analysis.success && typeof raw.analyzedAt === 'string' ? raw.analyzedAt : null,
     analysisLocale: analysis.success && isLocale(raw.analysisLocale) ? raw.analysisLocale : null,
     devEntitlement: raw.devEntitlement === true,
+    tipsEnabled: raw.tipsEnabled !== false,
+    seenTips: seenTips.success ? seenTips.data : {},
   };
 }
 
@@ -126,6 +138,9 @@ export const useAppStore = create<AppState>()(
       setRender: (lookId, dataUrl) => set((state) => ({ renders: { ...state.renders, [lookId]: dataUrl } })),
       setRevenueCatPremium: (active) => set({ revenueCatPremium: active }),
       setDevEntitlement: (active) => set({ devEntitlement: active }),
+      setTipsEnabled: (tipsEnabled) => set({ tipsEnabled }),
+      markTipSeen: (screen) => set((state) => ({ seenTips: { ...state.seenTips, [screen]: true } })),
+      resetTips: () => set({ seenTips: {} }),
       deleteAllData: () => {
         const anonId = randomUUID();
         set({ ...initialPersisted, anonId, photo: null, renders: {} });
@@ -147,6 +162,8 @@ export const useAppStore = create<AppState>()(
         analyzedAt: state.analyzedAt,
         analysisLocale: state.analysisLocale,
         devEntitlement: state.devEntitlement,
+        tipsEnabled: state.tipsEnabled,
+        seenTips: state.seenTips,
       }),
       // Drop saved data that no longer matches the shared schemas (e.g. after an app update).
       merge: (persisted, current) => ({ ...current, ...sanitizePersisted(persisted) }),

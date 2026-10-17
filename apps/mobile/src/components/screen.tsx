@@ -14,6 +14,8 @@ export interface ScreenProps {
   edges?: Edge[];
   contentStyle?: StyleProp<ViewStyle>;
   background?: string;
+  /** Absolute overlay above the content (helper character). */
+  overlay?: ReactNode;
   /** Ref to the inner ScrollView (e.g. to scroll back to the top). */
   scrollRef?: RefObject<ScrollView | null>;
 }
@@ -27,6 +29,7 @@ export function Screen({
   edges = ['top', 'bottom'],
   contentStyle,
   background = colors.paper,
+  overlay,
   scrollRef,
 }: ScreenProps) {
   return (
@@ -46,6 +49,7 @@ export function Screen({
         <View style={[styles.content, styles.fill, contentStyle]}>{children}</View>
       )}
       {footer ? <View style={[styles.footer, { backgroundColor: background }]}>{footer}</View> : null}
+      {overlay}
     </SafeAreaView>
   );
 }

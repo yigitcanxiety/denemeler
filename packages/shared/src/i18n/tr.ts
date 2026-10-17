@@ -417,4 +417,35 @@ export const tr: Dictionary = {
     copyright: '© {year} Doribleg Trade Ltd. Tüm hakları saklıdır.',
     aiDisclosure: 'Tonelle, fotoğrafları analiz etmek ve makyaj önizlemeleri oluşturmak için yapay zekâ kullanır.',
   },
+
+  assistant: {
+    replay: 'İpuçlarını göster',
+    next: 'Sonraki',
+    gotIt: 'Anladım',
+    close: 'İpucunu kapat',
+    settingsTitle: 'Yardımcı ipuçları',
+    settingsBody: 'Küçük bir yardımcı, ekranlarda kısa ipuçları verir',
+    replayTitle: 'İpuçlarını baştan göster',
+    replayBody: 'Tüm ekranlardaki ipuçları yeniden görünür',
+    replayDone: 'İpuçları yeniden gösterilecek.',
+    home: {
+      tip1: 'Tonelle cildinin tonunu analiz eder; sana yakışan renkleri ve makyajı gösterir.',
+      tip2: 'Başlamak için ortadaki kamera düğmesine dokun ve bir selfie çek.',
+      tip3: 'Sonuçların yalnızca bu cihazda saklanır; fotoğrafını tutmayız.',
+    },
+    camera: {
+      tip1: 'Pencereye ya da gün ışığına dön.',
+      tip2: 'Filtre ve ağır makyaj olmasın.',
+      tip3: 'Yüzünü ovalin içine sığdır.',
+    },
+    results: {
+      tip1: 'Üstteki kart senin renk sezonun; paletin buna göre seçildi.',
+      tip2: 'Bir ton kartına dokun, o tonu mağazada ara. “Takı rengin” altın mı gümüş mü söyler.',
+      tip3: 'Daha aşağıda önerilen görünümleri kendi yüzünde deneyebilirsin.',
+    },
+    look: {
+      tip1: 'Kaydırıcıyı sürükleyerek önce ve sonrayı karşılaştır.',
+      tip2: 'Aşağıdaki adımlar bu görünümü nasıl uygulayacağını gösterir.',
+    },
+  },
 };
