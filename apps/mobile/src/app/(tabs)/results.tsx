@@ -118,7 +118,7 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
       <Reveal>
         <SeasonCard analysis={analysis} locale={locale} />
         {/* A fresh result (the analysis just finished) gets a burst of sparkles. */}
-        {fresh ? <SparkleBurst count={24} radius={170} delay={150} /> : null}
+        {fresh ? <SparkleBurst count={16} radius={170} delay={150} /> : null}
       </Reveal>
 
       {analysis.qualityIssues.length ? <QualityWarning issues={analysis.qualityIssues} /> : null}

@@ -132,7 +132,7 @@ function TryOn({ id }: { id: string | undefined }) {
           loading={loading}
           labels={{ before: t('look.before'), after: t('look.after'), ai: t('common.aiGenerated'), slider: copy.sliderLabel }}
         >
-          {burst ? <SparkleBurst play={burst} count={26} radius={frameH * 0.45} /> : null}
+          {burst ? <SparkleBurst play={burst} count={18} radius={frameH * 0.45} /> : null}
         </BeforeAfter>
       ) : (
         <View style={[styles.noPhoto, { height: frameH }]}>

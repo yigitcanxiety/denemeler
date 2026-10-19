@@ -91,7 +91,8 @@ export function Intro({ onDone }: { onDone: () => void }) {
   return (
     <Animated.View style={[StyleSheet.absoluteFill, styles.root, veilStyle]}>
       <Pressable style={[StyleSheet.absoluteFill, styles.center]} onPress={() => finish(true)} accessibilityLabel="Tonelle">
-        <Animated.View style={[styles.layer, glowStyle]}>
+        {/* Static art that only moves: rasterised once so low-end phones just transform a bitmap. */}
+        <Animated.View style={[styles.layer, glowStyle]} renderToHardwareTextureAndroid shouldRasterizeIOS>
           <Svg width={560} height={560}>
             <Defs>
               <RadialGradient id="glow" cx="50%" cy="50%" r="50%">
@@ -104,7 +105,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
           </Svg>
         </Animated.View>
 
-        <Animated.View style={[styles.layer, styles.rays, raysStyle]}>
+        <Animated.View style={[styles.layer, styles.rays, raysStyle]} renderToHardwareTextureAndroid shouldRasterizeIOS>
           {Array.from({ length: RAYS }, (_, i) => (
             <View key={i} style={[styles.rayArm, { transform: [{ rotate: `${(360 / RAYS) * i}deg` }] }]}>
               <LinearGradient
@@ -117,7 +118,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
 
         <Animated.View style={[styles.layer, styles.flash, flashStyle]} />
 
-        <SparkleBurst play={reduced ? 0 : 1} count={22} radius={170} delay={560} duration={1100} />
+        <SparkleBurst play={reduced ? 0 : 1} count={16} radius={170} delay={560} duration={1100} />
 
         <Animated.Image source={PALETTE} style={[styles.palette, paletteStyle]} accessibilityIgnoresInvertColors />
 

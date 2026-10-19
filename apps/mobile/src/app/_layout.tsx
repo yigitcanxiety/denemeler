@@ -45,7 +45,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (!ready) return;
-    preloadSounds();
     void SplashScreen.hideAsync().catch(() => undefined);
   }, [ready]);
 
@@ -88,6 +87,8 @@ export default function RootLayout() {
           onDone={() => {
             introPlayed = true;
             setIntro(false);
+            // After the intro so loading players never competes with its frames.
+            preloadSounds();
           }}
         />
       ) : null}
