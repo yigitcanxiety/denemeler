@@ -40,6 +40,11 @@ interface PersistedState {
   /** Helper character ("asistan") tips: on/off and the screens whose tips were already shown. */
   tipsEnabled: boolean;
   seenTips: Record<string, true>;
+  /** UI sound effects (haptics follow the system setting). */
+  soundsEnabled: boolean;
+  /** Weekly local reminder; `remindersAsked` once the permission prompt was shown. */
+  remindersEnabled: boolean;
+  remindersAsked: boolean;
 }
 
 interface SessionState {
@@ -63,6 +68,8 @@ interface Actions {
   setRevenueCatPremium(active: boolean): void;
   setDevEntitlement(active: boolean): void;
   setTipsEnabled(enabled: boolean): void;
+  setSoundsEnabled(enabled: boolean): void;
+  setReminders(enabled: boolean): void;
   markTipSeen(screen: string): void;
   /** Show every screen's tips again. */
   resetTips(): void;
@@ -84,6 +91,9 @@ const initialPersisted: PersistedState = {
   devEntitlement: false,
   tipsEnabled: true,
   seenTips: {},
+  soundsEnabled: true,
+  remindersEnabled: false,
+  remindersAsked: false,
 };
 
 function sanitizePersisted(value: unknown): Partial<PersistedState> {
@@ -105,6 +115,9 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
     devEntitlement: raw.devEntitlement === true,
     tipsEnabled: raw.tipsEnabled !== false,
     seenTips: seenTips.success ? seenTips.data : {},
+    soundsEnabled: raw.soundsEnabled !== false,
+    remindersEnabled: raw.remindersEnabled === true,
+    remindersAsked: raw.remindersAsked === true,
   };
 }
 
@@ -139,6 +152,8 @@ export const useAppStore = create<AppState>()(
       setRevenueCatPremium: (active) => set({ revenueCatPremium: active }),
       setDevEntitlement: (active) => set({ devEntitlement: active }),
       setTipsEnabled: (tipsEnabled) => set({ tipsEnabled }),
+      setSoundsEnabled: (soundsEnabled) => set({ soundsEnabled }),
+      setReminders: (remindersEnabled) => set({ remindersEnabled, remindersAsked: true }),
       markTipSeen: (screen) => set((state) => ({ seenTips: { ...state.seenTips, [screen]: true } })),
       resetTips: () => set({ seenTips: {} }),
       deleteAllData: () => {
@@ -164,6 +179,9 @@ export const useAppStore = create<AppState>()(
         devEntitlement: state.devEntitlement,
         tipsEnabled: state.tipsEnabled,
         seenTips: state.seenTips,
+        soundsEnabled: state.soundsEnabled,
+        remindersEnabled: state.remindersEnabled,
+        remindersAsked: state.remindersAsked,
       }),
       // Drop saved data that no longer matches the shared schemas (e.g. after an app update).
       merge: (persisted, current) => ({ ...current, ...sanitizePersisted(persisted) }),

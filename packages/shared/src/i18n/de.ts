@@ -389,6 +389,13 @@ export const de: Dictionary = {
     legalSection: 'Rechtliches',
     contact: 'Kontakt',
     version: 'Version {version}',
+    soundsTitle: 'Soundeffekte',
+    soundsBody: 'Kurze Töne beim Tippen und bei Ergebnissen',
+    remindersTitle: 'Wöchentliche Erinnerung',
+    remindersBody: 'Jeden Sonntagabend eine neue Look-Idee',
+    remindersDenied: 'Mitteilungen sind aus. Aktiviere sie unter Einstellungen > Tonelle > Mitteilungen.',
+    reminderTitle: 'Dein Look der Woche wartet ✨',
+    reminderBody: 'Probiere auf deinem eigenen Foto einen neuen Make-up-Look, der zu deiner Palette passt.',
   },
 
   errors: {

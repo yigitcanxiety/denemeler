@@ -12,6 +12,7 @@ import { AppText } from '@/components/text';
 import { Eyebrow } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { getIsPremium } from '@/hooks/use-premium';
+import { celebrate, haptic } from '@/lib/feedback';
 import {
   ANALYZING_MIN_MS,
   ANALYZING_STEPS,
@@ -68,6 +69,7 @@ export default function AnalyzingScreen() {
         if (controller.signal.aborted) return;
         setAnalysis(response, locale);
         setDone(true);
+        celebrate('reveal');
         // Let the ring reach 100% before moving on.
         await new Promise((r) => setTimeout(r, 450));
         if (controller.signal.aborted) return;
@@ -82,6 +84,7 @@ export default function AnalyzingScreen() {
           router.replace({ pathname: '/camera', params: { error: 'no_face' } });
           return;
         }
+        haptic.error();
         setErrorKey(errorKeyFor(error));
       }
     })();
@@ -102,6 +105,11 @@ export default function AnalyzingScreen() {
   const cancel = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
   const stepIndex = done ? ANALYZING_STEPS.length : analyzingStepIndex(elapsed);
+
+  // A light tick each time a checklist step completes.
+  useEffect(() => {
+    if (stepIndex > 0 && stepIndex < ANALYZING_STEPS.length) haptic.select();
+  }, [stepIndex]);
   const progress = analyzingProgress(elapsed, done);
   const size = Math.min(width - 96, 260);
   const current = ANALYZING_STEPS[Math.min(stepIndex, ANALYZING_STEPS.length - 1)] ?? ANALYZING_STEPS[0];

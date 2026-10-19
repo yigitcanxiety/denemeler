@@ -19,6 +19,7 @@ import {
   planPriceLine,
   yearlySavingsPercent,
 } from '@/lib/paywall';
+import { celebrate } from '@/lib/feedback';
 import { purchaseMessageKey } from '@/lib/purchase-error';
 import { percentLabel, uiCopy } from '@/lib/ui-copy';
 import {
@@ -113,6 +114,7 @@ export default function PaywallScreen() {
 
   const onSuccess = () =>
     leave(() => {
+      celebrate('success');
       Alert.alert(t('paywall.purchaseSuccess'));
       goAfterUnlock();
     });

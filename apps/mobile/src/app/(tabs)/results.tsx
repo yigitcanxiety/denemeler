@@ -1,5 +1,6 @@
 import { jewelleryMetal, shadeMatch, shadeNames, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { Assistant } from '@/components/assistant';
@@ -12,6 +13,7 @@ import { CoverImage, LOOK_IMAGES } from '@/components/portraits';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
 import { SeasonCard, ShadeCard } from '@/components/shade-card';
+import { SparkleBurst } from '@/components/sparkle-burst';
 import { AppText } from '@/components/text';
 import { Card, SectionTitle, SwatchRow } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
@@ -86,6 +88,8 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
   const quiz = useAppStore((s) => s.quiz);
   const startAnalysis = useStartAnalysis();
   const analysisLocale = useAppStore((s) => s.analysisLocale);
+  const analyzedAt = useAppStore((s) => s.analyzedAt);
+  const [fresh] = useState(() => Date.now() - Date.parse(analyzedAt ?? '') < 8000);
   const contentW = Math.min(width, 600) - GUTTER * 2;
   const chips = traitChips(analysis, t);
   const byId = (id: TraitChip['id']) => chips.find((c) => c.id === id)!;
@@ -113,6 +117,8 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
 
       <Reveal>
         <SeasonCard analysis={analysis} locale={locale} />
+        {/* A fresh result (the analysis just finished) gets a burst of sparkles. */}
+        {fresh ? <SparkleBurst count={24} radius={170} delay={150} /> : null}
       </Reveal>
 
       {analysis.qualityIssues.length ? <QualityWarning issues={analysis.qualityIssues} /> : null}

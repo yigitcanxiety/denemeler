@@ -111,9 +111,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: ICON_BG,
-        image: './assets/images/adaptive-icon.png',
-        imageWidth: 200,
+        // Same background, image and size as the opening animation (src/components/intro.tsx).
+        backgroundColor: '#F3EFFD',
+        image: './assets/images/palette.png',
+        imageWidth: 160,
       },
     ],
     ['expo-localization', { supportedLocales: { ios: [...LANGUAGES], android: [...LANGUAGES] } }],

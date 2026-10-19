@@ -16,6 +16,7 @@ import { AppText } from '@/components/text';
 import { BackTitle, Pill, Ring } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { getIsPremium } from '@/hooks/use-premium';
+import { haptic, playSound } from '@/lib/feedback';
 import { uiCopy } from '@/lib/ui-copy';
 import { faceCrop, type CropRect } from '@/lib/image';
 import { deleteTempFile, preparePhoto } from '@/services/photo';
@@ -57,6 +58,8 @@ export default function CameraScreen() {
   const capture = async () => {
     if (!cameraRef.current || busy) return;
     setBusy(true);
+    haptic.thud();
+    playSound('shutter');
     try {
       const shot = await cameraRef.current.takePictureAsync({ quality: 0.9, exif: false });
       if (!shot) throw new Error('No picture');

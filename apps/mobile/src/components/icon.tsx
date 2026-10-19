@@ -32,7 +32,9 @@ export type IconName =
   | 'shield'
   | 'sliders'
   | 'image'
-  | 'alert';
+  | 'alert'
+  | 'sound'
+  | 'bell';
 
 /**
  * Simple line icons (stroke 1.75, lucide-style) drawn with react-native-svg. Decorative:
@@ -168,6 +170,18 @@ export function Icon({
         <>
           <Path d="M12 4l9 16H3z" {...c} />
           <Path d="M12 10v4.5M12 17.2h.01" {...c} />
+        </>
+      ) : null}
+      {name === 'sound' ? (
+        <>
+          <Path d="M4 10v4h4l5 4V6L8 10z" {...c} />
+          <Path d="M16.5 9a4 4 0 010 6M19 6.5a7.5 7.5 0 010 11" {...c} />
+        </>
+      ) : null}
+      {name === 'bell' ? (
+        <>
+          <Path d="M6 16V11a6 6 0 0112 0v5l1.5 2h-15z" {...c} />
+          <Path d="M10 20.5a2.2 2.2 0 004 0" {...c} />
         </>
       ) : null}
     </Svg>

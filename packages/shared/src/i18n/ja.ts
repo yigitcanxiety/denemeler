@@ -389,6 +389,13 @@ export const ja: Dictionary = {
     legalSection: '法的情報',
     contact: 'お問い合わせ',
     version: 'バージョン {version}',
+    soundsTitle: 'サウンドエフェクト',
+    soundsBody: 'タップや結果表示で短い音が鳴ります',
+    remindersTitle: '毎週のリマインダー',
+    remindersBody: '毎週日曜の夜に新しいルックのアイデア',
+    remindersDenied: '通知がオフです。設定 > Tonelle > 通知 でオンにできます。',
+    reminderTitle: '今週のルックが待っています ✨',
+    reminderBody: 'あなたのパレットに合う新しいメイクを自分の写真で試してみましょう。',
   },
 
   errors: {

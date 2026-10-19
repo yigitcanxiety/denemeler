@@ -389,6 +389,13 @@ export const tr: Dictionary = {
     legalSection: 'Yasal',
     contact: 'Bize ulaş',
     version: 'Sürüm {version}',
+    soundsTitle: 'Ses efektleri',
+    soundsBody: 'Dokunuşlarda ve sonuçlarda kısa sesler',
+    remindersTitle: 'Haftalık hatırlatma',
+    remindersBody: 'Her pazar akşamı yeni bir görünüm önerisi',
+    remindersDenied: 'Bildirimlere izin verilmedi. Ayarlar > Tonelle > Bildirimler\'den açabilirsin.',
+    reminderTitle: 'Bu haftanın görünümü seni bekliyor ✨',
+    reminderBody: 'Paletine uygun yeni bir makyajı kendi fotoğrafında dene.',
   },
 
   errors: {

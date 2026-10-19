@@ -1,15 +1,17 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Image, StyleSheet, View, type GestureResponderEvent, type LayoutChangeEvent } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
 
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { haptic } from '@/lib/feedback';
 import { colors, fonts, radii } from '@/theme';
 
 import { Icon } from './icon';
@@ -27,13 +29,17 @@ export function BeforeAfter({
   height,
   loading,
   labels,
+  children,
 }: {
   before: string;
   after: string | null;
   height: number;
   loading?: boolean;
   labels: { before: string; after: string; ai: string; slider: string };
+  /** Overlay drawn above the photo (e.g. a sparkle burst). */
+  children?: ReactNode;
 }) {
+  const reduced = useReducedMotion();
   const [width, setWidth] = useState(0);
   const [percent, setPercent] = useState(50);
   const x = useSharedValue(0);
@@ -59,7 +65,19 @@ export function BeforeAfter({
   };
   const onRelease = () => {
     if (drag.current.width > 0) setPercent(Math.round((x.get() / drag.current.width) * 100));
+    haptic.select();
   };
+
+  // A new look arrives as a curtain: the bare photo slides away to reveal the makeup.
+  useEffect(() => {
+    const w = drag.current.width;
+    if (!after || !w || reduced) return;
+    x.set(w);
+    x.set(withDelay(120, withTiming(w / 2, { duration: 1100, easing: Easing.inOut(Easing.cubic) })));
+    setPercent(50);
+    // Only when the rendered image changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [after]);
 
   const beforeStyle = useAnimatedStyle(() => ({ width: x.value }));
   const dividerStyle = useAnimatedStyle(() => ({ transform: [{ translateX: x.value - 1 }] }));
@@ -124,6 +142,7 @@ export function BeforeAfter({
       </View>
       <Pill tone="violet" icon="sparkle" label={labels.ai} style={styles.ai} />
       {loading ? <Shimmer /> : null}
+      {children}
     </View>
   );
 }

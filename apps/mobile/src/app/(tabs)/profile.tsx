@@ -15,7 +15,9 @@ import { Card, Pill, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import type { LegalPage } from '@/lib/config';
+import { playSound } from '@/lib/feedback';
 import { purchaseMessageKey } from '@/lib/purchase-error';
+import { disableReminders, enableReminders } from '@/lib/reminders';
 import { uiCopy } from '@/lib/ui-copy';
 import { isDevPurchases, manageSubscriptions, restorePurchases, switchUser } from '@/purchases/purchases';
 import { openLegal } from '@/services/legal';
@@ -42,6 +44,9 @@ export default function ProfileScreen() {
   const tipsEnabled = useAppStore((s) => s.tipsEnabled);
   const setTipsEnabled = useAppStore((s) => s.setTipsEnabled);
   const resetTips = useAppStore((s) => s.resetTips);
+  const soundsEnabled = useAppStore((s) => s.soundsEnabled);
+  const setSoundsEnabled = useAppStore((s) => s.setSoundsEnabled);
+  const remindersEnabled = useAppStore((s) => s.remindersEnabled);
   const [restoring, setRestoring] = useState(false);
   const [message, setMessage] = useState<{ text: string; tone: 'info' | 'success' | 'error' } | null>(null);
   const version = Constants.expoConfig?.version ?? '1.0.0';
@@ -62,6 +67,7 @@ export default function ProfileScreen() {
   };
 
   const deleteNow = () => {
+    void disableReminders();
     const newId = deleteAllData();
     void switchUser(newId);
     setMessage({ text: t('settings.deleteDataDone'), tone: 'success' });
@@ -175,6 +181,28 @@ export default function ProfileScreen() {
             accessibilityLabel={t('assistant.settingsTitle')}
           />
         </View>
+        <ToggleRow
+          icon="sound"
+          title={t('settings.soundsTitle')}
+          body={t('settings.soundsBody')}
+          value={soundsEnabled}
+          onChange={(on) => {
+            setSoundsEnabled(on);
+            if (on) playSound('tick');
+          }}
+        />
+        {Platform.OS === 'web' ? null : (
+          <ToggleRow
+            icon="bell"
+            title={t('settings.remindersTitle')}
+            body={t('settings.remindersBody')}
+            value={remindersEnabled}
+            onChange={async (on) => {
+              if (!on) return void disableReminders();
+              if (!(await enableReminders(locale))) setMessage({ text: t('settings.remindersDenied'), tone: 'info' });
+            }}
+          />
+        )}
         <Row
           icon="refresh"
           title={t('assistant.replayTitle')}
@@ -289,3 +317,31 @@ const styles = StyleSheet.create({
   rowIcon: { width: 32, height: 32, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   about: { gap: 2, paddingVertical: spacing.md },
 });
+
+/** Settings row with a switch. */
+function ToggleRow({
+  icon,
+  title,
+  body,
+  value,
+  onChange,
+}: {
+  icon: IconName;
+  title: string;
+  body: string;
+  value: boolean;
+  onChange: (on: boolean) => void;
+}) {
+  return (
+    <View style={styles.row}>
+      <View style={[styles.rowIcon, { backgroundColor: colors.violetSoft }]}>
+        <Icon name={icon} size={16} color={colors.violet} />
+      </View>
+      <View style={styles.flex}>
+        <AppText variant="label">{title}</AppText>
+        <AppText variant="caption">{body}</AppText>
+      </View>
+      <Switch value={value} onValueChange={onChange} trackColor={{ true: colors.violet, false: colors.line }} accessibilityLabel={title} />
+    </View>
+  );
+}

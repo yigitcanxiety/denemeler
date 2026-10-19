@@ -58,6 +58,7 @@ export function Button({
       accessibilityState={{ disabled: !!inactive, busy: !!loading }}
       disabled={inactive}
       onPress={onPress}
+      haptic={variant === 'primary' || variant === 'dark' ? 'tap' : 'select'}
       style={[
         styles.base,
         compact && styles.compact,

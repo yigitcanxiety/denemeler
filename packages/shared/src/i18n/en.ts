@@ -390,6 +390,13 @@ export const en = {
     legalSection: 'Legal',
     contact: 'Contact us',
     version: 'Version {version}',
+    soundsTitle: 'Sound effects',
+    soundsBody: 'Short sounds on taps and results',
+    remindersTitle: 'Weekly reminder',
+    remindersBody: 'A new look idea every Sunday evening',
+    remindersDenied: 'Notifications are off. Turn them on in Settings > Tonelle > Notifications.',
+    reminderTitle: 'This week’s look is waiting ✨',
+    reminderBody: 'Try a new makeup look that suits your palette on your own photo.',
   },
 
   errors: {

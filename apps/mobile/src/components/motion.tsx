@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
+import { haptic as feedback } from '@/lib/feedback';
 import { colors, motion } from '@/theme';
 
 /**
@@ -51,6 +52,8 @@ export interface PressableScaleProps extends Omit<PressableProps, 'style'> {
   style?: StyleProp<ViewStyle>;
   /** Scale while pressed (default 0.98). */
   pressedScale?: number;
+  /** Haptic on press: a selection tick (default), a light tap for primary actions, or none. */
+  haptic?: 'select' | 'tap' | false;
   children?: ReactNode;
 }
 
@@ -58,6 +61,8 @@ export interface PressableScaleProps extends Omit<PressableProps, 'style'> {
 export function PressableScale({
   style,
   pressedScale = motion.pressScale,
+  haptic = 'select',
+  onPress,
   onPressIn,
   onPressOut,
   onFocus,
@@ -76,6 +81,14 @@ export function PressableScale({
   return (
     <AnimatedPressable
       {...rest}
+      onPress={
+        onPress
+          ? (e) => {
+              if (haptic) feedback[haptic]();
+              onPress(e);
+            }
+          : undefined
+      }
       onPressIn={(e) => {
         if (reduced) pressed.set(1);
         else scale.set(withSpring(pressedScale, motion.spring));

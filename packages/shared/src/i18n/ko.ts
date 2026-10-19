@@ -386,6 +386,13 @@ export const ko: Dictionary = {
     legalSection: '법적 고지',
     contact: '문의하기',
     version: '버전 {version}',
+    soundsTitle: '효과음',
+    soundsBody: '탭하거나 결과가 나올 때 짧은 소리',
+    remindersTitle: '주간 알림',
+    remindersBody: '매주 일요일 저녁 새로운 룩 아이디어',
+    remindersDenied: '알림이 꺼져 있어요. 설정 > Tonelle > 알림에서 켤 수 있어요.',
+    reminderTitle: '이번 주 룩이 기다리고 있어요 ✨',
+    reminderBody: '내 팔레트에 어울리는 새 메이크업을 내 사진으로 해 보세요.',
   },
 
   errors: {

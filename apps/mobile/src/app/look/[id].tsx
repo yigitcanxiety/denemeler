@@ -12,12 +12,15 @@ import { Notice } from '@/components/notice';
 import { CoverImage, LOOK_IMAGES } from '@/components/portraits';
 import { Screen } from '@/components/screen';
 import { ShadeCard } from '@/components/shade-card';
+import { SparkleBurst } from '@/components/sparkle-burst';
 import { AppText } from '@/components/text';
 import { BackTitle, Pill, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import { errorKeyFor } from '@/lib/api';
+import { celebrate, haptic } from '@/lib/feedback';
 import { isLookId, localizedSteps, lookShades, lookSummary, resolveRecommendedLooks } from '@/lib/looks';
+import { maybeOfferReminders } from '@/lib/reminders';
 import { completeQuiz } from '@/lib/quiz';
 import { topShades } from '@/lib/results';
 import { uiCopy } from '@/lib/ui-copy';
@@ -48,6 +51,7 @@ function TryOn({ id }: { id: string | undefined }) {
   const [loading, setLoading] = useState(false);
   const [errorKey, setErrorKey] = useState<ReturnType<typeof errorKeyFor> | null>(null);
   const [openStep, setOpenStep] = useState<number | null>(0);
+  const [burst, setBurst] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -79,8 +83,14 @@ function TryOn({ id }: { id: string | undefined }) {
         { signal: controller.signal },
       );
       setRender(id, response.image);
+      celebrate('reveal');
+      setBurst((b) => b + 1);
+      maybeOfferReminders(locale);
     } catch (error) {
-      if (!controller.signal.aborted) setErrorKey(errorKeyFor(error));
+      if (!controller.signal.aborted) {
+        haptic.error();
+        setErrorKey(errorKeyFor(error));
+      }
     } finally {
       if (!controller.signal.aborted) setLoading(false);
     }
@@ -121,7 +131,9 @@ function TryOn({ id }: { id: string | undefined }) {
           height={frameH}
           loading={loading}
           labels={{ before: t('look.before'), after: t('look.after'), ai: t('common.aiGenerated'), slider: copy.sliderLabel }}
-        />
+        >
+          {burst ? <SparkleBurst play={burst} count={26} radius={frameH * 0.45} /> : null}
+        </BeforeAfter>
       ) : (
         <View style={[styles.noPhoto, { height: frameH }]}>
           <CoverImage source={LOOK_IMAGES[id]} focusY={0.2} style={StyleSheet.absoluteFill} />

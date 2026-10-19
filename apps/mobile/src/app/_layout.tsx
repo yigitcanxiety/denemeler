@@ -7,17 +7,22 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { DemoBadge } from '@/components/demo-badge';
+import { Intro } from '@/components/intro';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { isWebDemo } from '@/lib/env';
+import { preloadSounds } from '@/lib/feedback';
 import { initPurchases } from '@/purchases/purchases';
 import { useAppStore } from '@/store/app-store';
 import { colors } from '@/theme';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+
+/** The opening animation plays once per cold start. */
+let introPlayed = false;
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -32,13 +37,16 @@ export default function RootLayout() {
   const anonId = useAppStore((s) => s.anonId);
   // If fonts fail we still render with system fonts rather than blocking the app.
   const ready = hydrated && (fontsLoaded || !!fontError);
+  const [intro, setIntro] = useState(() => !introPlayed);
 
   useEffect(() => {
     if (hydrated && anonId) initPurchases(anonId);
   }, [hydrated, anonId]);
 
   useEffect(() => {
-    if (ready) void SplashScreen.hideAsync().catch(() => undefined);
+    if (!ready) return;
+    preloadSounds();
+    void SplashScreen.hideAsync().catch(() => undefined);
   }, [ready]);
 
   if (!ready) return null;
@@ -76,6 +84,14 @@ export default function RootLayout() {
         <Stack.Screen name="quiz" />
         <Stack.Screen name="share" options={{ presentation: 'modal' }} />
       </Stack>
+      {intro ? (
+        <Intro
+          onDone={() => {
+            introPlayed = true;
+            setIntro(false);
+          }}
+        />
+      ) : null}
     </SafeAreaProvider>
   );
 }
