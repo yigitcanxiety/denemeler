@@ -34,6 +34,7 @@ export default function AnalyzingScreen() {
   const { width } = useWindowDimensions();
   const photo = useAppStore((s) => s.photo);
   const quiz = useAppStore((s) => s.quiz);
+  const anonId = useAppStore((s) => s.anonId);
   const setAnalysis = useAppStore((s) => s.setAnalysis);
 
   const [elapsed, setElapsed] = useState(0);
@@ -61,7 +62,7 @@ export default function AnalyzingScreen() {
     (async () => {
       try {
         const response = await api.analyze(
-          { image: photo.dataUrl, locale, quiz: completeQuiz(quiz) },
+          { image: photo.dataUrl, locale, quiz: completeQuiz(quiz), appUserId: anonId ?? undefined },
           { signal: controller.signal },
         );
         const remaining = ANALYZING_MIN_MS - (Date.now() - started);

@@ -21,7 +21,7 @@ import { analyzeFace, analyzeSkin, GEMINI_CHAT_URL, type OpenRouterOptions } fro
 import { analyzeRateLimiter, freeRenderRateLimiter, renderRateLimiter } from './rate-limit';
 import { claimPurchase, consumeRender } from './paddle';
 import { forwardToMeta, verifyPaddleSignature, type PaddleTransactionEvent } from './paddle-webhook';
-import { consumeAppRender } from './revenuecat';
+import { consumeAppRender, hasAppEntitlement } from './revenuecat';
 
 const RedeemRequestSchema = z.object({ code: z.string().min(1).max(64) });
 const ClaimRequestSchema = z.object({
@@ -34,7 +34,7 @@ export async function handleAnalyze(request: Request): Promise<Response> {
   try {
     const body = await parseJsonBody(request, AnalyzeRequestSchema, MAX_BODY_BYTES);
     if (!body.ok) return body.response;
-    const { image, locale, quiz } = body.data;
+    const { image, locale, quiz, appUserId } = body.data;
 
     const limit = analyzeRateLimiter.check(`ip:${clientIp(request)}`);
     if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
@@ -46,6 +46,8 @@ export async function handleAnalyze(request: Request): Promise<Response> {
       const response: AnalyzeResponse = { analysis, recommendedLookIds: recommendLooks(analysis, quiz), mock: true };
       return jsonResponse(response);
     }
+
+    if (!(await analysisAllowed(config, appUserId))) return errorResponse('payment_required', 'A premium subscription is required.');
 
     const { analysis } = await analyzeFace({ imageDataUrl: image, locale, quiz, ...(await hostedImage(config, image)) }, analysisOptions(config));
     // analyzeFace throws NoFaceError for faceDetected=false; keep a guard for safety.
@@ -63,7 +65,7 @@ export async function handleAnalyzeSkin(request: Request): Promise<Response> {
   try {
     const body = await parseJsonBody(request, AnalyzeRequestSchema, MAX_BODY_BYTES);
     if (!body.ok) return body.response;
-    const { image, locale } = body.data;
+    const { image, locale, appUserId } = body.data;
 
     const limit = analyzeRateLimiter.check(`ip:${clientIp(request)}`);
     if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
@@ -75,6 +77,8 @@ export async function handleAnalyzeSkin(request: Request): Promise<Response> {
       return jsonResponse(response);
     }
 
+    if (!(await analysisAllowed(config, appUserId))) return errorResponse('payment_required', 'A premium subscription is required.');
+
     const { analysis } = await analyzeSkin({ imageDataUrl: image, locale, ...(await hostedImage(config, image)) }, analysisOptions(config));
     if (!analysis.faceDetected) return errorResponse('no_face', 'No face was detected in the photo.');
 
@@ -83,6 +87,15 @@ export async function handleAnalyzeSkin(request: Request): Promise<Response> {
   } catch (error) {
     return handleError(error, 'analyze-skin');
   }
+}
+
+/**
+ * Analyses are Premium. The check switches on with REVENUECAT_SECRET_KEY (payments live) and stays
+ * off while TONELLE_FREE_RENDERS is set, the same switches the makeup renders use.
+ */
+async function analysisAllowed(config: ServerConfig, appUserId: string | undefined): Promise<boolean> {
+  if (config.freeRenders || !config.revenueCatSecretKey) return true;
+  return appUserId !== undefined && hasAppEntitlement(appUserId, config.revenueCatSecretKey);
 }
 
 /** Model + endpoint for the configured analysis provider (OpenRouter → Gemini → Kie). */

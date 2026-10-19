@@ -86,18 +86,8 @@ export function renderPeriod(payload: unknown, now = Date.now()): { key: string;
 export async function consumeAppRender(appUserId: string, secretKey: string, now: number = Date.now()): Promise<RenderAllowance> {
   const url = REVENUECAT_API + encodeURIComponent(appUserId);
   const headers = { Authorization: `Bearer ${secretKey}`, Accept: 'application/json', 'Content-Type': 'application/json' };
-  const response = await fetchWithTimeout(url, { method: 'GET', headers }, REVENUECAT_TIMEOUT_MS, 'revenuecat');
-
-  if (response.status === 404) {
-    await response.body?.cancel().catch(() => undefined);
-    return 'denied';
-  }
-  if (!response.ok) {
-    await response.body?.cancel().catch(() => undefined);
-    throw new ProviderError(`revenuecat: HTTP ${response.status}`, 'Could not verify your subscription. Please try again.');
-  }
-
-  const payload = (await readProviderJson(response, 'revenuecat')) as SubscriberPayload;
+  const payload = await fetchSubscriber(url, headers);
+  if (!payload) return 'denied';
   const period = renderPeriod(payload, now);
   if (!period) return 'denied';
 
@@ -115,4 +105,25 @@ export async function consumeAppRender(appUserId: string, secretKey: string, now
   // Fail closed: an uncounted render would be a free one.
   if (!write.ok) throw new ProviderError(`revenuecat attributes: HTTP ${write.status}`, 'Could not verify your subscription. Please try again.');
   return 'ok';
+}
+
+/** True when the app user has an active `premium` entitlement (no quota is consumed). */
+export async function hasAppEntitlement(appUserId: string, secretKey: string, now: number = Date.now()): Promise<boolean> {
+  const url = REVENUECAT_API + encodeURIComponent(appUserId);
+  const payload = await fetchSubscriber(url, { Authorization: `Bearer ${secretKey}`, Accept: 'application/json' });
+  return payload !== null && hasActiveEntitlement(payload, ENTITLEMENT_ID, now);
+}
+
+/** GET /v1/subscribers/{id}; null for an unknown subscriber (404), throws on other errors. */
+async function fetchSubscriber(url: string, headers: Record<string, string>): Promise<SubscriberPayload | null> {
+  const response = await fetchWithTimeout(url, { method: 'GET', headers }, REVENUECAT_TIMEOUT_MS, 'revenuecat');
+  if (response.status === 404) {
+    await response.body?.cancel().catch(() => undefined);
+    return null;
+  }
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => undefined);
+    throw new ProviderError(`revenuecat: HTTP ${response.status}`, 'Could not verify your subscription. Please try again.');
+  }
+  return (await readProviderJson(response, 'revenuecat')) as SubscriberPayload;
 }

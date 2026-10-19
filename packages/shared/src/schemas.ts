@@ -180,6 +180,8 @@ export const AnalyzeRequestSchema = z.object({
   image: ImageDataUrlSchema,
   locale: LocaleSchema,
   quiz: QuizAnswersSchema.optional(),
+  /** RevenueCat app user id; the server checks the premium entitlement once payments are live. */
+  appUserId: z.string().min(1).max(200).optional(),
 });
 export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
 

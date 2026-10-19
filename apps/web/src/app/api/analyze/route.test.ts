@@ -122,6 +122,34 @@ describe('POST /api/analyze', () => {
       expect(text).not.toContain('secret');
       expect(JSON.parse(text).error.code).toBe('provider_error');
     });
+
+    describe('with payments live (REVENUECAT_SECRET_KEY)', () => {
+      beforeEach(() => vi.stubEnv('REVENUECAT_SECRET_KEY', 'sk_test'));
+      const subscriber = (expires: string) =>
+        Response.json({ subscriber: { entitlements: { premium: { expires_date: expires } } } });
+
+      it('returns 402 without an app user id, before calling the model', async () => {
+        const res = await post(validBody());
+        expect(res.status).toBe(402);
+        expect((await res.json()).error.code).toBe('payment_required');
+        expect(fetchMock).not.toHaveBeenCalled();
+      });
+
+      it('returns 402 for an expired or unknown subscriber', async () => {
+        fetchMock.mockResolvedValueOnce(subscriber('2000-01-01T00:00:00Z'));
+        expect((await post(validBody({ appUserId: 'u1' }))).status).toBe(402);
+        fetchMock.mockResolvedValueOnce(new Response('{}', { status: 404 }));
+        expect((await post(validBody({ appUserId: 'u2' }))).status).toBe(402);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+      });
+
+      it('analyses for an active premium subscriber', async () => {
+        fetchMock.mockResolvedValueOnce(subscriber('2999-01-01T00:00:00Z')).mockResolvedValueOnce(completion(MOCK_ANALYSIS));
+        const res = await post(validBody({ appUserId: 'u1' }));
+        expect(res.status).toBe(200);
+        expect(String(fetchMock.mock.calls[0]![0])).toContain('api.revenuecat.com/v1/subscribers/u1');
+      });
+    });
   });
 });
 
