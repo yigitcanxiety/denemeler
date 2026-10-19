@@ -7,11 +7,11 @@ describe('pricing display', () => {
     expect(plans.map((p) => p.id)).toEqual(['yearly', 'weekly', 'report']);
     const [yearly, weekly, report] = plans;
     expect(yearly?.highlighted).toBe(true);
-    expect(yearly?.price).toContain('799,99');
+    expect(yearly?.price).toContain('1.799,99');
     expect(yearly?.headline).toMatch(/7 gün/);
-    expect(yearly?.legal).toContain('799,99');
+    expect(yearly?.legal).toContain('1.799,99');
     expect(weekly?.headline).not.toContain('39,99');
-    expect(weekly?.headline).toContain('129,99');
+    expect(weekly?.headline).toContain('229,99');
     expect(weekly?.legal).not.toContain('39,99');
     expect(report?.plan.autoRenews).toBe(false);
     expect(plans.every((p) => p.plan.currency === 'TRY')).toBe(true);
@@ -22,15 +22,15 @@ describe('pricing display', () => {
     const weekly = plans.find((p) => p.id === 'weekly');
     const yearly = plans.find((p) => p.id === 'yearly');
     expect(plans.every((p) => p.plan.currency === 'EUR')).toBe(true);
-    expect(weekly?.headline).toBe('7-day free trial, then €3.99/week');
-    expect(yearly?.headline).toBe('7-day free trial, then €24.99/year');
+    expect(weekly?.headline).toBe('7-day free trial, then €5.99/week');
+    expect(yearly?.headline).toBe('7-day free trial, then €39.99/year');
     expect(yearly?.cta).toBe('Start free trial');
-    expect(yearly?.subline).toBe('Only €0.48/week');
+    expect(yearly?.subline).toBe('Only €0.77/week');
   });
 
   it('allows overriding the region independently of the language', () => {
     const plans = getPlanDisplays('en', 'TR');
-    expect(plans[0]?.price).toContain('799.99');
+    expect(plans[0]?.price).toContain('1,799.99');
     expect(plans[0]?.plan.currency).toBe('TRY');
   });
 
@@ -38,7 +38,7 @@ describe('pricing display', () => {
     expect(yearlySavingsPercent('EU')).toBe(87);
     const offer = getExitOfferDisplay('en');
     expect(offer.percent).toBe(50);
-    expect(offer.price).toBe('€12.49');
-    expect(offer.body).toContain('€12.49');
+    expect(offer.price).toBe('€19.99');
+    expect(offer.body).toContain('€19.99');
   });
 });

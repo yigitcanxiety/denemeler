@@ -56,6 +56,7 @@ export default function PaywallScreen() {
   const [exitShown, setExitShown] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const hasAnalysis = useAppStore((s) => s.analysis !== null);
+  const hasPhoto = useAppStore((s) => s.photo !== null);
   const pendingNav = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -107,8 +108,8 @@ export default function PaywallScreen() {
     setTimeout(runPendingNav, 700);
   };
 
-  /** After unlocking: the report if there is one, else home (nothing to show on an empty Results screen). */
-  const goAfterUnlock = () => router.dismissTo(hasAnalysis ? '/results' : '/');
+  /** After unlocking: the report if there is one, the analysis of a waiting selfie, else home. */
+  const goAfterUnlock = () => router.dismissTo(hasAnalysis ? '/results' : hasPhoto ? '/analyzing' : '/');
 
   const onSuccess = () =>
     leave(() => {

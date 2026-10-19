@@ -44,9 +44,9 @@ describe('renderPeriod', () => {
   const yearly = { product_identifier: 'tonelle_yearly', purchase_date: '2026-01-01T00:00:00Z', expires_date: '2027-01-01T00:00:00Z' };
 
   it('gives each plan its own quota', () => {
-    expect(renderPeriod(sub(weekly), NOW)?.limit).toBe(20);
+    expect(renderPeriod(sub(weekly), NOW)?.limit).toBe(25);
     expect(renderPeriod(sub(weekly, 'trial'), NOW)?.limit).toBe(10);
-    expect(renderPeriod(sub(yearly), NOW)?.limit).toBe(8);
+    expect(renderPeriod(sub(yearly), NOW)?.limit).toBe(15);
     expect(renderPeriod(sub({ product_identifier: 'tonelle_report', expires_date: null }), NOW)?.limit).toBe(10);
     expect(renderPeriod(subscriber({}), NOW)).toBeNull();
   });
@@ -88,7 +88,7 @@ describe('consumeAppRender', () => {
     fetchMock.mockResolvedValueOnce(Response.json(lifetime('once:0:0|10')));
     expect(await consumeAppRender('u', 'sk', NOW)).toBe('quota_exceeded');
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    fetchMock.mockResolvedValueOnce(Response.json(lifetime('weekly:1:3|20'))).mockResolvedValueOnce(Response.json({}));
+    fetchMock.mockResolvedValueOnce(Response.json(lifetime('weekly:1:3|25'))).mockResolvedValueOnce(Response.json({}));
     expect(await consumeAppRender('u', 'sk', NOW)).toBe('ok');
   });
 

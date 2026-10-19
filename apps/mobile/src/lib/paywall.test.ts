@@ -129,9 +129,9 @@ describe('dev purchases plans', () => {
     expect(w?.intro).toMatchObject({ type: 'trial', days: 7 });
     expect(devPlans('EU', 'en')[1]?.intro).toMatchObject({ type: 'trial' });
     expect(devPlans('TR', 'tr').map((p) => p.kind)).toEqual(['yearly', 'weekly', 'report']);
-    expect(yearlySavingsPercent(devPlans('TR', 'tr'))).toBe(88);
+    expect(yearlySavingsPercent(devPlans('TR', 'tr'))).toBe(85);
     expect(yearlySavingsPercent([y!])).toBeNull();
     const exit = devExitPlan('EU', 'en');
-    expect(exit.price).toBeCloseTo(12.49);
+    expect(exit.price).toBeCloseTo(19.99);
   });
 });

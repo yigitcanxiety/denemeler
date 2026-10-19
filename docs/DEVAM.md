@@ -95,20 +95,24 @@ Apple Developer + D-U-N-S, RevenueCat, mağaza görselleri, TestFlight. Web'de k
 
 ## 5. Fiyat ve sınır kararları
 
-Makyaj görseli sınırı uygulandı (2026-10-17, `apps/web/src/server/revenuecat.ts` `RENDER_LIMITS`; sayaç RevenueCat
-abone özelliğinde, veritabanı yok). RevenueCat anahtarı girilip `TONELLE_FREE_RENDERS` kapanınca devreye girer.
+**Karar (2026-10-19, kullanıcı):** fiyatlar rakiplerin (Glamour TR ~₺199,99/hafta, FaceApp ₺200+) biraz üstünde; ücretsiz
+kullanım yok. Selfie'den sonra ödeme ekranı gelir, analiz yalnız deneme/satın almadan sonra çalışır (`camera.tsx`).
+7 günlük ücretsiz deneme; 7. günün sonunda Apple otomatik tahsil eder (ASC'de tanıtım teklifi "1 hafta ücretsiz").
 
-| Plan | Fiyat (TR) | Apple sonrası net (%30 / %15) | Makyaj görseli | En kötü maliyet |
-|---|---|---|---|---|
-| Deneme (7 gün) | ücretsiz | 0 | toplam 10 | ₺20 |
-| Haftalık | ₺129,99 | ₺76 / ₺92 haftada | haftada 20 | ₺40 / hafta |
-| Yıllık | ₺799,99 | ₺467 / ₺567 yılda (≈₺9/hafta) | 30 günde 8 | ₺192 / yıl |
-| Yıllık, çıkış teklifi | ₺399,99 | ₺233 / ₺283 yılda | 30 günde 8 | ₺192 / yıl |
-| Tek rapor | ₺199 | ₺116 / ₺141 | toplam 10 | ₺20 |
+Makyaj görseli sınırı `apps/web/src/server/revenuecat.ts` `RENDER_LIMITS` (sayaç RevenueCat abone özelliğinde).
+RevenueCat anahtarı girilip `TONELLE_FREE_RENDERS` kapanınca devreye girer.
 
-Varsayım: görsel ~$0,04, ₺45/$ ve yeniden denemelerle ₺2. Analiz ~₺0,50 (ücretsiz, IP başı saatte 10). KDV %20 fiyatın içinde.
-Kural: limitini sonuna kadar kullanan kullanıcı bile net gelirin yarısından fazlasına mal olmaz.
-Sabit giderler: Apple Developer $99/yıl, Vercel Pro $20/ay (ticari kullanım), RevenueCat aylık $2.500 gelire kadar ücretsiz, sonra %1.
+| Plan | TR | EU | Apple sonrası net (%30) | Makyaj görseli | En kötü maliyet |
+|---|---|---|---|---|---|
+| Deneme (7 gün) | ücretsiz | ücretsiz | 0 | toplam 10 | ₺20 |
+| Haftalık | ₺229,99 | €5,99 | ₺134 / hafta | haftada 25 | ₺50 / hafta |
+| Yıllık | ₺1.799,99 | €39,99 | ₺1.050 / yıl | 30 günde 15 | ₺360 / yıl |
+| Yıllık, çıkış teklifi (%50) | ₺899,99 | €19,99 | ₺525 / yıl | 30 günde 15 | ₺360 / yıl |
+| Tek rapor | ₺299,99 | €9,99 | ₺175 | toplam 10 | ₺20 |
+
+Varsayım: görsel ~$0,04, ₺45/$ ve yeniden denemelerle ₺2; analiz ~₺0,50. KDV %20 fiyatın içinde. Small Business
+Program'la (%15) netler ~%21 artar. Sabit: Apple Developer $99/yıl, Vercel Pro $20/ay (satış başlayınca; şu an Hobby,
+ücretsiz), RevenueCat aylık $2.500 gelire kadar ücretsiz.
 
 İptal yolu (2026-10-11 kullanıcı kararı): sitede belirgin iptal düğmesi yok; Paddle'ın sipariş e-postasındaki bağlantı + koşullardaki "bize yaz" yeterli (Apple'daki gibi). Faz E'de Almanya'ya satış açılınca oradaki zorunlu "Kündigungsbutton" yalnız DE kullanıcılarına eklenecek.
 

@@ -35,15 +35,15 @@ export function hasActiveEntitlement(payload: unknown, entitlementId: string = E
 }
 
 /**
- * Render allowance per plan (2026-10-17). Worst case cost stays under half of Apple's net
- * proceeds: a render is ~$0.04 (~₺2 with retries), weekly nets ~₺76, yearly ~₺467/yr (~₺233
- * with the exit offer). Trials and lifetime purchases share the Paddle trial / report quota.
+ * Render allowance per plan (2026-10-19 prices). A render is ~$0.04 (~₺2 with retries); a user
+ * who maxes out costs at most ~37% of Apple's net (weekly ₺134/week, yearly ₺1,050/yr) and still
+ * leaves a profit on the yearly exit offer (₺525/yr). Trials and lifetime purchases get 10.
  */
 export const RENDER_LIMITS = {
   trial: { limit: INCLUDED_RENDERS, periodMs: Infinity },
   once: { limit: INCLUDED_RENDERS, periodMs: Infinity },
-  weekly: { limit: 20, periodMs: 7 * DAY_MS },
-  yearly: { limit: 8, periodMs: 30 * DAY_MS },
+  weekly: { limit: 25, periodMs: 7 * DAY_MS },
+  yearly: { limit: 15, periodMs: 30 * DAY_MS },
 } as const;
 
 /** Subscriber attribute holding `<period key>|<renders used>`. */

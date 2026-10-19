@@ -129,7 +129,7 @@ Tonelle needs no account or sign-in.
 How to test:
 1. Tap "Start", accept the consent screen (two checkboxes), answer the short quiz.
 2. Take a selfie or choose any front-facing portrait photo from the library.
-3. The free teaser shows your colour season; the full report, palette, shade cards and makeup previews unlock with Premium (sandbox purchase or "Restore Purchases" on the paywall and in Profile).
+3. After the photo, the paywall appears: the analysis, report and makeup previews are part of Premium, which starts with a 7-day free trial (sandbox purchase, or "Restore Purchases" on the paywall and in Profile). The analysis then runs and the full report opens.
 
 Photos and AI: the selfie is sent over HTTPS to our backend and processed by Google's Gemini API (named on the consent screen) only to produce the analysis and preset makeup previews. Photos are not stored on our servers and not used for training. The app does not use ARKit or TrueDepth face data. Makeup previews only use fixed presets on the user's own photo; there is no free-text prompt.
 
