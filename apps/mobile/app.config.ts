@@ -1,4 +1,5 @@
 import type { ConfigContext, ExpoConfig } from 'expo/config';
+import { withEntitlementsPlist, type ConfigPlugin } from 'expo/config-plugins';
 
 import en from './locales/en.json';
 
@@ -29,10 +30,22 @@ const LANGUAGES = ['en', 'tr', 'es', 'pt-BR', 'de', 'fr', 'it', 'ja', 'ko'] as c
 
 /** v3 "Aura" paper (src/theme.ts). */
 const PAPER = '#FFFFFF';
+
+/**
+ * expo-notifications adds the push entitlement, but Tonelle only schedules local reminders.
+ * Dropping it keeps the existing provisioning profile valid (no Push capability needed).
+ */
+const withoutPushEntitlement: ConfigPlugin = (config) =>
+  withEntitlementsPlist(config, (mod) => {
+    delete mod.modResults['aps-environment'];
+    return mod;
+  });
 /** Lavender behind the compact in the icon art. */
 const ICON_BG = '#E4DCEC';
 
-export default ({ config }: ConfigContext): ExpoConfig => ({
+export default ({ config }: ConfigContext): ExpoConfig => withoutPushEntitlement(appConfig(config));
+
+const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
   ...config,
   name: 'Tonelle',
   owner: 'yigitcanxiety',
