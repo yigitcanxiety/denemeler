@@ -145,7 +145,7 @@ export const tr: SiteContent = {
     privacy: {
       title: 'Gizlilik Politikası',
       metaDescription:
-        'Tonelle (Doribleg Trade Ltd) kişisel verilerini nasıl işler: fotoğraf saklanmaz, sonuçlar cihazında kalır, GDPR kapsamındaki hakların.',
+        'Tonelle kişisel verilerini nasıl işler: fotoğraf saklanmaz, sonuçlar cihazında kalır, GDPR kapsamındaki hakların.',
       intro: [
         `Bu Gizlilik Politikası, Tonelle web sitesini ve mobil uygulamalarını (birlikte “Hizmet”) kullandığında ${C.legalName} (“biz”) tarafından kişisel verilerinin nasıl işlendiğini açıklar. Tonelle’i mümkün olan en az kişisel veriyi işleyecek şekilde tasarladık: fotoğraflarını saklamayız, hesap açmanı istemeyiz ve sonuçların kendi cihazında tutulur.`,
         'Bu politika Avrupa Ekonomik Alanı (AEA) ve diğer ülkelerdeki kullanıcılar için geçerlidir. Türkiye’deysen lütfen KVKK Aydınlatma Metni’ni de oku.',
@@ -155,7 +155,7 @@ export const tr: SiteContent = {
           id: 'controller',
           heading: '1. Verilerinden kim sorumlu?',
           blocks: [
-            `Kişisel verilerinin sorumlusu ${C.legalName}, ${C.address} (sicil no. ${C.registrationNumber}) şirketidir.`,
+            `Kişisel verilerinin sorumlusu, Türkiye’de yerleşik bireysel uygulama geliştiricisi ${C.legalName}’dir. Bize ${C.privacyEmail} adresinden ulaşabilirsin.`,
             `Gizlilikle ilgili her soru ve talebin için ${C.privacyEmail} adresine yazabilirsin.`,
             ...(C.euRepresentative ? [`AB temsilcisi (GDPR md. 27): ${C.euRepresentative}.`] : []),
           ],
@@ -331,7 +331,7 @@ export const tr: SiteContent = {
             {
               rows: [
                 ['Veri sorumlusu', `${C.legalName}`],
-                ['Adres', C.address],
+                ['İletişim', C.privacyEmail],
                 ...(C.turkeyRepresentative ? [['Veri sorumlusu temsilcisi (Türkiye)', C.turkeyRepresentative] as [string, string]] : []),
                 ['E-posta', C.privacyEmail],
               ],
@@ -421,7 +421,7 @@ export const tr: SiteContent = {
           id: 'application',
           heading: '7. Başvuru yolu',
           blocks: [
-            `Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca taleplerini; ${C.address} adresine yazılı olarak${C.kepAddress ? `, ${C.kepAddress} kayıtlı elektronik posta (KEP) adresine` : ''} ya da daha önce bize bildirdiğin ve sistemimizde kayıtlı e-posta adresinden ${C.privacyEmail} adresine iletebilirsin. Başvurunda adın soyadın, yazılı başvurularda imzan, tebligata esas adresin ve talep konunun açıkça yer alması gerekir.`,
+            `Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ uyarınca taleplerini daha önce bize bildirdiğin ve sistemimizde kayıtlı e-posta adresinden ${C.privacyEmail} adresine${C.kepAddress ? ` ya da ${C.kepAddress} kayıtlı elektronik posta (KEP) adresine` : ''} iletebilirsin. Başvurunda adın soyadın, tebligata esas adresin ve talep konunun açıkça yer alması gerekir.`,
             'Başvurunu en geç 30 gün içinde ücretsiz olarak sonuçlandırırız. İşlemin ayrıca bir maliyet gerektirmesi hâlinde Kurul tarafından belirlenen tarifedeki ücret alınabilir. Başvurunun reddedilmesi, verilen cevabın yetersiz bulunması veya süresinde cevap verilmemesi hâlinde KVKK md. 14 uyarınca Kişisel Verileri Koruma Kurulu’na şikâyette bulunabilirsin.',
           ],
         },
@@ -479,7 +479,7 @@ export const tr: SiteContent = {
       metaDescription:
         'Tonelle Kullanım Koşulları: abonelikler, ücretsiz deneme, otomatik yenileme, iptal, iade ve yapay zekâ çıktısı sorumluluk reddi.',
       intro: [
-        `Bu Kullanım Koşulları (“Koşullar”), ${C.legalName}, ${C.address} (“biz”) tarafından sunulan Tonelle web sitesi ve mobil uygulamalarının (“Hizmet”) kullanımını düzenler. Hizmeti kullanarak bu Koşulları kabul etmiş olursun. Kabul etmiyorsan lütfen Hizmeti kullanma.`,
+        `Bu Kullanım Koşulları (“Koşullar”), ${C.legalName} (“biz”) tarafından sunulan Tonelle web sitesi ve mobil uygulamalarının (“Hizmet”) kullanımını düzenler. Hizmeti kullanarak bu Koşulları kabul etmiş olursun. Kabul etmiyorsan lütfen Hizmeti kullanma.`,
       ],
       sections: [
         {
@@ -641,7 +641,7 @@ export const tr: SiteContent = {
   },
   contact: {
     title: 'İletişim',
-    metaDescription: 'Tonelle destek ve gizlilik ekibiyle iletişime geç (Doribleg Trade Ltd).',
+    metaDescription: 'Tonelle destek ve gizlilik ekibiyle iletişime geç.',
     intro: 'Sonuçların, aboneliğin veya gizlilikle ilgili sorularında yardımcı olmaktan memnuniyet duyarız.',
     cards: [
       {
@@ -656,13 +656,11 @@ export const tr: SiteContent = {
       },
       {
         kind: 'company',
-        title: 'Şirket',
-        body: 'Tonelle, Doribleg Trade Ltd tarafından yayımlanır.',
+        title: 'Yayıncı',
+        body: `Tonelle, Türkiye’de yerleşik bireysel geliştirici ${C.legalName} tarafından yayımlanır.`,
       },
     ],
     responseTime: 'Genellikle 2 iş günü içinde yanıt veririz.',
-    addressLabel: 'Adres',
-    registrationLabel: 'Sicil no.',
     kepLabel: 'KEP adresi',
     representativeLabel: 'Türkiye temsilcisi',
   },

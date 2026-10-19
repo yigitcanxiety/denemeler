@@ -124,8 +124,6 @@ export interface SiteContent {
     intro: string;
     cards: { title: string; body: string; kind: 'support' | 'privacy' | 'company' }[];
     responseTime: string;
-    addressLabel: string;
-    registrationLabel: string;
     kepLabel: string;
     representativeLabel: string;
   };

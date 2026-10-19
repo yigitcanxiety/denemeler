@@ -41,7 +41,7 @@ export default async function HomePage({ params }: PageProps<'/[locale]'>) {
       inLanguage: locale,
       url: absoluteUrl(`/${locale}`),
       description: content.meta.homeDescription,
-      publisher: { '@type': 'Organization', name: COMPANY.legalName, url: SITE_URL, email: COMPANY.supportEmail },
+      publisher: { '@type': 'Person', name: COMPANY.legalName, url: SITE_URL, email: COMPANY.supportEmail },
       offers: { '@type': 'Offer', name: content.meta.analyzeTitle, price: 0, priceCurrency: region.yearly.currency },
       ...(APP_STORE_LIVE ? { downloadUrl: APP_STORE_URL } : {}),
     },

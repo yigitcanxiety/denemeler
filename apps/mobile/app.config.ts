@@ -158,7 +158,7 @@ const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
   },
   extra: {
     ...config.extra,
-    publisher: 'Doribleg Trade Ltd',
+    publisher: 'Yiğit Gördebil',
     eas: { projectId: '39517736-92a6-4831-b56e-fc618dfd21fd' },
   },
 });

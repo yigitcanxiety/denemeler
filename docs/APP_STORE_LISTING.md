@@ -20,7 +20,7 @@ görseller için `DEVAM.md` → "Mağaza görselleri kontrol listesi".
 | Birincil kategori | Lifestyle (Yaşam Tarzı) |
 | İkincil kategori | Photo & Video (Fotoğraf ve Video) — **Health & Fitness seçme** (sağlık iddiası incelemesi) |
 | Birincil dil | Türkçe; ek yerelleştirme English (U.K.) + English (U.S.) |
-| Telif (Copyright) | `2026 Doribleg Trade Ltd` (uygulama içindeki satırla aynı) |
+| Telif (Copyright) | `2026 Yiğit Gördebil` |
 | Destek URL | `https://tonelleapp.com/tr/contact` (EN: `/en/contact`) |
 | Pazarlama URL | `https://tonelleapp.com` |
 | Gizlilik politikası URL | `https://tonelleapp.com/tr/privacy` (EN: `/en/privacy`) |

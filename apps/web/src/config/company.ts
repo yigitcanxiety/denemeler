@@ -8,15 +8,11 @@
 
 export const COMPANY = {
   /** Data controller / publisher. */
-  legalName: 'Doribleg Trade Ltd',
+  /** Individual developer (sole publisher); contact is by email, no postal address shown. */
+  legalName: 'Yiğit Gördebil',
   brand: 'Tonelle',
-  /** Registered office (Companies House). */
-  address: 'Suite 10550, 5 Brayford Square, London E1 0SG, United Kingdom',
-  /** Companies House number (England and Wales). */
-  registrationNumber: '17049929',
   /** Jurisdiction whose law governs the Terms. */
-  governingLaw: 'England and Wales',
-  /** Merchant of Record for web purchases. */
+  governingLaw: 'Türkiye',
   /** General support contact — placeholder mailbox on the product domain. */
   supportEmail: 'support@tonelleapp.com',
   /** Privacy / data-protection requests (GDPR & KVKK applications). */

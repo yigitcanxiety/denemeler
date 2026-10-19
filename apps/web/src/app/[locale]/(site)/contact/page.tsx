@@ -45,14 +45,8 @@ export default async function ContactPage({ params }: PageProps<'/[locale]/conta
                   {email}
                 </a>
               )}
-              {card.kind === 'company' && (
+              {card.kind === 'company' && (COMPANY.kepAddress || COMPANY.turkeyRepresentative) && (
                 <dl className="mt-5 grid gap-x-6 gap-y-2 border-t border-line pt-4 text-[0.95rem] sm:grid-cols-[auto_1fr]">
-                  <dt className="caps pt-[3px] text-ink">{contact.addressLabel}</dt>
-                  <dd>
-                    {COMPANY.legalName}, {COMPANY.address}
-                  </dd>
-                  <dt className="caps pt-[3px] text-ink">{contact.registrationLabel}</dt>
-                  <dd>{COMPANY.registrationNumber}</dd>
                   {COMPANY.kepAddress && (
                     <>
                       <dt className="caps pt-[3px] text-ink">{contact.kepLabel}</dt>

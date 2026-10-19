@@ -145,7 +145,7 @@ export const en: SiteContent = {
     privacy: {
       title: 'Privacy Policy',
       metaDescription:
-        'How Tonelle (Doribleg Trade Ltd) processes your personal data: no photo storage, results on your device, your GDPR rights.',
+        'How Tonelle processes your personal data: no photo storage, results on your device, your GDPR rights.',
       intro: [
         `This Privacy Policy explains how ${C.legalName} (“we”, “us”) processes personal data when you use the Tonelle website and mobile apps (together, the “Service”). We designed Tonelle so that we process as little personal data as possible: we do not store your photos, we do not require an account, and your results are kept on your own device.`,
         'This policy applies to users in the European Economic Area (EEA) and elsewhere. If you are in Türkiye, please also read our KVKK Privacy Notice (Aydınlatma Metni).',
@@ -155,7 +155,7 @@ export const en: SiteContent = {
           id: 'controller',
           heading: '1. Who is responsible for your data',
           blocks: [
-            `The controller of your personal data is ${C.legalName}, ${C.address} (registration no. ${C.registrationNumber}).`,
+            `The controller of your personal data is ${C.legalName}, an individual app developer based in Türkiye. You can reach us at ${C.privacyEmail}.`,
             `For any privacy question or request, contact us at ${C.privacyEmail}.`,
             ...(C.euRepresentative ? [`EU representative (GDPR Art. 27): ${C.euRepresentative}.`] : []),
           ],
@@ -337,7 +337,7 @@ export const en: SiteContent = {
             {
               rows: [
                 ['Data controller', `${C.legalName}`],
-                ['Address', C.address],
+                ['Contact', C.privacyEmail],
                 ...(C.turkeyRepresentative ? [['Data controller representative in Türkiye', C.turkeyRepresentative] as [string, string]] : []),
                 ['Email', C.privacyEmail],
               ],
@@ -427,7 +427,7 @@ export const en: SiteContent = {
           id: 'application',
           heading: '7. How to apply',
           blocks: [
-            `Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can send your request in writing to ${C.address}${C.kepAddress ? `, via registered electronic mail (KEP) to ${C.kepAddress},` : ''} or by email to ${C.privacyEmail} from an email address you have previously shared with us. Your application must include your name, signature (for written applications), contact address and a clear description of your request.`,
+            `Under the Communiqué on the Procedures and Principles of Application to the Data Controller, you can send your request by email to ${C.privacyEmail}${C.kepAddress ? ` or via registered electronic mail (KEP) to ${C.kepAddress}` : ''}, from an email address you have previously shared with us. Your application must include your name, a contact address and a clear description of your request.`,
             'We will respond free of charge within 30 days at the latest. If the response requires an additional cost, a fee may be charged according to the tariff set by the Board. If your application is rejected or the answer is insufficient, you may lodge a complaint with the Personal Data Protection Board within the periods set out in Article 14.',
           ],
         },
@@ -486,7 +486,7 @@ export const en: SiteContent = {
       metaDescription:
         'Terms of Use for Tonelle: subscriptions, free trials, auto-renewal, cancellation, refunds and AI output disclaimer.',
       intro: [
-        `These Terms of Use (“Terms”) govern your use of the Tonelle website and mobile applications (the “Service”) provided by ${C.legalName}, ${C.address} (“we”, “us”). By using the Service you agree to these Terms. If you do not agree, please do not use the Service.`,
+        `These Terms of Use (“Terms”) govern your use of the Tonelle website and mobile applications (the “Service”) provided by ${C.legalName} (“we”, “us”). By using the Service you agree to these Terms. If you do not agree, please do not use the Service.`,
       ],
       sections: [
         {
@@ -648,7 +648,7 @@ export const en: SiteContent = {
   },
   contact: {
     title: 'Contact',
-    metaDescription: 'Contact Tonelle support and privacy team (Doribleg Trade Ltd).',
+    metaDescription: 'Contact Tonelle support and privacy team.',
     intro: 'We’re happy to help with questions about your results, subscriptions or privacy.',
     cards: [
       {
@@ -663,13 +663,11 @@ export const en: SiteContent = {
       },
       {
         kind: 'company',
-        title: 'Company',
-        body: 'Tonelle is published by Doribleg Trade Ltd.',
+        title: 'Publisher',
+        body: `Tonelle is published by ${C.legalName}, an individual developer based in Türkiye.`,
       },
     ],
     responseTime: 'We usually reply within 2 business days.',
-    addressLabel: 'Address',
-    registrationLabel: 'Registration no.',
     kepLabel: 'KEP address',
     representativeLabel: 'Representative in Türkiye',
   },
