@@ -21,11 +21,11 @@ Uygulama: Tonelle (id 6822973603) → Monetization.
 
 | Ürün kimliği | Süre | TR fiyat | Diğer ülkeler | Tanıtım teklifi |
 |---|---|---|---|---|
-| `tonelle_yearly` | 1 yıl | 799,99 TL | 24,99 € | 7 gün ücretsiz deneme (yeni aboneler) |
-| `tonelle_weekly` | 1 hafta | 129,99 TL | 3,99 € | 7 gün ücretsiz deneme (yeni aboneler) |
-| `tonelle_yearly_exit` | 1 yıl | 399,99 TL | 12,49 € | yok (çıkış teklifi, %50) |
+| `tonelle_yearly` | 1 yıl | 1.799,99 TL | 39,99 € | 7 gün ücretsiz deneme (yeni aboneler) |
+| `tonelle_weekly` | 1 hafta | 229,99 TL | 5,99 € | 7 gün ücretsiz deneme (yeni aboneler) |
+| `tonelle_yearly_exit` | 1 yıl | 899,99 TL | 19,99 € | yok (çıkış teklifi, %50) |
 
-**Uygulama içi satın alma (Non-Consumable):** `tonelle_report`, 199 TL / 6,99 €.
+**Uygulama içi satın alma (Non-Consumable):** `tonelle_report`, 299,99 TL / 9,99 €.
 
 Her ürün için: görünen ad + açıklama (TR ve EN), inceleme ekran görüntüsü (ödeme ekranının
 görüntüsü; `apps/mobile/store/screenshots/tr/` içinden), inceleme notu. Fiyatlar `packages/shared/src/pricing.ts`
@@ -35,7 +35,7 @@ ile aynı; fiyat değişirse orası da güncellenir.
 (.p8 indir, Key ID ve Issuer ID'yi not et). RevenueCat bunu ister.
 
 ## 2. RevenueCat (kullanıcı hesap açar; gerisini birlikte)
-1. app.revenuecat.com → hesap aç → proje `Tonelle`.
+1. ✅ 2026-10-19: hesap açıldı, proje `Tonelle` (id 5a80cb3f) ve `premium` yetkisi oluşturuldu. E-posta onayı bekliyor.
 2. Apps → **App Store** uygulaması ekle: bundle id `com.tonelleapp.app`, In-App Purchase anahtarı (.p8 + Key ID + Issuer ID).
 3. App Store Server Notifications: RevenueCat'in verdiği URL'yi App Store Connect → App Information →
    App Store Server Notifications (Production ve Sandbox, Version 2) alanına yapıştır.
