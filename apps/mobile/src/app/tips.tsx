@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, View, type ImageSourcePropType, type ViewStyle } from 'react-native';
 
 import { Button } from '@/components/button';
+import { LegalLinks } from '@/components/legal-links';
 import { Icon, type IconName } from '@/components/icon';
 import { Reveal } from '@/components/motion';
 import { CoverImage, PORTRAITS } from '@/components/portraits';
@@ -10,6 +11,7 @@ import { AppText } from '@/components/text';
 import { BackTitle, Card, Pill, SectionTitle } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { uiCopy } from '@/lib/ui-copy';
+import { useAppStore } from '@/store/app-store';
 import { colors, radii, spacing } from '@/theme';
 
 const TIPS: { key: 'camera.hintLight' | 'camera.hintNoMakeup' | 'camera.hintGlasses' | 'camera.hintNoFilter'; icon: IconName }[] = [
@@ -25,6 +27,8 @@ type Flaw = 'dark' | 'filter' | 'angle';
 export default function TipsScreen() {
   const t = useT();
   const copy = uiCopy(useLocale());
+  const consented = useAppStore((s) => s.consentAt !== null);
+  const acceptConsent = useAppStore((s) => s.acceptConsent);
   const ideal = [PORTRAITS.four, PORTRAITS.two, PORTRAITS.five];
   const avoid: { source: ImageSourcePropType; flaw: Flaw; label: string }[] = [
     { source: PORTRAITS.two, flaw: 'dark', label: copy.avoidDark },
@@ -35,7 +39,27 @@ export default function TipsScreen() {
   return (
     <Screen
       header={<BackTitle title={copy.tipsTitle} onBack={() => router.back()} backLabel={t('common.back')} />}
-      footer={<Button label={copy.tipsCta} icon="camera" onPress={() => router.push('/camera')} />}
+      footer={
+        <>
+          <Button
+            label={copy.tipsCta}
+            icon="camera"
+            onPress={() => {
+              if (!consented) acceptConsent();
+              router.push('/camera');
+            }}
+          />
+          {/* First run only: continuing accepts the Terms (no checkboxes, 2026-10-19 decision). */}
+          {consented ? null : (
+            <>
+              <AppText variant="caption" align="center">
+                {t('consent.continueNotice')}
+              </AppText>
+              <LegalLinks />
+            </>
+          )}
+        </>
+      }
     >
       <Reveal>
         <Card tone="mist" style={styles.tips}>

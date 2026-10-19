@@ -186,7 +186,7 @@ export const en: SiteContent = {
               rows: [
                 [
                   'Analysing your facial image to determine your colouring and colour season, and (Premium) generating makeup previews on your photo',
-                  'Your explicit consent (GDPR Art. 6(1)(a) and Art. 9(2)(a)). You give it by ticking the consent box before the analysis; you can withdraw it at any time.',
+                  'Performance of a contract (Art. 6(1)(b)): the analysis and previews are the service you ask for when you take or upload your photo. We never use your photo to identify you, so it is not processed as biometric data under Art. 9. Where the website asks for your explicit consent before an analysis, that consent (Art. 6(1)(a) and 9(2)(a)) is an additional basis and can be withdrawn at any time.',
                 ],
                 [
                   'Providing the Service you requested, including personalised recommendations from your questionnaire answers and unlocking Premium features',
@@ -207,7 +207,7 @@ export const en: SiteContent = {
                 ],
               ],
             },
-            'If you do not give explicit consent, we cannot analyse your photo. You can still browse the website and read about the Service.',
+            'If you do not want your photo processed, simply do not take or upload one; you can still browse the website and read about the Service.',
           ],
         },
         {
@@ -303,7 +303,7 @@ export const en: SiteContent = {
           id: 'children',
           heading: '11. Age limit',
           blocks: [
-            'The Service is intended for people aged 16 and over. We do not knowingly process data of children under 16. If you believe a child has used the Service, contact us and we will help remove any data.',
+            'The Service is not directed at children under 13 and we do not knowingly process their data. If you are under 18, use the Service with the permission of a parent or guardian. If you believe a child has used the Service, contact us and we will help remove any data.',
           ],
         },
         {
@@ -350,7 +350,7 @@ export const en: SiteContent = {
           blocks: [
             {
               list: [
-                'Visual data: your facial image (selfie). As a facial image may qualify as biometric data, a special category of personal data, it is processed only with your explicit consent.',
+                'Visual data: your facial image (selfie). It is used only to analyse your colouring and create the previews you request; it is never used to identify you and is not processed with technical means for unique identification.',
                 'Analysis data: undertone, skin depth, contrast, face and eye shape, colour season and shade suggestions derived from your photo (stored only on your device).',
                 'Preference data: questionnaire answers (skin type, eye colour, occasion, budget, experience).',
                 'Customer transaction data: anonymous app user ID, subscription and purchase status.',
@@ -383,7 +383,7 @@ export const en: SiteContent = {
             'Personal data is collected electronically and partly by automated means through the Tonelle website and mobile applications, when you take or upload a photo, answer the questionnaire, make a purchase or contact us.',
             {
               list: [
-                'Facial image: your explicit consent (KVKK Art. 6(2)).',
+                'Facial image: processing is necessary for the establishment or performance of the contract, as the analysis is the service you request (Art. 5(2)(c)). Where explicit consent is asked for on the website, it is an additional basis (Art. 6(2)).',
                 'Preference, customer transaction data: processing is necessary for the establishment or performance of a contract (Art. 5(2)(c)).',
                 'Transaction security data: processing is necessary for our legitimate interests, provided it does not harm your fundamental rights and freedoms (Art. 5(2)(f)).',
                 'Records required by law: compliance with a legal obligation (Art. 5(2)(ç)).',
@@ -475,7 +475,8 @@ export const en: SiteContent = {
           id: 'how',
           heading: '4. How consent is given',
           blocks: [
-            'You give consent by ticking the unticked box “I give my explicit consent to the processing of my facial image…” before taking or uploading your photo. We do not treat silence, pre-ticked boxes or continued use as consent.',
+            'On the website, you give consent by ticking the unticked box “I give my explicit consent to the processing of my facial image…” before taking or uploading your photo. We do not treat silence, pre-ticked boxes or continued use as consent.',
+            'The mobile app does not ask for this consent: there the analysis is provided as part of the service you request (Privacy Policy, section 3).',
           ],
         },
       ],
@@ -492,7 +493,7 @@ export const en: SiteContent = {
           id: 'eligibility',
           heading: '1. Who can use Tonelle',
           blocks: [
-            'You must be at least 16 years old to use the Service. By using it you confirm that you meet this requirement and that you can enter into a binding agreement.',
+            'The Service is not directed at children under 13. If you are under 18, you may use the Service only with the permission of a parent or guardian, who accepts these Terms on your behalf.',
           ],
         },
         {
@@ -591,33 +592,55 @@ export const en: SiteContent = {
           id: 'liability',
           heading: '12. Liability',
           blocks: [
+            'The Service is provided “as is” and “as available”. AI results are estimates: we do not promise that an analysis, colour season or makeup preview will be accurate, that a product will suit you, or that the Service will be uninterrupted or error-free. This does not affect your statutory rights as a consumer.',
             'Nothing in these Terms limits liability that cannot be limited by law, including for death or personal injury caused by negligence, fraud, or your mandatory rights as a consumer. Subject to this, we are not liable for decisions you make based on AI suggestions, for products you buy from third parties, or for indirect losses. Our total liability to you is limited to the amount you paid for the Service in the 12 months before the claim.',
           ],
         },
         {
+          id: 'third-party',
+          heading: '13. Third-party services',
+          blocks: [
+            'The Service relies on third parties such as Apple (App Store), Google (Google Play and the Gemini AI service) and RevenueCat. Their own terms and privacy policies apply to your use of their services, and we are not responsible for their availability or actions. Links to third-party websites or products are for convenience only and are not an endorsement.',
+          ],
+        },
+        {
+          id: 'indemnity',
+          heading: '14. Your responsibility for misuse',
+          blocks: [
+            'If you use the Service in breach of these Terms or the law, for example by uploading another person’s photo without permission, you are responsible for the resulting claims and losses, to the extent permitted by mandatory consumer law.',
+          ],
+        },
+        {
           id: 'termination',
-          heading: '13. Ending the relationship',
+          heading: '15. Ending the relationship',
           blocks: [
             'You can stop using the Service at any time and delete your data on your device. We may suspend or end access in case of serious or repeated breaches of these Terms.',
           ],
         },
         {
           id: 'law',
-          heading: '14. Governing law and disputes',
+          heading: '16. Governing law and disputes',
           blocks: [
             `These Terms are governed by the laws of ${C.governingLaw}, without depriving consumers of the protection of the mandatory laws of their country of residence. Consumers in the EU may bring claims in the courts of their country of residence. Consumers in Türkiye may apply to Consumer Arbitration Committees (Tüketici Hakem Heyetleri) or Consumer Courts within the monetary limits set each year.`,
           ],
         },
         {
           id: 'changes',
-          heading: '15. Changes to these Terms',
+          heading: '17. Changes to these Terms',
           blocks: [
             'We may update these Terms. We will show the date of the latest version at the top and give reasonable notice of material changes. If you continue to use the Service after changes take effect, the updated Terms apply.',
           ],
         },
         {
+          id: 'general',
+          heading: '18. General',
+          blocks: [
+            'If a provision of these Terms is found invalid, the rest remains in force. Our not enforcing a provision is not a waiver. You may not transfer your rights under these Terms; we may transfer ours to a company that takes over the Service, without reducing your rights. These Terms, together with the Privacy Policy, are the entire agreement between you and us about the Service.',
+          ],
+        },
+        {
           id: 'contact',
-          heading: '16. Contact',
+          heading: '19. Contact',
           blocks: [`Questions about these Terms: ${C.supportEmail}.`],
         },
       ],

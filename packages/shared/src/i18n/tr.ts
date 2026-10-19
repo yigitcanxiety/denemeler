@@ -56,6 +56,7 @@ export const tr: Dictionary = {
   },
 
   consent: {
+    continueNotice: 'Devam ederek Kullanım Koşulları’nı kabul etmiş ve Gizlilik Politikası’nı okumuş olursun.',
     title: 'Başlamadan önce',
     intro:
       'Renklerini analiz edebilmemiz için yüzünün fotoğrafını işlememiz gerekiyor. Fotoğrafına tam olarak şunlar olur:',

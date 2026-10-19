@@ -56,6 +56,7 @@ export const de: Dictionary = {
   },
 
   consent: {
+    continueNotice: 'Mit dem Fortfahren stimmst du den Nutzungsbedingungen zu und nimmst die Datenschutzerklärung zur Kenntnis.',
     title: 'Bevor es losgeht',
     intro:
       'Um deine Farben zu analysieren, müssen wir ein Foto deines Gesichts verarbeiten. Das passiert genau damit:',

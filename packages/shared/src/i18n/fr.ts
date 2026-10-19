@@ -56,6 +56,7 @@ export const fr: Dictionary = {
   },
 
   consent: {
+    continueNotice: 'En continuant, tu acceptes les Conditions d’utilisation et prends connaissance de la Politique de confidentialité.',
     title: 'Avant de commencer',
     intro:
       'Pour analyser ta colorimétrie, nous devons traiter une photo de ton visage. Voici exactement ce qu’il en advient :',

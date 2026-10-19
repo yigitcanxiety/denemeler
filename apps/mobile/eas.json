@@ -1,14 +1,36 @@
 {
-  "cli": { "version": ">= 16.0.0", "appVersionSource": "remote" },
+  "cli": {
+    "version": ">= 16.0.0",
+    "appVersionSource": "remote"
+  },
   "build": {
     "preview": {
       "distribution": "internal",
-      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com", "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1" }
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://tonelleapp.com",
+        "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com",
+        "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1"
+      }
     },
     "production": {
       "autoIncrement": true,
-      "env": { "EXPO_PUBLIC_API_URL": "https://tonelleapp.com", "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com", "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1" }
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://tonelleapp.com",
+        "EXPO_PUBLIC_SITE_URL": "https://tonelleapp.com",
+        "EXPO_PUBLIC_ALLOW_DEV_PURCHASES": "1"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
     }
   },
-  "submit": { "production": {} }
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-play-service-account.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
+  }
 }

@@ -30,7 +30,7 @@ export const COMPANY = {
 } as const;
 
 /** Date the legal documents were last revised (ISO). Shown on every legal page. */
-export const LEGAL_LAST_UPDATED = '2026-10-17';
+export const LEGAL_LAST_UPDATED = '2026-10-19';
 
 /** Canonical site origin, without trailing slash. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://tonelleapp.com').replace(/\/+$/, '');

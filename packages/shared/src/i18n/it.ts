@@ -56,6 +56,7 @@ export const it: Dictionary = {
   },
 
   consent: {
+    continueNotice: 'Continuando accetti i Termini di utilizzo e dichiari di aver letto l’Informativa sulla privacy.',
     title: 'Prima di iniziare',
     intro:
       'Per analizzare i tuoi colori dobbiamo elaborare una foto del tuo viso. Ecco esattamente cosa succede:',

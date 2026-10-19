@@ -9,3 +9,6 @@ next-env.d.ts
 !.env.example
 .DS_Store
 .vercel
+
+# Google Play service account key (never commit)
+apps/mobile/google-play-service-account.json

@@ -56,6 +56,7 @@ export const es: Dictionary = {
   },
 
   consent: {
+    continueNotice: 'Al continuar aceptas los Términos de uso y confirmas haber leído la Política de privacidad.',
     title: 'Antes de empezar',
     intro:
       'Para analizar tu colorimetría necesitamos procesar una foto de tu cara. Esto es exactamente lo que pasa con ella:',

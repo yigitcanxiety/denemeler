@@ -27,7 +27,6 @@ import { colors, spacing, TAB_CLEARANCE } from '@/theme';
 const LEGAL: { page: LegalPage; key: 'legal.privacy' | 'legal.kvkk' | 'legal.consent' | 'legal.terms' }[] = [
   { page: 'privacy', key: 'legal.privacy' },
   { page: 'kvkk', key: 'legal.kvkk' },
-  { page: 'consent', key: 'legal.consent' },
   { page: 'terms', key: 'legal.terms' },
 ];
 

@@ -57,6 +57,7 @@ export const en = {
   },
 
   consent: {
+    continueNotice: 'By continuing you agree to the Terms of Use and acknowledge the Privacy Policy.',
     title: 'Before we begin',
     intro:
       'To analyse your colouring we need to process a photo of your face. Here is exactly what happens to it:',

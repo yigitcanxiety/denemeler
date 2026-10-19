@@ -119,7 +119,7 @@ Fotoğraf gerçek zamanlı işlenir ve saklanmaz; yine de Google'a iletildiği i
 ## Yaş derecesi anketi
 
 Tüm içerik soruları **Yok/None**; tıbbi bilgi: Yok; sınırsız web erişimi: Hayır; kullanıcı üretimi içerik: Hayır;
-kumar/ödül: Hayır. Beklenen sonuç 4+. (Uygulamadaki 16+ kutucuğu KVKK/GDPR rızası içindir, içerik derecesi değil.)
+kumar/ödül: Hayır. Beklenen sonuç 4+. (Uygulamada yaş veya rıza kutucuğu yok; 2026-10-19 kullanıcı kararı.)
 
 ## İnceleme notu (App Review Information → Notes, EN)
 
@@ -127,7 +127,7 @@ kumar/ödül: Hayır. Beklenen sonuç 4+. (Uygulamadaki 16+ kutucuğu KVKK/GDPR 
 Tonelle needs no account or sign-in.
 
 How to test:
-1. Tap "Start", accept the consent screen (two checkboxes), answer the short quiz.
+1. Tap "Start", read the selfie tips and continue (no checkboxes), answer the short quiz if shown.
 2. Take a selfie or choose any front-facing portrait photo from the library.
 3. After the photo, the paywall appears: the analysis, report and makeup previews are part of Premium, which starts with a 7-day free trial (sandbox purchase, or "Restore Purchases" on the paywall and in Profile). The analysis then runs and the full report opens.
 

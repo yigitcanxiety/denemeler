@@ -186,7 +186,7 @@ export const tr: SiteContent = {
               rows: [
                 [
                   'Renk özelliklerini ve renk sezonunu belirlemek için yüz görüntünü analiz etmek ve (Premium) fotoğrafında makyaj önizlemeleri oluşturmak',
-                  'Açık rızan (GDPR md. 6(1)(a) ve md. 9(2)(a)). Analizden önce onay kutusunu işaretleyerek verirsin; dilediğin zaman geri alabilirsin.',
+                  'Sözleşmenin ifası (md. 6(1)(b)): fotoğrafını çektiğinde veya yüklediğinde istediğin hizmet analiz ve önizlemelerdir. Fotoğrafını seni tanımlamak için asla kullanmadığımızdan md. 9 anlamında biyometrik veri olarak işlenmez. Web sitesinde analizden önce açık rızan istendiğinde bu rıza (md. 6(1)(a) ve 9(2)(a)) ek bir hukuki sebeptir ve dilediğin zaman geri alınabilir.',
                 ],
                 [
                   'Soru cevaplarına göre kişiselleştirilmiş öneriler dahil talep ettiğin Hizmeti sunmak ve Premium özellikleri açmak',
@@ -201,7 +201,7 @@ export const tr: SiteContent = {
                 ['Vergi, muhasebe veya tüketici mevzuatının gerektirdiği kayıtları tutmak', 'Hukuki yükümlülüklere uyum (md. 6(1)(c)).'],
               ],
             },
-            'Açık rıza vermezsen fotoğrafını analiz edemeyiz. Yine de web sitesini gezebilir ve Hizmet hakkında bilgi alabilirsin.',
+            'Fotoğrafının işlenmesini istemiyorsan fotoğraf çekme veya yükleme; web sitesini yine de gezebilir ve Hizmet hakkında bilgi alabilirsin.',
           ],
         },
         {
@@ -297,7 +297,7 @@ export const tr: SiteContent = {
           id: 'children',
           heading: '11. Yaş sınırı',
           blocks: [
-            'Hizmet 16 yaş ve üzeri kişiler içindir. 16 yaşından küçük çocukların verilerini bilerek işlemeyiz. Bir çocuğun Hizmeti kullandığını düşünüyorsan bize yaz; verilerin silinmesine yardımcı olalım.',
+            'Hizmet 13 yaşından küçük çocuklara yönelik değildir ve onların verilerini bilerek işlemeyiz. 18 yaşından küçüksen Hizmeti velinin veya vasinin izniyle kullan. Bir çocuğun Hizmeti kullandığını düşünüyorsan bize yaz; verilerin silinmesine yardımcı olalım.',
           ],
         },
         {
@@ -344,7 +344,7 @@ export const tr: SiteContent = {
           blocks: [
             {
               list: [
-                'Görsel veriler: yüz görüntün (selfie). Yüz görüntüsü biyometrik veri, dolayısıyla özel nitelikli kişisel veri olarak değerlendirilebileceğinden yalnızca açık rızanla işlenir.',
+                'Görsel veriler: yüz görüntün (selfie). Yalnızca renk özelliklerini analiz etmek ve istediğin önizlemeleri oluşturmak için kullanılır; seni tanımlamak için kullanılmaz ve kimlik tespitine yönelik teknik yöntemlerle işlenmez.',
                 'Analiz verileri: fotoğrafından türetilen alt ton, ten derinliği, kontrast, yüz ve göz şekli, renk sezonu ve ton önerileri (yalnızca cihazında saklanır).',
                 'Tercih verileri: soru cevapların (cilt tipi, göz rengi, kullanım amacı, bütçe, deneyim).',
                 'Müşteri işlem verileri: anonim uygulama kullanıcı kimliği, abonelik ve satın alma durumu.',
@@ -377,7 +377,7 @@ export const tr: SiteContent = {
             'Kişisel verilerin; Tonelle web sitesi ve mobil uygulamaları aracılığıyla, fotoğraf çektiğinde veya yüklediğinde, soruları yanıtladığında, satın alma yaptığında ya da bizimle iletişime geçtiğinde elektronik ortamda, kısmen otomatik yollarla toplanır.',
             {
               list: [
-                'Yüz görüntüsü: açık rızan (KVKK md. 6/2).',
+                'Yüz görüntüsü: analiz talep ettiğin hizmetin kendisi olduğundan, sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c). Web sitesinde açık rıza istendiğinde bu ek bir hukuki sebeptir (md. 6/2).',
                 'Tercih ve müşteri işlem verileri: bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması (md. 5/2-c).',
                 'İşlem güvenliği verileri: temel hak ve özgürlüklerine zarar vermemek kaydıyla meşru menfaatlerimiz için zorunlu olması (md. 5/2-f).',
                 'Kanunen tutulması gereken kayıtlar: hukuki yükümlülüğümüzü yerine getirebilmek için zorunlu olması (md. 5/2-ç).',
@@ -468,7 +468,8 @@ export const tr: SiteContent = {
           id: 'how',
           heading: '4. Rıza nasıl verilir?',
           blocks: [
-            'Rızanı, fotoğrafını çekmeden veya yüklemeden önce işaretlenmemiş olarak sunulan “Yüz fotoğrafımın … işlenmesine açık rızamı veriyorum” kutusunu işaretleyerek verirsin. Sessiz kalmayı, önceden işaretlenmiş kutuları veya kullanıma devam etmeyi rıza olarak kabul etmeyiz.',
+            'Web sitesinde rızanı, fotoğrafını çekmeden veya yüklemeden önce işaretlenmemiş olarak sunulan “Yüz fotoğrafımın … işlenmesine açık rızamı veriyorum” kutusunu işaretleyerek verirsin. Sessiz kalmayı, önceden işaretlenmiş kutuları veya kullanıma devam etmeyi rıza olarak kabul etmeyiz.',
+            'Mobil uygulama bu rızayı istemez: orada analiz, talep ettiğin hizmetin parçası olarak sunulur (Gizlilik Politikası, 3. bölüm).',
           ],
         },
       ],
@@ -485,7 +486,7 @@ export const tr: SiteContent = {
           id: 'eligibility',
           heading: '1. Tonelle’i kimler kullanabilir?',
           blocks: [
-            'Hizmeti kullanmak için en az 16 yaşında olmalısın. Hizmeti kullanarak bu şartı karşıladığını ve bağlayıcı bir sözleşme yapabileceğini onaylarsın.',
+            'Hizmet 13 yaşından küçük çocuklara yönelik değildir. 18 yaşından küçüksen Hizmeti yalnızca velinin veya vasinin izniyle kullanabilirsin; bu durumda Koşullar’ı senin adına veli veya vasin kabul etmiş sayılır.',
           ],
         },
         {
@@ -584,33 +585,55 @@ export const tr: SiteContent = {
           id: 'liability',
           heading: '12. Sorumluluk',
           blocks: [
+            'Hizmet “olduğu gibi” ve “mevcut olduğu ölçüde” sunulur. Yapay zekâ sonuçları tahmindir: bir analizin, renk sezonunun veya makyaj önizlemesinin doğru olacağını, bir ürünün sana yakışacağını ya da Hizmetin kesintisiz veya hatasız çalışacağını taahhüt etmeyiz. Bu, tüketici olarak kanuni haklarını etkilemez.',
             'Bu Koşullardaki hiçbir hüküm; ihmalden kaynaklanan ölüm veya yaralanma, hile ya da tüketici olarak sahip olduğun emredici haklar gibi kanunen sınırlandırılamayan sorumlulukları sınırlamaz. Bu saklı kalmak kaydıyla; yapay zekâ önerilerine dayanarak aldığın kararlardan, üçüncü kişilerden satın aldığın ürünlerden veya dolaylı zararlardan sorumlu değiliz. Sana karşı toplam sorumluluğumuz, talepten önceki 12 ayda Hizmet için ödediğin tutarla sınırlıdır.',
           ],
         },
         {
+          id: 'third-party',
+          heading: '13. Üçüncü taraf hizmetleri',
+          blocks: [
+            'Hizmet; Apple (App Store), Google (Google Play ve Gemini yapay zekâ hizmeti) ve RevenueCat gibi üçüncü taraflara dayanır. Bu hizmetleri kullanımına onların kendi koşulları ve gizlilik politikaları uygulanır; erişilebilirliklerinden veya eylemlerinden sorumlu değiliz. Üçüncü taraf sitelere veya ürünlere verilen bağlantılar yalnızca kolaylık içindir, bir tavsiye anlamına gelmez.',
+          ],
+        },
+        {
+          id: 'indemnity',
+          heading: '14. Kötüye kullanımdan doğan sorumluluk',
+          blocks: [
+            'Hizmeti bu Koşullara veya hukuka aykırı kullanırsan, örneğin başka birinin fotoğrafını izinsiz yüklersen, bundan doğan taleplerden ve zararlardan emredici tüketici hukukunun izin verdiği ölçüde sen sorumlu olursun.',
+          ],
+        },
+        {
           id: 'termination',
-          heading: '13. İlişkinin sona ermesi',
+          heading: '15. İlişkinin sona ermesi',
           blocks: [
             'Hizmeti dilediğin zaman kullanmayı bırakabilir ve cihazındaki verilerini silebilirsin. Bu Koşulların ciddi veya tekrarlanan ihlali hâlinde erişimini askıya alabilir veya sonlandırabiliriz.',
           ],
         },
         {
           id: 'law',
-          heading: '14. Uygulanacak hukuk ve uyuşmazlıklar',
+          heading: '16. Uygulanacak hukuk ve uyuşmazlıklar',
           blocks: [
             `Bu Koşullar ${C.governingLaw} hukukuna tabidir; ancak bu, tüketicileri ikamet ettikleri ülkenin emredici hükümlerinin sağladığı korumadan yoksun bırakmaz. AB’deki tüketiciler ikamet ettikleri ülkenin mahkemelerinde dava açabilir. Türkiye’deki tüketiciler, her yıl belirlenen parasal sınırlar dahilinde Tüketici Hakem Heyetlerine veya Tüketici Mahkemelerine başvurabilir.`,
           ],
         },
         {
           id: 'changes',
-          heading: '15. Bu Koşullardaki değişiklikler',
+          heading: '17. Bu Koşullardaki değişiklikler',
           blocks: [
             'Bu Koşulları güncelleyebiliriz. Son sürümün tarihini sayfanın başında gösterir, önemli değişiklikleri makul bir süre önce duyururuz. Değişiklikler yürürlüğe girdikten sonra Hizmeti kullanmaya devam edersen güncel Koşullar geçerli olur.',
           ],
         },
         {
+          id: 'general',
+          heading: '18. Genel hükümler',
+          blocks: [
+            'Bu Koşulların bir hükmü geçersiz sayılırsa geri kalanı yürürlükte kalır. Bir hükmü uygulamamamız ondan vazgeçtiğimiz anlamına gelmez. Bu Koşullardan doğan haklarını devredemezsin; biz ise haklarımızı, senin haklarını azaltmadan Hizmeti devralan bir şirkete devredebiliriz. Bu Koşullar, Gizlilik Politikası ile birlikte Hizmet konusunda aramızdaki sözleşmenin tamamıdır.',
+          ],
+        },
+        {
           id: 'contact',
-          heading: '16. İletişim',
+          heading: '19. İletişim',
           blocks: [`Bu Koşullarla ilgili soruların için: ${C.supportEmail}.`],
         },
       ],

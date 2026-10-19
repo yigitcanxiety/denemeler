@@ -67,7 +67,6 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="(tabs)" options={{ animation: fade }} />
-        <Stack.Screen name="consent" />
         <Stack.Screen name="tips" />
         <Stack.Screen name="camera" />
         <Stack.Screen name="analyzing" options={{ gestureEnabled: false, animation: fade }} />
