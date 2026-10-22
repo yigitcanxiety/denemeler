@@ -1,11 +1,11 @@
 import { jewelleryMetal, shadeMatch, shadeNames, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Assistant } from '@/components/assistant';
 import { Button, IconButton } from '@/components/button';
-import { ProfileBars, RadarChart } from '@/components/charts';
+import { ProfileBars } from '@/components/charts';
 import { Icon, type IconName } from '@/components/icon';
 import { LockedResult, QualityWarning } from '@/components/locked-result';
 import { PressableScale, Reveal } from '@/components/motion';
@@ -21,7 +21,7 @@ import { usePremium } from '@/hooks/use-premium';
 import { useStartAnalysis } from '@/hooks/use-start-analysis';
 import { lookSummary, resolveRecommendedLooks } from '@/lib/looks';
 import { completeQuiz } from '@/lib/quiz';
-import { profileBars, profilePoints, traitChips, type TraitChip } from '@/lib/results';
+import { profileBars, traitChips, type TraitChip } from '@/lib/results';
 import { uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
 import { colors, GUTTER, radii, spacing, TAB_CLEARANCE } from '@/theme';
@@ -83,14 +83,12 @@ export default function ResultsScreen() {
 function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Locale }) {
   const t = useT();
   const copy = uiCopy(locale);
-  const { width } = useWindowDimensions();
   const serverLookIds = useAppStore((s) => s.recommendedLookIds);
   const quiz = useAppStore((s) => s.quiz);
   const startAnalysis = useStartAnalysis();
   const analysisLocale = useAppStore((s) => s.analysisLocale);
   const analyzedAt = useAppStore((s) => s.analyzedAt);
   const [fresh] = useState(() => Date.now() - Date.parse(analyzedAt ?? '') < 8000);
-  const contentW = Math.min(width, 600) - GUTTER * 2;
   const chips = traitChips(analysis, t);
   const byId = (id: TraitChip['id']) => chips.find((c) => c.id === id)!;
   const lookIds = resolveRecommendedLooks(analysis, serverLookIds, completeQuiz(quiz));
@@ -126,7 +124,6 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
       <Reveal delay={60}>
         <Card style={styles.gap}>
           <SectionTitle>{copy.radarTitle}</SectionTitle>
-          <RadarChart points={profilePoints(analysis, locale)} width={contentW - 28} />
           <ProfileBars bars={profileBars(analysis, locale)} />
         </Card>
       </Reveal>
@@ -215,8 +212,8 @@ function FullResult({ analysis, locale }: { analysis: FaceAnalysis; locale: Loca
                 return cat.hexes
                   .map((hex, i) => ({ kind: cat.kind, hex, match: shadeMatch(hex, analysis), name: names[i] }))
                   .sort((a, b) => b.match - a.match)
-                  .map(({ name, ...shade }) => (
-                    <ShadeCard key={shade.hex} shade={shade} name={name} locale={locale} style={styles.shade} />
+                  .map(({ name, ...shade }, i) => (
+                    <ShadeCard key={shade.hex} shade={shade} name={name} locale={locale} showMatch={i === 0} style={styles.shade} />
                   ));
               })()}
             </ScrollView>

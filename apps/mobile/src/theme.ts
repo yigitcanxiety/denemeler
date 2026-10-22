@@ -14,7 +14,7 @@ export const colors = {
   mist: '#F6F4FE',
   ink: '#17141F',
   /** Secondary text (AA on white). */
-  muted: '#6B6679',
+  muted: '#57526A',
   line: '#E6E2F3',
 
   violet: '#7457F5',

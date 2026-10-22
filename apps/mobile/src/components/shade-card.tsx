@@ -48,12 +48,15 @@ export function ShadeCard({
   shade,
   locale,
   name,
+  showMatch = true,
   style,
 }: {
   shade: ShadeCardData;
   locale: Locale;
   /** Colour name; defaults to the nearest named shade. */
   name?: string;
+  /** Only the best shade of a row shows its match pill; the rest would all repeat ~the same number. */
+  showMatch?: boolean;
   style?: StyleProp<ViewStyle>;
 }) {
   const copy = uiCopy(locale);
@@ -67,16 +70,13 @@ export function ShadeCard({
       accessibilityLabel={`${colour} ${kind}. ${copy.match(percentLabel(shade.match, locale))}. ${copy.findInStore}`}
       style={[styles.card, style]}
     >
-      <MatchPill percent={shade.match} />
+      {showMatch ? <MatchPill percent={shade.match} /> : null}
       <View style={[styles.well, { backgroundColor: tint(shade.hex, 0.84) }]}>
         <Product kind={shade.kind} hex={shade.hex} />
       </View>
-      <AppText variant="smallStrong" numberOfLines={2} style={styles.name}>
-        {colour}
-      </AppText>
       <View style={styles.storeRow}>
-        <AppText variant="caption" numberOfLines={1} style={styles.flexShrink}>
-          {kind}
+        <AppText variant="smallStrong" numberOfLines={2} style={styles.name}>
+          {colour}
         </AppText>
         <Icon name="arrow" size={10} color={colors.muted} />
       </View>
@@ -112,9 +112,8 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: colors.paper,
   },
-  name: { minHeight: 34 },
+  name: { flexShrink: 1, minHeight: 34 },
   storeRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  flexShrink: { flexShrink: 1 },
   well: { height: 66, borderRadius: 11, alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 8 },
   bullet: { width: 18, height: 30, borderTopLeftRadius: 9, borderTopRightRadius: 4 },
   case: { width: 24, height: 16, borderRadius: 3, backgroundColor: 'rgba(23,20,31,0.16)' },

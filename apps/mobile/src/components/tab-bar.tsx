@@ -64,7 +64,7 @@ export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
           pressedScale={0.94}
           style={styles.scan}
         >
-          <Icon name="scan" size={24} color={colors.violet} strokeWidth={2} />
+          <Icon name="scan" size={24} color={colors.onViolet} strokeWidth={2} />
         </PressableScale>
       </View>
       <View style={styles.half}>{item(2)}</View>
@@ -93,11 +93,9 @@ const styles = StyleSheet.create({
     borderRadius: 29,
     marginTop: -30,
     marginBottom: 2,
-    backgroundColor: colors.paper,
+    backgroundColor: colors.violet,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.violetSoft,
     ...shadows.button,
     shadowOpacity: 0.35,
   },

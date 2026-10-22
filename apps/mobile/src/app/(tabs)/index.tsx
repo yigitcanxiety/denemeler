@@ -4,21 +4,21 @@ import { router } from 'expo-router';
 import { StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { Assistant } from '@/components/assistant';
-import { IconButton } from '@/components/button';
+import { Button, IconButton } from '@/components/button';
 import { Icon, type IconName } from '@/components/icon';
 import { PressableScale, Reveal } from '@/components/motion';
 import { CoverImage, PORTRAITS } from '@/components/portraits';
 import { Screen } from '@/components/screen';
 import { AppText } from '@/components/text';
-import { Eyebrow, FloatChip, Pill, Ring, SwatchRow, Wordmark } from '@/components/ui';
+import { Eyebrow, FloatChip, Pill, SwatchRow, Wordmark } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
 import { usePremium } from '@/hooks/use-premium';
 import { useStartAnalysis } from '@/hooks/use-start-analysis';
 import { resolveRecommendedLooks } from '@/lib/looks';
-import { confidencePercent, seasonText, topShades } from '@/lib/results';
-import { percentLabel, uiCopy } from '@/lib/ui-copy';
+import { seasonText } from '@/lib/results';
+import { uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
-import { colors, fonts, GUTTER, radii, shadows, spacing, TAB_CLEARANCE } from '@/theme';
+import { colors, fonts, GUTTER, radii, spacing, TAB_CLEARANCE } from '@/theme';
 
 export default function TodayScreen() {
   const t = useT();
@@ -33,7 +33,6 @@ export default function TodayScreen() {
   // Chips over the editorial portrait show the user's own values once they have a result.
   const sample = analysis ?? mockAnalysisFor(locale);
   const season = seasonText(sample, locale);
-  const fit = topShades(sample)[0]?.match ?? 90;
   const heroW = Math.min(width, 560) - GUTTER * 2;
   const heroH = Math.round(heroW * 0.9);
 
@@ -68,39 +67,13 @@ export default function TodayScreen() {
 
           {analysis ? null : <Pill tone="butter" label={copy.sample} style={styles.sample} />}
 
-          <FloatChip style={styles.chipUndertone}>
-            <AppText style={styles.chipLabel}>{copy.chipUndertone}</AppText>
-            <AppText style={styles.chipValue}>
-              {`${t(`results.undertone.${sample.undertone}`)} · ${t(`results.skinDepth.${sample.skinDepth}`)}`}
-            </AppText>
-            <Pill tone="mint" label={t('results.confidence', { percent: confidencePercent(sample) })} />
-          </FloatChip>
-
           <FloatChip style={styles.chipSeason}>
             <AppText style={styles.chipLabel}>{copy.chipSeason}</AppText>
             <AppText style={styles.chipValue}>{season.name}</AppText>
           </FloatChip>
 
-          <FloatChip style={styles.chipFit}>
-            <AppText style={styles.chipLabel}>{copy.chipFit}</AppText>
-            <View style={styles.ringWrap}>
-              <Ring size={40} stroke={4} progress={fit / 100} />
-              <AppText style={styles.ringText}>{percentLabel(fit, locale)}</AppText>
-            </View>
-          </FloatChip>
-
-          <PressableScale
-            onPress={startAnalysis}
-            accessibilityRole="button"
-            accessibilityLabel={t('common.startAnalysis')}
-            style={styles.fabWrap}
-          >
-            <LinearGradient colors={[colors.violet2, colors.violet]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.fab}>
-              <Icon name="sparkle" size={13} color={colors.onViolet} />
-              <AppText style={styles.fabText}>Tonelle</AppText>
-            </LinearGradient>
-          </PressableScale>
         </View>
+        <Button label={t('common.startAnalysis')} icon="sparkle" onPress={startAnalysis} style={styles.cta} />
       </Reveal>
 
       <Reveal delay={160} style={styles.features}>
@@ -172,16 +145,12 @@ function FeatureCard({
       accessibilityLabel={`${title}. ${body}`}
       style={[styles.feature, { backgroundColor: tone === 'violet' ? colors.violetSoft : colors.roseSoft }]}
     >
-      <View style={styles.featureTop}>
-        <View style={styles.featureIcon}>
-          <Icon name={icon} size={18} color={accent} />
-        </View>
-        <Icon name="arrow" size={16} color={accent} />
+      <View style={styles.featureIcon}>
+        <Icon name={icon} size={18} color={accent} />
       </View>
-      <AppText variant="label" style={styles.featureTitle}>
+      <AppText variant="label" style={styles.featureTitle} numberOfLines={1}>
         {title}
       </AppText>
-      <AppText variant="small">{body}</AppText>
     </PressableScale>
   );
 }
@@ -194,26 +163,12 @@ const styles = StyleSheet.create({
   title: { fontSize: 28, lineHeight: 31 },
   hero: { borderRadius: radii.xl, overflow: 'hidden', backgroundColor: colors.mist },
   sample: { position: 'absolute', right: 10, top: 10 },
-  chipUndertone: { left: 10, top: 28 },
-  chipSeason: { right: 10, top: '30%' },
-  chipFit: { left: 10, bottom: 18, alignItems: 'center' },
+  chipSeason: { left: 10, bottom: 12 },
+  cta: { marginTop: spacing.sm },
   chipLabel: { fontFamily: fonts.medium, fontSize: 10.5, lineHeight: 13, color: colors.muted },
   chipValue: { fontFamily: fonts.bold, fontSize: 12, lineHeight: 16, color: colors.ink, marginBottom: 2 },
-  ringWrap: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  ringText: { position: 'absolute', fontFamily: fonts.bold, fontSize: 9.5, color: colors.ink },
-  fabWrap: { position: 'absolute', right: 14, bottom: 16, borderRadius: radii.pill, ...shadows.button },
-  fab: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    height: 44,
-    paddingHorizontal: 18,
-    borderRadius: radii.pill,
-  },
-  fabText: { fontFamily: fonts.display, fontSize: 18, lineHeight: 22, color: colors.onViolet },
   features: { flexDirection: 'row', gap: 10 },
-  feature: { flex: 1, borderRadius: radii.card, padding: 14, gap: 4, minHeight: 128 },
-  featureTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
+  feature: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, borderRadius: radii.card, padding: 12 },
   featureIcon: {
     width: 36,
     height: 36,
@@ -222,7 +177,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  featureTitle: { fontSize: 15 },
+  featureTitle: { flexShrink: 1, fontSize: 14 },
   last: { borderRadius: radii.card, borderWidth: 1, borderColor: colors.line, padding: 14, gap: 12 },
   lastHead: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   lastSeason: { fontSize: 22, marginTop: 2 },
