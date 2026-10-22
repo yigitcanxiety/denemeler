@@ -63,7 +63,7 @@ export default function TodayScreen() {
 
       <Reveal delay={80}>
         <View style={[styles.hero, { height: heroH }]} accessible accessibilityLabel={analysis ? copy.heroImageLabel : `${copy.heroImageLabel} (${copy.sample})`}>
-          <LinearGradient colors={['#FFFFFF', '#F3F0FF']} style={StyleSheet.absoluteFill} />
+          <LinearGradient colors={[colors.paper, colors.mist]} style={StyleSheet.absoluteFill} />
           <CoverImage source={PORTRAITS.hero} focusY={0.18} style={StyleSheet.absoluteFill} />
 
           {analysis ? null : <Pill tone="butter" label={copy.sample} style={styles.sample} />}
