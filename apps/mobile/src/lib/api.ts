@@ -5,11 +5,13 @@ import {
   ApiErrorSchema,
   RenderRequestSchema,
   RenderResponseSchema,
+  SkinAnalyzeResponseSchema,
   type AnalyzeRequest,
   type AnalyzeResponse,
   type ApiErrorCode,
   type RenderRequest,
   type RenderResponse,
+  type SkinAnalyzeResponse,
   type TranslationKey,
 } from '@tonelle/shared';
 import type { z } from 'zod';
@@ -184,6 +186,22 @@ export function createApiClient(options: ApiClientOptions) {
           `${baseUrl}/api/analyze`,
           body.data,
           AnalyzeResponseSchema,
+          opts.timeoutMs ?? analyzeTimeout,
+          opts.signal,
+        ),
+      );
+    },
+
+    async analyzeSkin(request: AnalyzeRequest, opts: RequestOptions = {}): Promise<SkinAnalyzeResponse> {
+      assertImage(request.image);
+      const body = AnalyzeRequestSchema.safeParse(request);
+      if (!body.success) throw new ApiClientError('bad_request', 'Invalid analyze request');
+      return checkMock(
+        await postJson(
+          fetchImpl,
+          `${baseUrl}/api/analyze-skin`,
+          body.data,
+          SkinAnalyzeResponseSchema,
           opts.timeoutMs ?? analyzeTimeout,
           opts.signal,
         ),

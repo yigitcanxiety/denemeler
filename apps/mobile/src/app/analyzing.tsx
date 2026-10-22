@@ -16,6 +16,7 @@ import { celebrate, haptic } from '@/lib/feedback';
 import {
   ANALYZING_MIN_MS,
   ANALYZING_STEPS,
+  ANALYZING_STEP_MS,
   analyzingProgress,
   analyzingStepIndex,
   isAnalysisSlow,
@@ -36,6 +37,8 @@ export default function AnalyzingScreen() {
   const quiz = useAppStore((s) => s.quiz);
   const anonId = useAppStore((s) => s.anonId);
   const setAnalysis = useAppStore((s) => s.setAnalysis);
+  const setSkin = useAppStore((s) => s.setSkin);
+  const skinMode = useAppStore((s) => s.scanMode === 'skin');
 
   const [elapsed, setElapsed] = useState(0);
   const [done, setDone] = useState(false);
@@ -61,20 +64,27 @@ export default function AnalyzingScreen() {
 
     (async () => {
       try {
-        const response = await api.analyze(
-          { image: photo.dataUrl, locale, quiz: completeQuiz(quiz), appUserId: anonId ?? undefined },
-          { signal: controller.signal },
-        );
+        const request = { image: photo.dataUrl, locale, quiz: completeQuiz(quiz), appUserId: anonId ?? undefined };
+        const response = skinMode
+          ? await api.analyzeSkin(request, { signal: controller.signal })
+          : await api.analyze(request, { signal: controller.signal });
         const remaining = ANALYZING_MIN_MS - (Date.now() - started);
         if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
         if (controller.signal.aborted) return;
-        setAnalysis(response, locale);
+        if ('skin' in response) setSkin(response);
+        else setAnalysis(response, locale);
         setDone(true);
         celebrate('reveal');
         // Let the ring reach 100% before moving on.
         await new Promise((r) => setTimeout(r, 450));
         if (controller.signal.aborted) return;
-        if (getIsPremium()) router.dismissTo('/results');
+        if (skinMode) {
+          if (getIsPremium()) {
+            // Drop the selfie flow from the stack so back from the result lands on home, not on this screen.
+            router.dismissTo('/');
+            router.push('/skin');
+          } else router.replace('/paywall');
+        } else if (getIsPremium()) router.dismissTo('/results');
         else router.replace('/teaser');
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -105,15 +115,17 @@ export default function AnalyzingScreen() {
   /** Leaves the screen; unmounting aborts the in-flight request (effect cleanup). */
   const cancel = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
-  const stepIndex = done ? ANALYZING_STEPS.length : analyzingStepIndex(elapsed);
+  const steps = skinMode ? copy.skinSteps : ANALYZING_STEPS.map((key) => t(key));
+  const stepCount = steps.length;
+  const stepIndex = done ? steps.length : analyzingStepIndex(elapsed, ANALYZING_STEP_MS, steps.length);
 
   // A light tick each time a checklist step completes.
   useEffect(() => {
-    if (stepIndex > 0 && stepIndex < ANALYZING_STEPS.length) haptic.select();
-  }, [stepIndex]);
+    if (stepIndex > 0 && stepIndex < stepCount) haptic.select();
+  }, [stepIndex, stepCount]);
   const progress = analyzingProgress(elapsed, done);
   const size = Math.min(width - 96, 260);
-  const current = ANALYZING_STEPS[Math.min(stepIndex, ANALYZING_STEPS.length - 1)] ?? ANALYZING_STEPS[0];
+  const current = steps[Math.min(stepIndex, steps.length - 1)] ?? '';
 
   return (
     <Screen
@@ -131,7 +143,7 @@ export default function AnalyzingScreen() {
       <View style={styles.head}>
         <Eyebrow label={copy.scanChip} />
         <AppText variant="h2" align="center" accessibilityRole="header">
-          {copy.scanTitle}
+          {skinMode ? copy.skinScanTitle : copy.scanTitle}
         </AppText>
       </View>
 
@@ -151,11 +163,11 @@ export default function AnalyzingScreen() {
       {errorKey ? (
         <Notice tone="error" message={t(errorKey)} />
       ) : (
-        <View style={styles.steps} accessibilityLiveRegion="polite" accessible accessibilityLabel={t(current)}>
-          {ANALYZING_STEPS.map((key, i) => {
+        <View style={styles.steps} accessibilityLiveRegion="polite" accessible accessibilityLabel={current}>
+          {steps.map((label, i) => {
             const state = i < stepIndex ? 'done' : i === stepIndex ? 'now' : 'todo';
             return (
-              <Reveal key={key} delay={i * 50} style={styles.stepRow}>
+              <Reveal key={label} delay={i * 50} style={styles.stepRow}>
                 <View style={[styles.stepDot, state === 'done' && styles.stepDotDone]}>
                   {state === 'done' ? <Icon name="check" size={11} color={colors.onViolet} strokeWidth={2.6} /> : null}
                   {state === 'now' ? <View style={styles.nowDot} /> : null}
@@ -166,7 +178,7 @@ export default function AnalyzingScreen() {
                   style={[styles.stepText, state === 'now' && styles.stepNow]}
                   numberOfLines={1}
                 >
-                  {state === 'now' ? `${t(key)}…` : t(key)}
+                  {state === 'now' ? `${label}…` : label}
                 </AppText>
               </Reveal>
             );
