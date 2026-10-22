@@ -1,4 +1,4 @@
-import { MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL, type AnalyzeResponse } from '@tonelle/shared';
+import { MOCK_ANALYSIS, MOCK_IMAGE_DATA_URL, mockSkinAnalysisFor, type AnalyzeResponse } from '@tonelle/shared';
 import { describe, expect, it, vi } from 'vitest';
 
 import { ApiClientError, codeForStatus, createApiClient, errorKeyFor, errorMessageKey, type FetchLike } from './api';
@@ -95,6 +95,33 @@ describe('createApiClient.analyze', () => {
     const huge = `data:image/jpeg;base64,${'A'.repeat(6 * 1024 * 1024)}`;
     await expect(client(fetchImpl).analyze({ image: huge, locale: 'en' })).rejects.toMatchObject({ code: 'too_large' });
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+});
+
+describe('createApiClient.analyzeSkin', () => {
+  const skinResponse = { skin: mockSkinAnalysisFor('tr'), mock: false };
+
+  it('posts to /api/analyze-skin and validates the response', async () => {
+    const fetchImpl = vi.fn<FetchLike>(async () => jsonResponse(200, skinResponse));
+    const result = await client(fetchImpl).analyzeSkin({ image: MOCK_IMAGE_DATA_URL, locale: 'tr' });
+    expect(result.skin.skinType).toBe(skinResponse.skin.skinType);
+    const [url, init] = fetchImpl.mock.calls[0]!;
+    expect(url).toBe('https://api.example.com/api/analyze-skin');
+    expect(JSON.parse(init.body as string)).toEqual({ image: MOCK_IMAGE_DATA_URL, locale: 'tr' });
+  });
+
+  it('rejects mock answers when rejectMock is set', async () => {
+    const fetchImpl = vi.fn<FetchLike>(async () => jsonResponse(200, { ...skinResponse, mock: true }));
+    await expect(client(fetchImpl, { rejectMock: true }).analyzeSkin({ image: MOCK_IMAGE_DATA_URL, locale: 'tr' })).rejects.toMatchObject({
+      code: 'provider_error',
+    });
+  });
+
+  it('rejects a colour-analysis body', async () => {
+    const fetchImpl: FetchLike = async () => jsonResponse(200, okResponse);
+    await expect(client(fetchImpl).analyzeSkin({ image: MOCK_IMAGE_DATA_URL, locale: 'en' })).rejects.toMatchObject({
+      code: 'invalid_response',
+    });
   });
 });
 

@@ -60,6 +60,8 @@ export default function PaywallScreen() {
   const [attempt, setAttempt] = useState(0);
   const hasAnalysis = useAppStore((s) => s.analysis !== null);
   const hasPhoto = useAppStore((s) => s.photo !== null);
+  // A waiting skin selfie goes to the skin analysis even when an old colour report exists.
+  const skinFlow = useAppStore((s) => s.scanMode === 'skin');
   const pendingNav = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -116,7 +118,8 @@ export default function PaywallScreen() {
   };
 
   /** After unlocking: the report if there is one, the analysis of a waiting selfie, else home. */
-  const goAfterUnlock = () => router.dismissTo(hasAnalysis ? '/results' : hasPhoto ? '/analyzing' : '/');
+  const goAfterUnlock = () =>
+    router.dismissTo(hasPhoto && skinFlow ? '/analyzing' : hasAnalysis ? '/results' : hasPhoto ? '/analyzing' : '/');
 
   const onSuccess = () =>
     leave(() => {
@@ -225,7 +228,7 @@ export default function PaywallScreen() {
 
       <Reveal style={styles.intro}>
         <AppText variant="display" accessibilityRole="header">
-          {hasAnalysis ? copy.paywallTitle : t('paywall.titleNeutral')}
+          {hasAnalysis && !skinFlow ? copy.paywallTitle : t('paywall.titleNeutral')}
         </AppText>
         <View style={styles.features}>
           {FEATURES.map((key) => (

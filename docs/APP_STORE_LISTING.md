@@ -4,7 +4,7 @@ App Store Connect'e kopyala-yapıştır için. ASC uygulama kimliği **682297360
 satıcı Yiğit Gördebil (bireysel). Kurallar: [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/),
 görseller için `DEVAM.md` → "Mağaza görselleri kontrol listesi".
 
-> **Doğruluk (2.3.1):** mobil uygulamada cilt analizi yok (yalnız web'de); mağaza metinleri yalnız uygulamadaki özellikleri anlatır.
+> **Doğruluk (2.3.1):** mobil uygulamada kozmetik cilt bakım analizi (cilt tipi, bakım rutini) var, tıbbi teşhis içermez; mağaza metinleri yalnız uygulamadaki özellikleri anlatır.
 >
 > **İncelemeye gönderme kuralı:** yalnız RevenueCat anahtarıyla (`EXPO_PUBLIC_RC_IOS_KEY`) derlenmiş bir build
 > seçilir. Build 1 (2026-10-15) anahtarsızdır: ödeme ekranı "DEV" modunda, satın alma bedava açılır → 2.1 reddi.
@@ -49,6 +49,7 @@ NE ALIRSIN
 • Kişisel paletin: giysi ve aksesuarda sana yakışan renkler, kaçınman gerekenler
 • Makyaj tonların: fondöten alt tonu, ruj, allık ve far önerileri
 • Makyaj önizlemeleri: doğal, ofis, akşam gibi hazır görünümleri kendi fotoğrafında gör
+• Cilt bakım analizi: cilt tipin, cildinin durumu, sabah ve akşam rutinin ve sana uygun içerikler
 • Kısa test: cilt tipin ve tarzına göre öneriler kişiselleşir
 
 GİZLİLİĞİN ÖNCE GELİR
@@ -75,6 +76,7 @@ WHAT YOU GET
 • Your personal palette: colours that suit you in clothes and accessories, and the ones to avoid
 • Your makeup shades: foundation undertone, lipstick, blush and eyeshadow picks
 • Makeup previews: see ready-made looks such as natural, office or evening on your own photo
+• Skin-care analysis: your skin type, how your skin looks, a morning and evening routine and ingredients that suit you
 • A short quiz tailors the recommendations to your skin and style
 
 YOUR PRIVACY COMES FIRST

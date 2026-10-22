@@ -78,6 +78,7 @@ export default function RootLayout() {
             animation: reduced ? 'none' : 'slide_from_bottom',
           }}
         />
+        <Stack.Screen name="skin" />
         <Stack.Screen name="look/[id]" />
         <Stack.Screen name="quiz" />
         <Stack.Screen name="share" options={{ presentation: 'modal' }} />

@@ -1,4 +1,4 @@
-import { AnalyzeResponseSchema, MOCK_IMAGE_DATA_URL, RenderResponseSchema } from '@tonelle/shared';
+import { AnalyzeResponseSchema, MOCK_IMAGE_DATA_URL, RenderResponseSchema, SkinAnalyzeResponseSchema } from '@tonelle/shared';
 import { describe, expect, it } from 'vitest';
 
 import { isWebDemoMode } from './config';
@@ -25,6 +25,11 @@ describe('web demo mode', () => {
       locale: 'tr',
     });
     expect(RenderResponseSchema.parse(rendered)).toEqual({ image: MOCK_IMAGE_DATA_URL, lookId, mock: true });
+  });
+
+  it('answers skin analysis with the shared mock', async () => {
+    const skin = await createDemoApiClient({ delayMs: 0 }).analyzeSkin({ image: MOCK_IMAGE_DATA_URL, locale: 'en' });
+    expect(SkinAnalyzeResponseSchema.parse(skin).mock).toBe(true);
   });
 
   it('rejects when aborted', async () => {
