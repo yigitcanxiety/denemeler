@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import type { TranslationKey } from '@tonelle/shared';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 
@@ -49,6 +50,7 @@ export default function PaywallScreen() {
   const locale = useLocale();
   const copy = uiCopy(locale);
   const [status, setStatus] = useState<Status>('loading');
+  const [loadErrorKey, setLoadErrorKey] = useState<TranslationKey>('errors.network');
   const [data, setData] = useState<PaywallData>({ plans: [], exitOffer: null });
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [busy, setBusy] = useState<'purchase' | 'restore' | null>(null);
@@ -69,7 +71,11 @@ export default function PaywallScreen() {
         setSelectedKey((key) => key ?? defaultPlanKey(result.plans));
         setStatus(result.plans.length ? 'ready' : 'error');
       })
-      .catch(() => active && setStatus('error'));
+      .catch((error) => {
+        if (!active) return;
+        setLoadErrorKey(purchaseMessageKey(error, 'errors.network'));
+        setStatus('error');
+      });
     return () => {
       active = false;
     };
@@ -232,7 +238,7 @@ export default function PaywallScreen() {
         <ActivityIndicator color={colors.violet} style={styles.loader} accessibilityLabel={t('common.loading')} />
       ) : status === 'error' ? (
         <View style={styles.errorBox}>
-          <Notice tone="error" message={t(isUnavailablePurchases ? 'paywall.purchaseUnavailable' : 'errors.network')} />
+          <Notice tone="error" message={t(isUnavailablePurchases ? 'paywall.purchaseUnavailable' : loadErrorKey)} />
           {isUnavailablePurchases ? null : <Button label={t('common.retry')} variant="ghost" onPress={reload} />}
         </View>
       ) : (

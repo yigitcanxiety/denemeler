@@ -89,8 +89,12 @@ export async function loadPaywall(locale: Locale): Promise<PaywallData> {
     const region = regionForLocale(locale);
     return { plans: devPlans(region, locale), exitOffer: devExitPlan(region, locale) };
   }
-  const offerings = await Purchases.getOfferings();
+  // The store answering without products (e.g. Paid Apps agreement not active) is not a network problem.
+  const offerings = await Purchases.getOfferings().catch((error: Partial<PurchasesError>) => {
+    throw error?.code === PURCHASES_ERROR_CODE.NETWORK_ERROR ? error : new PurchaseFailureError('unavailable');
+  });
   const plans = plansFromOfferings(offerings);
+  if (!plans.length) throw new PurchaseFailureError('unavailable');
   const exitOffer = exitOfferPlanFrom(offerings);
   return Platform.OS === 'ios' ? withIosTrialEligibility(plans, exitOffer) : { plans, exitOffer };
 }
