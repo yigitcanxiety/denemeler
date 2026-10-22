@@ -53,7 +53,7 @@ const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
   scheme: 'tonelle',
   version: '1.0.0',
   orientation: 'portrait',
-  userInterfaceStyle: 'light',
+  userInterfaceStyle: 'automatic',
   icon: './assets/images/icon.png',
   backgroundColor: PAPER,
   ios: {
@@ -128,6 +128,7 @@ const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
         backgroundColor: '#F3EFFD',
         image: './assets/images/palette.png',
         imageWidth: 160,
+        dark: { backgroundColor: '#16121F', image: './assets/images/palette.png' },
       },
     ],
     ['expo-localization', { supportedLocales: { ios: [...LANGUAGES], android: [...LANGUAGES] } }],

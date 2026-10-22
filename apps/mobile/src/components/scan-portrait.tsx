@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Image, StyleSheet, View, type ImageSourcePropType } from 'react-native';
 import Animated, {
   Easing,
+  type SharedValue,
   useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
@@ -16,15 +17,52 @@ import { colors, motion } from '@/theme';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-/** Face-mesh landmarks in a 188×188 box (from the approved prototype). */
-const DOTS: [number, number, number][] = [
-  [68, 82, 2], [120, 82, 2], [94, 104, 2], [80, 128, 2], [108, 128, 2], [94, 60, 2], [56, 104, 1.6], [132, 104, 1.6],
-];
-const MESH = 'M68 82 94 60 120 82 94 104Z M56 104 68 82 M132 104 120 82 M80 128 94 104 108 128Z M56 104 80 128 M132 104 108 128';
+/** Face landmarks in a 188×188 box: jaw/face outline, brows, eyes, nose, lips, cheeks, forehead. */
+const mirror = (pts: [number, number][]): [number, number][] => [...pts, ...pts.map(([x, y]): [number, number] => [188 - x, y])];
+const OUTLINE: [number, number][] = Array.from({ length: 13 }, (_, i) => {
+  const a = ((160 + i * 18.3) * Math.PI) / 180;
+  return [94 + 54 * Math.cos(a), 98 - 64 * Math.sin(a)];
+});
+const BROWS = mirror([[58, 70], [68, 65], [80, 66]]);
+const EYES = mirror([[62, 82], [71, 78], [80, 82], [71, 86]]);
+const NOSE: [number, number][] = [[94, 84], [94, 98], [87, 109], [94, 112], [101, 109]];
+const LIPS: [number, number][] = [[79, 128], [87, 123], [94, 125], [101, 123], [109, 128], [101, 134], [94, 136], [87, 134]];
+const CHEEKS = mirror([[58, 104], [70, 112]]);
+const FOREHEAD: [number, number][] = [[76, 50], [94, 46], [112, 50]];
+/** Order = the order dots light up while the scan progresses (outline first, then features). */
+const DOTS = [...OUTLINE, ...FOREHEAD, ...BROWS, ...EYES, ...NOSE, ...CHEEKS, ...LIPS];
+const poly = (pts: [number, number][], close = false) =>
+  `M${pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L')}${close ? 'Z' : ''}`;
+const MESH = [
+  poly(OUTLINE),
+  poly(EYES.slice(0, 4), true),
+  poly(EYES.slice(4), true),
+  poly(BROWS.slice(0, 3)),
+  poly(BROWS.slice(3)),
+  poly(NOSE.slice(0, 2)) + ' ' + poly(NOSE.slice(2)),
+  poly(LIPS, true),
+  poly([EYES[2]!, NOSE[0]!, EYES[6]!]),
+  poly([CHEEKS[0]!, NOSE[2]!, CHEEKS[2]!]),
+  poly([CHEEKS[1]!, LIPS[0]!]) + ' ' + poly([CHEEKS[3]!, LIPS[4]!]),
+].join(' ');
+const MESH_LEN = 600; // ≈ total path length (589)
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
+
+/** One landmark: appears once the scan reaches it, then pulses in a wave that runs across the face. */
+function Dot({ x, y, index, clock, reveal }: { x: number; y: number; index: number; clock: SharedValue<number>; reveal: SharedValue<number> }) {
+  const props = useAnimatedProps(() => {
+    const shown = Math.min(1, Math.max(0, reveal.value * DOTS.length - index + 1));
+    const wave = 0.5 + 0.5 * Math.sin(2 * Math.PI * (clock.value - index / DOTS.length));
+    return { r: shown * (1.3 + wave * 1.5), opacity: shown * (0.45 + wave * 0.55) };
+  });
+  return <AnimatedCircle cx={x} cy={y} fill="#FFFFFF" animatedProps={props} />;
+}
 
 /**
- * Circular photo inside a progress ring with a face-mesh overlay and a looping soft violet
- * scan band (DESIGN.md §3.4). Reduced motion: no loop, the band rests mid-face.
+ * Circular photo inside a progress ring with a live face mesh: landmarks light up as the
+ * analysis progresses and pulse in a wave, the mesh draws itself, and a soft violet band
+ * sweeps the face (DESIGN.md §3.4). Reduced motion: static mesh, the band rests mid-face.
  */
 export function ScanPortrait({
   size,
@@ -62,6 +100,23 @@ export function ScanPortrait({
   }, [reduced, active, band]);
   const bandStyle = useAnimatedStyle(() => ({ transform: [{ translateY: band.value * inner }] }));
 
+  // Wave clock for the dot pulse; the mesh keeps redrawing so the face reads as "being read".
+  const clock = useSharedValue(0);
+  useEffect(() => {
+    if (reduced || !active) {
+      clock.set(0.25);
+      return;
+    }
+    clock.set(0);
+    clock.set(withRepeat(withTiming(1, { duration: 1600, easing: Easing.linear }), -1, false));
+  }, [reduced, active, clock]);
+  const reveal = useSharedValue(reduced ? 1 : 0);
+  useEffect(() => {
+    // Dots run a little ahead of the ring so the whole face is mapped well before 100%.
+    reveal.set(withTiming(reduced ? 1 : Math.min(1, progress * 1.6 + 0.08), { duration: reduced ? 0 : 450 }));
+  }, [progress, reduced, reveal]);
+  const meshProps = useAnimatedProps(() => ({ strokeDashoffset: MESH_LEN * (1 - reveal.value) }));
+
   return (
     <View style={{ width: size, height: size }}>
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
@@ -92,14 +147,19 @@ export function ScanPortrait({
           />
         </Animated.View>
         <Svg width={inner} height={inner} viewBox="0 0 188 188" style={StyleSheet.absoluteFill}>
-          <G opacity={0.55}>
-            <Path d={MESH} stroke="#FFFFFF" strokeWidth={0.8} fill="none" />
+          <G opacity={0.5}>
+            <AnimatedPath
+              d={MESH}
+              stroke="#FFFFFF"
+              strokeWidth={0.7}
+              fill="none"
+              strokeDasharray={[MESH_LEN, MESH_LEN]}
+              animatedProps={meshProps}
+            />
           </G>
-          <G opacity={0.95}>
-            {DOTS.map(([x, y, rad]) => (
-              <Circle key={`${x}-${y}`} cx={x} cy={y} r={rad} fill="#FFFFFF" />
-            ))}
-          </G>
+          {DOTS.map(([x, y], i) => (
+            <Dot key={i} x={x} y={y} index={i} clock={clock} reveal={reveal} />
+          ))}
         </Svg>
       </View>
     </View>

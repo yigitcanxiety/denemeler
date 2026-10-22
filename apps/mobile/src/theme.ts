@@ -2,10 +2,10 @@
  * Tonelle design tokens for React Native — Design Language v3 ("Aura").
  * Source of truth: docs/DESIGN.md §2. Mirrors apps/web/src/styles/tokens.css — keep both in sync.
  */
-import type { TextStyle, ViewStyle } from 'react-native';
+import { Appearance, type TextStyle, type ViewStyle } from 'react-native';
 import { Easing } from 'react-native-reanimated';
 
-export const colors = {
+const light = {
   /** Lavender backdrop (marketing / section wells). */
   board: '#E9E5FB',
   /** App surface. */
@@ -38,7 +38,48 @@ export const colors = {
   onViolet: '#FFFFFF',
   floatBg: 'rgba(255,255,255,0.92)',
   scrim: 'rgba(23,20,31,0.45)',
-} as const;
+};
+
+type Palette = Record<keyof typeof light, string>;
+
+/** Same roles on a deep aubergine surface; accents lifted for contrast on dark. */
+const dark: Palette = {
+  board: '#1E1930',
+  paper: '#121019',
+  mist: '#1E1A2A',
+  ink: '#F4F1FB',
+  muted: '#B2ACC4',
+  line: '#2E2940',
+
+  violet: '#8E75FF',
+  violet2: '#A592FF',
+  violetSoft: '#2A2348',
+
+  rose: '#F08BA2',
+  roseSoft: '#3A1F2A',
+  roseInk: '#F6A9BB',
+
+  mint: '#1C3A26',
+  mintInk: '#86DDA0',
+  butter: '#3A3017',
+  butterInk: '#F2CF6B',
+
+  good: '#4CC873',
+  bad: '#F08A8A',
+
+  onViolet: '#FFFFFF',
+  floatBg: 'rgba(30,26,42,0.94)',
+  scrim: 'rgba(0,0,0,0.6)',
+};
+
+/**
+ * Light or dark follows the device setting. Styles are module-level StyleSheets, so the palette
+ * is picked once at launch.
+ * ponytail: a mode switch while the app stays open shows after the next launch; move to a theme
+ * context + per-render styles if that ever matters.
+ */
+export const colorScheme: 'light' | 'dark' = Appearance.getColorScheme() === 'dark' ? 'dark' : 'light';
+export const colors: Palette = colorScheme === 'dark' ? dark : light;
 
 /** Chart bar colours (Aura). */
 export const chart = {
@@ -49,12 +90,20 @@ export const chart = {
 } as const;
 
 /** Soft gradients behind the season card, per season family. */
-export const seasonGradient = {
-  spring: ['#FCEBD5', '#F9DCD6', '#EFE6FB'],
-  summer: ['#F3E1EE', '#E9E0FA', '#DDE8F8'],
-  autumn: ['#F8E4D8', '#EFD8E6', '#E6E0FA'],
-  winter: ['#E6E0FA', '#DCE4F8', '#F4DDEA'],
-} as const;
+export const seasonGradient =
+  colorScheme === 'dark'
+    ? ({
+        spring: ['#3B2A22', '#3A2430', '#2A2442'],
+        summer: ['#35253C', '#28254A', '#1F2B44'],
+        autumn: ['#3B2A23', '#36243B', '#272345'],
+        winter: ['#272345', '#1F2944', '#382538'],
+      } as const)
+    : ({
+        spring: ['#FCEBD5', '#F9DCD6', '#EFE6FB'],
+        summer: ['#F3E1EE', '#E9E0FA', '#DDE8F8'],
+        autumn: ['#F8E4D8', '#EFD8E6', '#E6E0FA'],
+        winter: ['#E6E0FA', '#DCE4F8', '#F4DDEA'],
+      } as const);
 
 export const radii = {
   sm: 12,

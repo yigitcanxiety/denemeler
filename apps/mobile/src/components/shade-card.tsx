@@ -11,10 +11,14 @@ import { PressableScale } from './motion';
 import { AppText } from './text';
 import { Eyebrow, MatchPill, SwatchRow } from './ui';
 
-/** Mixes a hex colour with white (0 = colour, 1 = white) for the soft well behind a tube. */
+/** Mixes a hex colour with the surface (0 = colour, 1 = surface) for the soft well behind a tube. */
 function tint(hex: string, amount: number): string {
   const n = Number.parseInt(hex.slice(1), 16);
-  const ch = (shift: number) => Math.round(((n >> shift) & 255) + (255 - ((n >> shift) & 255)) * amount);
+  const base = Number.parseInt(colors.paper.slice(1), 16);
+  const ch = (shift: number) => {
+    const c = (n >> shift) & 255;
+    return Math.round(c + (((base >> shift) & 255) - c) * amount);
+  };
   return `rgb(${ch(16)}, ${ch(8)}, ${ch(0)})`;
 }
 

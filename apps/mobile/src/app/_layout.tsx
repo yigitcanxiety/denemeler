@@ -55,7 +55,7 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
+      <StatusBar style="auto" />
       {isWebDemo ? <DemoBadge /> : null}
       <Stack
         screenOptions={{

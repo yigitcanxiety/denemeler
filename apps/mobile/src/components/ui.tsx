@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 11,
     paddingVertical: 5,
   },
-  eyebrowGlass: { backgroundColor: 'rgba(255,255,255,0.7)', borderColor: 'transparent', alignSelf: 'flex-start' },
+  eyebrowGlass: { backgroundColor: colors.floatBg, borderColor: 'transparent', alignSelf: 'flex-start' },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -14,20 +14,20 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { haptic, playSound } from '@/lib/feedback';
-import { colors } from '@/theme';
+import { colors, colorScheme, fonts } from '@/theme';
 
 import { SparkleBurst } from './sparkle-burst';
-import { AppText } from './text';
 
 /** Matches the native splash (app.config.ts) so the hand-off is invisible. */
-export const INTRO_BG = '#F3EFFD';
+export const INTRO_BG = colorScheme === 'dark' ? '#16121F' : '#F3EFFD';
 export const INTRO_PALETTE_SIZE = 160;
 const PALETTE = require('../../assets/images/palette.png');
 const RAYS = 12;
 
 /**
  * Opening: the palette from the logo spins, throws out light and sparkles and vanishes into a
- * soft flash, the wordmark rises, then everything fades into the app. ~2.5 s, tap to skip.
+ * soft flash; the wordmark tracks in out of a second glow and holds while it slowly grows, then
+ * everything fades into the app. ~3.5 s, tap to skip.
  * With reduce motion: a short static logo and a fade.
  */
 export function Intro({ onDone }: { onDone: () => void }) {
@@ -37,6 +37,8 @@ export function Intro({ onDone }: { onDone: () => void }) {
   const light = useSharedValue(0);
   const flash = useSharedValue(0);
   const word = useSharedValue(0);
+  const hold = useSharedValue(0);
+  const halo = useSharedValue(0);
   const veil = useSharedValue(1);
 
   const finish = (fast = false) => {
@@ -61,11 +63,13 @@ export function Intro({ onDone }: { onDone: () => void }) {
     );
     light.value = withDelay(500, withSequence(withTiming(1, { duration: 450 }), withDelay(250, withTiming(0, { duration: 700 }))));
     flash.value = withDelay(950, withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) }));
-    word.value = withDelay(1200, withTiming(1, { duration: 500, easing: Easing.out(Easing.cubic) }));
+    word.value = withDelay(1150, withTiming(1, { duration: 900, easing: Easing.out(Easing.cubic) }));
+    hold.value = withDelay(1150, withTiming(1, { duration: 2300, easing: Easing.out(Easing.quad) }));
+    halo.value = withDelay(1100, withSequence(withTiming(1, { duration: 700 }), withDelay(900, withTiming(0.35, { duration: 800 }))));
     const timers = [
       setTimeout(() => haptic.thud(), 600),
-      setTimeout(() => haptic.soft(), 1200),
-      setTimeout(() => finish(), 2100),
+      setTimeout(() => haptic.thud(), 1250),
+      setTimeout(() => finish(), 3450),
     ];
     return () => timers.forEach(clearTimeout);
     // One run per mount.
@@ -85,7 +89,13 @@ export function Intro({ onDone }: { onDone: () => void }) {
     opacity: (1 - flash.value) * (flash.value > 0 ? 0.85 : 0),
     transform: [{ scale: 0.4 + flash.value * 3 }],
   }));
-  const wordStyle = useAnimatedStyle(() => ({ opacity: word.value, transform: [{ translateY: (1 - word.value) * 14 }] }));
+  const wordStyle = useAnimatedStyle(() => ({
+    opacity: word.value,
+    transform: [{ translateY: (1 - word.value) * 14 }, { scale: 0.94 + hold.value * 0.1 }],
+  }));
+  // Letters start wide apart and track in, like a film title.
+  const wordTextStyle = useAnimatedStyle(() => ({ letterSpacing: -0.9 + (1 - word.value) * 14 }));
+  const haloStyle = useAnimatedStyle(() => ({ opacity: halo.value, transform: [{ scale: 0.6 + halo.value * 0.6 }] }));
   const veilStyle = useAnimatedStyle(() => ({ opacity: veil.value }));
 
   return (
@@ -122,10 +132,23 @@ export function Intro({ onDone }: { onDone: () => void }) {
 
         <Animated.Image source={PALETTE} style={[styles.palette, paletteStyle]} accessibilityIgnoresInvertColors />
 
+        <Animated.View style={[styles.layer, haloStyle]} renderToHardwareTextureAndroid shouldRasterizeIOS>
+          <Svg width={420} height={420}>
+            <Defs>
+              <RadialGradient id="halo" cx="50%" cy="50%" r="50%">
+                <Stop offset="0" stopColor="#FFFFFF" stopOpacity={0.95} />
+                <Stop offset="0.45" stopColor={colors.violet2} stopOpacity={0.28} />
+                <Stop offset="1" stopColor={colors.violet2} stopOpacity={0} />
+              </RadialGradient>
+            </Defs>
+            <Circle cx={210} cy={210} r={210} fill="url(#halo)" />
+          </Svg>
+        </Animated.View>
+
         <Animated.View style={[styles.word, wordStyle]}>
-          <AppText variant="display" style={styles.wordText} accessibilityRole="header">
+          <Animated.Text style={[styles.wordText, wordTextStyle]} accessibilityRole="header">
             Tonelle
-          </AppText>
+          </Animated.Text>
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -143,5 +166,5 @@ const styles = StyleSheet.create({
   flash: { width: 200, height: 200, borderRadius: 100, borderWidth: 6, borderColor: '#FFFFFF', backgroundColor: 'rgba(255,255,255,0.35)' },
   palette: { width: INTRO_PALETTE_SIZE, height: INTRO_PALETTE_SIZE },
   word: { position: 'absolute', alignItems: 'center' },
-  wordText: { fontSize: 46, lineHeight: 52, color: colors.ink, letterSpacing: -0.9 },
+  wordText: { fontFamily: fonts.display, fontSize: 52, lineHeight: 60, color: colors.ink },
 });
