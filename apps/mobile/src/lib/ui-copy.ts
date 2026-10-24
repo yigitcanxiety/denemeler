@@ -24,17 +24,16 @@ const CORE_COPY = {
 
     discover: 'Kendini keşfet',
     heroTitle: 'Yapay Zekâ ile Yüz Taraması, Anında Sonuç',
+    heroLead: 'Sana yakışan renkleri ve makyajı kendi yüzünde gör.',
     sample: 'Örnek',
     heroImageLabel: 'Örnek portre, yüzen analiz etiketleriyle',
     chipUndertone: 'Alt ton',
     chipSeason: 'Renk sezonu',
     chipFit: 'Uyum',
-    modeColorTitle: 'Renk analizi',
-    modeColorBody: 'Sezonunu ve paletini bul',
-    modeMakeupTitle: 'Makyaj denemesi',
-    modeMakeupBody: 'Görünümleri kendi yüzünde dene',
-    modeSkinTitle: 'Cilt bakım analizi',
-    modeSkinBody: 'Cilt tipini ve sana uygun bakımı öğren',
+    featureColorTitle: 'Renk Analizi',
+    featureColorBody: 'Sezonunu ve paletini bul',
+    featureMakeupTitle: 'Makyaj Denemesi',
+    featureMakeupBody: 'Görünümleri yüzünde dene',
     lastResult: 'Son analizin',
     seeResults: 'Sonuçları gör',
 
@@ -107,28 +106,6 @@ const CORE_COPY = {
     preferences: 'Makyaj tercihlerin',
     preferencesBody: 'Görünüm önerilerini kişiselleştir',
 
-    skinScanTitle: 'Cildini okuyoruz',
-    skinSteps: ['Yüz bulunuyor', 'Nem ve parlama okunuyor', 'Gözenek ve doku inceleniyor', 'Ton eşitliği ölçülüyor', 'Rutinin hazırlanıyor'],
-    skinTitle: 'Cilt analizin',
-    skinTypeTitle: 'Cilt tipin',
-    skinConcernsTitle: 'Cildinin durumu',
-    skinConcerns: {
-      hydration: 'Nem',
-      oiliness: 'Yağlanma',
-      pores: 'Gözenek görünürlüğü',
-      redness: 'Kızarıklık',
-      pigmentation: 'Leke ve ton farkı',
-      texture: 'Doku pürüzü',
-    },
-    skinLevels: { low: 'Düşük', medium: 'Orta', high: 'Yüksek' },
-    skinRoutineTitle: 'Önerilen rutin',
-    skinMorning: 'Sabah',
-    skinEvening: 'Akşam',
-    skinIngredientsTitle: 'Sana uygun içerikler',
-    skinDisclaimer: 'Bu sonuç kozmetik bir öneridir, tıbbi teşhis değildir. Cildinle ilgili bir sorunun varsa dermatoloğa danış.',
-    skinStartOver: 'Yeni analiz',
-    skinFullAnalysis: 'Renk analizine geç',
-
     demoBadge: 'DEMO',
     demoDetail: 'Tarayıcı önizlemesi · örnek analiz, fotoğrafın hiçbir yere gönderilmez',
     shareAppOnly: 'Görsel olarak paylaşma yalnızca uygulamada. Tarayıcı önizlemesinde kartı ekran görüntüsüyle kaydedebilirsin.',
@@ -144,17 +121,16 @@ const CORE_COPY = {
 
     discover: 'Discover yourself',
     heroTitle: 'AI Face Scan, Instant Results',
+    heroLead: 'See the colours and makeup that suit you, on your own face.',
     sample: 'Sample',
     heroImageLabel: 'Sample portrait with floating analysis labels',
     chipUndertone: 'Undertone',
     chipSeason: 'Colour season',
     chipFit: 'Fit',
-    modeColorTitle: 'Colour analysis',
-    modeColorBody: 'Find your season and palette',
-    modeMakeupTitle: 'Makeup try-on',
-    modeMakeupBody: 'Try looks on your own face',
-    modeSkinTitle: 'Skin-care analysis',
-    modeSkinBody: 'Learn your skin type and the care that suits it',
+    featureColorTitle: 'Colour Analysis',
+    featureColorBody: 'Find your season and palette',
+    featureMakeupTitle: 'Makeup Try-on',
+    featureMakeupBody: 'Try looks on your face',
     lastResult: 'Your last analysis',
     seeResults: 'See results',
 
@@ -227,28 +203,6 @@ const CORE_COPY = {
     preferences: 'Your makeup preferences',
     preferencesBody: 'Personalise look recommendations',
 
-    skinScanTitle: 'Reading your skin',
-    skinSteps: ['Finding your face', 'Reading hydration and shine', 'Checking pores and texture', 'Measuring tone evenness', 'Building your routine'],
-    skinTitle: 'Your skin analysis',
-    skinTypeTitle: 'Your skin type',
-    skinConcernsTitle: 'How your skin looks',
-    skinConcerns: {
-      hydration: 'Hydration',
-      oiliness: 'Oiliness',
-      pores: 'Pore visibility',
-      redness: 'Redness',
-      pigmentation: 'Spots and uneven tone',
-      texture: 'Texture',
-    },
-    skinLevels: { low: 'Low', medium: 'Medium', high: 'High' },
-    skinRoutineTitle: 'Suggested routine',
-    skinMorning: 'Morning',
-    skinEvening: 'Evening',
-    skinIngredientsTitle: 'Ingredients that suit you',
-    skinDisclaimer: 'This is cosmetic guidance, not a medical diagnosis. See a dermatologist about any skin condition.',
-    skinStartOver: 'New analysis',
-    skinFullAnalysis: 'Go to colour analysis',
-
     demoBadge: 'DEMO',
     demoDetail: 'Browser preview · sample analysis, your photo is not sent anywhere',
     shareAppOnly: 'Sharing as an image works in the app. In the browser preview, take a screenshot of the card.',
@@ -259,9 +213,7 @@ const CORE_COPY = {
 
 type Widen<T> = T extends string
   ? string
-  : T extends readonly string[]
-    ? readonly string[]
-    : T extends (...args: infer A) => infer R
+  : T extends (...args: infer A) => infer R
     ? (...args: A) => R
     : { -readonly [K in keyof T]: Widen<T[K]> };
 

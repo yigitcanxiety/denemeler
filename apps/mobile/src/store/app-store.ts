@@ -3,22 +3,17 @@ import {
   FaceAnalysisSchema,
   LookIdSchema,
   QuizAnswersSchema,
-  SkinAnalysisSchema,
   isLocale,
   type AnalyzeResponse,
   type FaceAnalysis,
   type Locale,
   type LookId,
   type QuizAnswers,
-  type SkinAnalysis,
-  type SkinAnalyzeResponse,
 } from '@tonelle/shared';
 import { randomUUID } from 'expo-crypto';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { z } from 'zod';
-
-export type ScanMode = 'color' | 'skin';
 
 /** Photo kept in memory for the current session only — never persisted. */
 export interface SessionPhoto {
@@ -40,9 +35,6 @@ interface PersistedState {
   analyzedAt: string | null;
   /** Language the AI-written analysis text (summary, foundation labels) came back in. */
   analysisLocale: Locale | null;
-  /** Latest skin-care analysis (separate from the colour analysis). */
-  skin: SkinAnalysis | null;
-  skinAnalyzedAt: string | null;
   /** Dev purchases mode only: locally unlocked premium. */
   devEntitlement: boolean;
   /** Helper character ("asistan") tips: on/off and the screens whose tips were already shown. */
@@ -62,8 +54,6 @@ interface SessionState {
   renders: Partial<Record<LookId, string>>;
   /** Entitlement reported by RevenueCat (not persisted; RevenueCat caches it itself). */
   revenueCatPremium: boolean;
-  /** Which analysis the selfie flow (tips → camera → analyzing) is running. */
-  scanMode: ScanMode;
 }
 
 interface Actions {
@@ -74,8 +64,6 @@ interface Actions {
   setQuizAnswer<K extends keyof QuizAnswers>(key: K, value: QuizAnswers[K]): void;
   setPhoto(photo: SessionPhoto | null): void;
   setAnalysis(response: AnalyzeResponse, locale: Locale): void;
-  setSkin(response: SkinAnalyzeResponse): void;
-  setScanMode(mode: ScanMode): void;
   setRender(lookId: LookId, dataUrl: string): void;
   setRevenueCatPremium(active: boolean): void;
   setDevEntitlement(active: boolean): void;
@@ -100,8 +88,6 @@ const initialPersisted: PersistedState = {
   recommendedLookIds: null,
   analyzedAt: null,
   analysisLocale: null,
-  skin: null,
-  skinAnalyzedAt: null,
   devEntitlement: false,
   tipsEnabled: true,
   seenTips: {},
@@ -114,7 +100,6 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
   if (!value || typeof value !== 'object') return {};
   const raw = value as Record<string, unknown>;
   const analysis = FaceAnalysisSchema.safeParse(raw.analysis);
-  const skin = SkinAnalysisSchema.safeParse(raw.skin);
   const lookIds = z.array(LookIdSchema).safeParse(raw.recommendedLookIds);
   const quiz = QuizAnswersSchema.partial().safeParse(raw.quiz);
   const seenTips = z.record(z.string(), z.literal(true)).safeParse(raw.seenTips);
@@ -127,8 +112,6 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
     recommendedLookIds: analysis.success && lookIds.success ? lookIds.data : null,
     analyzedAt: analysis.success && typeof raw.analyzedAt === 'string' ? raw.analyzedAt : null,
     analysisLocale: analysis.success && isLocale(raw.analysisLocale) ? raw.analysisLocale : null,
-    skin: skin.success ? skin.data : null,
-    skinAnalyzedAt: skin.success && typeof raw.skinAnalyzedAt === 'string' ? raw.skinAnalyzedAt : null,
     devEntitlement: raw.devEntitlement === true,
     tipsEnabled: raw.tipsEnabled !== false,
     seenTips: seenTips.success ? seenTips.data : {},
@@ -146,7 +129,6 @@ export const useAppStore = create<AppState>()(
       photo: null,
       renders: {},
       revenueCatPremium: false,
-      scanMode: 'color',
 
       setLocale: (locale) => set({ locale }),
       ensureAnonId: () => {
@@ -166,8 +148,6 @@ export const useAppStore = create<AppState>()(
           analyzedAt: new Date().toISOString(),
           analysisLocale: locale,
         }),
-      setSkin: (response) => set({ skin: response.skin, skinAnalyzedAt: new Date().toISOString() }),
-      setScanMode: (scanMode) => set({ scanMode }),
       setRender: (lookId, dataUrl) => set((state) => ({ renders: { ...state.renders, [lookId]: dataUrl } })),
       setRevenueCatPremium: (active) => set({ revenueCatPremium: active }),
       setDevEntitlement: (active) => set({ devEntitlement: active }),
@@ -196,8 +176,6 @@ export const useAppStore = create<AppState>()(
         recommendedLookIds: state.recommendedLookIds,
         analyzedAt: state.analyzedAt,
         analysisLocale: state.analysisLocale,
-        skin: state.skin,
-        skinAnalyzedAt: state.skinAnalyzedAt,
         devEntitlement: state.devEntitlement,
         tipsEnabled: state.tipsEnabled,
         seenTips: state.seenTips,

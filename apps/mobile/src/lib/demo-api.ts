@@ -1,12 +1,10 @@
 import {
   mockAnalysisFor,
-  mockSkinAnalysisFor,
   recommendLooks,
   type AnalyzeRequest,
   type AnalyzeResponse,
   type RenderRequest,
   type RenderResponse,
-  type SkinAnalyzeResponse,
 } from '@tonelle/shared';
 
 import { ApiClientError, type ApiClient, type RequestOptions } from './api';
@@ -32,10 +30,6 @@ export function createDemoApiClient({ delayMs = 1200 }: { delayMs?: number } = {
       await wait(delayMs, opts.signal);
       const analysis = mockAnalysisFor(request.locale);
       return { analysis, recommendedLookIds: recommendLooks(analysis, request.quiz), mock: true };
-    },
-    async analyzeSkin(request: AnalyzeRequest, opts: RequestOptions = {}): Promise<SkinAnalyzeResponse> {
-      await wait(delayMs, opts.signal);
-      return { skin: mockSkinAnalysisFor(request.locale), mock: true };
     },
     async renderLook(request: RenderRequest, opts: RequestOptions = {}): Promise<RenderResponse> {
       await wait(delayMs, opts.signal);

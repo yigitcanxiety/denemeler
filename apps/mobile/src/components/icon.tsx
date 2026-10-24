@@ -17,7 +17,6 @@ export type IconName =
   | 'camera'
   | 'scan'
   | 'sun'
-  | 'moon'
   | 'grid'
   | 'user'
   | 'palette'
@@ -91,7 +90,6 @@ export function Icon({
           <Path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4" {...c} />
         </>
       ) : null}
-      {name === 'moon' ? <Path d="M20 14.2A8 8 0 019.8 4 8 8 0 1020 14.2z" {...c} /> : null}
       {name === 'grid' ? (
         <>
           <Rect x={4} y={4} width={6.5} height={6.5} rx={1.6} {...c} />
