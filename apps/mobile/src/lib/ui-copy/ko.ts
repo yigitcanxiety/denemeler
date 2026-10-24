@@ -6,6 +6,7 @@ export const ko: UiCopy = {
   tabResults: '결과',
   tabProfile: '프로필',
   tabScan: '새 분석',
+  pickMode: '무엇을 할까요?',
   menu: '메뉴',
 
   discover: '나를 발견해 보세요',

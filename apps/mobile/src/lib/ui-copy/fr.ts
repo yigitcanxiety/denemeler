@@ -6,6 +6,7 @@ export const fr: UiCopy = {
   tabResults: 'Résultats',
   tabProfile: 'Profil',
   tabScan: 'Nouvelle analyse',
+  pickMode: 'Que veux-tu faire ?',
   menu: 'Menu',
 
   discover: 'Découvre-toi',

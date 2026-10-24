@@ -6,6 +6,7 @@ export const ja: UiCopy = {
   tabResults: '結果',
   tabProfile: 'プロフィール',
   tabScan: '新しく診断',
+  pickMode: '何をしますか？',
   menu: 'メニュー',
 
   discover: '自分を発見しよう',

@@ -1,12 +1,14 @@
 import type { BottomTabBarProps } from 'expo-router/tabs';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { useLocale } from '@/hooks/use-i18n';
-import { useStartAnalysis } from '@/hooks/use-start-analysis';
+import { useLocale, useT } from '@/hooks/use-i18n';
 import { uiCopy } from '@/lib/ui-copy';
 import { colors, fonts, shadows } from '@/theme';
 
+import { BottomSheet } from './bottom-sheet';
 import { Icon, type IconName } from './icon';
+import { ModeCards } from './mode-cards';
 import { PressableScale } from './motion';
 import { AppText } from './text';
 
@@ -18,11 +20,12 @@ const TABS: Record<string, { icon: IconName; label: 'tabToday' | 'tabResults' | 
 
 /**
  * Bugün · Sonuçlar · (centre scan button) · Profil. The scan button sits at the exact centre and
- * starts a new analysis; Profil is centred in the right half.
+ * asks which mode to start (colour analysis or makeup try-on); Profil is centred in the right half.
  */
 export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
   const copy = uiCopy(useLocale());
-  const startAnalysis = useStartAnalysis();
+  const t = useT();
+  const [picking, setPicking] = useState(false);
 
   const item = (routeIndex: number) => {
     const route = state.routes[routeIndex];
@@ -58,7 +61,7 @@ export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
       </View>
       <View style={styles.center}>
         <PressableScale
-          onPress={startAnalysis}
+          onPress={() => setPicking(true)}
           accessibilityRole="button"
           accessibilityLabel={copy.tabScan}
           pressedScale={0.94}
@@ -68,6 +71,10 @@ export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
         </PressableScale>
       </View>
       <View style={styles.half}>{item(2)}</View>
+      <BottomSheet visible={picking} onDismiss={() => setPicking(false)} dismissLabel={t('common.close')}>
+        <AppText variant="h2">{copy.pickMode}</AppText>
+        <ModeCards onPick={() => setPicking(false)} />
+      </BottomSheet>
     </View>
   );
 }

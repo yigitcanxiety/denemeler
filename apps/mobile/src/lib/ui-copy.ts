@@ -20,6 +20,7 @@ const CORE_COPY = {
     tabResults: 'Sonuçlar',
     tabProfile: 'Profil',
     tabScan: 'Yeni analiz',
+    pickMode: 'Ne yapmak istersin?',
     menu: 'Menü',
 
     discover: 'Kendini keşfet',
@@ -117,6 +118,7 @@ const CORE_COPY = {
     tabResults: 'Results',
     tabProfile: 'Profile',
     tabScan: 'New analysis',
+    pickMode: 'What would you like to do?',
     menu: 'Menu',
 
     discover: 'Discover yourself',
