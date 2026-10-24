@@ -25,7 +25,7 @@ export const PORTRAITS = {
   six: require('../../assets/images/portrait-six.jpg') as ImageSourcePropType,
 } as const;
 
-/** Example of each makeup look on a model (Gemini edits of the portraits above, 2026-10-15). */
+/** Example of each makeup look, on eight different women (Google Flow, Nano Banana 2.1, 2026-10-25). */
 export const LOOK_IMAGES: Record<LookId, ImageSourcePropType> = {
   natural_glow: require('../../assets/images/looks/natural_glow.jpg'),
   office_chic: require('../../assets/images/looks/office_chic.jpg'),
