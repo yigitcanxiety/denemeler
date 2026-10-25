@@ -45,6 +45,8 @@ interface PersistedState {
   /** Weekly local reminder; `remindersAsked` once the permission prompt was shown. */
   remindersEnabled: boolean;
   remindersAsked: boolean;
+  /** When the App Store rating prompt was last requested (iOS shows it at most 3 times a year). */
+  reviewAskedAt: string | null;
 }
 
 interface SessionState {
@@ -71,6 +73,7 @@ interface Actions {
   setSoundsEnabled(enabled: boolean): void;
   setReminders(enabled: boolean): void;
   markTipSeen(screen: string): void;
+  markReviewAsked(): void;
   /** Show every screen's tips again. */
   resetTips(): void;
   /** "Delete my data": wipes analysis, answers, ids, photo and preferences. Returns the new anon id. */
@@ -94,6 +97,7 @@ const initialPersisted: PersistedState = {
   soundsEnabled: true,
   remindersEnabled: false,
   remindersAsked: false,
+  reviewAskedAt: null,
 };
 
 function sanitizePersisted(value: unknown): Partial<PersistedState> {
@@ -118,6 +122,7 @@ function sanitizePersisted(value: unknown): Partial<PersistedState> {
     soundsEnabled: raw.soundsEnabled !== false,
     remindersEnabled: raw.remindersEnabled === true,
     remindersAsked: raw.remindersAsked === true,
+    reviewAskedAt: typeof raw.reviewAskedAt === 'string' ? raw.reviewAskedAt : null,
   };
 }
 
@@ -156,6 +161,7 @@ export const useAppStore = create<AppState>()(
       setReminders: (remindersEnabled) => set({ remindersEnabled, remindersAsked: true }),
       markTipSeen: (screen) => set((state) => ({ seenTips: { ...state.seenTips, [screen]: true } })),
       resetTips: () => set({ seenTips: {} }),
+      markReviewAsked: () => set({ reviewAskedAt: new Date().toISOString() }),
       deleteAllData: () => {
         const anonId = randomUUID();
         set({ ...initialPersisted, anonId, photo: null, renders: {} });
@@ -182,6 +188,7 @@ export const useAppStore = create<AppState>()(
         soundsEnabled: state.soundsEnabled,
         remindersEnabled: state.remindersEnabled,
         remindersAsked: state.remindersAsked,
+        reviewAskedAt: state.reviewAskedAt,
       }),
       // Drop saved data that no longer matches the shared schemas (e.g. after an app update).
       merge: (persisted, current) => ({ ...current, ...sanitizePersisted(persisted) }),

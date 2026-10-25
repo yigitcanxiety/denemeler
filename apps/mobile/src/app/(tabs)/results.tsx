@@ -1,6 +1,6 @@
 import { jewelleryMetal, shadeMatch, shadeNames, type FaceAnalysis, type Locale } from '@tonelle/shared';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { Assistant } from '@/components/assistant';
@@ -22,6 +22,7 @@ import { useStartAnalysis } from '@/hooks/use-start-analysis';
 import { lookSummary, resolveRecommendedLooks } from '@/lib/looks';
 import { completeQuiz } from '@/lib/quiz';
 import { profileBars, traitChips, type TraitChip } from '@/lib/results';
+import { maybeAskForReview } from '@/lib/review';
 import { uiCopy } from '@/lib/ui-copy';
 import { useAppStore } from '@/store/app-store';
 import { colors, GUTTER, radii, spacing, TAB_CLEARANCE } from '@/theme';
@@ -34,6 +35,14 @@ export default function ResultsScreen() {
   const copy = uiCopy(locale);
   const premium = usePremium();
   const analysis = useAppStore((s) => s.analysis);
+
+  // Happy moment: a few seconds into the unlocked results, ask for an App Store rating (rate-limited).
+  useEffect(() => {
+    if (!analysis || !premium) return;
+    const timer = setTimeout(() => void maybeAskForReview(), 6000);
+    return () => clearTimeout(timer);
+  }, [analysis, premium]);
+
   const startAnalysis = useStartAnalysis();
 
   const title = (
