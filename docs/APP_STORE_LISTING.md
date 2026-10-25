@@ -59,7 +59,7 @@ GİZLİLİĞİN ÖNCE GELİR
 Tonelle bir stil ve güzellik rehberidir; tıbbi tavsiye veya teşhis sunmaz.
 
 ABONELİK BİLGİSİ
-Tonelle Premium haftalık veya yıllık otomatik yenilenen abonelik olarak ya da tek seferlik rapor olarak satın alınabilir. Ücretsiz deneme sunulan planlarda deneme bitince seçilen planın ücreti alınır. Ödeme, satın alma onaylandığında Apple Kimliği hesabından tahsil edilir. Abonelik, mevcut dönemin bitiminden en az 24 saat önce iptal edilmezse otomatik yenilenir. Aboneliğini App Store hesap ayarlarından yönetebilir ve iptal edebilirsin.
+Tonelle Premium haftalık veya yıllık otomatik yenilenen abonelik olarak ya da tek seferlik rapor olarak satın alınabilir. Ödeme, satın alma onaylandığında Apple Kimliği hesabından tahsil edilir. Abonelik, mevcut dönemin bitiminden en az 24 saat önce iptal edilmezse otomatik yenilenir. Aboneliğini App Store hesap ayarlarından yönetebilir ve iptal edebilirsin.
 
 Kullanım Koşulları: https://tonelleapp.com/tr/terms
 Gizlilik Politikası: https://tonelleapp.com/tr/privacy
@@ -85,7 +85,7 @@ YOUR PRIVACY COMES FIRST
 Tonelle is a style and beauty guide and does not provide medical advice or diagnosis.
 
 SUBSCRIPTION INFORMATION
-Tonelle Premium is available as a weekly or yearly auto-renewing subscription, or as a one-time report. On plans with a free trial, the plan price is charged when the trial ends. Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless cancelled at least 24 hours before the end of the current period. Manage or cancel it anytime in your App Store account settings.
+Tonelle Premium is available as a weekly or yearly auto-renewing subscription, or as a one-time report. Payment is charged to your Apple ID account at confirmation of purchase. The subscription renews automatically unless cancelled at least 24 hours before the end of the current period. Manage or cancel it anytime in your App Store account settings.
 
 Terms of Use: https://tonelleapp.com/en/terms
 Privacy Policy: https://tonelleapp.com/en/privacy
@@ -95,8 +95,8 @@ Privacy Policy: https://tonelleapp.com/en/privacy
 
 | Ürün kimliği | Tür | Abonelik grubu | Deneme | Görünen ad (TR / EN) |
 |---|---|---|---|---|
-| `tonelle_weekly` | Otomatik yenilenen, 1 hafta | `Tonelle Premium` | 7 gün ücretsiz (tanıtım teklifi) | Haftalık Premium / Weekly Premium |
-| `tonelle_yearly` | Otomatik yenilenen, 1 yıl | `Tonelle Premium` | 7 gün ücretsiz (tanıtım teklifi) | Yıllık Premium / Yearly Premium |
+| `tonelle_weekly` | Otomatik yenilenen, 1 hafta | `Tonelle Premium` | Yok (2026-10-25 kararı) | Haftalık Premium / Weekly Premium |
+| `tonelle_yearly` | Otomatik yenilenen, 1 yıl | `Tonelle Premium` | Yok (2026-10-25 kararı) | Yıllık Premium / Yearly Premium |
 | `tonelle_report` | Tüketilmeyen (non-consumable) | — | — | Tam Rapor / Full Report |
 
 - Fiyatlar: `pricing.ts`'teki TRY/EUR değerleri; Apple fiyat basamağına en yakın olanı seç. Fiyat değişikliği kullanıcı onayıyla.
@@ -129,7 +129,8 @@ Tonelle needs no account or sign-in.
 How to test:
 1. Tap "Start", read the selfie tips and continue (no checkboxes), answer the short quiz if shown.
 2. Take a selfie or choose any front-facing portrait photo from the library.
-3. After the photo, the paywall appears: the analysis, report and makeup previews are part of Premium, which starts with a 7-day free trial (sandbox purchase, or "Restore Purchases" on the paywall and in Profile). The analysis then runs and the full report opens.
+3. The analysis runs for free; its result opens with Premium. On the locked result screen, "Use for 7 days" buys the weekly plan (sandbox purchase), "See all plans" shows the yearly plan and the one-time report, and "Restore Purchases" is under the button and in Profile. After purchase the full report opens.
+4. Makeup previews are Premium too: without it, the "Makeup" card shows a blurred preview of the user's photo and the same purchase button; no render is made.
 
 Photos and AI: the selfie is sent over HTTPS to our backend and processed by Google's Gemini API (named on the consent screen) only to produce the analysis and preset makeup previews. Photos are not stored on our servers and not used for training. The app does not use ARKit or TrueDepth face data. Makeup previews only use fixed presets on the user's own photo; there is no free-text prompt.
 

@@ -79,6 +79,7 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen name="look/[id]" />
+        <Stack.Screen name="makeup-lock" />
         <Stack.Screen name="quiz" />
         <Stack.Screen name="share" options={{ presentation: 'modal' }} />
       </Stack>

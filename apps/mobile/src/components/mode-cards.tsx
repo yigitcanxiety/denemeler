@@ -22,9 +22,10 @@ export function ModeCards({ onPick }: { onPick?: () => void }) {
   const serverLookIds = useAppStore((s) => s.recommendedLookIds);
 
   const openMakeup = () => {
+    const [first] = analysis ? resolveRecommendedLooks(analysis, serverLookIds) : [];
+    // Without Premium no render is made: the blurred build-up screen sells the weekly plan.
+    if (!premium) return router.push({ pathname: '/makeup-lock', params: first ? { id: first } : {} });
     if (!analysis) return startAnalysis();
-    if (!premium) return router.push('/teaser');
-    const [first] = resolveRecommendedLooks(analysis, serverLookIds);
     router.push({ pathname: '/look/[id]', params: { id: first ?? 'natural_glow' } });
   };
   const pick = (open: () => void) => () => {

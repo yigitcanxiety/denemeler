@@ -34,7 +34,7 @@ export async function handleAnalyze(request: Request): Promise<Response> {
   try {
     const body = await parseJsonBody(request, AnalyzeRequestSchema, MAX_BODY_BYTES);
     if (!body.ok) return body.response;
-    const { image, locale, quiz, appUserId } = body.data;
+    const { image, locale, quiz } = body.data;
 
     const limit = analyzeRateLimiter.check(`ip:${clientIp(request)}`);
     if (!limit.allowed) return rateLimitedResponse(limit.retryAfterSeconds);
@@ -47,8 +47,7 @@ export async function handleAnalyze(request: Request): Promise<Response> {
       return jsonResponse(response);
     }
 
-    if (!(await analysisAllowed(config, appUserId))) return errorResponse('payment_required', 'A premium subscription is required.');
-
+    // Free for everyone since 2026-10-25: the app keeps the result locked until a purchase.
     const { analysis } = await analyzeFace({ imageDataUrl: image, locale, quiz, ...(await hostedImage(config, image)) }, analysisOptions(config));
     // analyzeFace throws NoFaceError for faceDetected=false; keep a guard for safety.
     if (!analysis.faceDetected) return errorResponse('no_face', 'No face was detected in the photo.');

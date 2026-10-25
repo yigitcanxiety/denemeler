@@ -125,9 +125,9 @@ describe('dev purchases plans', () => {
   it('uses shared pricing', () => {
     const [y, w] = devPlans('TR', 'tr');
     expect(y?.kind).toBe('yearly');
-    expect(y?.intro).toMatchObject({ type: 'trial', days: 7 });
-    expect(w?.intro).toMatchObject({ type: 'trial', days: 7 });
-    expect(devPlans('EU', 'en')[1]?.intro).toMatchObject({ type: 'trial' });
+    // No free trial since 2026-10-25.
+    expect(y?.intro).toBeNull();
+    expect(w?.intro).toBeNull();
     expect(devPlans('TR', 'tr').map((p) => p.kind)).toEqual(['yearly', 'weekly', 'report']);
     expect(yearlySavingsPercent(devPlans('TR', 'tr'))).toBe(85);
     expect(yearlySavingsPercent([y!])).toBeNull();

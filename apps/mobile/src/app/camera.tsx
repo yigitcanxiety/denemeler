@@ -15,7 +15,6 @@ import { Screen } from '@/components/screen';
 import { AppText } from '@/components/text';
 import { BackTitle, Pill, Ring } from '@/components/ui';
 import { useLocale, useT } from '@/hooks/use-i18n';
-import { getIsPremium } from '@/hooks/use-premium';
 import { haptic, playSound } from '@/lib/feedback';
 import { uiCopy } from '@/lib/ui-copy';
 import { faceCrop, type CropRect } from '@/lib/image';
@@ -102,8 +101,8 @@ export default function CameraScreen() {
     if (!preview) return;
     setPhoto(preview);
     if (returnTo === 'look') router.back();
-    // No free use: the analysis runs only after a trial or purchase (2026-10-19).
-    else router.replace(getIsPremium() ? '/analyzing' : '/paywall');
+    // The analysis always runs; without Premium its result stays locked on /teaser (2026-10-25).
+    else router.replace('/analyzing');
   };
 
   /* ---------- "Harika görünüyorsun" confirmation ---------- */

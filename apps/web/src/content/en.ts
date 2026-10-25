@@ -555,7 +555,7 @@ export const en: SiteContent = {
           id: 'trials',
           heading: '7. Free trials and introductory offers',
           blocks: [
-            'The weekly and yearly plans include a 7-day free trial; some promotions may offer a discounted introductory price for the first period. When the trial or introductory period ends, the subscription automatically renews at the regular price unless you cancel at least 24 hours before it ends. Trials are available once per user and store account.',
+            'Plans currently do not include a free trial; some promotions may offer a free trial or a discounted introductory price for the first period, shown before purchase. When the trial or introductory period ends, the subscription automatically renews at the regular price unless you cancel at least 24 hours before it ends. Trials are available once per user and store account.',
           ],
         },
         {

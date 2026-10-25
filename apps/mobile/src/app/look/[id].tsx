@@ -28,7 +28,7 @@ import { api } from '@/services/api';
 import { useAppStore } from '@/store/app-store';
 import { colors, fonts, GUTTER, radii } from '@/theme';
 
-/** Makeup try-on (DESIGN.md §3.8). Premium only: locked users are sent to the paywall. */
+/** Makeup try-on (DESIGN.md §3.8). Premium only: locked users get the blurred /makeup-lock screen. */
 export default function TryOnScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   // Keyed by look: switching looks resets the screen state and cancels an in-flight render.
@@ -57,7 +57,7 @@ function TryOn({ id }: { id: string | undefined }) {
   useEffect(() => () => abortRef.current?.abort(), []);
 
   if (!isLookId(id) || !analysis) return <Redirect href="/" />;
-  if (!premium) return <Redirect href="/paywall" />;
+  if (!premium) return <Redirect href={{ pathname: '/makeup-lock', params: { id } }} />;
 
   const look = LOOKS[id];
   const summary = lookSummary(id, locale);
