@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { useRef, useState } from 'react';
+import { useRef, useState, type ComponentRef } from 'react';
 import { Image, Platform, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
@@ -33,7 +33,7 @@ export default function ShareScreen() {
   const analysis = useAppStore((s) => s.analysis);
   const photo = useAppStore((s) => s.photo);
   const render = useAppStore((s) => (isLookId(lookId) ? s.renders[lookId] : undefined));
-  const cardRef = useRef<View>(null);
+  const cardRef = useRef<ComponentRef<typeof View>>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { width, height } = useWindowDimensions();

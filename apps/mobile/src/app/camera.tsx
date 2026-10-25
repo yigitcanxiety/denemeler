@@ -222,7 +222,7 @@ export default function CameraScreen() {
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <FaceGuide />
       </View>
-      <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom']}>
+      <SafeAreaView style={styles.cameraUi} edges={['top', 'bottom', 'left', 'right']}>
         <View style={styles.topRow}>
           <IconButton icon="back" label={t('common.back')} onPress={() => router.back()} tone="glass" size={40} />
           <AppText variant="h2" style={[styles.cameraTitle, tipOpen && styles.hidden]}>

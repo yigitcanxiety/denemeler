@@ -22,7 +22,7 @@ const TABS: Record<string, { icon: IconName; label: 'tabToday' | 'tabResults' | 
  * Bugün · Sonuçlar · (centre scan button) · Profil. The scan button sits at the exact centre and
  * asks which mode to start (colour analysis or makeup try-on); Profil is centred in the right half.
  */
-export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
+export function TabBar({ state, emitter, navigateToTab, insets }: BottomTabBarProps) {
   const copy = uiCopy(useLocale());
   const t = useT();
   const [picking, setPicking] = useState(false);
@@ -40,8 +40,8 @@ export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
         accessibilityState={{ selected: focused }}
         accessibilityLabel={label}
         onPress={() => {
-          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
+          const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+          if (!focused && !event.defaultPrevented) navigateToTab(route.key);
         }}
         style={styles.item}
       >
@@ -54,7 +54,12 @@ export function TabBar({ state, navigation, insets }: BottomTabBarProps) {
   };
 
   return (
-    <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
+    <View
+      style={[
+        styles.bar,
+        { paddingBottom: Math.max(insets.bottom, 10), paddingLeft: insets.left, paddingRight: insets.right },
+      ]}
+    >
       <View style={styles.half}>
         {item(0)}
         {item(1)}

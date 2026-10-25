@@ -51,7 +51,7 @@ const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
   owner: 'yigitcanxiety',
   slug: 'tonelle',
   scheme: 'tonelle',
-  version: '1.0.0',
+  version: '1.1.0',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
   icon: './assets/images/icon.png',
@@ -121,6 +121,9 @@ const appConfig = (config: ConfigContext['config']): ExpoConfig => ({
     'expo-router',
     'expo-font',
     'expo-web-browser',
+    'expo-audio',
+    'expo-sharing',
+    'expo-status-bar',
     [
       'expo-splash-screen',
       {

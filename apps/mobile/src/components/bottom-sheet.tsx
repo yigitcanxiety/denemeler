@@ -32,7 +32,7 @@ export function BottomSheet({
     >
       <View style={styles.root}>
         <Pressable style={styles.backdrop} onPress={onDismiss} accessibilityRole="button" accessibilityLabel={dismissLabel} />
-        <View style={[styles.sheet, { paddingBottom: spacing.xl + insets.bottom }]} accessibilityViewIsModal>
+        <View style={[styles.sheet, { paddingBottom: spacing.xl + insets.bottom, marginLeft: insets.left, marginRight: insets.right }]} accessibilityViewIsModal>
           <View style={styles.handle} />
           {children}
         </View>

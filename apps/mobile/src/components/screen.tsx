@@ -1,4 +1,4 @@
-import type { ReactNode, RefObject } from 'react';
+import type { ComponentRef, ReactNode, RefObject } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets, type Edge } from 'react-native-safe-area-context';
 
@@ -17,11 +17,12 @@ export interface ScreenProps {
   /** Absolute overlay above the content (helper character). */
   overlay?: ReactNode;
   /** Ref to the inner ScrollView (e.g. to scroll back to the top). */
-  scrollRef?: RefObject<ScrollView | null>;
+  scrollRef?: RefObject<ComponentRef<typeof ScrollView> | null>;
 }
 
 /**
  * White app surface with a 16 px gutter, an optional pinned header and footer.
+ * Side insets always apply: iPhone Duo's inner display keeps a status-bar rail on one edge.
  * Insets come from the root provider: the native SafeAreaView measured 0 inside the sliding
  * full-screen paywall modal, which put the close button under the status bar.
  */
@@ -40,26 +41,26 @@ export function Screen({
   const pad = {
     paddingTop: edges.includes('top') ? insets.top : 0,
     paddingBottom: edges.includes('bottom') ? insets.bottom : 0,
-    paddingLeft: edges.includes('left') ? insets.left : 0,
-    paddingRight: edges.includes('right') ? insets.right : 0,
   };
   return (
     <View style={[styles.root, pad, { backgroundColor: background }]}>
-      {header ? <View style={styles.header}>{header}</View> : null}
-      {scroll ? (
-        <ScrollView
-          ref={scrollRef}
-          style={styles.fill}
-          contentContainerStyle={[styles.content, contentStyle]}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[styles.content, styles.fill, contentStyle]}>{children}</View>
-      )}
-      {footer ? <View style={[styles.footer, { backgroundColor: background }]}>{footer}</View> : null}
+      <View style={[styles.fill, { paddingLeft: insets.left, paddingRight: insets.right }]}>
+        {header ? <View style={styles.header}>{header}</View> : null}
+        {scroll ? (
+          <ScrollView
+            ref={scrollRef}
+            style={styles.fill}
+            contentContainerStyle={[styles.content, contentStyle]}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={[styles.content, styles.fill, contentStyle]}>{children}</View>
+        )}
+        {footer ? <View style={[styles.footer, { backgroundColor: background }]}>{footer}</View> : null}
+      </View>
       {overlay}
     </View>
   );

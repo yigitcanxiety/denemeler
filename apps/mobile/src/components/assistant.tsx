@@ -207,8 +207,13 @@ export function Assistant({ screen, stack = false, compact = false, onOpenChange
       style={[
         styles.layer,
         compact
-          ? { top: insets.top + spacing.sm, left: 64, alignItems: 'center' }
-          : { bottom: (stack ? insets.bottom : 0) + spacing.md, alignItems: 'flex-end' },
+          ? { top: insets.top + spacing.sm, left: 64 + insets.left, right: GUTTER + insets.right, alignItems: 'center' }
+          : {
+              bottom: (stack ? insets.bottom : 0) + spacing.md,
+              left: GUTTER + insets.left,
+              right: GUTTER + insets.right,
+              alignItems: 'flex-end',
+            },
       ]}
     >
       {open ? (
@@ -325,8 +330,6 @@ function MiniButton({ label, onPress, primary }: { label: string; onPress: () =>
 const styles = StyleSheet.create({
   layer: {
     position: 'absolute',
-    left: GUTTER,
-    right: GUTTER,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     gap: 10,
