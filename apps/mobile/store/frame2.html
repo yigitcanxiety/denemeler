@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=440">
+<link href="https://fonts.googleapis.com/css2?family=Gloock&family=Instrument+Serif:ital@1&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* App Store screenshot v2: full-bleed portrait + floating real app UI. 440x956 CSS px at 3x = 1320x2868. */
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 440px; height: 956px; overflow: hidden; }
+  body { position: relative; font-family: 'Plus Jakarta Sans', sans-serif; color: #17141F; background: #EEEAF6; }
+  .photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0%; }
+  .fade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(238,234,246,.92) 0%, rgba(238,234,246,.55) 22%, rgba(238,234,246,0) 36%); }
+  .head { position: absolute; top: 64px; left: 0; right: 0; text-align: center; padding: 0 26px; }
+  h1 { font-family: 'Gloock', serif; font-weight: 400; font-size: 47px; line-height: 1; letter-spacing: -0.6px; }
+  h1 em { display: block; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 56px; line-height: 1.02; color: #5B3FD9; letter-spacing: -0.3px; }
+  .sub { margin-top: 12px; font-size: 15px; line-height: 1.4; font-weight: 600; color: #4A4560; }
+  .card { position: absolute; left: 22px; right: 22px; border-radius: 26px; overflow: hidden; background: #fff;
+    box-shadow: 0 28px 60px -20px rgba(40, 24, 90, .38), 0 6px 18px -8px rgba(40, 24, 90, .2); }
+  .card img { display: block; width: 100%; }
+  .pill { position: absolute; display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; padding: 8px 13px;
+    border-radius: 99px; background: rgba(255,255,255,.88); backdrop-filter: blur(8px); box-shadow: 0 10px 24px -12px rgba(40,24,90,.45); white-space: nowrap; }
+  .pill i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.35), 0 4px 10px rgba(0,0,0,.25); }
+  .bracket { position: absolute; border: 3px solid rgba(255,255,255,.95); width: 44px; height: 44px; }
+  .split { position: absolute; inset: 0; }
+  .split .after { clip-path: inset(0 0 0 50%); }
+  .divider { position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: #fff; box-shadow: 0 0 12px rgba(0,0,0,.2); }
+  .handle { position: absolute; left: 50%; top: 520px; width: 44px; height: 44px; margin-left: -22px; border-radius: 50%; background: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; color: #5B3FD9; box-shadow: 0 6px 16px rgba(0,0,0,.25); }
+  .looks { position: absolute; left: 0; right: 0; bottom: 34px; display: flex; justify-content: center; gap: 10px; }
+  .look { width: 72px; text-align: center; font-size: 10.5px; font-weight: 700; color: #17141F; }
+  .look img { width: 66px; height: 66px; border-radius: 50%; object-fit: cover; object-position: 50% 25%; border: 3px solid #fff; display: block; margin: 0 auto 6px;
+    box-shadow: 0 8px 18px -8px rgba(40,24,90,.5); }
+  .look.on img { border-color: #5B3FD9; }
+  .look span { display: inline-block; background: rgba(255,255,255,.9); border-radius: 99px; padding: 3px 7px; }
+  .grid { position: absolute; left: 22px; right: 22px; top: 214px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .grid img { width: 100%; height: 134px; object-fit: cover; object-position: 50% 28%; border-radius: 20px; display: block; box-shadow: 0 14px 30px -18px rgba(40,24,90,.5); }
+  .badges { position: absolute; left: 0; right: 0; bottom: 40px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 0 20px; }
+  .badges .pill { position: static; }
+</style>
+</head>
+<body>
+<script>
+  const q = new URLSearchParams(location.search);
+  const lang = q.get('lang') || 'tr';
+  const scene = q.get('scene') || '1';
+  const raw = (name) => (lang === 'en' ? 'en-' : '') + 'raw-' + name + '.png';
+  // Crop a band [y0, y1] (CSS px of the 390-wide app screen) out of a raw app screenshot.
+  const crop = (name, y0, y1, top) => {
+    const w = 396, s = w / 390;
+    return `<div class="card" style="top:${top}px;height:${Math.round((y1 - y0) * s)}px"><img src="${raw(name)}" style="margin-top:${-Math.round(y0 * s)}px"></div>`;
+  };
+  const T = {
+    tr: {
+      1: ['Sana yakışan renkleri', 'keşfet.', ''],
+      2: ['Tek selfie.', 'Renk sezonun.', '12 sezondan sana en yakını'],
+      3: ['Paletin', 'hep yanında.', 'Sana yakışan ve uzak durman gereken renkler'],
+      4: ['Makyajı önce', 'yüzünde gör.', ''],
+      5: ['Ruj, allık, far:', 'senin tonların.', 'Sezonuna göre, uyum oranıyla'],
+      6: ['Her ten için,', 'her yüze.', 'Sekiz hazır görünüm, kendi fotoğrafında'],
+      pills: ['Alt ton · Sıcak', 'Kontrast · Düşük', 'Cilt', 'Saç', 'Göz', 'Önce', 'Sonra'],
+      looks: ['Doğal Işıltı', 'Ofis Şıklığı', 'Yumuşak Glam', 'Gelin', 'İddialı Dudak'],
+      badges: ['Fotoğrafını saklamayız', 'Hesap gerekmez'],
+    },
+    en: {
+      1: ['Find the colours', 'that suit you.', ''],
+      2: ['One selfie.', 'Your season.', 'Your closest match of 12 seasons'],
+      3: ['Your palette,', 'always with you.', 'Colours that suit you, and ones to avoid'],
+      4: ['See the makeup', 'on your face.', ''],
+      5: ['Lipstick & blush', 'in your shades.', 'Picked for your season, ranked by match'],
+      6: ['Every skin tone,', 'every face.', 'Eight ready-made looks, on your own photo'],
+      pills: ['Undertone · Warm', 'Contrast · Low', 'Skin', 'Hair', 'Eyes', 'Before', 'After'],
+      looks: ['Natural Glow', 'Office Chic', 'Soft Glam', 'Bridal', 'Bold Lip'],
+      badges: ['We don’t keep your photo', 'No account needed'],
+    },
+  }[lang];
+  const [l1, l2, sub] = T[scene];
+  const head = `<div class="head"><h1>${l1}<em>${l2}</em></h1>${sub ? `<p class="sub">${sub}</p>` : ''}</div>`;
+  const photo = (src, pos = '50% 0%') => `<img class="photo" src="${src}" style="object-position:${pos}">`;
+  const P = T.pills;
+  let html = '';
+  if (scene === '1') {
+    html = photo('p-base.jpg', '50% 30%') + '<div class="fade"></div>' + head +
+      `<div class="pill" style="top:262px;left:24px"><i style="background:#E0A47E"></i>${P[0]}</div>` +
+      `<div class="pill" style="top:300px;right:24px"><i style="background:#8C7FA8"></i>${P[1]}</div>` +
+      crop('results-top', 66, 296, 680);
+  } else if (scene === '2') {
+    html = photo('p-base.jpg', '50% 30%') + '<div class="fade"></div>' + head +
+      [[96, 330, 'tl'], [300, 330, 'tr'], [96, 640, 'bl'], [300, 640, 'br']].map(([x, y, c]) =>
+        `<div class="bracket" style="left:${x}px;top:${y}px;${c.includes('t') ? 'border-bottom:0;' : 'border-top:0;'}${c.includes('l') ? 'border-right:0;border-radius:14px 0 0 0' : 'border-left:0;border-radius:0 14px 0 0'};${c[0] === 'b' ? (c[1] === 'l' ? 'border-radius:0 0 0 14px' : 'border-radius:0 0 14px 0') : ''}"></div>`).join('') +
+      `<div class="dot" style="left:150px;top:556px;background:#E3B49A"></div><div class="pill" style="left:16px;top:604px"><i style="background:#E3B49A"></i>${P[2]}</div>` +
+      `<div class="dot" style="left:366px;top:596px;background:#C98E52"></div><div class="pill" style="right:16px;top:644px"><i style="background:#C98E52"></i>${P[3]}</div>` +
+      `<div class="dot" style="left:270px;top:436px;background:#8D8F62"></div><div class="pill" style="right:16px;top:384px"><i style="background:#8D8F62"></i>${P[4]}</div>` +
+      crop('results-top', 66, 296, 712);
+  } else if (scene === '3') {
+    html = photo('p-glam.jpg', '50% 30%') + '<div class="fade"></div>' + head + crop('palette', 150, 322, 604);
+  } else if (scene === '4') {
+    html = `<div class="split">${photo('p-base.jpg', '50% 30%')}<img class="photo after" src="p-bold.jpg" style="object-position:50% 30%"></div>` +
+      '<div class="divider"></div><div class="handle">‹ ›</div><div class="fade"></div>' + head +
+      `<div class="pill" style="left:22px;top:300px">${P[5]}</div><div class="pill" style="right:22px;top:300px;color:#5B3FD9">${P[6]}</div>` +
+      `<div class="looks">${['natural_glow', 'office_chic', 'soft_glam', 'bridal', 'bold_lip'].map((id, i) =>
+        `<div class="look${id === 'bold_lip' ? ' on' : ''}"><img src="looks/${id}.jpg"><span>${T.looks[i]}</span></div>`).join('')}</div>`;
+  } else if (scene === '5') {
+    html = photo('p-bold.jpg', '50% 30%') + '<div class="fade"></div>' + head + crop('shades', 12, 228, 690);
+  } else {
+    html = '<div style="position:absolute;inset:0;background:radial-gradient(120% 70% at 50% 0%, #E6DFFF 0%, #F4F1FC 50%, #FFFFFF 100%)"></div>' + head +
+      `<div class="grid">${['natural_glow', 'evening_smoky', 'office_chic', 'bridal', 'festival_color', 'no_makeup_makeup', 'soft_glam', 'bold_lip'].map((id) => `<img src="looks/${id}.jpg">`).join('')}</div>` +
+      `<div class="badges">${T.badges.map((b) => `<div class="pill">✓ ${b}</div>`).join('')}</div>`;
+  }
+  document.body.insertAdjacentHTML('beforeend', html);
+</script>
+</body>
+</html>
