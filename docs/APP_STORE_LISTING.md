@@ -145,10 +145,12 @@ Contact: support@tonelleapp.com
 - TR: `İlk sürüm.`
 - EN: `First release.`
 
-## Ekran görüntüleri (hazır, 2026-10-15)
+## Ekran görüntüleri (yenilendi, 2026-10-25)
 
-`apps/mobile/store/screenshots/{tr,en}/01–05.jpg`: 1320×2868 (6,9"), JPEG, alfa yok. 6,9" seti yüklenince küçük
-boyutları Apple ölçekler. Sıra: 1 renk sezonu, 2 palet, 3 ruj/allık/far tonları, 4 makyaj önce/sonra, 5 gizlilik.
-Kurallara uygun: fiyat, deneme, URL, başka platform logosu yok; gerçek uygulama ekranları (tarayıcı önizlemesi, DEMO
-şeridi gizli). Yeniden üretmek için: mobil web önizlemesi + `apps/mobile/store/frame.html?img=…&k=…&t=…&s=…`
-(440×956, 3x ölçek). Örnek analiz metni TR'ye çevrilmiş mock; gerçek yüz yok, görseller Gemini portreleri.
+`apps/mobile/store/screenshots/{tr,en}/01–05.jpg`: 1320×2868 (6,9"), JPEG, alfa yok. ASC'deki 6,3" yuva için
+`sips -z 2622 1206` ile 1206×2622. Sıra: 1 renk sezonu, 2 palet, 3 ruj/allık/far tonları, 4 makyaj önce/sonra,
+5 gizlilik (yeni ana sayfa). Kurallara uygun: fiyat, deneme, URL, başka platform logosu yok; gerçek uygulama
+ekranları (tarayıcı önizlemesi; DEMO şeridi ve hata baloncuğu gizli). Yeniden üretmek için: mobil web önizlemesi
+(390×874, 3x) + `apps/mobile/store/frame.html?img=…&k=…&t=…&s=…` (440×956, 3x). Önce/sonra karesi `mode=ba` ile
+yanındaki `before.jpg`/`after.jpg` (hayali sarışın, sade ve İddialı Dudak; Google Flow). EN için yerel depoda
+`locale: 'en'` ve `mockAnalysisFor('en')`. Gerçek kişi yüzü yok.
