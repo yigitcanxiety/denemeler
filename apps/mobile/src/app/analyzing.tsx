@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { Button } from '@/components/button';
@@ -14,10 +14,12 @@ import { useLocale, useT } from '@/hooks/use-i18n';
 import { getIsPremium } from '@/hooks/use-premium';
 import { celebrate, haptic } from '@/lib/feedback';
 import {
+  ANALYZING_FINISH_MS,
   ANALYZING_MIN_MS,
   ANALYZING_STEPS,
   analyzingProgress,
   analyzingStepIndex,
+  finishingProgress,
   isAnalysisSlow,
 } from '@/lib/analyzing';
 import { errorKeyFor, isApiClientError } from '@/lib/api';
@@ -38,17 +40,22 @@ export default function AnalyzingScreen() {
   const setAnalysis = useAppStore((s) => s.setAnalysis);
 
   const [elapsed, setElapsed] = useState(0);
-  const [done, setDone] = useState(false);
+  // Set when the result arrives: the clock time and ring position the glide to 100% starts from.
+  const [finish, setFinish] = useState<{ at: number; from: number } | null>(null);
+  const elapsedRef = useRef(0);
   const [errorKey, setErrorKey] = useState<ReturnType<typeof errorKeyFor> | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   // Elapsed clock driving the checklist and the progress ring.
   useEffect(() => {
-    if (errorKey || done) return;
+    if (errorKey) return;
     const started = Date.now();
-    const timer = setInterval(() => setElapsed(Date.now() - started), 200);
+    const timer = setInterval(() => {
+      elapsedRef.current = Date.now() - started;
+      setElapsed(elapsedRef.current);
+    }, 100);
     return () => clearInterval(timer);
-  }, [errorKey, done, attempt]);
+  }, [errorKey, attempt]);
 
   // The analysis request.
   useEffect(() => {
@@ -69,10 +76,12 @@ export default function AnalyzingScreen() {
         if (remaining > 0) await new Promise((r) => setTimeout(r, remaining));
         if (controller.signal.aborted) return;
         setAnalysis(response, locale);
-        setDone(true);
+        setFinish({ at: elapsedRef.current, from: analyzingProgress(elapsedRef.current) });
+        // Let the ring glide to 100% before moving on.
+        await new Promise((r) => setTimeout(r, ANALYZING_FINISH_MS));
+        if (controller.signal.aborted) return;
         celebrate('reveal');
-        // Let the ring reach 100% before moving on.
-        await new Promise((r) => setTimeout(r, 450));
+        await new Promise((r) => setTimeout(r, 350));
         if (controller.signal.aborted) return;
         if (getIsPremium()) router.dismissTo('/results');
         else router.replace('/teaser');
@@ -97,7 +106,7 @@ export default function AnalyzingScreen() {
 
   const retry = () => {
     setErrorKey(null);
-    setDone(false);
+    setFinish(null);
     setElapsed(0);
     setAttempt((a) => a + 1);
   };
@@ -105,13 +114,13 @@ export default function AnalyzingScreen() {
   /** Leaves the screen; unmounting aborts the in-flight request (effect cleanup). */
   const cancel = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
-  const stepIndex = done ? ANALYZING_STEPS.length : analyzingStepIndex(elapsed);
+  const progress = finish ? finishingProgress(finish.from, elapsed - finish.at) : analyzingProgress(elapsed);
+  const stepIndex = analyzingStepIndex(progress);
 
   // A light tick each time a checklist step completes.
   useEffect(() => {
     if (stepIndex > 0 && stepIndex < ANALYZING_STEPS.length) haptic.select();
   }, [stepIndex]);
-  const progress = analyzingProgress(elapsed, done);
   const size = Math.min(width - 96, 260);
   const current = ANALYZING_STEPS[Math.min(stepIndex, ANALYZING_STEPS.length - 1)] ?? ANALYZING_STEPS[0];
 
@@ -123,7 +132,7 @@ export default function AnalyzingScreen() {
             <Button label={t('common.retry')} onPress={retry} icon="refresh" />
             <Button label={t('camera.retake')} variant="ghost" onPress={() => router.replace('/camera')} />
           </>
-        ) : done ? null : (
+        ) : finish ? null : (
           <Button label={t('common.cancel')} variant="ghost" onPress={cancel} />
         )
       }

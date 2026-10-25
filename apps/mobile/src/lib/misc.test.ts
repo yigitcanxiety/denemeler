@@ -1,7 +1,15 @@
 import { LOOKS, MOCK_ANALYSIS, createTranslator, recommendLooks } from '@tonelle/shared';
 import { describe, expect, it } from 'vitest';
 
-import { ANALYZING_STEPS, analyzingProgress, analyzingStepIndex, isAnalysisSlow } from './analyzing';
+import {
+  ANALYZING_FINISH_MS,
+  ANALYZING_MIN_MS,
+  ANALYZING_STEPS,
+  analyzingProgress,
+  analyzingStepIndex,
+  finishingProgress,
+  isAnalysisSlow,
+} from './analyzing';
 import { pickDeviceLocale } from './locale';
 import { isLookId, localizedSteps, lookShades, lookSummary, resolveRecommendedLooks } from './looks';
 import { confidencePercent, profileBars, profilePoints, seasonText, topShades, traitChips } from './results';
@@ -22,19 +30,23 @@ describe('pickDeviceLocale', () => {
 });
 
 describe('analyzing progress', () => {
-  it('steps through messages and holds on the last', () => {
+  it('ticks the checklist off with the ring and holds on the last step', () => {
     expect(analyzingStepIndex(0)).toBe(0);
-    expect(analyzingStepIndex(2300)).toBe(1);
-    expect(analyzingStepIndex(999_999)).toBe(ANALYZING_STEPS.length - 1);
-    expect(analyzingStepIndex(-5)).toBe(0);
+    expect(analyzingStepIndex(0.2)).toBe(1);
+    expect(analyzingStepIndex(0.97)).toBe(ANALYZING_STEPS.length - 1);
+    expect(analyzingStepIndex(1)).toBe(ANALYZING_STEPS.length);
   });
 
-  it('flags slow requests and eases progress', () => {
+  it('climbs steadily, never reaches 100% on its own, then glides to 100%', () => {
     expect(isAnalysisSlow(1000)).toBe(false);
     expect(isAnalysisSlow(25_000)).toBe(true);
-    expect(analyzingProgress(0, false)).toBe(0);
-    expect(analyzingProgress(120_000, false)).toBeLessThanOrEqual(0.95);
-    expect(analyzingProgress(1000, true)).toBe(1);
+    expect(analyzingProgress(0)).toBe(0);
+    expect(analyzingProgress(ANALYZING_MIN_MS / 2)).toBeCloseTo(0.45);
+    expect(analyzingProgress(ANALYZING_MIN_MS)).toBeCloseTo(0.9);
+    expect(analyzingProgress(120_000)).toBeLessThan(0.97);
+    expect(finishingProgress(0.9, 0)).toBe(0.9);
+    expect(finishingProgress(0.9, ANALYZING_FINISH_MS / 2)).toBeGreaterThan(0.9);
+    expect(finishingProgress(0.9, ANALYZING_FINISH_MS)).toBe(1);
   });
 });
 
