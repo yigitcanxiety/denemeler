@@ -56,7 +56,7 @@ export const ko: Dictionary = {
   },
 
   consent: {
-    continueNotice: '계속하면 이용약관에 동의하고 개인정보처리방침을 확인한 것으로 간주됩니다.',
+    continueNotice: '사진은 컬러 분석과 메이크업 룩 생성을 위해 제3자 AI 서비스(Google Gemini 등)로 전송되며 처리 후 저장되지 않습니다. 계속하면 이에 동의하고 이용약관에 동의하며 개인정보처리방침을 확인한 것으로 간주됩니다.',
     title: '시작하기 전에',
     intro: '피부 톤을 분석하려면 얼굴 사진을 처리해야 해요. 사진이 어떻게 처리되는지 정확히 알려드릴게요.',
     pointProcessing:

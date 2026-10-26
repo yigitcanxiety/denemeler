@@ -56,7 +56,7 @@ export const tr: Dictionary = {
   },
 
   consent: {
-    continueNotice: 'Devam ederek Kullanım Koşulları’nı kabul etmiş ve Gizlilik Politikası’nı okumuş olursun.',
+    continueNotice: 'Fotoğrafın renk analizi ve makyaj görselleri için üçüncü taraf yapay zekâ servislerine (Google Gemini gibi) gönderilir ve işlemden sonra saklanmaz. Devam ederek buna izin vermiş, Kullanım Koşulları’nı kabul etmiş ve Gizlilik Politikası’nı okumuş olursun.',
     title: 'Başlamadan önce',
     intro:
       'Renklerini analiz edebilmemiz için yüzünün fotoğrafını işlememiz gerekiyor. Fotoğrafına tam olarak şunlar olur:',

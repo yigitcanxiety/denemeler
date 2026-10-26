@@ -9,6 +9,7 @@ import { Assistant } from '@/components/assistant';
 import { Button, IconButton } from '@/components/button';
 import { FaceGuide, faceOval } from '@/components/face-guide';
 import { Icon } from '@/components/icon';
+import { LegalLinks } from '@/components/legal-links';
 import { PressableScale, Reveal } from '@/components/motion';
 import { Notice } from '@/components/notice';
 import { Screen } from '@/components/screen';
@@ -32,6 +33,8 @@ export default function CameraScreen() {
   /** `returnTo=look`: just capture a new photo and go back (used by the makeup try-on). */
   const { returnTo, error: errorParam } = useLocalSearchParams<{ returnTo?: string; error?: string }>();
   const setPhoto = useAppStore((s) => s.setPhoto);
+  const consented = useAppStore((s) => s.consentAt !== null);
+  const acceptConsent = useAppStore((s) => s.acceptConsent);
   const [permission, requestPermission] = useCameraPermissions();
   const cameraRef = useRef<CameraView>(null);
   const [cameraReady, setCameraReady] = useState(false);
@@ -99,6 +102,8 @@ export default function CameraScreen() {
 
   const usePhoto = () => {
     if (!preview) return;
+    // Camera is reachable without /tips (makeup lock, look try-on), so the AI-sharing consent is also taken here.
+    if (!consented) acceptConsent();
     setPhoto(preview);
     if (returnTo === 'look') router.back();
     // The analysis always runs; without Premium its result stays locked on /teaser (2026-10-25).
@@ -119,6 +124,14 @@ export default function CameraScreen() {
               onPress={usePhoto}
               icon="sparkle"
             />
+            {consented ? null : (
+              <>
+                <AppText variant="caption" align="center">
+                  {t('consent.continueNotice')}
+                </AppText>
+                <LegalLinks />
+              </>
+            )}
           </>
         }
       >

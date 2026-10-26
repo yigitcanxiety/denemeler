@@ -57,7 +57,7 @@ export const en = {
   },
 
   consent: {
-    continueNotice: 'By continuing you agree to the Terms of Use and acknowledge the Privacy Policy.',
+    continueNotice: 'Your photo is sent to third-party AI services (such as Google Gemini) to create your colour analysis and makeup looks, and isn\'t kept afterwards. By continuing you allow this, agree to the Terms of Use and acknowledge the Privacy Policy.',
     title: 'Before we begin',
     intro:
       'To analyse your colouring we need to process a photo of your face. Here is exactly what happens to it:',

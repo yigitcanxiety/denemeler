@@ -56,7 +56,7 @@ export const pt: Dictionary = {
   },
 
   consent: {
-    continueNotice: 'Ao continuar, você aceita os Termos de uso e declara ter lido a Política de privacidade.',
+    continueNotice: 'Sua foto é enviada a serviços de IA de terceiros (como o Google Gemini) para criar sua análise de cores e looks de maquiagem, e não é guardada depois. Ao continuar, você autoriza isso, aceita os Termos de uso e declara ter lido a Política de privacidade.',
     title: 'Antes de começar',
     intro:
       'Para analisar a sua coloração, precisamos processar uma foto do seu rosto. Veja exatamente o que acontece com ela:',

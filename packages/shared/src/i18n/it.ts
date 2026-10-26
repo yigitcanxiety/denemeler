@@ -56,7 +56,7 @@ export const it: Dictionary = {
   },
 
   consent: {
-    continueNotice: 'Continuando accetti i Termini di utilizzo e dichiari di aver letto l’Informativa sulla privacy.',
+    continueNotice: 'La tua foto viene inviata a servizi di IA di terze parti (come Google Gemini) per creare l’analisi del colore e i look make-up, e non viene conservata dopo. Continuando lo autorizzi, accetti i Termini di utilizzo e dichiari di aver letto l’Informativa sulla privacy.',
     title: 'Prima di iniziare',
     intro:
       'Per analizzare i tuoi colori dobbiamo elaborare una foto del tuo viso. Ecco esattamente cosa succede:',
