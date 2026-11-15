@@ -1,0 +1,1790 @@
+<title>Sınav Gözlem Sistemi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Full-width stacked sections, blueprint grid for technical, warm panels for narrative */
+:root {
+  --bg: #f8f9fc;
+  --bg-alt: #eef1f8;
+  --fg: #1a1b4b;
+  --fg-muted: #5a5d7a;
+  --fg-dim: #8b8ea8;
+  --accent: #e8a838;
+  --accent-glow: rgba(232, 168, 56, 0.15);
+  --primary: #2d3a8c;
+  --primary-light: #4a5bc7;
+  --blueprint: #4a9eff;
+  --blueprint-grid: rgba(74, 158, 255, 0.08);
+  --blueprint-line: rgba(74, 158, 255, 0.25);
+  --blueprint-dim: rgba(74, 158, 255, 0.12);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --card-bg: #ffffff;
+  --card-border: rgba(26, 27, 75, 0.08);
+  --card-shadow: 0 1px 3px rgba(26, 27, 75, 0.06), 0 6px 16px rgba(26, 27, 75, 0.04);
+  --hero-gradient: linear-gradient(135deg, #1a1b4b 0%, #2d3a8c 50%, #3d4eaa 100%);
+  --section-gap: clamp(4rem, 8vw, 7rem);
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c0d1a;
+    --bg-alt: #12132a;
+    --fg: #e4e5f0;
+    --fg-muted: #9b9db8;
+    --fg-dim: #6b6d88;
+    --accent: #f0b44a;
+    --accent-glow: rgba(240, 180, 74, 0.12);
+    --primary: #6b7de0;
+    --primary-light: #8a9af0;
+    --blueprint: #5aadff;
+    --blueprint-grid: rgba(90, 173, 255, 0.06);
+    --blueprint-line: rgba(90, 173, 255, 0.2);
+    --blueprint-dim: rgba(90, 173, 255, 0.08);
+    --card-bg: #16172e;
+    --card-border: rgba(255, 255, 255, 0.06);
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 6px 16px rgba(0, 0, 0, 0.15);
+    --hero-gradient: linear-gradient(135deg, #0a0b18 0%, #151838 50%, #1e2355 100%);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c0d1a;
+  --bg-alt: #12132a;
+  --fg: #e4e5f0;
+  --fg-muted: #9b9db8;
+  --fg-dim: #6b6d88;
+  --accent: #f0b44a;
+  --accent-glow: rgba(240, 180, 74, 0.12);
+  --primary: #6b7de0;
+  --primary-light: #8a9af0;
+  --blueprint: #5aadff;
+  --blueprint-grid: rgba(90, 173, 255, 0.06);
+  --blueprint-line: rgba(90, 173, 255, 0.2);
+  --blueprint-dim: rgba(90, 173, 255, 0.08);
+  --card-bg: #16172e;
+  --card-border: rgba(255, 255, 255, 0.06);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), 0 6px 16px rgba(0, 0, 0, 0.15);
+  --hero-gradient: linear-gradient(135deg, #0a0b18 0%, #151838 50%, #1e2355 100%);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--bg);
+}
+*, *::before, *::after { box-sizing: border-box; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  text-wrap: balance;
+  margin: 0;
+}
+p { margin: 0; }
+a { color: var(--primary-light); text-decoration: none; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+/* --- NAV --- */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--card-border);
+  padding-block: 0.75rem;
+}
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav-logo svg { flex-shrink: 0; }
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--fg-muted);
+}
+.nav-links a { color: inherit; transition: color 0.2s; }
+.nav-links a:hover { color: var(--fg); }
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+}
+
+/* --- SECTIONS --- */
+.section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-block: var(--section-gap);
+}
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blueprint);
+  margin-bottom: 0.75rem;
+}
+.section-title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--fg);
+  margin-bottom: 1rem;
+}
+.section-desc {
+  font-size: 1.05rem;
+  color: var(--fg-muted);
+  max-width: 600px;
+  line-height: 1.7;
+}
+
+/* --- HERO --- */
+.hero {
+  background: var(--hero-gradient);
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: clamp(3rem, 8vw, 5rem) clamp(4rem, 10vw, 7rem);
+  position: relative;
+  overflow: hidden;
+}
+.hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; text-align: center; }
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.hero-tagline {
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.75);
+  margin-top: 1rem;
+  line-height: 1.7;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  margin-top: 1.5rem;
+  backdrop-filter: blur(4px);
+}
+.hero-badge svg { flex-shrink: 0; }
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+@media (max-width: 768px) {
+  .hero-stats { justify-content: center; }
+}
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.hero-stat-lbl {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.55);
+  margin-top: 0.15rem;
+}
+.hero-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.hero-visual svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* Blueprint grid background */
+.blueprint-bg {
+  background-color: var(--bg-alt);
+  background-image:
+    linear-gradient(var(--blueprint-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* --- DIMENSION CARDS --- */
+.dim-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.dim-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dim-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26,27,75,0.08), 0 12px 28px rgba(26,27,75,0.06);
+}
+.dim-card-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+.dim-card-size {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--blueprint);
+  margin-bottom: 1rem;
+}
+.dim-card svg {
+  width: 100%;
+  height: auto;
+}
+
+/* --- SETUP DIAGRAM --- */
+.setup-wrap {
+  margin-top: 2.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  overflow-x: auto;
+}
+.setup-wrap svg {
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+}
+
+/* --- USAGE SCENE --- */
+.usage-scene {
+  margin-top: 2.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: var(--card-shadow);
+  overflow-x: auto;
+}
+.usage-scene svg {
+  width: 100%;
+  min-width: 500px;
+  height: auto;
+}
+
+/* --- DATA FLOW --- */
+.flow-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+}
+.flow-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  min-width: 0;
+}
+.flow-node-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.flow-node-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--fg);
+  text-align: center;
+  white-space: nowrap;
+}
+.flow-arrow {
+  color: var(--blueprint);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  animation: flowPulse 2s ease-in-out infinite;
+}
+@keyframes flowPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+/* --- ARCHITECTURE --- */
+.arch-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.arch-module {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+.arch-module:hover, .arch-module.active {
+  border-color: var(--blueprint);
+  background: color-mix(in srgb, var(--blueprint) 5%, var(--card-bg));
+}
+.arch-module-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--blueprint);
+  font-weight: 500;
+}
+.arch-module-name {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--fg);
+  margin-top: 0.25rem;
+  word-break: break-all;
+}
+.arch-module-desc {
+  font-size: 0.72rem;
+  color: var(--fg-muted);
+  margin-top: 0.3rem;
+  line-height: 1.4;
+}
+.arch-detail {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--blueprint-line);
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+  line-height: 1.6;
+  min-height: 60px;
+  transition: opacity 0.2s;
+}
+.arch-detail code {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--blueprint);
+  background: var(--blueprint-dim);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
+/* --- TIMELINE --- */
+.timeline {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--blueprint-line);
+}
+@media (max-width: 640px) {
+  .timeline::before { left: 16px; }
+}
+.tl-step {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  opacity: 0.5;
+  transition: opacity 0.4s;
+}
+.tl-step.visible { opacity: 1; }
+.tl-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-bg);
+  border: 2px solid var(--blueprint-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1rem;
+  z-index: 1;
+  transition: border-color 0.3s, background 0.3s;
+}
+.tl-step.visible .tl-dot {
+  border-color: var(--blueprint);
+  background: var(--blueprint-dim);
+}
+@media (max-width: 640px) {
+  .tl-dot { width: 32px; height: 32px; font-size: 0.85rem; }
+}
+.tl-content { min-width: 0; }
+.tl-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.tl-desc {
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+  margin-top: 0.2rem;
+}
+
+/* --- BUDGET --- */
+.budget-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+@media (max-width: 640px) {
+  .budget-wrap { grid-template-columns: 1fr; }
+}
+.budget-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+.budget-chart svg {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+}
+.budget-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.budget-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.85rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+.budget-item:hover { background: var(--bg-alt); }
+.budget-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.budget-name { flex: 1; min-width: 0; font-weight: 500; }
+.budget-price {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.budget-total {
+  margin-top: 0.75rem;
+  padding: 1rem;
+  background: var(--accent-glow);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.budget-total-label { font-weight: 600; font-size: 0.9rem; }
+.budget-total-val {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.budget-remaining {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--fg-dim);
+  text-align: right;
+}
+
+/* --- PRIVACY --- */
+.privacy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+@media (max-width: 640px) {
+  .privacy-grid { grid-template-columns: 1fr; }
+}
+.privacy-col {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.privacy-col-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.privacy-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+  line-height: 1.5;
+}
+.privacy-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 2px;
+}
+.pi-no { background: color-mix(in srgb, var(--danger) 15%, transparent); color: var(--danger); }
+.pi-yes { background: color-mix(in srgb, var(--success) 15%, transparent); color: var(--success); }
+
+/* --- DASHBOARD MOCK --- */
+.dash-mock {
+  margin-top: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+.dash-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: color-mix(in srgb, var(--fg) 4%, var(--card-bg));
+  border-bottom: 1px solid var(--card-border);
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+}
+.dash-dots {
+  display: flex;
+  gap: 5px;
+}
+.dash-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.dash-body {
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 640px) {
+  .dash-body { grid-template-columns: 1fr; }
+}
+.dash-panel {
+  background: var(--bg-alt);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.dash-panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+.dash-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.75rem;
+}
+.dash-bar-label {
+  width: 28px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.dash-bar-track {
+  flex: 1;
+  height: 16px;
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  min-width: 0;
+}
+.dash-bar-seg {
+  height: 100%;
+  transition: width 1s ease;
+}
+.dash-bar-time {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--fg-dim);
+  width: 34px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.dash-status-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+.dash-status-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dash-big-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.dash-big-label {
+  font-size: 0.75rem;
+  color: var(--fg-dim);
+}
+.dash-full { grid-column: 1 / -1; }
+
+/* --- FOOTER --- */
+.footer {
+  margin-top: var(--section-gap);
+  padding-block: 2rem;
+  border-top: 1px solid var(--card-border);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--fg-dim);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes heroPulse {
+  0%, 100% { r: 4; opacity: 0.6; }
+  50% { r: 7; opacity: 1; }
+}
+@keyframes wifiWave {
+  0% { opacity: 0; transform: scale(0.7); }
+  50% { opacity: 0.7; }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+@keyframes penWrite {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(6px); }
+  50% { transform: translateX(12px); }
+  75% { transform: translateX(4px); }
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      SGS
+    </div>
+    <div class="nav-links">
+      <a href="#boyutlar">Boyutlar</a>
+      <a href="#kullanim">Kullanim</a>
+      <a href="#mimari">Mimari</a>
+      <a href="#butce">Butce</a>
+      <a href="#gizlilik">Gizlilik</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Sinav Gozlem Sistemi</h1>
+      <p class="hero-tagline">
+        Kagit sinavlarda gozlemlenebilir calisma davranislarini kayit altina alan
+        kablosuz, hafif ve tasinabilir kamera sistemi.
+      </p>
+      <div class="hero-badge">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1L10 5.5L15 6.2L11.5 9.5L12.4 14.5L8 12.1L3.6 14.5L4.5 9.5L1 6.2L6 5.5L8 1Z" fill="#22c55e" opacity="0.9"/>
+        </svg>
+        Gizlilik Oncelikli &mdash; Stres/duygu cikarimi yapmaz
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">~10g</div>
+          <div class="hero-stat-lbl">Kamera agirligi</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">7</div>
+          <div class="hero-stat-lbl">Yazilim modulu</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">&lt;6K TL</div>
+          <div class="hero-stat-lbl">Toplam maliyet</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <!-- Animated hero SVG: camera watching paper -->
+      <svg viewBox="0 0 400 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Desk surface -->
+        <rect x="60" y="200" width="280" height="8" rx="3" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+        <!-- Paper -->
+        <rect x="120" y="140" width="120" height="60" rx="2" fill="rgba(255,255,255,0.95)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+        <line x1="132" y1="152" x2="220" y2="152" stroke="rgba(26,27,75,0.15)" stroke-width="0.5"/>
+        <line x1="132" y1="160" x2="210" y2="160" stroke="rgba(26,27,75,0.15)" stroke-width="0.5"/>
+        <line x1="132" y1="168" x2="215" y2="168" stroke="rgba(26,27,75,0.15)" stroke-width="0.5"/>
+        <line x1="132" y1="176" x2="195" y2="176" stroke="rgba(26,27,75,0.15)" stroke-width="0.5"/>
+        <line x1="132" y1="184" x2="205" y2="184" stroke="rgba(26,27,75,0.15)" stroke-width="0.5"/>
+        <!-- Pen/hand writing (animated) -->
+        <g style="animation: penWrite 3s ease-in-out infinite">
+          <line x1="175" y1="172" x2="182" y2="155" stroke="rgba(232,168,56,0.8)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="175" cy="172" r="1.5" fill="rgba(232,168,56,0.9)"/>
+        </g>
+        <!-- Gooseneck arm -->
+        <rect x="76" y="170" width="10" height="30" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+        <path d="M81 170 Q81 100 140 70 Q180 55 200 50" stroke="rgba(255,255,255,0.25)" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Camera module -->
+        <rect x="190" y="38" width="24" height="28" rx="4" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>
+        <circle cx="202" cy="52" r="6" fill="none" stroke="rgba(74,158,255,0.6)" stroke-width="1.5"/>
+        <circle cx="202" cy="52" r="2.5" fill="rgba(74,158,255,0.4)"/>
+        <!-- Camera pulse -->
+        <circle cx="202" cy="52" r="4" fill="none" stroke="rgba(74,158,255,0.5)" stroke-width="0.8" style="animation: heroPulse 2s ease-in-out infinite"/>
+        <!-- Scan lines from camera to paper -->
+        <line x1="196" y1="66" x2="140" y2="140" stroke="rgba(74,158,255,0.1)" stroke-width="0.5" stroke-dasharray="4 4"/>
+        <line x1="208" y1="66" x2="240" y2="140" stroke="rgba(74,158,255,0.1)" stroke-width="0.5" stroke-dasharray="4 4"/>
+        <!-- WiFi waves from camera -->
+        <g transform="translate(220, 45)">
+          <path d="M0 0 Q5 -8 10 0" stroke="rgba(74,158,255,0.4)" stroke-width="1" fill="none" style="animation: wifiWave 2s ease-in-out infinite"/>
+          <path d="M-3 2 Q5 -12 13 2" stroke="rgba(74,158,255,0.25)" stroke-width="1" fill="none" style="animation: wifiWave 2s ease-in-out 0.4s infinite"/>
+          <path d="M-6 4 Q5 -16 16 4" stroke="rgba(74,158,255,0.15)" stroke-width="1" fill="none" style="animation: wifiWave 2s ease-in-out 0.8s infinite"/>
+        </g>
+        <!-- Tablet -->
+        <rect x="290" y="130" width="56" height="76" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+        <rect x="294" y="138" width="48" height="58" rx="2" fill="rgba(74,158,255,0.08)" stroke="rgba(74,158,255,0.15)" stroke-width="0.5"/>
+        <rect x="298" y="146" width="18" height="3" rx="1" fill="rgba(34,197,94,0.4)"/>
+        <rect x="298" y="152" width="30" height="3" rx="1" fill="rgba(245,158,11,0.4)"/>
+        <rect x="298" y="158" width="24" height="3" rx="1" fill="rgba(74,158,255,0.3)"/>
+        <rect x="298" y="164" width="36" height="3" rx="1" fill="rgba(34,197,94,0.3)"/>
+        <!-- WiFi from Mac to Tablet -->
+        <g transform="translate(278, 160)">
+          <path d="M0 0 Q4 -5 8 0" stroke="rgba(74,158,255,0.3)" stroke-width="0.8" fill="none" style="animation: wifiWave 2.5s ease-in-out 0.5s infinite"/>
+        </g>
+        <!-- Status text -->
+        <text x="200" y="240" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="rgba(255,255,255,0.35)" letter-spacing="0.1em">CANLI GOZLEM AKTIF</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- PHYSICAL DIMENSIONS -->
+<section class="blueprint-bg" id="boyutlar">
+  <div class="section animate-in">
+    <div class="section-label">01 &mdash; Fiziksel Olculer</div>
+    <h2 class="section-title">Donanim Bileşenleri</h2>
+    <p class="section-desc">Her bileşen elde taşınabilir boyutta. ESP32-CAM modülü bir bozuk para kadar küçük, tüm sistem bir kalem kutusu büyüklüğünde.</p>
+
+    <div class="dim-grid">
+      <!-- ESP32-CAM -->
+      <div class="dim-card">
+        <div class="dim-card-title">ESP32-CAM (OV2640)</div>
+        <div class="dim-card-size">27 x 40 x 4.5 mm &middot; ~10g</div>
+        <svg viewBox="0 0 260 160" fill="none">
+          <!-- Blueprint grid -->
+          <defs>
+            <pattern id="bp1" width="12" height="12" patternUnits="userSpaceOnUse">
+              <path d="M12 0H0V12" fill="none" stroke="var(--blueprint-grid)" stroke-width="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="260" height="160" fill="url(#bp1)"/>
+          <!-- Board -->
+          <rect x="80" y="30" width="80" height="100" rx="3" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+          <!-- Camera lens -->
+          <circle cx="120" cy="60" r="12" fill="none" stroke="var(--blueprint)" stroke-width="1"/>
+          <circle cx="120" cy="60" r="6" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.8"/>
+          <!-- Antenna -->
+          <rect x="90" y="22" width="60" height="12" rx="2" fill="none" stroke="var(--blueprint)" stroke-width="0.8" stroke-dasharray="2 2"/>
+          <text x="120" y="30" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">ANTEN</text>
+          <!-- SD slot -->
+          <rect x="158" y="55" width="10" height="18" rx="1" fill="none" stroke="var(--blueprint)" stroke-width="0.6"/>
+          <text x="173" y="67" font-family="var(--font-mono)" font-size="5.5" fill="var(--fg-dim)">SD</text>
+          <!-- Dimension arrows -->
+          <!-- Width: 27mm mapped to 80px, so use proportional display -->
+          <line x1="80" y1="142" x2="160" y2="142" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="80" y1="138" x2="80" y2="146" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="160" y1="138" x2="160" y2="146" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="120" y="152" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">27 mm</text>
+          <!-- Height -->
+          <line x1="172" y1="30" x2="172" y2="130" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="168" y1="30" x2="176" y2="30" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="168" y1="130" x2="176" y2="130" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="185" y="83" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">40 mm</text>
+          <!-- Coin for scale -->
+          <circle cx="36" cy="80" r="18" fill="none" stroke="var(--fg-dim)" stroke-width="0.8" stroke-dasharray="2 2"/>
+          <text x="36" y="76" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--fg-dim)">1 TL</text>
+          <text x="36" y="84" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">26mm</text>
+          <text x="36" y="106" text-anchor="middle" font-family="var(--font-mono)" font-size="5.5" fill="var(--fg-dim)">(olcek)</text>
+          <!-- Chip labels -->
+          <rect x="95" y="80" width="24" height="14" rx="2" fill="none" stroke="var(--blueprint)" stroke-width="0.5"/>
+          <text x="107" y="90" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--blueprint)">ESP32</text>
+          <!-- LED -->
+          <circle cx="145" cy="42" r="3" fill="none" stroke="var(--warning)" stroke-width="0.6"/>
+          <text x="153" y="44" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">LED</text>
+        </svg>
+      </div>
+
+      <!-- Camera with case -->
+      <div class="dim-card">
+        <div class="dim-card-title">Kasali Kamera Birimi</div>
+        <div class="dim-card-size">35 x 50 x 20 mm &middot; ~200g (pil dahil)</div>
+        <svg viewBox="0 0 260 160" fill="none">
+          <rect width="260" height="160" fill="url(#bp1)"/>
+          <!-- Case outline -->
+          <rect x="80" y="25" width="100" height="110" rx="8" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+          <!-- Inner board visible -->
+          <rect x="92" y="35" width="56" height="72" rx="2" fill="none" stroke="var(--blueprint)" stroke-width="0.5" stroke-dasharray="2 2" opacity="0.5"/>
+          <!-- Lens opening -->
+          <circle cx="120" cy="58" r="14" fill="var(--bg)" stroke="var(--blueprint)" stroke-width="1.2"/>
+          <circle cx="120" cy="58" r="7" fill="var(--blueprint-dim)"/>
+          <!-- Power port -->
+          <rect x="110" y="130" width="20" height="6" rx="2" fill="none" stroke="var(--blueprint)" stroke-width="0.8"/>
+          <text x="130" y="144" font-family="var(--font-mono)" font-size="5.5" fill="var(--fg-dim)">USB-C</text>
+          <!-- Battery inside -->
+          <rect x="92" y="90" width="56" height="16" rx="3" fill="none" stroke="var(--warning)" stroke-width="0.6" stroke-dasharray="2 2"/>
+          <text x="120" y="101" text-anchor="middle" font-family="var(--font-mono)" font-size="5.5" fill="var(--warning)">5000mAh</text>
+          <!-- Dimensions -->
+          <line x1="80" y1="147" x2="180" y2="147" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="80" y1="143" x2="80" y2="151" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="180" y1="143" x2="180" y2="151" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="130" y="156" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">35 mm</text>
+          <!-- Height -->
+          <line x1="192" y1="25" x2="192" y2="135" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="188" y1="25" x2="196" y2="25" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="188" y1="135" x2="196" y2="135" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="205" y="83" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">50 mm</text>
+          <!-- Depth indicator -->
+          <text x="42" y="75" text-anchor="middle" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">Derinlik</text>
+          <text x="42" y="87" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--accent)" font-weight="500">20 mm</text>
+          <!-- Matchbox comparison -->
+          <rect x="22" y="100" width="40" height="24" rx="2" fill="none" stroke="var(--fg-dim)" stroke-width="0.6" stroke-dasharray="2 2"/>
+          <text x="42" y="115" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">kibrit kutusu</text>
+          <text x="42" y="132" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">(olcek)</text>
+        </svg>
+      </div>
+
+      <!-- Tablet -->
+      <div class="dim-card">
+        <div class="dim-card-title">7" Android Tablet</div>
+        <div class="dim-card-size">18 x 10.5 x 0.9 cm</div>
+        <svg viewBox="0 0 260 160" fill="none">
+          <rect width="260" height="160" fill="url(#bp1)"/>
+          <!-- Tablet -->
+          <rect x="50" y="25" width="160" height="95" rx="6" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+          <rect x="58" y="31" width="144" height="83" rx="2" fill="var(--bg)" stroke="var(--blueprint)" stroke-width="0.5"/>
+          <!-- Screen content mockup -->
+          <rect x="64" y="38" width="40" height="5" rx="1" fill="var(--success)" opacity="0.4"/>
+          <rect x="64" y="47" width="60" height="5" rx="1" fill="var(--warning)" opacity="0.4"/>
+          <rect x="64" y="56" width="50" height="5" rx="1" fill="var(--blueprint)" opacity="0.3"/>
+          <rect x="64" y="65" width="70" height="5" rx="1" fill="var(--success)" opacity="0.3"/>
+          <rect x="64" y="74" width="45" height="5" rx="1" fill="var(--blueprint)" opacity="0.2"/>
+          <!-- Dashboard label -->
+          <text x="160" y="90" text-anchor="end" font-family="var(--font-mono)" font-size="5.5" fill="var(--fg-dim)">Canli Pano</text>
+          <!-- Dimensions -->
+          <line x1="50" y1="132" x2="210" y2="132" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="50" y1="128" x2="50" y2="136" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="210" y1="128" x2="210" y2="136" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="130" y="145" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">18 cm</text>
+          <line x1="222" y1="25" x2="222" y2="120" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="218" y1="25" x2="226" y2="25" stroke="var(--accent)" stroke-width="0.8"/>
+          <line x1="218" y1="120" x2="226" y2="120" stroke="var(--accent)" stroke-width="0.8"/>
+          <text x="238" y="76" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">10.5</text>
+          <text x="238" y="86" font-family="var(--font-mono)" font-size="7" fill="var(--accent)">cm</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Gooseneck Setup Diagram -->
+    <div class="setup-wrap" style="margin-top:1.5rem">
+      <svg viewBox="0 0 700 260" fill="none">
+        <defs>
+          <pattern id="bp2" width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M16 0H0V16" fill="none" stroke="var(--blueprint-grid)" stroke-width="0.3"/>
+          </pattern>
+        </defs>
+        <rect width="700" height="260" fill="url(#bp2)"/>
+        <!-- Desk -->
+        <rect x="40" y="190" width="620" height="12" rx="3" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1"/>
+        <text x="350" y="218" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--fg-dim)">SINAV MASASI</text>
+        <!-- Desk legs -->
+        <line x1="80" y1="202" x2="80" y2="245" stroke="var(--blueprint)" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="620" y1="202" x2="620" y2="245" stroke="var(--blueprint)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Clamp -->
+        <rect x="48" y="178" width="30" height="14" rx="3" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1"/>
+        <text x="63" y="175" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">KELEPCE</text>
+        <!-- Flexible arm -->
+        <path d="M63 178 Q63 120 100 80 Q140 40 200 35" stroke="var(--blueprint)" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="none"/>
+        <!-- Zigzag hint for flexibility -->
+        <path d="M75 145 L78 140 L72 135 L78 130 L72 125 L78 120" stroke="var(--fg-dim)" stroke-width="0.6" fill="none" opacity="0.4"/>
+        <!-- Camera at end -->
+        <rect x="195" y="22" width="32" height="30" rx="5" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+        <circle cx="211" cy="37" r="8" fill="none" stroke="var(--blueprint)" stroke-width="1.2"/>
+        <circle cx="211" cy="37" r="3" fill="var(--blueprint)" opacity="0.3"/>
+        <!-- Camera label -->
+        <text x="211" y="16" text-anchor="middle" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)" font-weight="500">ESP32-CAM</text>
+        <!-- Paper on desk below camera -->
+        <rect x="170" y="145" width="100" height="42" rx="2" fill="var(--card-bg)" stroke="var(--blueprint)" stroke-width="0.8"/>
+        <line x1="180" y1="155" x2="250" y2="155" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="180" y1="162" x2="245" y2="162" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="180" y1="169" x2="252" y2="169" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="180" y1="176" x2="235" y2="176" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <text x="220" y="152" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">SINAV KAGIDI</text>
+        <!-- Scan area - dashed lines from camera to paper -->
+        <line x1="200" y1="52" x2="172" y2="145" stroke="var(--blueprint)" stroke-width="0.6" stroke-dasharray="4 4" opacity="0.4"/>
+        <line x1="222" y1="52" x2="268" y2="145" stroke="var(--blueprint)" stroke-width="0.6" stroke-dasharray="4 4" opacity="0.4"/>
+        <!-- Distance label 20-30 cm -->
+        <line x1="280" y1="52" x2="280" y2="145" stroke="var(--accent)" stroke-width="0.8"/>
+        <line x1="276" y1="52" x2="284" y2="52" stroke="var(--accent)" stroke-width="0.8"/>
+        <line x1="276" y1="145" x2="284" y2="145" stroke="var(--accent)" stroke-width="0.8"/>
+        <text x="296" y="95" font-family="var(--font-mono)" font-size="9" fill="var(--accent)" font-weight="500">20-30 cm</text>
+        <text x="296" y="107" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">goruntu mesafesi</text>
+        <!-- Arm length label -->
+        <text x="110" y="90" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">Esnek kol</text>
+        <text x="110" y="100" font-family="var(--font-mono)" font-size="8" fill="var(--accent)" font-weight="500">30-40 cm</text>
+        <!-- Powerbank -->
+        <rect x="400" y="155" width="70" height="30" rx="4" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.8"/>
+        <text x="435" y="172" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">POWERBANK</text>
+        <text x="435" y="180" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">5000mAh</text>
+        <text x="435" y="152" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--fg-dim)">90x60x13 mm</text>
+        <!-- USB cable from powerbank to camera -->
+        <path d="M400 168 L350 168 Q330 168 330 150 Q330 52 228 37" stroke="var(--warning)" stroke-width="1" fill="none" stroke-dasharray="3 2"/>
+        <text x="345" y="140" font-family="var(--font-mono)" font-size="5" fill="var(--warning)">5V USB</text>
+        <!-- microSD -->
+        <rect x="520" y="160" width="40" height="24" rx="3" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.8"/>
+        <text x="540" y="175" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">microSD</text>
+        <text x="540" y="155" text-anchor="middle" font-family="var(--font-mono)" font-size="5.5" fill="var(--fg-dim)">32 GB yedek</text>
+        <!-- Legend -->
+        <text x="600" y="35" text-anchor="end" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">YAN GORUNUM SEMATIGI</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- USAGE MOMENT -->
+<section id="kullanim">
+  <div class="section animate-in">
+    <div class="section-label">02 &mdash; Kullanim Ani</div>
+    <h2 class="section-title">Sinav Aninda Sistem</h2>
+    <p class="section-desc">Kuşbakışı görünüm: öğrenci yazarken kamera gözlemliyor, Mac işliyor, eğitmen tabletinden canlı izliyor.</p>
+
+    <div class="usage-scene">
+      <svg viewBox="0 0 700 380" fill="none">
+        <defs>
+          <pattern id="bp3" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0H0V20" fill="none" stroke="var(--blueprint-grid)" stroke-width="0.3"/>
+          </pattern>
+        </defs>
+        <rect width="700" height="380" fill="url(#bp3)"/>
+
+        <!-- STUDENT DESK (bird's eye) -->
+        <rect x="80" y="80" width="260" height="200" rx="8" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+        <text x="210" y="72" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--blueprint)" font-weight="500">OGRENCI MASASI</text>
+
+        <!-- Exam paper -->
+        <rect x="130" y="120" width="130" height="80" rx="2" fill="var(--card-bg)" stroke="var(--blueprint)" stroke-width="0.6"/>
+        <!-- Paper lines -->
+        <line x1="140" y1="132" x2="240" y2="132" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="140" x2="235" y2="140" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="148" x2="242" y2="148" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="156" x2="230" y2="156" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="164" x2="238" y2="164" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="172" x2="225" y2="172" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="180" x2="240" y2="180" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <line x1="140" y1="188" x2="232" y2="188" stroke="var(--fg-dim)" stroke-width="0.3"/>
+        <text x="195" y="128" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--fg-dim)">SINAV FORMU - Sayfa 1/3</text>
+
+        <!-- Student hand (simplified bird's eye) -->
+        <g style="animation: penWrite 4s ease-in-out infinite">
+          <ellipse cx="200" cy="215" rx="18" ry="30" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.6" opacity="0.5" transform="rotate(-15 200 215)"/>
+          <line x1="198" y1="190" x2="195" y2="175" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <text x="230" y="235" font-family="var(--font-mono)" font-size="6" fill="var(--fg-dim)">yazma</text>
+
+        <!-- Camera circle above (bird's eye = looking down) -->
+        <circle cx="195" cy="105" r="14" fill="var(--bg)" stroke="var(--blueprint)" stroke-width="1.5"/>
+        <circle cx="195" cy="105" r="6" fill="var(--blueprint)" opacity="0.2"/>
+        <circle cx="195" cy="105" r="3" fill="var(--blueprint)" opacity="0.4"/>
+        <text x="195" y="95" text-anchor="middle" font-family="var(--font-mono)" font-size="5.5" fill="var(--blueprint)">KAMERA</text>
+        <!-- Camera view field -->
+        <rect x="132" y="118" width="126" height="80" rx="2" fill="none" stroke="var(--blueprint)" stroke-width="0.6" stroke-dasharray="3 3" opacity="0.3"/>
+
+        <!-- Gooseneck base (top view = small circle) -->
+        <circle cx="100" cy="95" r="8" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.8"/>
+        <path d="M100 95 L160 100 Q175 101 190 105" stroke="var(--blueprint)" stroke-width="1.5" fill="none"/>
+        <text x="100" y="114" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">kelepce</text>
+
+        <!-- Powerbank on desk -->
+        <rect x="280" y="140" width="40" height="24" rx="3" fill="var(--warning)" opacity="0.15" stroke="var(--warning)" stroke-width="0.6"/>
+        <text x="300" y="155" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--warning)">PIL</text>
+
+        <!-- WiFi signal from camera -->
+        <g transform="translate(220, 100)">
+          <path d="M0 0 Q8 -10 16 0" stroke="var(--blueprint)" stroke-width="1" fill="none" opacity="0.5" style="animation: wifiWave 2s ease-in-out infinite"/>
+          <path d="M-4 3 Q8 -15 20 3" stroke="var(--blueprint)" stroke-width="0.8" fill="none" opacity="0.3" style="animation: wifiWave 2s ease-in-out 0.3s infinite"/>
+        </g>
+
+        <!-- MAC (processing hub) -->
+        <rect x="420" y="100" width="120" height="80" rx="6" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+        <rect x="432" y="110" width="96" height="56" rx="2" fill="var(--bg)" stroke="var(--blueprint)" stroke-width="0.5"/>
+        <!-- Terminal-style content -->
+        <text x="438" y="122" font-family="var(--font-mono)" font-size="5" fill="var(--success)">$ python capture.py</text>
+        <text x="438" y="130" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">FPS: 15 | Durum: YAZMA</text>
+        <text x="438" y="138" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">Sayfa: 1 | Soru: 3</text>
+        <text x="438" y="146" font-family="var(--font-mono)" font-size="5" fill="var(--success)">frame_analyzer: aktif</text>
+        <text x="438" y="154" font-family="var(--font-mono)" font-size="5" fill="var(--warning)">timing_engine: 02:34</text>
+        <text x="480" y="95" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--blueprint)" font-weight="500">MAC (ISLEM MERKEZI)</text>
+        <!-- Apple logo hint -->
+        <rect x="468" y="176" width="24" height="2" rx="1" fill="var(--blueprint)" opacity="0.3"/>
+
+        <!-- WiFi from Mac to Camera -->
+        <line x1="340" y1="140" x2="420" y2="140" stroke="var(--blueprint)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.5"/>
+        <text x="380" y="135" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">WiFi</text>
+        <g transform="translate(370, 142)">
+          <path d="M0 0 Q4 -5 8 0" stroke="var(--blueprint)" stroke-width="0.8" fill="none" style="animation: wifiWave 2.5s ease infinite"/>
+        </g>
+
+        <!-- TABLET (instructor) -->
+        <rect x="420" y="240" width="100" height="70" rx="5" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="1.5"/>
+        <rect x="428" y="248" width="84" height="52" rx="2" fill="var(--bg)" stroke="var(--blueprint)" stroke-width="0.5"/>
+        <!-- Dashboard bars -->
+        <rect x="434" y="256" width="30" height="4" rx="1" fill="var(--success)" opacity="0.5"/>
+        <rect x="434" y="264" width="50" height="4" rx="1" fill="var(--warning)" opacity="0.5"/>
+        <rect x="434" y="272" width="40" height="4" rx="1" fill="var(--blueprint)" opacity="0.4"/>
+        <rect x="434" y="280" width="55" height="4" rx="1" fill="var(--success)" opacity="0.4"/>
+        <rect x="434" y="288" width="25" height="4" rx="1" fill="var(--danger)" opacity="0.3"/>
+        <text x="470" y="238" text-anchor="middle" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)" font-weight="500">EGITMEN TABLETI</text>
+
+        <!-- WiFi from Mac to Tablet -->
+        <line x1="480" y1="180" x2="470" y2="240" stroke="var(--blueprint)" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.5"/>
+        <g transform="translate(472, 210)">
+          <path d="M0 0 Q4 -5 8 0" stroke="var(--blueprint)" stroke-width="0.8" fill="none" style="animation: wifiWave 2.5s ease 0.7s infinite"/>
+        </g>
+
+        <!-- WiFi Router -->
+        <rect x="550" y="160" width="60" height="40" rx="4" fill="var(--blueprint-dim)" stroke="var(--blueprint)" stroke-width="0.8"/>
+        <text x="580" y="182" text-anchor="middle" font-family="var(--font-mono)" font-size="6" fill="var(--blueprint)">ROUTER</text>
+        <text x="580" y="190" text-anchor="middle" font-family="var(--font-mono)" font-size="5" fill="var(--fg-dim)">veya Hotspot</text>
+        <!-- Antenna lines -->
+        <line x1="565" y1="160" x2="560" y2="145" stroke="var(--blueprint)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="580" y1="160" x2="580" y2="142" stroke="var(--blueprint)" stroke-width="0.8" stroke-linecap="round"/>
+        <line x1="595" y1="160" x2="600" y2="145" stroke="var(--blueprint)" stroke-width="0.8" stroke-linecap="round"/>
+        <!-- WiFi signals from router -->
+        <g transform="translate(570, 140)">
+          <path d="M0 0 Q10 -12 20 0" stroke="var(--blueprint)" stroke-width="0.6" fill="none" style="animation: wifiWave 3s ease infinite"/>
+          <path d="M-4 3 Q10 -18 24 3" stroke="var(--blueprint)" stroke-width="0.5" fill="none" opacity="0.5" style="animation: wifiWave 3s ease 0.5s infinite"/>
+        </g>
+
+        <!-- Data flow legend -->
+        <g transform="translate(80, 320)">
+          <text font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)" font-weight="500">VERI AKISI:</text>
+          <text x="80" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)">Kamera</text>
+          <text x="120" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">&#8594;</text>
+          <text x="135" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)">WiFi</text>
+          <text x="157" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">&#8594;</text>
+          <text x="172" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)">Mac</text>
+          <text x="193" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">&#8594;</text>
+          <text x="208" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)">WiFi</text>
+          <text x="230" font-family="var(--font-mono)" font-size="7" fill="var(--fg-dim)">&#8594;</text>
+          <text x="245" font-family="var(--font-mono)" font-size="7" fill="var(--blueprint)">Tablet</text>
+        </g>
+        <g transform="translate(80, 340)">
+          <text font-family="var(--font-mono)" font-size="6" fill="var(--fg-dim)">MJPEG akisi &#8594; Python analiz &#8594; Flask-SocketIO &#8594; Canli pano guncelleme</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Data Flow Bar -->
+    <div class="flow-bar" style="margin-top:1.5rem">
+      <div class="flow-node">
+        <div class="flow-node-icon" style="background: var(--blueprint-dim);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="14" rx="2" stroke="var(--blueprint)" stroke-width="1.5"/><circle cx="12" cy="10" r="3" stroke="var(--blueprint)" stroke-width="1.5"/></svg>
+        </div>
+        <div class="flow-node-label">ESP32-CAM</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-node">
+        <div class="flow-node-icon" style="background: var(--accent-glow);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.5 3 2 6 2 12s4.5 9 10 9 10-3 10-9S17.5 3 12 3z" stroke="var(--accent)" stroke-width="1.5" fill="none"/><path d="M8 9l4-3 4 3M8 15l4 3 4-3" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="flow-node-label">WiFi</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-node">
+        <div class="flow-node-icon" style="background: color-mix(in srgb, var(--success) 12%, transparent);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="14" rx="2" stroke="var(--success)" stroke-width="1.5"/><path d="M8 21h8M12 18v3" stroke="var(--success)" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="flow-node-label">Mac + Python</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-node">
+        <div class="flow-node-icon" style="background: var(--accent-glow);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.5 3 2 6 2 12s4.5 9 10 9 10-3 10-9S17.5 3 12 3z" stroke="var(--accent)" stroke-width="1.5" fill="none"/><path d="M8 9l4-3 4 3M8 15l4 3 4-3" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="flow-node-label">WiFi</div>
+      </div>
+      <div class="flow-arrow">&#8594;</div>
+      <div class="flow-node">
+        <div class="flow-node-icon" style="background: color-mix(in srgb, var(--primary-light) 12%, transparent);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="2" stroke="var(--primary-light)" stroke-width="1.5"/><rect x="8" y="5" width="8" height="12" rx="1" stroke="var(--primary-light)" stroke-width="0.8"/></svg>
+        </div>
+        <div class="flow-node-label">Tablet Pano</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYSTEM ARCHITECTURE -->
+<section class="blueprint-bg" id="mimari">
+  <div class="section animate-in">
+    <div class="section-label">03 &mdash; Sistem Mimarisi</div>
+    <h2 class="section-title">Yazilim Modulleri</h2>
+    <p class="section-desc">Mac üzerinde çalışan 7 Python modülü. Her biri bağımsız görev üstlenir, hepsi birlikte gerçek zamanlı analiz sağlar.</p>
+
+    <div class="arch-grid" id="archGrid">
+      <div class="arch-module active" data-idx="0" onclick="showModule(0)">
+        <div class="arch-module-num">M1</div>
+        <div class="arch-module-name">capture.py</div>
+        <div class="arch-module-desc">Video yakalama</div>
+      </div>
+      <div class="arch-module" data-idx="1" onclick="showModule(1)">
+        <div class="arch-module-num">M2</div>
+        <div class="arch-module-name">frame_analyzer.py</div>
+        <div class="arch-module-desc">Hareket analizi</div>
+      </div>
+      <div class="arch-module" data-idx="2" onclick="showModule(2)">
+        <div class="arch-module-num">M3</div>
+        <div class="arch-module-name">page_detector.py</div>
+        <div class="arch-module-desc">Sayfa tanima</div>
+      </div>
+      <div class="arch-module" data-idx="3" onclick="showModule(3)">
+        <div class="arch-module-num">M4</div>
+        <div class="arch-module-name">document_stitcher.py</div>
+        <div class="arch-module-desc">Belge birlestirme</div>
+      </div>
+      <div class="arch-module" data-idx="4" onclick="showModule(4)">
+        <div class="arch-module-num">M5</div>
+        <div class="arch-module-name">timing_engine.py</div>
+        <div class="arch-module-desc">Soru zamanlama</div>
+      </div>
+      <div class="arch-module" data-idx="5" onclick="showModule(5)">
+        <div class="arch-module-num">M6</div>
+        <div class="arch-module-name">answer_key.py</div>
+        <div class="arch-module-desc">Cevap anahtari</div>
+      </div>
+      <div class="arch-module" data-idx="6" onclick="showModule(6)">
+        <div class="arch-module-num">M7</div>
+        <div class="arch-module-name">instructor_display.py</div>
+        <div class="arch-module-desc">Canli pano</div>
+      </div>
+    </div>
+
+    <div class="arch-detail" id="archDetail">
+      <strong>capture.py</strong> &mdash; ESP32-CAM'den MJPEG akışını alır. WiFi üzerinden HTTP bağlantısıyla <code>http://&lt;esp32-ip&gt;:81/stream</code> adresinden canlı kare yakalar. Kareleri analiz modülüne iletir. Bağlantı kesilirse otomatik yeniden bağlanır.
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <div class="section animate-in">
+    <div class="section-label">04 &mdash; Nasil Calisir</div>
+    <h2 class="section-title">Adim Adim Süreç</h2>
+    <p class="section-desc">Sınav başladığında sistemin izlediği adımlar.</p>
+
+    <div class="timeline" id="timeline">
+      <div class="tl-step visible">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="5" stroke="var(--blueprint)" stroke-width="1.2"/><path d="M9 6v6M6 9h6" stroke="var(--blueprint)" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Sistem Kurulumu</div>
+          <div class="tl-desc">Gooseneck kelepçeyle masaya sabitlenir, kamera kağıdın 20-30 cm üstüne konumlanır.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="4" y="4" width="10" height="10" rx="2" stroke="var(--blueprint)" stroke-width="1.2"/><circle cx="9" cy="9" r="2" fill="var(--blueprint)" opacity="0.4"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Kamera Aktif</div>
+          <div class="tl-desc">ESP32-CAM WiFi'a bağlanır ve MJPEG akışını başlatır. Mac üzerinde <code style="font-family:var(--font-mono);font-size:0.8rem;color:var(--blueprint)">capture.py</code> akışı alır.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5 13L8 5L11 10L14 7" stroke="var(--accent)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Öğrenci Yazmaya Başlar</div>
+          <div class="tl-desc">Kalem-kağıt hareketi algılanır. Sistem WRITING olayı oluşturur ve zamanlayıcı çalışır.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="6" width="5" height="7" rx="1" stroke="var(--blueprint)" stroke-width="1"/><rect x="10" y="4" width="5" height="9" rx="1" stroke="var(--blueprint)" stroke-width="1"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Davranış Tespiti</div>
+          <div class="tl-desc">WRITING, PAUSE, ERASING ve PAGE_TURN olayları ayrı ayrı tespit edilir ve kaydedilir.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4h10v10H4z" stroke="var(--blueprint)" stroke-width="1"/><path d="M4 4L9 9M14 4L9 9" stroke="var(--blueprint)" stroke-width="0.8" opacity="0.5"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Sayfa Geçişi</div>
+          <div class="tl-desc">Öğrenci sayfa çevirdiğinde OCR ile sayfa numarası okunur. Yeni sayfa otomatik algılanır.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="5" height="6" rx="1" stroke="var(--blueprint)" stroke-width="1"/><rect x="10" y="3" width="5" height="6" rx="1" stroke="var(--blueprint)" stroke-width="1"/><rect x="6" y="10" width="6" height="5" rx="1" stroke="var(--blueprint)" stroke-width="1"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Belge Birleştirme</div>
+          <div class="tl-desc">Tüm sayfalar tek belge haline getirilir. Soru bölgeleri cevap anahtarıyla eşleştirilir.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="var(--success)" stroke-width="1.2"/><path d="M6 9l2 2 4-4" stroke="var(--success)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Zamanlama Kaydı</div>
+          <div class="tl-desc">Her soru için yazma, duraklama ve silme süreleri milisaniye hassasiyetinde kaydedilir.</div>
+        </div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-dot">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="4" width="12" height="10" rx="2" stroke="var(--primary-light)" stroke-width="1.2"/><rect x="5" y="7" width="4" height="2" rx="0.5" fill="var(--success)" opacity="0.5"/><rect x="5" y="10" width="6" height="2" rx="0.5" fill="var(--warning)" opacity="0.5"/></svg>
+        </div>
+        <div class="tl-content">
+          <div class="tl-title">Canlı Panel Güncellenir</div>
+          <div class="tl-desc">Flask-SocketIO ile WebSocket üzerinden eğitmenin tabletindeki gösterge paneli gerçek zamanlı güncellenir.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUDGET -->
+<section class="blueprint-bg" id="butce">
+  <div class="section animate-in">
+    <div class="section-label">05 &mdash; Bütçe</div>
+    <h2 class="section-title">Maliyet Dağılımı</h2>
+    <p class="section-desc">10.000 TL bütçe limiti içinde tüm donanımın maliyeti. Mac mevcut olduğundan dahil değil.</p>
+
+    <div class="budget-wrap">
+      <div class="budget-chart">
+        <svg viewBox="0 0 280 280" fill="none">
+          <!-- Donut chart -->
+          <!-- Total mid: ~5,110 TL. Let's use mid values -->
+          <!-- ESP32: 560, Powerbank: 250, Gooseneck: 150, microSD: 150, Tablet: 3250, Router: 500, Cables: 250 = 5110 -->
+          <!-- Angles: ESP32: 39.4, PB: 17.6, Goose: 10.6, SD: 10.6, Tablet: 228.8, Router: 35.2, Cables: 17.6 -->
+          <g transform="translate(140, 140)">
+            <!-- Tablet (largest) -->
+            <circle r="100" fill="none" stroke="var(--primary-light)" stroke-width="32"
+              stroke-dasharray="361.28 267.04" stroke-dashoffset="0" opacity="0.85"/>
+            <!-- ESP32-CAM -->
+            <circle r="100" fill="none" stroke="var(--blueprint)" stroke-width="32"
+              stroke-dasharray="62.2 566.12" stroke-dashoffset="-361.28" opacity="0.85"/>
+            <!-- Router -->
+            <circle r="100" fill="none" stroke="var(--accent)" stroke-width="32"
+              stroke-dasharray="55.58 572.74" stroke-dashoffset="-423.48" opacity="0.85"/>
+            <!-- Powerbank -->
+            <circle r="100" fill="none" stroke="var(--success)" stroke-width="32"
+              stroke-dasharray="27.79 600.53" stroke-dashoffset="-479.06" opacity="0.85"/>
+            <!-- Cables -->
+            <circle r="100" fill="none" stroke="var(--warning)" stroke-width="32"
+              stroke-dasharray="27.79 600.53" stroke-dashoffset="-506.85" opacity="0.85"/>
+            <!-- Gooseneck -->
+            <circle r="100" fill="none" stroke="#8b5cf6" stroke-width="32"
+              stroke-dasharray="16.68 611.64" stroke-dashoffset="-534.64" opacity="0.85"/>
+            <!-- microSD -->
+            <circle r="100" fill="none" stroke="var(--danger)" stroke-width="32"
+              stroke-dasharray="16.68 611.64" stroke-dashoffset="-551.32" opacity="0.85"/>
+          </g>
+          <!-- Center text -->
+          <text x="140" y="132" text-anchor="middle" font-family="var(--font-display)" font-size="22" fill="var(--fg)" font-weight="700">~5.110</text>
+          <text x="140" y="150" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--fg-muted)">TL TOPLAM</text>
+          <text x="140" y="165" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--fg-dim)">(ortalama)</text>
+        </svg>
+      </div>
+
+      <div>
+        <div class="budget-list">
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--primary-light)"></span>
+            <span class="budget-name">7" Android Tablet</span>
+            <span class="budget-price">3.000 - 3.500 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--blueprint)"></span>
+            <span class="budget-name">ESP32-CAM + Programmer</span>
+            <span class="budget-price">500 - 620 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--accent)"></span>
+            <span class="budget-name">WiFi Router (opsiyonel)</span>
+            <span class="budget-price">0 - 1.000 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--success)"></span>
+            <span class="budget-name">USB Powerbank (5000mAh)</span>
+            <span class="budget-price">200 - 300 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--warning)"></span>
+            <span class="budget-name">Kablolar / Adaptorler / Kasa</span>
+            <span class="budget-price">200 - 300 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:#8b5cf6"></span>
+            <span class="budget-name">Esnek Gooseneck Kelepce</span>
+            <span class="budget-price">100 - 200 TL</span>
+          </div>
+          <div class="budget-item">
+            <span class="budget-dot" style="background:var(--danger)"></span>
+            <span class="budget-name">microSD Kart (32GB)</span>
+            <span class="budget-price">~150 TL</span>
+          </div>
+        </div>
+        <div class="budget-total">
+          <span class="budget-total-label">Toplam Aralik</span>
+          <span class="budget-total-val">4.150 - 6.070 TL</span>
+        </div>
+        <div class="budget-remaining">Butce limiti: 10.000 TL &middot; Kalan: ~4.000 - 5.850 TL</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY -->
+<section id="gizlilik">
+  <div class="section animate-in">
+    <div class="section-label">06 &mdash; Gizlilik ve Etik</div>
+    <h2 class="section-title">Gizlilik Taahhüdü</h2>
+    <p class="section-desc">Sistem yalnızca gözlemlenebilir fiziksel davranışları kaydeder. Herhangi bir psikolojik çıkarım yapmaz.</p>
+
+    <div class="privacy-grid">
+      <div class="privacy-col" style="border-color: color-mix(in srgb, var(--danger) 25%, var(--card-border));">
+        <div class="privacy-col-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="var(--danger)" stroke-width="1.5"/><path d="M7 7l6 6M13 7l-6 6" stroke="var(--danger)" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Yapmadigimiz
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Stres veya kaygi duzeyi olcumu</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Duygu cikarimi veya yuz analizi</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Kopya cekilip cekilmedigini tespit etme</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Otomatik ogrenci degerlendirmesi</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Psikolojik profil olusturma</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-no">X</span>
+          <span>Ogrenci yuzlerini kaydetme</span>
+        </div>
+      </div>
+
+      <div class="privacy-col" style="border-color: color-mix(in srgb, var(--success) 25%, var(--card-border));">
+        <div class="privacy-col-title">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="var(--success)" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="var(--success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Yaptigimiz
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>Gozlemlenebilir yazma/duraklama/silme davranislari</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>Soru basina harcanan sureyi kaydetme</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>Sayfa gecisleri ve soru bolge tespiti</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>30 gunluk veri saklama suresi</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>Erisim loglama ve denetim izi</span>
+        </div>
+        <div class="privacy-item">
+          <span class="privacy-icon pi-yes">&#10003;</span>
+          <span>Katilimci onam ve bilgilendirme sureci</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD MOCKUP -->
+<section class="blueprint-bg">
+  <div class="section animate-in">
+    <div class="section-label">07 &mdash; Egitmen Paneli</div>
+    <h2 class="section-title">Canli Gosterge Paneli</h2>
+    <p class="section-desc">Eğitmenin tabletinde gördüğü gerçek zamanlı gösterge panelinin taslağı.</p>
+
+    <div class="dash-mock">
+      <div class="dash-titlebar">
+        <div class="dash-dots">
+          <span style="background:var(--danger);opacity:0.7"></span>
+          <span style="background:var(--warning);opacity:0.7"></span>
+          <span style="background:var(--success);opacity:0.7"></span>
+        </div>
+        <span style="flex:1;text-align:center;font-family:var(--font-mono)">instructor_display.py &mdash; Canli Sinav Gozlem Paneli</span>
+        <div class="dash-status-row" style="margin:0">
+          <span class="dash-status-dot" style="background:var(--success);animation:heroPulse 2s infinite"></span>
+          <span style="font-size:0.7rem;color:var(--success)">Bagli</span>
+        </div>
+      </div>
+
+      <div class="dash-body">
+        <!-- Page/Question indicator -->
+        <div class="dash-panel">
+          <div class="dash-panel-title">Mevcut Konum</div>
+          <div class="dash-big-num" style="color:var(--blueprint)">S.3</div>
+          <div class="dash-big-label">Sayfa 1 / 3 &middot; Soru 3 / 10</div>
+          <div style="margin-top:0.75rem">
+            <div class="dash-status-row">
+              <span class="dash-status-dot" style="background:var(--success)"></span>
+              <span style="font-size:0.78rem">Durum: YAZMA</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Status -->
+        <div class="dash-panel">
+          <div class="dash-panel-title">Belge Durumu</div>
+          <div style="display:inline-block;padding:0.25rem 0.6rem;background:color-mix(in srgb,var(--warning) 15%,transparent);border-radius:4px;font-family:var(--font-mono);font-size:0.78rem;color:var(--warning);font-weight:500;margin-bottom:0.75rem">PARTIAL</div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--success)"></span>
+            <span style="font-size:0.78rem">Sayfa 1: Algilandi</span>
+          </div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--success)"></span>
+            <span style="font-size:0.78rem">Sayfa 2: Algilandi</span>
+          </div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--fg-dim)"></span>
+            <span style="font-size:0.78rem;color:var(--fg-dim)">Sayfa 3: Bekliyor</span>
+          </div>
+        </div>
+
+        <!-- Verification -->
+        <div class="dash-panel">
+          <div class="dash-panel-title">Cevap Anahtari</div>
+          <div style="display:inline-block;padding:0.25rem 0.6rem;background:color-mix(in srgb,var(--success) 15%,transparent);border-radius:4px;font-family:var(--font-mono);font-size:0.78rem;color:var(--success);font-weight:500;margin-bottom:0.75rem">DOGRULANDI</div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--success)"></span>
+            <span style="font-size:0.78rem">AI taslak olusturuldu</span>
+          </div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--success)"></span>
+            <span style="font-size:0.78rem">Egitmen dogrulamasi tamam</span>
+          </div>
+          <div class="dash-status-row">
+            <span class="dash-status-dot" style="background:var(--success)"></span>
+            <span style="font-size:0.78rem">10 soru eslesti</span>
+          </div>
+        </div>
+
+        <!-- Time bars per question (full width) -->
+        <div class="dash-panel dash-full">
+          <div class="dash-panel-title">Soru Basina Zaman Dagalimi</div>
+          <div style="font-size:0.65rem;color:var(--fg-dim);margin-bottom:0.5rem;display:flex;gap:1rem">
+            <span><span style="display:inline-block;width:8px;height:8px;background:var(--success);border-radius:2px;margin-right:4px"></span>Yazma</span>
+            <span><span style="display:inline-block;width:8px;height:8px;background:var(--warning);border-radius:2px;margin-right:4px"></span>Duraklama</span>
+            <span><span style="display:inline-block;width:8px;height:8px;background:var(--danger);border-radius:2px;margin-right:4px"></span>Silme</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.1</span>
+            <div class="dash-bar-track">
+              <div class="dash-bar-seg" style="width:65%;background:var(--success);opacity:0.7"></div>
+              <div class="dash-bar-seg" style="width:25%;background:var(--warning);opacity:0.7"></div>
+              <div class="dash-bar-seg" style="width:10%;background:var(--danger);opacity:0.7"></div>
+            </div>
+            <span class="dash-bar-time">3:42</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.2</span>
+            <div class="dash-bar-track">
+              <div class="dash-bar-seg" style="width:80%;background:var(--success);opacity:0.7"></div>
+              <div class="dash-bar-seg" style="width:15%;background:var(--warning);opacity:0.7"></div>
+              <div class="dash-bar-seg" style="width:5%;background:var(--danger);opacity:0.7"></div>
+            </div>
+            <span class="dash-bar-time">2:18</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.3</span>
+            <div class="dash-bar-track">
+              <div class="dash-bar-seg" style="width:40%;background:var(--success);opacity:0.7;animation:none"></div>
+              <div class="dash-bar-seg" style="width:10%;background:var(--warning);opacity:0.7"></div>
+            </div>
+            <span class="dash-bar-time">1:24</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.4</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.5</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.6</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.7</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.8</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.9</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+          <div class="dash-bar-row">
+            <span class="dash-bar-label">S.10</span>
+            <div class="dash-bar-track"></div>
+            <span class="dash-bar-time">&mdash;</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div style="max-width:1100px;margin:0 auto">
+    Sinav Gozlem Sistemi &middot; Gizlilik Oncelikli Tasarim &middot; 2024
+  </div>
+</footer>
+
+<script>
+// Module detail data
+const modules = [
+  {
+    name: 'capture.py',
+    desc: '<strong>capture.py</strong> — ESP32-CAM’den MJPEG akışını alır. WiFi üzerinden HTTP bağlantısıyla <code>http://&lt;esp32-ip&gt;:81/stream</code> adresinden canlı kare yakalar. Kareleri analiz modülüne iletir. Bağlantı kesilirse otomatik yeniden bağlanır.'
+  },
+  {
+    name: 'frame_analyzer.py',
+    desc: '<strong>frame_analyzer.py</strong> — Gelen karelerde hareket analizi yapar. Optik akış (optical flow) ile kalem hareketini tespit eder. <code>WRITING</code>, <code>PAUSE</code>, <code>ERASING</code> ve <code>PAGE_TURN</code> olaylarını ayırt eder. Eşik değerleri yapılandırılabilir.'
+  },
+  {
+    name: 'page_detector.py',
+    desc: '<strong>page_detector.py</strong> — OCR kullanarak sayfa numarasını tespit eder. Sayfa geçişlerini algılar, mevcut soru bölgesini belirler. Tesseract veya EasyOCR ile çalışır. Sayfa şablonları önceden tanımlanabilir.'
+  },
+  {
+    name: 'document_stitcher.py',
+    desc: '<strong>document_stitcher.py</strong> — Çoklu sayfa görüntülerini tek bir belge haline getirir. Her sayfanın soru bölgelerini cevap anahtarıyla eşleştirir. Belge durumunu <code>COMPLETE</code> veya <code>PARTIAL</code> olarak raporlar.'
+  },
+  {
+    name: 'timing_engine.py',
+    desc: '<strong>timing_engine.py</strong> — Her soru için ayrı zamanlayıcı tutar. Yazma, duraklama ve silme sürelerini milisaniye hassasiyetinde kaydeder. Soru geçişlerinde otomatik olarak yeni zamanlayıcı başlatır.'
+  },
+  {
+    name: 'answer_key.py',
+    desc: '<strong>answer_key.py</strong> — Sınav belgesinden AI taslak cevap anahtarı önerir. Eğitmen doğrulaması sonrası kesinleşir. Soru bölgelerini sayfalarla eşleştirme için referans oluşturur.'
+  },
+  {
+    name: 'instructor_display.py',
+    desc: '<strong>instructor_display.py</strong> — Flask-SocketIO ile WebSocket tabanlı canlı gösterge paneli sunar. Eğitmenin tabletinde soru başına zaman çubukları, belge durumu, bağlantı göstergesi ve sayfa geçiş bilgilerini görüntüler.'
+  }
+];
+
+function showModule(idx) {
+  document.querySelectorAll('.arch-module').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  document.querySelector('.arch-module[data-idx="' + idx + '"]').classList.add('active');
+  document.getElementById('archDetail').innerHTML = modules[idx].desc;
+}
+
+// Intersection Observer for animations
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.animate-in').forEach(function(el) {
+  observer.observe(el);
+});
+
+// Timeline step animation
+var tlObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.tl-step').forEach(function(el) {
+  tlObserver.observe(el);
+});
+
+// Smooth scroll for nav links
+document.querySelectorAll('.nav-links a').forEach(function(link) {
+  link.addEventListener('click', function(e) {
+    var href = this.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      var target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  });
+});
+</script>
