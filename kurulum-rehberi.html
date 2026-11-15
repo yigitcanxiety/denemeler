@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurulum Rehberi — Sinav Gozlem Sistemi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+:root {
+  --bg: #fafaf9;
+  --fg: #1c1917;
+  --fg-muted: #78716c;
+  --surface: #ffffff;
+  --surface-alt: #f5f5f4;
+  --border: #e7e5e4;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --accent-fg: #1e40af;
+  --warn: #d97706;
+  --warn-soft: #fef3c7;
+  --warn-fg: #92400e;
+  --success: #059669;
+  --success-soft: #d1fae5;
+  --success-fg: #065f46;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
+  --danger-fg: #991b1b;
+  --tag-hw: #7c3aed;
+  --tag-hw-soft: #ede9fe;
+  --tag-sw: #0891b2;
+  --tag-sw-soft: #cffafe;
+  --tag-net: #2563eb;
+  --tag-net-soft: #dbeafe;
+  --tag-use: #059669;
+  --tag-use-soft: #d1fae5;
+  --tag-fix: #d97706;
+  --tag-fix-soft: #fef3c7;
+  --tag-priv: #6366f1;
+  --tag-priv-soft: #e0e7ff;
+  --radius: 10px;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c0a09;
+    --fg: #e7e5e4;
+    --fg-muted: #a8a29e;
+    --surface: #1c1917;
+    --surface-alt: #292524;
+    --border: #44403c;
+    --accent: #60a5fa;
+    --accent-soft: #1e3a5f;
+    --accent-fg: #93bbfd;
+    --warn: #fbbf24;
+    --warn-soft: #422006;
+    --warn-fg: #fde68a;
+    --success: #34d399;
+    --success-soft: #064e3b;
+    --success-fg: #a7f3d0;
+    --danger: #f87171;
+    --danger-soft: #450a0a;
+    --danger-fg: #fecaca;
+    --tag-hw: #a78bfa;
+    --tag-hw-soft: #2e1065;
+    --tag-sw: #22d3ee;
+    --tag-sw-soft: #083344;
+    --tag-net: #60a5fa;
+    --tag-net-soft: #1e3a5f;
+    --tag-use: #34d399;
+    --tag-use-soft: #064e3b;
+    --tag-fix: #fbbf24;
+    --tag-fix-soft: #422006;
+    --tag-priv: #818cf8;
+    --tag-priv-soft: #1e1b4b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c0a09;
+  --fg: #e7e5e4;
+  --fg-muted: #a8a29e;
+  --surface: #1c1917;
+  --surface-alt: #292524;
+  --border: #44403c;
+  --accent: #60a5fa;
+  --accent-soft: #1e3a5f;
+  --accent-fg: #93bbfd;
+  --warn: #fbbf24;
+  --warn-soft: #422006;
+  --warn-fg: #fde68a;
+  --success: #34d399;
+  --success-soft: #064e3b;
+  --success-fg: #a7f3d0;
+  --danger: #f87171;
+  --danger-soft: #450a0a;
+  --danger-fg: #fecaca;
+  --tag-hw: #a78bfa;
+  --tag-hw-soft: #2e1065;
+  --tag-sw: #22d3ee;
+  --tag-sw-soft: #083344;
+  --tag-net: #60a5fa;
+  --tag-net-soft: #1e3a5f;
+  --tag-use: #34d399;
+  --tag-use-soft: #064e3b;
+  --tag-fix: #fbbf24;
+  --tag-fix-soft: #422006;
+  --tag-priv: #818cf8;
+  --tag-priv-soft: #1e1b4b;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  padding: 2rem max(16px, env(safe-area-inset-right, 0px)) 4rem max(16px, env(safe-area-inset-left, 0px));
+}
+
+.container { max-width: 820px; margin: 0 auto; }
+
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.25; text-wrap: balance; }
+h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+h2 { font-size: 1.35rem; font-weight: 600; margin-top: 0; margin-bottom: 0.75rem; }
+h3 { font-size: 1.1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.35rem; }
+
+p { margin-bottom: 0.75rem; }
+ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+li { margin-bottom: 0.35rem; }
+
+.subtitle { color: var(--fg-muted); font-size: 0.95rem; margin-bottom: 2rem; }
+
+/* Section tags */
+.section-tag {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem;
+  border-radius: 100px; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.tag-hw { background: var(--tag-hw-soft); color: var(--tag-hw); }
+.tag-sw { background: var(--tag-sw-soft); color: var(--tag-sw); }
+.tag-net { background: var(--tag-net-soft); color: var(--tag-net); }
+.tag-use { background: var(--tag-use-soft); color: var(--tag-use); }
+.tag-fix { background: var(--tag-fix-soft); color: var(--tag-fix); }
+.tag-priv { background: var(--tag-priv-soft); color: var(--tag-priv); }
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Collapsible sections */
+details.section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.25rem;
+  background: var(--surface);
+  overflow: hidden;
+}
+details.section > summary {
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  user-select: none;
+  transition: background 0.15s;
+}
+details.section > summary:hover { background: var(--surface-alt); }
+details.section > summary::-webkit-details-marker { display: none; }
+details.section > summary::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem; height: 0.5rem;
+  border-right: 2px solid var(--fg-muted);
+  border-bottom: 2px solid var(--fg-muted);
+  transform: rotate(-45deg);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+details.section[open] > summary::before { transform: rotate(45deg); }
+details.section > .section-body { padding: 0 1.25rem 1.25rem; }
+
+/* Sub-details for substeps */
+details.substep {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  background: var(--surface-alt);
+}
+details.substep > summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+details.substep > summary::-webkit-details-marker { display: none; }
+details.substep > summary::before {
+  content: '';
+  width: 0.4rem; height: 0.4rem;
+  border-right: 2px solid var(--fg-muted);
+  border-bottom: 2px solid var(--fg-muted);
+  transform: rotate(-45deg);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+details.substep[open] > summary::before { transform: rotate(45deg); }
+details.substep > .substep-body { padding: 0 1rem 1rem; }
+
+/* Step number */
+.step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.75rem; height: 1.75rem;
+  background: var(--accent-soft);
+  color: var(--accent-fg);
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 0.8rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Code blocks */
+.cmd-block {
+  position: relative;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.cmd-block code { background: none; padding: 0; font-size: inherit; }
+.copy-btn {
+  position: absolute;
+  top: 0.5rem; right: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--fg-muted);
+  transition: all 0.15s;
+}
+.copy-btn:hover { color: var(--accent-fg); border-color: var(--accent); }
+
+/* Callouts */
+.callout {
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+.callout-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.4; }
+.callout-warn { background: var(--warn-soft); color: var(--warn-fg); border-left: 3px solid var(--warn); }
+.callout-tip { background: var(--success-soft); color: var(--success-fg); border-left: 3px solid var(--success); }
+.callout-danger { background: var(--danger-soft); color: var(--danger-fg); border-left: 3px solid var(--danger); }
+.callout-info { background: var(--accent-soft); color: var(--accent-fg); border-left: 3px solid var(--accent); }
+
+/* TOC */
+.toc { list-style: none; padding: 0; }
+.toc li { margin-bottom: 0.4rem; }
+.toc a {
+  color: var(--accent-fg);
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.toc a:hover { text-decoration: underline; }
+
+/* Section colored left border */
+.border-hw { border-left: 4px solid var(--tag-hw); }
+.border-sw { border-left: 4px solid var(--tag-sw); }
+.border-net { border-left: 4px solid var(--tag-net); }
+.border-use { border-left: 4px solid var(--tag-use); }
+.border-fix { border-left: 4px solid var(--tag-fix); }
+.border-priv { border-left: 4px solid var(--tag-priv); }
+
+/* File tree */
+.file-tree {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+}
+
+/* Progress bar */
+.progress-track { display: flex; gap: 4px; margin-bottom: 2rem; }
+.progress-seg {
+  height: 6px;
+  border-radius: 3px;
+  flex: 1;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: fixed; top: 1rem; right: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 100;
+  line-height: 1;
+}
+
+@media (max-width: 600px) {
+  h1 { font-size: 1.5rem; }
+  details.section > summary { font-size: 0.95rem; padding: 0.85rem 1rem; }
+  .cmd-block { font-size: 0.78rem; padding-right: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Tema degistir" aria-label="Tema degistir">
+  <span id="theme-icon">&#9790;</span>
+</button>
+
+<div class="container">
+
+<!-- Header -->
+<h1>Sinav Gozlem Sistemi<br>Kurulum Rehberi</h1>
+<p class="subtitle">Sifirdan baslayarak tum sistemi kurmak icin adim adim kilavuz. Teknik bilgi gerektirmez — her sey en basit sekilde anlatilmistir.</p>
+
+<div class="progress-track">
+  <div class="progress-seg" style="background:var(--tag-hw)"></div>
+  <div class="progress-seg" style="background:var(--tag-sw)"></div>
+  <div class="progress-seg" style="background:var(--tag-net)"></div>
+  <div class="progress-seg" style="background:var(--tag-use)"></div>
+  <div class="progress-seg" style="background:var(--tag-fix)"></div>
+  <div class="progress-seg" style="background:var(--tag-priv)"></div>
+</div>
+
+<!-- TOC -->
+<div class="card" style="margin-bottom:2rem">
+  <h4>Icindekiler</h4>
+  <ul class="toc">
+    <li><a href="#bolum-a"><span class="section-tag tag-hw">A</span> Donanim Kurulumu (Hardware)</a></li>
+    <li><a href="#bolum-b"><span class="section-tag tag-sw">B</span> Mac Yazilim Kurulumu (Software)</a></li>
+    <li><a href="#bolum-c"><span class="section-tag tag-net">C</span> WiFi Agini Kurma (Network)</a></li>
+    <li><a href="#bolum-d"><span class="section-tag tag-use">D</span> Yazilimi Calistirma (Running)</a></li>
+    <li><a href="#bolum-e"><span class="section-tag tag-use">E</span> Sinav Esnasinda Kullanim</a></li>
+    <li><a href="#bolum-f"><span class="section-tag tag-fix">F</span> Sorun Giderme (Troubleshooting)</a></li>
+    <li><a href="#bolum-g"><span class="section-tag tag-priv">G</span> Gizlilik ve Veri Yonetimi</a></li>
+  </ul>
+</div>
+
+<!-- ========================================================== -->
+<!-- BOLUM A: DONANIM KURULUMU -->
+<!-- ========================================================== -->
+<h2 id="bolum-a" style="margin-top:2.5rem"><span class="section-tag tag-hw">Bolum A</span> Donanim Kurulumu</h2>
+
+<!-- A1 -->
+<details class="section border-hw" open>
+  <summary><span class="step-num">A1</span> ESP32-CAM Hazirlanmasi</summary>
+  <div class="section-body">
+    <p>ESP32-CAM, yaklasik 27x40 mm boyutunda, uzerinde WiFi ve kamera bulunan kucuk bir mikrodenetleyici karttidir. Bu kart sinav kagidinin goruntusunu WiFi uzerinden Mac bilgisayariniza gonderecektir.</p>
+
+    <h4>Kutudan Cikanlar</h4>
+    <p>Internetten ESP32-CAM siparis ettiginizde genellikle su parcalar gelir:</p>
+    <ul>
+      <li><strong>ESP32-CAM karti</strong> — Ustunde kucuk kamera modulu (OV2640) takili olan yesil/siyah devre karti</li>
+      <li><strong>ESP-CAM-MB programmer karti</strong> (ayri satin alinabilir) — USB baglantisi icin gerekli alt kart. Bazi saticilar bunu ayri, bazilari birlikte gonderir</li>
+      <li><strong>OV2640 kamera modulu</strong> — Genellikle karta takilmis gelir. Sari serit kablo ile karta baglidir</li>
+      <li><strong>Anten</strong> — Bazi modellerde harici WiFi anteni gelir (kucuk siyah cubuk). Cogu model dahili antenle calisir</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Bilgi:</strong> ESP-CAM-MB programmer kartiniz yoksa, bir <strong>FTDI programmer</strong> (USB-TTL donusturucu) kullanabilirsiniz. Bu durumda baglanti biraz daha karmasiktir — asagida her ikisi de anlatilmaktadir.</div>
+    </div>
+
+    <h4>Kart Uzerindeki Parcalari Tanima</h4>
+    <ul>
+      <li><strong>Kamera konnektoru</strong> — Kartin on yuzunde, sari serit kablonun takildigi kucuk klips</li>
+      <li><strong>microSD kart yuvasi</strong> — Kartin arka yuzunde, kucuk metal yuva</li>
+      <li><strong>Dahili LED flas</strong> — Kameranin yanindaki beyaz LED (cok parlak, dikkat!)</li>
+      <li><strong>RST (Reset) butonu</strong> — Karti yeniden baslatir</li>
+      <li><strong>GPIO0 pini</strong> — Firmware yukleme moduna gecmek icin kullanilir</li>
+      <li><strong>5V ve GND pinleri</strong> — Guc baglantisi icin</li>
+    </ul>
+
+    <h4>microSD Kart Takma (Opsiyonel)</h4>
+    <p>Sistem microSD kart gerektirmez, ancak kameradan yerel kayit yapmak istiyorsaniz:</p>
+    <ol>
+      <li>Kartin arka yuzundeki metal microSD yuvasini bulun</li>
+      <li>microSD karti metal kontaklari asagiya bakacak sekilde yavasta itin</li>
+      <li>"Klik" sesi gelene kadar bastirin — kart yerine oturur</li>
+    </ol>
+
+    <h4>ESP-CAM-MB Programmer Karti ile Baglanti</h4>
+    <p>Bu en kolay yontemdir. Programmer karti USB baglantisi ve otomatik program yukleme ozelligi saglar.</p>
+    <ol>
+      <li>ESP32-CAM kartini, pinleri asagiya bakacak sekilde tutun</li>
+      <li>ESP-CAM-MB programmer kartindaki pin yuvalarini bulun</li>
+      <li>ESP32-CAM kartini programmer kartinin uzerine, pinler yuvalara denk gelecek sekilde oturtun</li>
+      <li>Kartin duzgun oturdugunu kontrol edin — egrilen pin varsa zarar gorebilir</li>
+      <li>Programmer kartindaki micro-USB girisi uzerinden USB kablo ile Mac'inize baglayin</li>
+    </ol>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Dikkat:</strong> ESP32-CAM kartini programmer kartina takarken yonune dikkat edin. Kameranin USB konnektorunun <strong>karsi tarafinda</strong> olmasi gerekir. Yanlis takilirsa kart zarar gorebilir!</div>
+    </div>
+
+    <h4>FTDI Programmer ile Baglanti (ESP-CAM-MB Yoksa)</h4>
+    <p>ESP-CAM-MB programmer kartiniz yoksa, FTDI USB-TTL donusturucu kullanabilirsiniz. Bu baglanti icin 4 adet disi-disi jumper kablo gereklidir:</p>
+    <ol>
+      <li>FTDI'nin <strong>5V</strong> pinini &rarr; ESP32-CAM'in <strong>5V</strong> pinine baglayin</li>
+      <li>FTDI'nin <strong>GND</strong> pinini &rarr; ESP32-CAM'in <strong>GND</strong> pinine baglayin</li>
+      <li>FTDI'nin <strong>TX</strong> pinini &rarr; ESP32-CAM'in <strong>U0R</strong> pinine baglayin</li>
+      <li>FTDI'nin <strong>RX</strong> pinini &rarr; ESP32-CAM'in <strong>U0T</strong> pinine baglayin</li>
+    </ol>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Kritik — Program Yukleme Modu:</strong> FTDI kullanirken firmware yuklemeden <strong>once</strong> ESP32-CAM'in <strong>GPIO0</strong> pinini <strong>GND</strong> pinine bir jumper kablo ile baglayin. Bu karti "program yukleme moduna" gecirir. Firmware yukleme tamamlandiktan sonra bu jumper kabloyu <strong>cikarip</strong> RST butonuna basin.</div>
+    </div>
+  </div>
+</details>
+
+<!-- A2 -->
+<details class="section border-hw">
+  <summary><span class="step-num">A2</span> Arduino IDE Kurulumu (Mac'te)</summary>
+  <div class="section-body">
+    <p>Arduino IDE, ESP32-CAM'e yazilim (firmware) yuklemek icin kullanacagimiz ucretsiz bir programdir.</p>
+
+    <h4>Adim 1: Arduino IDE'yi Indirme</h4>
+    <ol>
+      <li>Mac'inizde Safari veya Chrome tarayicisini acin</li>
+      <li>Adres cubuguna asagidaki adresi yazip Enter'a basin:</li>
+    </ol>
+    <div class="cmd-block"><code>https://www.arduino.cc/en/software</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <ol start="3">
+      <li>Sayfada <strong>"Mac"</strong> bolumunu bulun</li>
+      <li>Mac'inizin islemcisine gore dogru surumu secin:
+        <ul>
+          <li><strong>Apple Silicon (M1, M2, M3, M4)</strong> — "macOS Apple Silicon" yazanina tiklayin</li>
+          <li><strong>Intel</strong> — "macOS Intel" yazanina tiklayin</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Ipucu:</strong> Mac'inizin islemcisini ogrenmek icin: Ekranin sol ust kosesinde  logosuna tiklayin &rarr; "Bu Mac Hakkinda" secin. "Cip" satirinda M1/M2/M3/M4 yaziyorsa Apple Silicon, "Intel" yaziyorsa Intel islemcidir.</div>
+    </div>
+    <ol start="5">
+      <li>Bagis sayfasi acilirsa "Just Download" (Sadece Indir) butonuna tiklayin</li>
+      <li>.dmg dosyasi indirilecektir (yaklasik 200 MB)</li>
+    </ol>
+
+    <h4>Adim 2: Kurulum</h4>
+    <ol>
+      <li>Indirilen <code>.dmg</code> dosyasina cift tiklayin</li>
+      <li>Acilan pencerede Arduino simgesini <strong>Applications</strong> (Uygulamalar) klasorune surukleyin</li>
+      <li>.dmg penceresini kapatin</li>
+      <li>Launchpad'den veya Applications klasorunden <strong>Arduino IDE</strong>'yi acin</li>
+      <li>Ilk acilista "internetten indirilmis uygulama" uyarisi cikarsa <strong>"Ac"</strong> butonuna tiklayin</li>
+    </ol>
+
+    <h4>Adim 3: ESP32 Kart Destegi Ekleme</h4>
+    <p>Arduino IDE varsayilan olarak ESP32 kartlarini tanimaz. Bunu elle eklememiz gerekir:</p>
+    <ol>
+      <li>Arduino IDE'de ust menuden: <strong>File</strong> (Dosya) &rarr; <strong>Preferences</strong> (Tercihler) secin</li>
+      <li>Acilan pencerede <strong>"Additional Board Manager URLs"</strong> (Ek Kart Yoneticisi URL'leri) satirini bulun</li>
+      <li>Bu satirdaki bos kutuya asagidaki adresi yapistin:</li>
+    </ol>
+    <div class="cmd-block"><code>https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <ol start="4">
+      <li><strong>OK</strong> butonuna tiklayin</li>
+      <li>Ust menuden: <strong>Tools</strong> (Araclar) &rarr; <strong>Board</strong> (Kart) &rarr; <strong>Boards Manager</strong> (Kart Yoneticisi) secin</li>
+      <li>Acilan pencerede arama kutusuna <code>esp32</code> yazin</li>
+      <li><strong>"esp32 by Espressif Systems"</strong> secenegini bulun ve <strong>Install</strong> (Kur) butonuna tiklayin</li>
+      <li>Kurulum birkaç dakika surebilir — tamamlanmasini bekleyin</li>
+    </ol>
+
+    <h4>Adim 4: Dogru Karti Secme</h4>
+    <ol>
+      <li><strong>Tools</strong> &rarr; <strong>Board</strong> &rarr; <strong>esp32</strong> &rarr; <strong>AI Thinker ESP32-CAM</strong> secin</li>
+    </ol>
+
+    <h4>Adim 5: Dogru Portu Secme</h4>
+    <ol>
+      <li>ESP32-CAM'i USB kablo ile Mac'e baglayin (henuz baglamadiysiniz)</li>
+      <li><strong>Tools</strong> &rarr; <strong>Port</strong> menusune gidin</li>
+      <li><code>/dev/cu.usbserial-XXXX</code> veya <code>/dev/cu.SLAB_USBtoUART</code> gibi bir port goreceksiniz — bunu secin</li>
+    </ol>
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Ipucu:</strong> Hangi portun ESP32 oldugunu bulmak icin: USB kabloyu cikarip Port menusune bakin, sonra kabloyu takip tekrar bakin. Yeni beliren port ESP32'nizdir.</div>
+    </div>
+
+    <h4>Adim 6: Yukleme Hizini Ayarlama</h4>
+    <ol>
+      <li><strong>Tools</strong> &rarr; <strong>Upload Speed</strong> &rarr; <strong>115200</strong> secin</li>
+    </ol>
+  </div>
+</details>
+
+<!-- A3 -->
+<details class="section border-hw">
+  <summary><span class="step-num">A3</span> ESP32-CAM'e Firmware Yukleme</summary>
+  <div class="section-body">
+    <p>Simdi ESP32-CAM'in icine WiFi uzerinden video aktarmasini saglayan yazilimi yukleyecegiz.</p>
+
+    <h4>Adim 1: Ornek Kodu Acma</h4>
+    <ol>
+      <li>Arduino IDE'de: <strong>File</strong> &rarr; <strong>Examples</strong> &rarr; <strong>ESP32</strong> &rarr; <strong>Camera</strong> &rarr; <strong>CameraWebServer</strong> secin</li>
+      <li>Yeni bir pencere acilacak ve icinde hazir kod goreceksiniz</li>
+    </ol>
+
+    <h4>Adim 2: Kamera Modelini Degistirme</h4>
+    <div class="callout callout-danger">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Kritik:</strong> Bu adimi atlamayin! Yanlis kamera modeli secilirse kamera calismaz.</div>
+    </div>
+    <p>Kodun ust kisimlarinda kamera model tanimlari bulunur. Asagidaki degisiklikleri yapin:</p>
+    <ol>
+      <li><code>#define CAMERA_MODEL_WROVER_KIT</code> satirinin basina <code>//</code> ekleyin (yorum satiri yapin)</li>
+      <li><code>//#define CAMERA_MODEL_AI_THINKER</code> satirindaki bastaki <code>//</code> isaretlerini silin</li>
+    </ol>
+    <p>Degisiklik sonrasi su sekilde gorunmeli:</p>
+    <div class="cmd-block"><code>// #define CAMERA_MODEL_WROVER_KIT   &larr; basta // var (devre disi)
+#define CAMERA_MODEL_AI_THINKER     &larr; basta // yok (aktif)</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Adim 3: WiFi Bilgilerini Girme</h4>
+    <p>Kodda asagidaki satirlari bulun ve WiFi bilgilerinizi yazin:</p>
+    <div class="cmd-block"><code>const char* ssid = "WIFI_ADINIZ";
+const char* password = "WIFI_SIFRENIZ";</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Ornegin WiFi adiniz "EvWiFi" ve sifreniz "12345678" ise:</p>
+    <div class="cmd-block"><code>const char* ssid = "EvWiFi";
+const char* password = "12345678";</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Dikkat:</strong> WiFi adi ve sifre <strong>tirnak isaretleri icinde</strong> olmali ve <strong>buyuk/kucuk harf duyarlidir</strong>. "EvWiFi" ile "evwifi" farklidir!</div>
+    </div>
+
+    <h4>Adim 4: Kodu Yukleme</h4>
+    <ol>
+      <li>Arduino IDE'nin sol ust kosesindeki <strong>&rarr; (ok) butonuna</strong> tiklayin (Upload / Yukle)</li>
+      <li>Alt kisimda "Compiling sketch..." (Derleniyor) mesaji gorunecek</li>
+      <li><strong>FTDI kullaniyorsaniz:</strong> "Connecting..." mesaji gorunmeye basladiginda ESP32-CAM uzerindeki <strong>BOOT/IO0</strong> butonuna basili tutun, baglanti saglaninca birakin</li>
+      <li>ESP-CAM-MB programmer kullaniyorsaniz: otomatiktir, ek islem gerekmez</li>
+      <li>Yukleme 1-2 dakika surebilir. <strong>"Done uploading"</strong> (Yukleme tamamlandi) mesajini bekleyin</li>
+    </ol>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Hata aliyorsaniz:</strong> "Failed to connect to ESP32" hatasi cikiyorsa: (1) USB kablonuzun veri kablosu oldugunu kontrol edin (bazi kablolar sadece sarj eder), (2) dogru port secili mi kontrol edin, (3) FTDI kullaniyorsaniz GPIO0-GND jumper'ini kontrol edin.</div>
+    </div>
+
+    <h4>Adim 5: IP Adresini Ogrenme</h4>
+    <ol>
+      <li>Arduino IDE'nin sag ust kosesindeki <strong>buyutec simgesine</strong> tiklayin (Serial Monitor)</li>
+      <li>Acilan pencerenin sag alt kosesinde hiz secenegi var — <strong>115200 baud</strong> secin</li>
+      <li>ESP32-CAM uzerindeki <strong>RST</strong> butonuna basin (FTDI kullaniyorsaniz once GPIO0-GND jumper'ini cikarip sonra RST'ye basin)</li>
+      <li>Serial Monitor'de yazilar akmaya baslayacak</li>
+      <li>WiFi'ye baglandiginda asagidaki gibi bir mesaj goreceksiniz:</li>
+    </ol>
+    <div class="cmd-block"><code>WiFi connected
+Camera Ready! Use 'http://192.168.1.105' to connect</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p><strong>Bu IP adresini not edin!</strong> (sizde farkli bir numara olacaktir)</p>
+
+    <h4>Adim 6: Kamerayi Test Etme</h4>
+    <ol>
+      <li>Mac'inizde Safari veya Chrome'u acin</li>
+      <li>Adres cubuguna <code>http://192.168.1.105</code> (sizin IP adresiniz) yazin</li>
+      <li>Kamera web arayuzu acilacaktir</li>
+      <li><strong>"Start Stream"</strong> butonuna tiklayin — canli goruntu gorunecek</li>
+      <li>Sol panelde <strong>Resolution</strong> secenegini <strong>UXGA (1600x1200)</strong> yapin — en iyi kalite icin</li>
+    </ol>
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Tebrikler!</strong> Kamera calisiyor! Goruntu goremiyorsaniz Bolum F'teki sorun giderme adimlarini kontrol edin.</div>
+    </div>
+  </div>
+</details>
+
+<!-- A4 -->
+<details class="section border-hw">
+  <summary><span class="step-num">A4</span> Fiziksel Montaj</summary>
+  <div class="section-body">
+    <p>ESP32-CAM'i sinav kagidini gorecek sekilde sabitlememiz gerekiyor.</p>
+
+    <h4>Gerekli Malzemeler</h4>
+    <ul>
+      <li>Esnek boyunlu masa lambasi tipi kiskac (gooseneck clamp) veya telefon tutucu kiskac</li>
+      <li>Cift tarafli kuvvetli bant veya kucuk vidalar</li>
+      <li>Powerbank (tasinabilir sarj cihazi, en az 5000 mAh)</li>
+      <li>micro-USB kablo (uzun, en az 50cm)</li>
+      <li>Kablo baglari (zip tie) veya bant</li>
+    </ul>
+
+    <h4>Montaj Adimlari</h4>
+    <ol>
+      <li>ESP32-CAM kartini esnek boyunlu kiskacin ucuna cift tarafli bantla yapistin</li>
+      <li>Kameranin lensi <strong>asagiya — kagida dogru</strong> bakacak sekilde yerlestirin</li>
+      <li>Kiskaci masanin kenarinda, <strong>yazan elin karsi tarafina</strong> yerlestirin:
+        <ul>
+          <li>Sag elini kullanan biri icin: kiskac <strong>sol tarafa</strong></li>
+          <li>Sol elini kullanan biri icin: kiskac <strong>sag tarafa</strong></li>
+        </ul>
+      </li>
+      <li>Kamera ile kagit arasindaki mesafe: <strong>20-30 cm</strong> (yaklasik bir karış)</li>
+      <li>Powerbank'i micro-USB kablo ile ESP32-CAM programmer kartinin USB girisine baglayin</li>
+      <li>Powerbank'i kiskacin tabanina veya masanin altina kablo baglari ile sabitleyin</li>
+    </ol>
+
+    <h4>Kontrol Listesi</h4>
+    <ul>
+      <li>Tarayicidan kamera goruntusunu acin — <strong>A4 kagidinin tamami</strong> gorunuyor mu?</li>
+      <li>Kagittaki yazilar okunabiliyor mu? (yaklasik 12pt font boyutu rahatca okunmali)</li>
+      <li>Isik yeterli mi? (dogrudan gunes isigi parlamaya neden olabilir, yaygin isik en iyisi)</li>
+      <li>Kablo gergin degil mi? (kiskaci devirebilir)</li>
+    </ul>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Odak Notu:</strong> ESP32-CAM sabit odakli bir kameradir — zum veya otomatik netleme yoktur. En net goruntu icin kamera ile kagit arasindaki <strong>mesafe kritiktir</strong>. 20-30 cm idealdir. Cok yakin: bulanik. Cok uzak: detaylar kaybolur.</div>
+    </div>
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM B: MAC YAZILIM KURULUMU -->
+<!-- ========================================================== -->
+<h2 id="bolum-b" style="margin-top:2.5rem"><span class="section-tag tag-sw">Bolum B</span> Mac Yazilim Kurulumu</h2>
+
+<!-- B1 -->
+<details class="section border-sw">
+  <summary><span class="step-num">B1</span> Terminal ve Homebrew Kurulumu</summary>
+  <div class="section-body">
+    <h4>Terminal Nedir?</h4>
+    <p><strong>Terminal</strong>, Mac'inizdeki komut satiri uygulamasidir. Normalde dosyalari fare ile acarsınız — Terminal'de ise yaziyla komut verirsiniz. Korkulacak bir sey degil! Bu rehberdeki komutlari kopyala-yapistir yapacaksiniz.</p>
+
+    <h4>Adim 1: Terminal'i Acma</h4>
+    <ol>
+      <li>Klavyede <strong>Cmd + Space</strong> (bosluk) tusuna basin — Spotlight arama acilir</li>
+      <li><code>Terminal</code> yazin</li>
+      <li>Cikan sonucta <strong>Terminal</strong> uygulamasina tiklayin</li>
+      <li>Siyah veya beyaz bir pencere acilir — bu Terminal'dir</li>
+    </ol>
+
+    <h4>Adim 2: Homebrew Kurulumu</h4>
+    <p><strong>Homebrew</strong>, Mac'e programlari komut satiri uzerinden kolayca yuklemenizi saglayan bir aractir. Bircok gelistirici araci bununla kurulur.</p>
+    <p>Asagidaki komutu kopyalayip Terminal'e yapistin ve <strong>Enter</strong>'a basin:</p>
+    <div class="cmd-block"><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Sifre Isteyecek:</strong> Mac giris sifrenizi yazmaniz istenecek. <strong>Yazarken ekranda hicbir sey gorulmez</strong> (yildiz bile cikmaz) — bu normaldir! Sifrenizi yazin ve Enter'a basin.</div>
+    </div>
+
+    <ol start="2">
+      <li>Kurulum birkaç dakika surer. "Installation successful!" mesajini bekleyin</li>
+      <li>Kurulum sonunda <strong>iki komut calistirmaniz</strong> istenebilir (ekranda "Next steps" altinda gosterilir). Bunlar genellikle soyledir:</li>
+    </ol>
+    <div class="cmd-block"><code>echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+eval "$(/opt/homebrew/bin/brew shellenv)"</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Onemli:</strong> Yukardaki komutlar Apple Silicon (M1/M2/M3/M4) Mac'ler icindir. Intel Mac'te farkli olabilir — Terminal'in size gosterdigi komutu kullanin.</div>
+    </div>
+
+    <h4>Adim 3: Homebrew'in Calistigini Dogrulama</h4>
+    <div class="cmd-block"><code>brew --version</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>"Homebrew 4.x.x" gibi bir cikti goruyorsaniz, Homebrew basariyla kurulmus demektir.</p>
+  </div>
+</details>
+
+<!-- B2 -->
+<details class="section border-sw">
+  <summary><span class="step-num">B2</span> Python Kurulumu ve Sanal Ortam</summary>
+  <div class="section-body">
+    <h4>Adim 1: Python Kontrolu</h4>
+    <p>Terminal'de asagidaki komutu yazip Enter'a basin:</p>
+    <div class="cmd-block"><code>python3 --version</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p><code>Python 3.11.x</code> veya daha yuksek bir sayi goruyorsaniz Python zaten kurulu — Adim 3'e gecin.</p>
+    <p>Hata aliyorsaniz veya surum 3.11'den dusukse:</p>
+
+    <h4>Adim 2: Python Kurulumu</h4>
+    <div class="cmd-block"><code>brew install python@3.12</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Kurulumdan sonra tekrar kontrol edin:</p>
+    <div class="cmd-block"><code>python3 --version</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Adim 3: Proje Klasoru Olusturma</h4>
+    <p>Tum proje dosyalarinin tutulacagi bir klasor olusturuyoruz:</p>
+    <div class="cmd-block"><code>mkdir ~/sinav-gozlem
+cd ~/sinav-gozlem</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p><code>mkdir</code> = klasor olustur, <code>cd</code> = klasore gir, <code>~</code> = Ana Klasorunuz (Home)</p>
+
+    <h4>Adim 4: Sanal Ortam (Virtual Environment) Olusturma</h4>
+    <p>Sanal ortam, projeye ozel Python paketlerini sistemden ayri tutar — boylece baska seyler bozulmaz.</p>
+    <div class="cmd-block"><code>python3 -m venv venv</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Bu komut <code>venv</code> adinda bir klasor olusturur. Sonra aktif hale getiriyoruz:</p>
+    <div class="cmd-block"><code>source venv/bin/activate</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Basariyla aktif olursa, Terminal'deki satir basinda <code>(venv)</code> yazisi gorunur:</p>
+    <div class="cmd-block"><code>(venv) kullanici@MacBook sinav-gozlem %</code></div>
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Ipucu:</strong> Her Terminal'i actiginizda sanal ortami yeniden aktif etmeniz gerekir. Satir basinda <code>(venv)</code> goremiyorsaniz, <code>source venv/bin/activate</code> komutunu tekrar calistirin.</div>
+    </div>
+  </div>
+</details>
+
+<!-- B3 -->
+<details class="section border-sw">
+  <summary><span class="step-num">B3</span> Tesseract OCR Kurulumu</summary>
+  <div class="section-body">
+    <p><strong>Tesseract</strong>, resimler uzerindeki yazilari metne ceviren (OCR) ucretsiz bir yazilimdir. Sinav kagidindaki cevaplari okumak icin bunu kullanacagiz.</p>
+
+    <h4>Adim 1: Tesseract Kurulumu</h4>
+    <div class="cmd-block"><code>brew install tesseract</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Adim 2: Dil Paketleri Kurulumu</h4>
+    <p>Turkce dahil tum dillerin tanimlanmasi icin:</p>
+    <div class="cmd-block"><code>brew install tesseract-lang</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Adim 3: Dogrulama</h4>
+    <div class="cmd-block"><code>tesseract --version</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Surum numarasi gorunmelidir (ornegin "tesseract 5.x.x").</p>
+    <p>Turkce dil paketini kontrol edin:</p>
+    <div class="cmd-block"><code>tesseract --list-langs</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Listede <code>tur</code> (Turkce) gorunmelidir.</p>
+  </div>
+</details>
+
+<!-- B4 -->
+<details class="section border-sw">
+  <summary><span class="step-num">B4</span> Python Paketleri Kurulumu</summary>
+  <div class="section-body">
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Onemli:</strong> Bu komutlari calistirmadan once sanal ortamin aktif oldugunu kontrol edin! Terminal satirinin basinda <code>(venv)</code> yazmali. Yoksa: <code>cd ~/sinav-gozlem && source venv/bin/activate</code></div>
+    </div>
+
+    <h4>Paketleri Yukleyin</h4>
+    <div class="cmd-block"><code>pip install opencv-python pytesseract flask flask-socketio pyqt6 pyzbar qrcode pillow</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Her Paketin Gorevi</h4>
+    <ul>
+      <li><strong>opencv-python</strong> — Kamera goruntusunu isleme, hareket analizi, goruntu iyilestirme</li>
+      <li><strong>pytesseract</strong> — Tesseract OCR'yi Python'dan kullanma (yazilari okuma)</li>
+      <li><strong>flask</strong> — Web sunucu (tablet paneli icin)</li>
+      <li><strong>flask-socketio</strong> — Gercek zamanli veri aktarimi (WebSocket)</li>
+      <li><strong>pyqt6</strong> — Mac uzerindeki gorsel arayuz (onizleme penceresi)</li>
+      <li><strong>pyzbar</strong> — QR kod ve barkod okuma</li>
+      <li><strong>qrcode</strong> — QR kod olusturma</li>
+      <li><strong>pillow</strong> — Goruntu isleme yardimci kutuphanesi</li>
+    </ul>
+
+    <h4>Kurulumu Dogrulama</h4>
+    <div class="cmd-block"><code>python3 -c "import cv2; print('OpenCV:', cv2.__version__)"</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>OpenCV surum numarasi goruyorsaniz kurulum basarilidir.</p>
+    <div class="cmd-block"><code>python3 -c "import flask; print('Flask:', flask.__version__)"</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+  </div>
+</details>
+
+<!-- B5 -->
+<details class="section border-sw">
+  <summary><span class="step-num">B5</span> Proje Dosya Yapisi</summary>
+  <div class="section-body">
+    <p>Projenin duzgun calismasi icin belirli bir klasor yapisi olusturulmasidir. Asagidaki komutlar tum gerekli klasor ve dosyalari olusturur:</p>
+
+    <div class="cmd-block"><code>cd ~/sinav-gozlem
+
+# Alt klasorleri olustur
+mkdir -p templates static recordings captures
+
+# Bos Python dosyalarini olustur
+touch main.py capture.py frame_analyzer.py page_detector.py
+touch document_stitcher.py answer_key.py timing_engine.py
+touch instructor_display.py privacy.py db.py config.py
+
+# Web dosyalarini olustur
+touch templates/dashboard.html
+touch static/style.css static/dashboard.js</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <p>Ortaya cikan dosya yapisi:</p>
+    <div class="file-tree">sinav-gozlem/
+├── main.py                  &larr; Ana uygulama (her seyi baslatan)
+├── capture.py               &larr; Kameradan goruntu alma
+├── frame_analyzer.py        &larr; Kare kare analiz
+├── page_detector.py         &larr; Kagit kenari tespiti
+├── document_stitcher.py     &larr; Goruntuleri birlestirme
+├── answer_key.py            &larr; Cevap anahtari olusturma
+├── timing_engine.py         &larr; Zamanlama motoru
+├── instructor_display.py    &larr; Egitmen paneli sunucusu
+├── privacy.py               &larr; Gizlilik ve veri koruma
+├── db.py                    &larr; Veritabani islemleri
+├── config.py                &larr; Yapilandirma ayarlari
+├── templates/
+│   └── dashboard.html       &larr; Tablet paneli HTML'i
+├── static/
+│   ├── style.css            &larr; Tablet paneli stilleri
+│   └── dashboard.js         &larr; Tablet paneli JavaScript
+├── recordings/              &larr; Video kayitlari
+├── captures/                &larr; Ekran goruntuleri
+└── exam_data.db             &larr; SQLite veritabani (otomatik olusur)</div>
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM C: WIFI AĞI -->
+<!-- ========================================================== -->
+<h2 id="bolum-c" style="margin-top:2.5rem"><span class="section-tag tag-net">Bolum C</span> WiFi Agini Kurma</h2>
+
+<!-- C1 -->
+<details class="section border-net">
+  <summary><span class="step-num">C1</span> Mac Hotspot Olusturma (Router Yoksa)</summary>
+  <div class="section-body">
+    <p>Mevcut bir WiFi ag yoksa, Mac'inizi bir WiFi erisim noktasi (hotspot) olarak kullanabilirsiniz. Tum cihazlar bu aga baglanacak.</p>
+
+    <div class="callout callout-info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Not:</strong> Mac hotspot icin Mac'inizin internet baglantisi olmasi gerekmez. Sadece yerel ag olusturmak yeterlidir. Ancak Mac'in Ethernet kablosuyla veya baska bir WiFi uzerinden internete bagli olmasi faydali olabilir.</div>
+    </div>
+
+    <h4>macOS Ventura ve Sonrasi (macOS 13+)</h4>
+    <ol>
+      <li>Ekranin sol ust kosesindeki  &rarr; <strong>System Settings</strong> (Sistem Ayarlari) secin</li>
+      <li>Sol menude <strong>General</strong> (Genel) &rarr; <strong>Sharing</strong> (Paylasim) secin</li>
+      <li><strong>Internet Sharing</strong> (Internet Paylasimi) secenegini bulun</li>
+      <li>"Share your connection from" (Baglantiyi paylas) kismindan: Eger Ethernet bagli ise <strong>Ethernet</strong>, yoksa <strong>Wi-Fi</strong> secin</li>
+      <li>"To computers using" (Bilgisayarlara su yolla) kismindan: <strong>Wi-Fi</strong> isaretleyin</li>
+      <li><strong>Wi-Fi Options</strong> butonuna tiklayin:
+        <ul>
+          <li><strong>Network Name</strong>: Istediginiz bir isim (ornegin "SinavAgi")</li>
+          <li><strong>Password</strong>: En az 8 karakterli bir sifre (ornegin "sinav2024")</li>
+          <li><strong>Security</strong>: WPA2/WPA3 secin</li>
+        </ul>
+      </li>
+      <li>OK &rarr; Internet Sharing'i <strong>acin</strong> (toggle)</li>
+    </ol>
+
+    <h4>Mac'in IP Adresini Ogrenme</h4>
+    <p>Yontem 1 — Ayarlardan:</p>
+    <ol>
+      <li>System Settings &rarr; <strong>Wi-Fi</strong> &rarr; Bagli ag yanindaki <strong>Details</strong> (Detaylar)</li>
+      <li><strong>TCP/IP</strong> sekmesinde <strong>IP Address</strong> satirindaki numarayi not edin</li>
+    </ol>
+    <p>Yontem 2 — Terminal'den:</p>
+    <div class="cmd-block"><code>ifconfig en0 | grep "inet "</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p><code>inet 192.168.2.1</code> gibi bir satir goreceksiniz — bu Mac'inizin IP adresidir.</p>
+  </div>
+</details>
+
+<!-- C2 -->
+<details class="section border-net">
+  <summary><span class="step-num">C2</span> Mevcut Router Kullanimi</summary>
+  <div class="section-body">
+    <p>Bir WiFi router'iniz varsa (ev veya ofis agi), tum cihazlari ayni aga baglayin:</p>
+    <ol>
+      <li><strong>Mac</strong>: WiFi ayarlarindan aginiza baglayin</li>
+      <li><strong>ESP32-CAM</strong>: A3 bolumunde firmware'e WiFi bilgilerini yazdiginizda ayni agi kullanin</li>
+      <li><strong>Android tablet</strong>: WiFi ayarlarindan ayni aga baglayin</li>
+    </ol>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Onemli:</strong> Uc cihaz da ayni WiFi aginda olmalidir! Farkli aglardayken birbirlerini goremezler. Ayrica tum cihazlar ayni "alt ag"da (subnet) olmali — genellikle hepsi <code>192.168.1.xxx</code> veya <code>192.168.0.xxx</code> seklindedir.</div>
+    </div>
+
+    <h4>IP Adresleri</h4>
+    <ul>
+      <li><strong>Mac IP</strong>: Terminal'de <code>ifconfig en0 | grep "inet "</code></li>
+      <li><strong>ESP32-CAM IP</strong>: Arduino Serial Monitor'de gorunen adres</li>
+      <li><strong>Tablet IP</strong>: Tablet Ayarlar &rarr; Wi-Fi &rarr; Bagli ag &rarr; IP adresi</li>
+    </ul>
+  </div>
+</details>
+
+<!-- C3 -->
+<details class="section border-net">
+  <summary><span class="step-num">C3</span> Baglanti Testi</summary>
+  <div class="section-body">
+    <p>Her seyi bagladiktan sonra baglantilari test edelim:</p>
+
+    <h4>Test 1: Mac'ten ESP32-CAM'e Ping</h4>
+    <div class="cmd-block"><code>ping -c 4 192.168.1.105</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>(IP adresini kendi ESP32-CAM IP'nizle degistirin)</p>
+    <p>Basarili sonuc: <code>4 packets transmitted, 4 received</code> gibi bir cikti. Basarisiz: <code>Request timeout</code> — WiFi baglantisini kontrol edin.</p>
+
+    <h4>Test 2: Kamera Akisini Kontrol</h4>
+    <p>Mac'te tarayiciyi acin ve asagidaki adresi girin:</p>
+    <div class="cmd-block"><code>http://192.168.1.105</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Kamera web arayuzu gorunuyorsa — kamera baglantisi calisiyor!</p>
+
+    <h4>Test 3: Tablet Baglantisi (Flask calistiktan sonra)</h4>
+    <p>Tablet'te Chrome/tarayici acin ve Mac'in IP adresiyle 5000 portuna gidin:</p>
+    <div class="cmd-block"><code>http://192.168.1.100:5000</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>(IP adresini kendi Mac IP'nizle degistirin. Bu test Bolum D'den sonra yapilabilir.)</p>
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM D: YAZILIMI CALISTIRMA -->
+<!-- ========================================================== -->
+<h2 id="bolum-d" style="margin-top:2.5rem"><span class="section-tag tag-use">Bolum D</span> Yazilimi Calistirma</h2>
+
+<!-- D1 -->
+<details class="section border-use">
+  <summary><span class="step-num">D1</span> Kamerayi Baslatma</summary>
+  <div class="section-body">
+    <ol>
+      <li>ESP32-CAM'in guc kaynagini baglayin (powerbank veya USB)</li>
+      <li>Yaklasik <strong>10 saniye</strong> bekleyin — kart WiFi'ye baglanacak</li>
+      <li>Mac'te tarayicidan ESP32-CAM IP adresini acarak goruntunun geldigini dogrulayin</li>
+      <li>"Start Stream" butonuna tiklayin — canli goruntu gorunmeli</li>
+    </ol>
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Ipucu:</strong> Kamera acildiktan sonra tarayicidaki test sayfasini <strong>kapatin</strong>. Ayni anda iki istemci baglantisi kamerayi yavaslatabilirir.</div>
+    </div>
+  </div>
+</details>
+
+<!-- D2 -->
+<details class="section border-use">
+  <summary><span class="step-num">D2</span> Ana Uygulamayi Baslatma</summary>
+  <div class="section-body">
+    <h4>Adim 1: Terminal'i Hazirlama</h4>
+    <div class="cmd-block"><code>cd ~/sinav-gozlem && source venv/bin/activate</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Satir basinda <code>(venv)</code> gorunmeli.</p>
+
+    <h4>Adim 2: Uygulamayi Calistirma</h4>
+    <div class="cmd-block"><code>python3 main.py</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Ne Olacak?</h4>
+    <ul>
+      <li>Terminal'de baglanti mesajlari gorunecek</li>
+      <li>Mac ekraninda <strong>canli onizleme penceresi</strong> acilacak (kamera goruntusi)</li>
+      <li>Flask web sunucusu baslatilacak (tablet icin)</li>
+      <li>Konsol'da <code>Running on http://0.0.0.0:5000</code> mesajini goreceksiniz</li>
+    </ul>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>"Cannot connect to camera" hatasi aliyorsaniz:</strong><br>
+        1. ESP32-CAM'in acik ve WiFi'ye bagli oldugundan emin olun<br>
+        2. <code>config.py</code> dosyasinda dogru IP adresinin yazili oldugundan emin olun<br>
+        3. <code>ping &lt;ESP32-IP&gt;</code> ile baglanti test edin<br>
+        4. ESP32-CAM'i yeniden baslatin (guc kaynagini cikarip takin)
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- D3 -->
+<details class="section border-use">
+  <summary><span class="step-num">D3</span> Egitmen Tabletini Baglama</summary>
+  <div class="section-body">
+    <ol>
+      <li>Android tablette <strong>Chrome</strong> (veya varsayilan tarayici) acin</li>
+      <li>Adres cubuguna asagidaki adresi yazin:</li>
+    </ol>
+    <div class="cmd-block"><code>http://192.168.1.100:5000</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>(<code>192.168.1.100</code> yerine Mac'inizin gercek IP adresini yazin)</p>
+    <ol start="3">
+      <li>Egitmen paneli (dashboard) gorunecektir</li>
+      <li>Canli veriler otomatik olarak guncellenecektir (WebSocket sayesinde)</li>
+    </ol>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#10004;</span>
+      <div><strong>Ipucu:</strong> Bu adresi tabletinizde <strong>yer imine ekleyin</strong> (favori) — boylece her seferinde yazmak zorunda kalmazsiniz. Chrome'da: Adres cubugundaki yildiz simgesi &rarr; Kaydet.</div>
+    </div>
+
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Panel acilmiyorsa:</strong> (1) Tablet ve Mac ayni WiFi aginda mi? (2) Mac'te main.py calisiyor mu? (3) Mac'in guvenligi duvari (Firewall) 5000 portunu engelliyor olabilir — System Settings &rarr; Network &rarr; Firewall &rarr; Options &rarr; gelen baglantilara izin verin.</div>
+    </div>
+  </div>
+</details>
+
+<!-- D4 -->
+<details class="section border-use">
+  <summary><span class="step-num">D4</span> Sinav Oturumu Baslatma</summary>
+  <div class="section-body">
+    <ol>
+      <li>Mac uygulamasinda <strong>"Yeni Oturum"</strong> butonuna tiklayin (veya tabletten)</li>
+      <li><strong>Katilimci kodu</strong> girin — bu anonimlestirilmis bir koddur (ornegin "K001"), isim girilmez</li>
+      <li>Katilimcinin <strong>onam verdigini onaylayin</strong> (onay formu imzalanmis olmali)</li>
+      <li>Sistem otomatik olarak baslar:
+        <ul>
+          <li>Video kaydi baslar</li>
+          <li>OCR analizi aktif olur</li>
+          <li>Zamanlama motoru calisir</li>
+          <li>Tablet panelinde veriler akmaya baslar</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM E: SINAV ESNASINDA KULLANIM -->
+<!-- ========================================================== -->
+<h2 id="bolum-e" style="margin-top:2.5rem"><span class="section-tag tag-use">Bolum E</span> Sinav Esnasinda Kullanim</h2>
+
+<!-- E1 -->
+<details class="section border-use">
+  <summary><span class="step-num">E1</span> Egitmen Panelini Okuma</summary>
+  <div class="section-body">
+    <h4>Panel Bolumleri</h4>
+    <ul>
+      <li><strong>Canli Goruntu</strong> — Kameradan gelen anlık goruntu (birkaç saniyelik gecikme olabilir)</li>
+      <li><strong>Tespit Edilen Cevaplar</strong> — OCR tarafindan okunan cevaplar listesi</li>
+      <li><strong>Zaman Cubugu</strong> — Her soruda harcanan sure (yatay cubuklar)</li>
+      <li><strong>Hareket Analizi</strong> — Yazma hizi ve duraksamalar</li>
+      <li><strong>Oturum Bilgisi</strong> — Gecen sure, katilimci kodu, durum</li>
+    </ul>
+
+    <h4>Renk Kodlari</h4>
+    <ul>
+      <li style="color:var(--success)"><strong>Yesil</strong> — Dogrulanmis / Kesin sonuc</li>
+      <li style="color:var(--warn)"><strong>Sari</strong> — Taslak / AI'nin tahmini (henuz dogrulanmamis)</li>
+      <li style="color:var(--danger)"><strong>Kirmizi</strong> — Belirsiz / Okunamayan bolge</li>
+    </ul>
+
+    <h4>Zaman Cubugu Yorumlama</h4>
+    <p>Her sorunun yaninda yatay bir cubuk gorursunuz. Cubuk ne kadar uzunsa, o soruda o kadar fazla sure harcanmis demektir. Normalden belirgin sekilde uzun cubuklari olan sorular, katilimcinin zorlandigi noktalar olabilir.</p>
+  </div>
+</details>
+
+<!-- E2 -->
+<details class="section border-use">
+  <summary><span class="step-num">E2</span> Cevap Anahtari Dogrulama</summary>
+  <div class="section-body">
+    <p>Sistem kameradan okunan cevaplari kullanarak otomatik bir cevap anahtari taslagi olusturur. <strong>Bu taslak AI tarafindan olusturulur ve hatali olabilir!</strong></p>
+
+    <h4>Dogrulama Sureci</h4>
+    <ol>
+      <li>Panelde "AI Cevap Taslagi" bolumune gidin</li>
+      <li>Her cevap icin uc secenek vardir:
+        <ul>
+          <li><strong>Onayla</strong> (yesil tik) — AI dogru okumis, cevap dogru</li>
+          <li><strong>Duzelt</strong> (sari kalem) — AI yanlis okumus, siz dogrusunu yazin</li>
+          <li><strong>Atla</strong> (gri ok) — Bu cevabi simdilik gecin</li>
+        </ul>
+      </li>
+      <li>Tum cevaplari gozden gecirin</li>
+    </ol>
+
+    <div class="callout callout-danger">
+      <span class="callout-icon">&#9888;</span>
+      <div><strong>Neden Dogrulamalisiniz?</strong> OCR teknolojisi mukemmel degildir. Ozellikle el yazisi, silik mudrekkep, egrilen kagit veya dusuk isik kosullarinda hatali okumalar olabilir. "B" ve "D", "1" ve "l", "O" ve "0" gibi benzer karakterler karisabilir. <strong>Her zaman kendiniz dogrulayin!</strong></div>
+    </div>
+  </div>
+</details>
+
+<!-- E3 -->
+<details class="section border-use">
+  <summary><span class="step-num">E3</span> Oturumu Sonlandirma</summary>
+  <div class="section-body">
+    <ol>
+      <li>Sinav bittiginde panelden veya Mac uygulamasindan <strong>"Oturumu Bitir"</strong> butonuna basin</li>
+      <li>Sistem:
+        <ul>
+          <li>Video kaydini otomatik kaydeder (<code>recordings/</code> klasorune)</li>
+          <li>Tum analiz verilerini SQLite veritabanina yazar</li>
+          <li>Oturum ozet raporunu olusturur</li>
+        </ul>
+      </li>
+      <li>Ozet ekrani goruntulenir — inceleyip kapatabilirsiniz</li>
+    </ol>
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM F: SORUN GIDERME -->
+<!-- ========================================================== -->
+<h2 id="bolum-f" style="margin-top:2.5rem"><span class="section-tag tag-fix">Bolum F</span> Sorun Giderme</h2>
+
+<details class="section border-fix">
+  <summary><span class="step-num">F</span> Sik Karsilasilan Sorunlar ve Cozumleri</summary>
+  <div class="section-body">
+
+    <details class="substep">
+      <summary>Kamera WiFi'ye baglanmiyor</summary>
+      <div class="substep-body">
+        <ul>
+          <li>Arduino kodundaki WiFi adi ve sifresini kontrol edin (buyuk/kucuk harf duyarli!)</li>
+          <li>Router'inizin 2.4 GHz bandinda yayin yaptigini kontrol edin — ESP32-CAM <strong>5 GHz desteklemez</strong></li>
+          <li>ESP32-CAM'i yeniden baslatin (guc kaynagini cikarip 5 saniye bekleyin, tekrar takin)</li>
+          <li>Serial Monitor'u acip hata mesajlarini kontrol edin</li>
+          <li>WiFi sifresinde ozel karakterler varsa sorun cikarabilir — basit bir sifre deneyin</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>Goruntu yok / siyah ekran</summary>
+      <div class="substep-body">
+        <ul>
+          <li>Kamera serit kablosunu (ribbon cable) kontrol edin — konnektorden cikmis olabilir</li>
+          <li>Serit kabloyu dikkatli bir sekilde cikarip tekrar takin (konnektorun kiskacini yukariya kaldirin, kabloyu yerlestirin, kiskaci asagiya indirin)</li>
+          <li>Arduino IDE'de dogru kamera modeli secili mi kontrol edin (<code>CAMERA_MODEL_AI_THINKER</code>)</li>
+          <li>Farkli bir cozunurluk deneyin (UXGA yerine SVGA gibi dusuk bir cozunurluk)</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>Goruntu kalitesi dusuk / bulanik</summary>
+      <div class="substep-body">
+        <ul>
+          <li>Kamera ile kagit arasindaki mesafeyi ayarlayin (20-30 cm ideal)</li>
+          <li>Kamera lensini yumusak bir bezle silin</li>
+          <li>Ortam isigini iyilestirin — ek masa lambasi kullanin</li>
+          <li>Dogrudan gunes isigi lenste parlama yaratir — yaygin, dolayli isik tercih edin</li>
+          <li>Cozunurlugu UXGA (1600x1200) yaptiginizdan emin olun</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>OCR yazi okuyamuyor</summary>
+      <div class="substep-body">
+        <ul>
+          <li>OCR <strong>basili metinde</strong> en iyi calisir — el yazisi icin daha dusuk basari beklenir</li>
+          <li>Turkce dil paketi kurulu mu? <code>tesseract --list-langs</code> ile kontrol edin</li>
+          <li>Kagit duz mi? Kivrilan veya burusan kagit OCR'yi zorlar</li>
+          <li>Yeterli isik var mi? Karanlik ortamda OCR basarisi duser</li>
+          <li>Goruntunun netligi yeterli mi? Bulanik goruntude harf tanima cok zordir</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>Tablet paneli yuklenmiyor</summary>
+      <div class="substep-body">
+        <ul>
+          <li>Tablet ve Mac ayni WiFi aginda mi? Kontrol edin</li>
+          <li>Mac'te <code>main.py</code> calisiyor mu? Terminal'de hata mesaji var mi?</li>
+          <li>Dogru IP ve port kullaniyorsunuz? <code>http://MAC-IP:5000</code></li>
+          <li>Mac Firewall'u kontrol edin: System Settings &rarr; Network &rarr; Firewall &rarr; gelen baglantilara izin verin veya Firewall'u gecici olarak kapatin</li>
+          <li>Tablette farkli bir tarayici deneyin</li>
+          <li>Mac'i yeniden baslatip tekrar deneyin</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>"Module not found" hatasi</summary>
+      <div class="substep-body">
+        <p>Bu hata genellikle sanal ortam (venv) aktif degilken ortaya cikar:</p>
+        <div class="cmd-block"><code>cd ~/sinav-gozlem && source venv/bin/activate
+python3 main.py</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+        <p>Hala hata aliyorsaniz eksik paketi tekrar yukleyin:</p>
+        <div class="cmd-block"><code>pip install &lt;eksik_paket_adi&gt;</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>Mac uyku moduna gecip kaydi durduruyor</summary>
+      <div class="substep-body">
+        <p>Mac'in sinav sirasinda uyumasini engellemek icin:</p>
+        <ol>
+          <li>System Settings &rarr; <strong>Displays</strong> (Ekranlar) &rarr; <strong>Advanced</strong> (Gelismis)</li>
+          <li><strong>"Prevent automatic sleeping when the display is off"</strong> secenegini <strong>acin</strong></li>
+        </ol>
+        <p>Veya Terminal'den gecici olarak uyumayi engelleyin (Terminal acik kaldigi surece):</p>
+        <div class="cmd-block"><code>caffeinate -d -i -s</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+        <p>Durdurmak icin: <strong>Ctrl+C</strong> basin.</p>
+      </div>
+    </details>
+
+    <details class="substep">
+      <summary>ESP32-CAM cok isiniyor</summary>
+      <div class="substep-body">
+        <ul>
+          <li>ESP32-CAM'in isinmasi normaldir — ancak dokunamayacak kadar sicaksa sorun var</li>
+          <li>5V guc kaynaginin kaliteli oldugundan emin olun</li>
+          <li>Havalandirma saglayan bir montaj yapin — kartin etrafinda hava sirkülasyonu olmali</li>
+          <li>Surekli 2+ saat kullanim icin arada 10 dakika dinlendirin</li>
+        </ul>
+      </div>
+    </details>
+
+  </div>
+</details>
+
+
+<!-- ========================================================== -->
+<!-- BOLUM G: GIZLILIK VE VERI YONETIMI -->
+<!-- ========================================================== -->
+<h2 id="bolum-g" style="margin-top:2.5rem"><span class="section-tag tag-priv">Bolum G</span> Gizlilik ve Veri Yonetimi</h2>
+
+<details class="section border-priv">
+  <summary><span class="step-num">G</span> Gizlilik, Veri Saklama ve Erisim</summary>
+  <div class="section-body">
+
+    <h4>Kayitlarin Saklandigi Yer</h4>
+    <p>Tum video kayitlari ve veriler Mac'inizde yerel olarak saklanir:</p>
+    <ul>
+      <li><strong>Video kayitlari:</strong> <code>~/sinav-gozlem/recordings/</code></li>
+      <li><strong>Ekran goruntuleri:</strong> <code>~/sinav-gozlem/captures/</code></li>
+      <li><strong>Veritabani:</strong> <code>~/sinav-gozlem/exam_data.db</code></li>
+    </ul>
+    <div class="callout callout-info">
+      <span class="callout-icon">&#8505;</span>
+      <div><strong>Onemli:</strong> Veriler hicbir bulut servisine veya dis sunucuya gonderilmez. Her sey Mac'inizde kalir.</div>
+    </div>
+
+    <h4>Otomatik Silme</h4>
+    <p>Varsayilan olarak kayitlar <strong>30 gun</strong> sonra otomatik silinir. Bu sureyi degistirmek icin <code>config.py</code> dosyasinda:</p>
+    <div class="cmd-block"><code>RECORDING_RETENTION_DAYS = 30  # Istediginiz gun sayisini yazin</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Manuel Silme</h4>
+    <p>Belirli bir oturumun tum verilerini silmek icin:</p>
+    <div class="cmd-block"><code>cd ~/sinav-gozlem
+python3 -c "from privacy import delete_session; delete_session('OTURUM_ID')"</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Tum kayitlari silmek icin (dikkatli olun!):</p>
+    <div class="cmd-block"><code>rm -rf ~/sinav-gozlem/recordings/*
+rm -rf ~/sinav-gozlem/captures/*</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+
+    <h4>Erisim Kaydi (Access Log)</h4>
+    <p>Kim, ne zaman verilere eristigini gosteren kayit dosyasi:</p>
+    <div class="cmd-block"><code>cat ~/sinav-gozlem/access.log</code><button class="copy-btn" onclick="copyCmd(this)">Kopyala</button></div>
+    <p>Her satir: tarih, saat, islem turu ve erisilen veri bilgisini icerir.</p>
+
+    <h4>Katilimci Onam Formu</h4>
+    <p>Her sinav katilimcisi <strong>baslamadan once</strong> asagidaki bilgileri iceren bir onam formunu imzalamis olmalidir:</p>
+    <ul>
+      <li>Video kaydinin yapilacagi</li>
+      <li>Kaydin hangi amacla ve ne kadar sure saklanacagi</li>
+      <li>Kimlerin erisebildigi</li>
+      <li>Verilerin nasil silinecegi</li>
+      <li>Katilimcinin isterse cekildigi hakki</li>
+    </ul>
+
+    <h4>Veri Erisim Kisitlamasi</h4>
+    <ul>
+      <li>Verilere <strong>yalnizca Mac kullanicisi</strong> erisebilir (oturum acik olmadan veri gorulemez)</li>
+      <li>Tablet paneli yalnizca <strong>ayni WiFi agindayken</strong> erisilebilir</li>
+      <li>Sinav bittiginde tablet paneli otomatik kapanir</li>
+      <li>Mac'in kullanici sifresi ile koruma altinda olmasi onerilir</li>
+      <li><strong>Veri paylasimi</strong>: Verileri USB bellek veya e-posta ile paylasmayiniz — gerekiyorsa sifrelenmis kanallar kullanin</li>
+    </ul>
+  </div>
+</details>
+
+
+<!-- Footer -->
+<div style="margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center">
+  <p style="color:var(--fg-muted); font-size:0.85rem">Sinav Gozlem Sistemi Kurulum Rehberi &mdash; Kasim 2026</p>
+  <p style="color:var(--fg-muted); font-size:0.8rem">Bu rehber proje ile birlikte guncellenir. Sorunlar icin Bolum F'yi kontrol edin.</p>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// Copy to clipboard
+function copyCmd(btn) {
+  const block = btn.closest('.cmd-block');
+  const code = block.querySelector('code');
+  const text = code ? code.textContent : block.textContent;
+  try {
+    navigator.clipboard.writeText(text.trim()).then(() => {
+      btn.textContent = 'Kopyalandi!';
+      setTimeout(() => { btn.textContent = 'Kopyala'; }, 1500);
+    });
+  } catch (e) {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text.trim();
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.textContent = 'Kopyalandi!';
+    setTimeout(() => { btn.textContent = 'Kopyala'; }, 1500);
+  }
+}
+
+// Theme toggle
+function toggleTheme() {
+  const root = document.documentElement;
+  const icon = document.getElementById('theme-icon');
+  if (root.getAttribute('data-theme') === 'dark') {
+    root.setAttribute('data-theme', 'light');
+    icon.innerHTML = '&#9790;';
+    try { localStorage.setItem('theme', 'light'); } catch(e) {}
+  } else {
+    root.setAttribute('data-theme', 'dark');
+    icon.innerHTML = '&#9728;';
+    try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+  }
+}
+
+// Restore saved theme
+try {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    if (saved === 'dark') document.getElementById('theme-icon').innerHTML = '&#9728;';
+  }
+} catch(e) {}
+</script>
+
+</body>
+</html>
