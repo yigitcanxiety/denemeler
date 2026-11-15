@@ -1,10 +1,9 @@
-<title>Sınav Gözlem Sistemi</title>
+<title>Sınav Gözlem Sistemi v2</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 
 <style>
-/* Layout: single-column document with architecture diagram, phased timeline, and part cards */
 :root {
   --bg: #fafaf9;
   --fg: #1c1917;
@@ -19,13 +18,18 @@
   --warn-soft: #fef3c7;
   --success: #059669;
   --success-soft: #d1fae5;
+  --danger: #dc2626;
+  --danger-soft: #fee2e2;
   --tag-hw: #7c3aed;
   --tag-hw-soft: #ede9fe;
   --tag-sw: #0891b2;
   --tag-sw-soft: #cffafe;
+  --tag-fw: #c2410c;
+  --tag-fw-soft: #fff7ed;
   --radius: 10px;
   --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -42,10 +46,14 @@
     --warn-soft: #422006;
     --success: #34d399;
     --success-soft: #064e3b;
+    --danger: #f87171;
+    --danger-soft: #450a0a;
     --tag-hw: #a78bfa;
     --tag-hw-soft: #2e1065;
     --tag-sw: #22d3ee;
     --tag-sw-soft: #083344;
+    --tag-fw: #fb923c;
+    --tag-fw-soft: #431407;
     color-scheme: dark;
   }
 }
@@ -63,10 +71,14 @@
   --warn-soft: #422006;
   --success: #34d399;
   --success-soft: #064e3b;
+  --danger: #f87171;
+  --danger-soft: #450a0a;
   --tag-hw: #a78bfa;
   --tag-hw-soft: #2e1065;
   --tag-sw: #22d3ee;
   --tag-sw-soft: #083344;
+  --tag-fw: #fb923c;
+  --tag-fw-soft: #431407;
   color-scheme: dark;
 }
 
@@ -80,7 +92,7 @@ body {
   padding-block: 2rem;
 }
 
-.container { max-width: 820px; margin: 0 auto; }
+.container { max-width: 860px; margin: 0 auto; }
 
 h1, h2, h3 { font-family: var(--font-display); line-height: 1.2; text-wrap: balance; }
 h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -95,8 +107,10 @@ p { margin-bottom: 0.75rem; }
 .tag { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.04em; }
 .tag-hw { background: var(--tag-hw-soft); color: var(--tag-hw); }
 .tag-sw { background: var(--tag-sw-soft); color: var(--tag-sw); }
+.tag-fw { background: var(--tag-fw-soft); color: var(--tag-fw); }
 .tag-warn { background: var(--warn-soft); color: var(--warn); }
 .tag-ok { background: var(--success-soft); color: var(--success); }
+.tag-danger { background: var(--danger-soft); color: var(--danger); }
 
 .card {
   background: var(--surface);
@@ -105,6 +119,15 @@ p { margin-bottom: 0.75rem; }
   padding: 1.25rem;
   margin-bottom: 1rem;
 }
+
+.privacy-box {
+  background: var(--danger-soft);
+  border: 2px solid var(--danger);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+}
+.privacy-box h3 { color: var(--danger); margin-top: 0; }
 
 .part-grid {
   display: grid;
@@ -124,8 +147,6 @@ p { margin-bottom: 0.75rem; }
 .part-card .part-name { font-weight: 600; font-size: 0.95rem; }
 .part-card .part-price { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: var(--accent-fg); font-variant-numeric: tabular-nums; }
 .part-card .part-detail { font-size: 0.82rem; color: var(--fg-muted); line-height: 1.5; }
-.part-card .part-link { font-size: 0.82rem; color: var(--accent); text-decoration: none; }
-.part-card .part-link:hover { text-decoration: underline; }
 .part-card .part-size { font-size: 0.78rem; color: var(--fg-muted); font-style: italic; }
 
 .arch-diagram {
@@ -138,10 +159,100 @@ p { margin-bottom: 0.75rem; }
 }
 .arch-diagram svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
 
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--surface-alt);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+}
+
+.flow-diagram {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--surface-alt);
+  border-radius: var(--radius);
+}
+.flow-node {
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 0;
+}
+.flow-node small { display: block; font-weight: 400; color: var(--fg-muted); font-size: 0.75rem; }
+.flow-arrow { color: var(--accent); font-size: 1.2rem; flex-shrink: 0; }
+.flow-node.node-cam { border-color: var(--tag-hw); }
+.flow-node.node-tx { border-color: var(--tag-fw); }
+.flow-node.node-mac { border-color: var(--tag-sw); }
+.flow-node.node-rx { border-color: var(--success); }
+
+.warn-callout {
+  background: var(--warn-soft);
+  border-left: 4px solid var(--warn);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.88rem;
+}
+th, td {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+th {
+  background: var(--surface-alt);
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.module-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.module-card h3 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.module-card ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+.module-card li { font-size: 0.88rem; margin-bottom: 0.25rem; }
+
+.dim-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  fill: var(--accent);
+}
+
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: 0;
   position: relative;
   padding-left: 2rem;
   margin: 1.5rem 0;
@@ -149,804 +260,863 @@ p { margin-bottom: 0.75rem; }
 .timeline::before {
   content: '';
   position: absolute;
-  left: 0.55rem;
-  top: 0.4rem;
-  bottom: 0.4rem;
+  left: 0.5rem;
+  top: 0.25rem;
+  bottom: 0.25rem;
   width: 2px;
   background: var(--border);
 }
-.tl-item {
+.timeline-item {
   position: relative;
   padding-bottom: 1.25rem;
 }
-.tl-item::before {
+.timeline-item::before {
   content: '';
   position: absolute;
-  left: -1.55rem;
-  top: 0.4rem;
-  width: 12px;
-  height: 12px;
+  left: -1.65rem;
+  top: 0.35rem;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--accent);
   border: 2px solid var(--bg);
 }
-.tl-item.done::before { background: var(--success); }
-.tl-day { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; color: var(--accent-fg); margin-bottom: 0.25rem; }
-.tl-tasks { font-size: 0.88rem; color: var(--fg-muted); }
-.tl-tasks ul { margin: 0.25rem 0 0 1.2rem; padding: 0; }
-.tl-tasks li { margin-bottom: 0.2rem; }
+.timeline-item .day { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; color: var(--accent-fg); }
+.timeline-item .task { font-size: 0.88rem; margin-top: 0.15rem; }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-  margin: 1rem 0;
-}
-th, td {
-  text-align: left;
-  padding: 0.6rem 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-th {
-  font-weight: 600;
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--fg-muted);
-  background: var(--surface-alt);
-}
-td { font-variant-numeric: tabular-nums; }
-
-.overflow-x { overflow-x: auto; }
-
-.note-box {
-  background: var(--warn-soft);
-  border-left: 3px solid var(--warn);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 0.75rem 1rem;
-  font-size: 0.88rem;
-  margin: 1rem 0;
-}
-.note-box strong { color: var(--warn); }
-
-.info-box {
-  background: var(--accent-soft);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 0.75rem 1rem;
-  font-size: 0.88rem;
-  margin: 1rem 0;
-}
-
-.success-box {
-  background: var(--success-soft);
-  border-left: 3px solid var(--success);
-  border-radius: 0 var(--radius) var(--radius) 0;
-  padding: 0.75rem 1rem;
-  font-size: 0.88rem;
-  margin: 1rem 0;
-}
-
-.budget-bar {
-  display: flex;
-  height: 28px;
-  border-radius: 6px;
-  overflow: hidden;
-  margin: 0.75rem 0 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-.budget-bar > div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  white-space: nowrap;
-  padding: 0 0.5rem;
-}
-
-.spec-label { font-size: 0.78rem; color: var(--fg-muted); }
-.spec-value { font-weight: 600; }
-
-.flow-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-}
-.flow-num {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
+.budget-total {
   font-family: var(--font-display);
+  font-size: 1.8rem;
   font-weight: 700;
-  font-size: 0.85rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: var(--accent-fg);
+  text-align: center;
+  margin: 1rem 0;
 }
-.flow-text { font-size: 0.9rem; min-width: 0; }
-.flow-text strong { display: block; margin-bottom: 0.15rem; }
-
-code {
-  background: var(--surface-alt);
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-size: 0.85em;
-}
-
-.toc { margin: 1.5rem 0; }
-.toc a {
-  color: var(--accent);
-  text-decoration: none;
+.budget-remaining {
+  text-align: center;
   font-size: 0.9rem;
-  display: block;
-  padding: 0.25rem 0;
+  color: var(--success);
+  font-weight: 600;
 }
-.toc a:hover { text-decoration: underline; }
 
-.verified { color: var(--success); font-weight: 600; }
-.estimated { color: var(--warn); font-weight: 600; }
-
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
 @media (max-width: 600px) {
-  h1 { font-size: 1.5rem; }
-  h2 { font-size: 1.2rem; }
-  .part-grid { grid-template-columns: 1fr; }
-  body { padding-block: 1.25rem; }
+  .two-col { grid-template-columns: 1fr; }
 }
 </style>
 
 <div class="container">
 
-<span class="date-badge">Kasim 2026 &middot; v1.0</span>
-<h1>Sinav Gozlem Sistemi &mdash; Proje Plani</h1>
-<p class="subtitle">Kagit uzerindeki calisma davranislarini (soru basina sure, yazma/duraklama, silme, sayfa gecisleri) kaydeden, cok sayfalI belgeleri birlestiren ve egitmen onaylI cevap anahtarI ureten gozlem sistemi.</p>
+<span class="date-badge">Kasım 2026</span>
+<h1>Sınav Gözlem Sistemi v2</h1>
+<p class="subtitle">Yakaya takılan düğme kamera + uzaktan gözetmen ekranı ile kağıt sınav davranış kaydı. Stres/duygu/kopya çıkarımı yapılmaz.</p>
 
-<div class="note-box">
-  <strong>Gizlilik ilkesi:</strong> Bu sistem stres, duygu, psikolojik durum veya kopya niyeti cikarimi yapmaz. Otomatik ogrenci degerlendirmesi yoktur. KatilimciIar bilgilendirilir; kayitlara erisim, saklama ve silme sureleri sinirlandirilir.
+<!-- ==================== GİZLİLİK ==================== -->
+<div class="privacy-box">
+  <h3>Gizlilik ve Etik Sınırlar</h3>
+  <p style="margin-bottom:0.5rem"><strong>Bu sistem YAPMAZ:</strong></p>
+  <ul style="margin:0 0 0.5rem;padding-left:1.25rem;font-size:0.9rem">
+    <li>Stres, duygu veya psikolojik durum çıkarımı</li>
+    <li>Kopya niyeti tespiti veya ima</li>
+    <li>Otomatik öğrenci değerlendirmesi veya puanlama</li>
+    <li>Yüz tanıma veya biyometrik analiz</li>
+    <li>Öğrenciler arası karşılaştırma</li>
+  </ul>
+  <p style="margin-bottom:0;font-size:0.9rem"><strong>Zorunlu:</strong> Katılımcılar kayıt amacı hakkında bilgilendirilir. Kayıtlara erişim, saklama ve silme süreleri sınırlandırılır. Kamera yalnızca kağıdı ve eli kaydeder.</p>
 </div>
 
-<nav class="toc">
-  <strong>Icerik</strong>
-  <a href="#mimari">1. Sistem Mimarisi</a>
-  <a href="#parcalar">2. Parca Listesi ve Butce</a>
-  <a href="#boyutlar">3. Fiziksel Boyutlar ve Montaj</a>
-  <a href="#yazilim">4. Yazilim Mimarisi</a>
-  <a href="#belge">5. Cok Sayfali Belge Isleme</a>
-  <a href="#anahtar">6. Cevap Anahtari Is Akisi</a>
-  <a href="#ekran">7. Egitmen Kablosuz Ekrani</a>
-  <a href="#takvim">8. Adim Adim Takvim</a>
-  <a href="#test">9. Test Plani</a>
-  <a href="#riskler">10. Riskler ve Varsayimlar</a>
-</nav>
+<!-- ==================== MİMARİ GENEL BAKIŞ ==================== -->
+<h2>Sistem Mimarisi</h2>
 
-<!-- ========== 1. MIMARi ========== -->
-<h2 id="mimari">1. Sistem Mimarisi</h2>
+<p>Öğrencinin yakasına takılan düğme boyutunda bir kamera, ince FPC kablosuyla ceketinin iç cebindeki/kemerine klipslenen verici üniteye bağlıdır. Verici, WiFi üzerinden başka bir odadaki MacBook'a görüntü akışı yapar. MacBook tüm görüntü işleme ve yapay zeka analizini gerçekleştirir, sonuçları kredi kartı boyutundaki kablosuz gözetmen ekranına iletir.</p>
+
+<div class="flow-diagram">
+  <div class="flow-node node-cam">
+    Düğme Kamera<br>
+    <small>OV2640 &bull; ~8mm &bull; Yaka</small>
+  </div>
+  <div class="flow-arrow">&#x2192; FPC</div>
+  <div class="flow-node node-tx">
+    Verici Ünitesi<br>
+    <small>ESP32-S3 &bull; Cep/Kemer</small>
+  </div>
+  <div class="flow-arrow">&#x2192; WiFi</div>
+  <div class="flow-node node-mac">
+    MacBook Hub<br>
+    <small>Python + AI &bull; Ayrı Oda</small>
+  </div>
+  <div class="flow-arrow">&#x2192; WiFi</div>
+  <div class="flow-node node-rx">
+    Gözetmen Ekranı<br>
+    <small>ESP32 + 2.4" TFT &bull; Kredi kartı boyutu</small>
+  </div>
+</div>
+
+<!-- ==================== KULLANIM SENARYOSU ==================== -->
+<h2>Nasıl Çalışır</h2>
 
 <div class="arch-diagram">
-<svg viewBox="0 0 780 420" fill="none" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Inter', sans-serif;">
-  <!-- Camera -->
-  <rect x="20" y="30" width="160" height="80" rx="8" fill="var(--tag-hw-soft)" stroke="var(--tag-hw)" stroke-width="1.5"/>
-  <text x="100" y="60" text-anchor="middle" fill="var(--fg)" font-size="12" font-weight="600">ESP32-CAM</text>
-  <text x="100" y="78" text-anchor="middle" fill="var(--fg-muted)" font-size="10">WiFi MJPEG akisi</text>
-  <text x="100" y="92" text-anchor="middle" fill="var(--fg-muted)" font-size="10">~27x40 mm</text>
+  <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" style="font-family:'Inter',sans-serif">
+    <!-- Sınav odası -->
+    <rect x="10" y="10" width="340" height="400" rx="8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+    <text x="20" y="35" font-size="13" font-weight="600" fill="currentColor" opacity="0.6">SINAV ODASI</text>
 
-  <!-- WiFi -->
-  <rect x="240" y="30" width="120" height="80" rx="8" fill="var(--surface-alt)" stroke="var(--border)" stroke-width="1.5"/>
-  <text x="300" y="60" text-anchor="middle" fill="var(--fg)" font-size="12" font-weight="600">WiFi Ag</text>
-  <text x="300" y="78" text-anchor="middle" fill="var(--fg-muted)" font-size="10">Mac Hotspot veya</text>
-  <text x="300" y="92" text-anchor="middle" fill="var(--fg-muted)" font-size="10">mevcut router</text>
+    <!-- Eğimli masa -->
+    <path d="M 60,280 L 280,280 L 290,200 L 70,200 Z" fill="var(--surface-alt)" stroke="var(--border)" stroke-width="1.5"/>
+    <text x="150" y="250" font-size="11" text-anchor="middle" fill="var(--fg-muted)">Eğimli Sıra (~15°)</text>
 
-  <!-- Arrow cam->wifi -->
-  <line x1="180" y1="70" x2="240" y2="70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Kağıt -->
+    <rect x="110" y="210" width="80" height="55" rx="2" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
+    <line x1="118" y1="222" x2="178" y2="222" stroke="var(--fg-muted)" stroke-width="0.5" opacity="0.4"/>
+    <line x1="118" y1="230" x2="170" y2="230" stroke="var(--fg-muted)" stroke-width="0.5" opacity="0.4"/>
+    <line x1="118" y1="238" x2="175" y2="238" stroke="var(--fg-muted)" stroke-width="0.5" opacity="0.4"/>
+    <line x1="118" y1="246" x2="160" y2="246" stroke="var(--fg-muted)" stroke-width="0.5" opacity="0.4"/>
+    <text x="150" y="260" font-size="8" text-anchor="middle" fill="var(--fg-muted)">Sınav Kağıdı</text>
 
-  <!-- Mac -->
-  <rect x="420" y="10" width="340" height="160" rx="10" fill="var(--tag-sw-soft)" stroke="var(--tag-sw)" stroke-width="1.5"/>
-  <text x="590" y="36" text-anchor="middle" fill="var(--fg)" font-size="13" font-weight="700">Mac &mdash; Ana Uygulama</text>
+    <!-- Öğrenci (basit figür) -->
+    <circle cx="150" cy="140" r="18" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+    <text x="150" y="145" font-size="9" text-anchor="middle" fill="var(--fg-muted)">Öğrenci</text>
+    <!-- Gövde -->
+    <line x1="150" y1="158" x2="150" y2="195" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+    <!-- Yaka/kamera noktası -->
+    <circle cx="150" cy="168" r="5" fill="var(--danger)" stroke="var(--danger)" stroke-width="1"/>
+    <text x="170" y="172" font-size="8" fill="var(--danger)" font-weight="600">Düğme Kamera</text>
 
-  <rect x="435" y="48" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="507" y="66" text-anchor="middle" fill="var(--fg)" font-size="10">Canli Onizleme + Kayit</text>
+    <!-- FPC kablosu (kameradan cebteki ESP32'ye) -->
+    <path d="M 150,173 C 150,185 180,190 200,195" fill="none" stroke="var(--tag-fw)" stroke-width="1" stroke-dasharray="3,2"/>
+    <text x="185" y="188" font-size="7" fill="var(--tag-fw)">FPC Kablo</text>
 
-  <rect x="600" y="48" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="672" y="66" text-anchor="middle" fill="var(--fg)" font-size="10">Kare Analizci (hareket)</text>
+    <!-- ESP32 verici cepte -->
+    <rect x="195" y="195" width="45" height="25" rx="4" fill="var(--tag-fw-soft)" stroke="var(--tag-fw)" stroke-width="1.5"/>
+    <text x="218" y="210" font-size="7" text-anchor="middle" fill="var(--tag-fw)" font-weight="600">ESP32-S3</text>
+    <text x="218" y="230" font-size="7" text-anchor="middle" fill="var(--fg-muted)">Cepte/Kemerde</text>
 
-  <rect x="435" y="84" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="507" y="102" text-anchor="middle" fill="var(--fg)" font-size="10">Sayfa Algilayici (OCR)</text>
+    <!-- WiFi dalgaları (ESP32'den duvara) -->
+    <path d="M 240,207 Q 280,200 320,180" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4,3"/>
+    <path d="M 240,210 Q 285,205 325,185" fill="none" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4,3" opacity="0.6"/>
+    <text x="280" y="175" font-size="8" fill="var(--accent)" font-weight="500">WiFi</text>
 
-  <rect x="600" y="84" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="672" y="102" text-anchor="middle" fill="var(--fg)" font-size="10">Belge Birlestirici</text>
+    <!-- Duvar -->
+    <rect x="345" y="10" width="8" height="400" fill="var(--border)" opacity="0.6"/>
 
-  <rect x="435" y="120" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="507" y="138" text-anchor="middle" fill="var(--fg)" font-size="10">Zamanlama Motoru</text>
+    <!-- Gözetmen odası -->
+    <rect x="355" y="10" width="340" height="400" rx="8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6,3" opacity="0.4"/>
+    <text x="365" y="35" font-size="13" font-weight="600" fill="currentColor" opacity="0.6">GÖZETMEN ODASI</text>
 
-  <rect x="600" y="120" width="145" height="26" rx="5" fill="var(--surface)" stroke="var(--border)" stroke-width="1"/>
-  <text x="672" y="138" text-anchor="middle" fill="var(--fg)" font-size="10">Cevap Anahtari (AI)</text>
+    <!-- WiFi yönlendirici -->
+    <rect x="440" y="60" width="70" height="30" rx="6" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+    <text x="475" y="79" font-size="9" text-anchor="middle" fill="var(--accent-fg)" font-weight="600">WiFi Router</text>
 
-  <!-- Arrow wifi->mac -->
-  <line x1="360" y1="70" x2="420" y2="70" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- MacBook -->
+    <rect x="400" y="160" width="120" height="75" rx="6" fill="var(--tag-sw-soft)" stroke="var(--tag-sw)" stroke-width="1.5"/>
+    <text x="460" y="185" font-size="10" text-anchor="middle" fill="var(--tag-sw)" font-weight="700">MacBook</text>
+    <text x="460" y="198" font-size="8" text-anchor="middle" fill="var(--fg-muted)">Python + OpenCV</text>
+    <text x="460" y="210" font-size="8" text-anchor="middle" fill="var(--fg-muted)">Tesseract OCR</text>
+    <text x="460" y="222" font-size="8" text-anchor="middle" fill="var(--fg-muted)">Flask-SocketIO</text>
 
-  <!-- SQLite -->
-  <rect x="435" y="210" width="145" height="50" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
-  <text x="507" y="235" text-anchor="middle" fill="var(--fg)" font-size="11" font-weight="600">SQLite Veritabani</text>
-  <text x="507" y="250" text-anchor="middle" fill="var(--fg-muted)" font-size="9">Olaylar, sureler, anahtarlar</text>
+    <!-- MacBook'tan router'a -->
+    <line x1="460" y1="160" x2="475" y2="90" stroke="var(--tag-sw)" stroke-width="1" stroke-dasharray="3,2"/>
 
-  <!-- Arrow mac->sqlite -->
-  <line x1="507" y1="170" x2="507" y2="210" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Gözetmen ekranı -->
+    <rect x="420" y="300" width="86" height="54" rx="5" fill="var(--success-soft)" stroke="var(--success)" stroke-width="2"/>
+    <text x="463" y="322" font-size="9" text-anchor="middle" fill="var(--success)" font-weight="700">Gözetmen</text>
+    <text x="463" y="334" font-size="9" text-anchor="middle" fill="var(--success)" font-weight="700">Ekranı</text>
+    <text x="463" y="346" font-size="7" text-anchor="middle" fill="var(--fg-muted)">86×54mm</text>
+    <text x="463" y="370" font-size="8" text-anchor="middle" fill="var(--fg-muted)">ESP32-C3 + 2.4" TFT</text>
 
-  <!-- WebSocket server -->
-  <rect x="600" y="210" width="155" height="50" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
-  <text x="677" y="235" text-anchor="middle" fill="var(--fg)" font-size="11" font-weight="600">WebSocket Sunucu</text>
-  <text x="677" y="250" text-anchor="middle" fill="var(--fg-muted)" font-size="9">Flask-SocketIO :5000</text>
+    <!-- MacBook'tan ekrana -->
+    <path d="M 460,235 L 463,300" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <text x="480" y="270" font-size="8" fill="var(--success)">WiFi</text>
 
-  <!-- Arrow mac->ws -->
-  <line x1="672" y1="170" x2="672" y2="210" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
+    <!-- Gözetmen figürü -->
+    <circle cx="580" cy="300" r="15" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+    <text x="580" y="304" font-size="8" text-anchor="middle" fill="var(--fg-muted)">Gözetmen</text>
+    <line x1="580" y1="315" x2="580" y2="345" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
 
-  <!-- Instructor display -->
-  <rect x="540" y="320" width="210" height="80" rx="8" fill="var(--tag-hw-soft)" stroke="var(--tag-hw)" stroke-width="1.5"/>
-  <text x="645" y="350" text-anchor="middle" fill="var(--fg)" font-size="12" font-weight="600">Egitmen Ekrani</text>
-  <text x="645" y="368" text-anchor="middle" fill="var(--fg-muted)" font-size="10">7" Android tablet</text>
-  <text x="645" y="382" text-anchor="middle" fill="var(--fg-muted)" font-size="10">Tarayicida canli pano</text>
-
-  <!-- Arrow ws->display -->
-  <line x1="677" y1="260" x2="660" y2="320" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="690" y="292" fill="var(--fg-muted)" font-size="9">WiFi</text>
-
-  <!-- Recording files -->
-  <rect x="280" y="210" width="130" height="50" rx="8" fill="var(--surface)" stroke="var(--border)" stroke-width="1.5"/>
-  <text x="345" y="235" text-anchor="middle" fill="var(--fg)" font-size="11" font-weight="600">Kayit Dosyalari</text>
-  <text x="345" y="250" text-anchor="middle" fill="var(--fg-muted)" font-size="9">.mp4, sayfa goruntuleri</text>
-  <line x1="435" y1="240" x2="410" y2="240" stroke="var(--border)" stroke-width="1.5" marker-end="url(#arrow-muted)"/>
-
-  <!-- Consent -->
-  <rect x="20" y="320" width="200" height="80" rx="8" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.5"/>
-  <text x="120" y="345" text-anchor="middle" fill="var(--fg)" font-size="11" font-weight="600">Gizlilik Katmani</text>
-  <text x="120" y="362" text-anchor="middle" fill="var(--fg-muted)" font-size="9.5">Onam kaydi</text>
-  <text x="120" y="377" text-anchor="middle" fill="var(--fg-muted)" font-size="9.5">30 gun saklama siniri</text>
-  <text x="120" y="392" text-anchor="middle" fill="var(--fg-muted)" font-size="9.5">Erisim loglari</text>
-
-  <defs>
-    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6" fill="var(--accent)"/>
-    </marker>
-    <marker id="arrow-muted" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6" fill="var(--border)"/>
-    </marker>
-  </defs>
-</svg>
+    <!-- Kameranın görüş alanı -->
+    <path d="M 150,168 L 110,210 L 190,210 Z" fill="var(--danger)" opacity="0.08" stroke="var(--danger)" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text x="150" y="205" font-size="7" text-anchor="middle" fill="var(--danger)" opacity="0.7">Görüş Alanı</text>
+  </svg>
 </div>
 
-<p>Sistem uc ana birimden olusur: kagida yakin konumlanan kucuk kablosuz kamera, tum islemeyi yapan Mac ve egitmenin elindeki kablosuz gosterge ekrani. Hepsi ayni WiFi aginda haberlesir.</p>
+<h3>Adım Adım Akış</h3>
+<ol style="font-size:0.9rem;line-height:1.7">
+  <li><strong>Kamera yakaya takılır</strong> &mdash; Düğme görünümlü OV2640 modül, kıyafete dikilir/klipslenir. Öğrenci oturduğunda eğimli sıradaki kağıda bakar.</li>
+  <li><strong>FPC kablo ile verici</strong> &mdash; 20-30cm ince FPC kablo kıyafetin içinden geçerek cepteki/kemerdeki ESP32-S3 vericiye bağlanır.</li>
+  <li><strong>WiFi akışı</strong> &mdash; ESP32-S3, MJPEG akışı ile kare kare görüntüyü WiFi router üzerinden MacBook'a gönderir (5-10 fps, 640×480).</li>
+  <li><strong>MacBook işler</strong> &mdash; Python + OpenCV ile el/kalem hareketleri, yazma/duraklama süreleri, sayfa geçişleri, silme hareketleri tespit edilir.</li>
+  <li><strong>Cevap anahtarı oluşturulur</strong> &mdash; Tesseract OCR ile yazılan cevaplar okunur, AI destekli cevap anahtarı taslağı çıkarılır.</li>
+  <li><strong>Gözetmen onaylar</strong> &mdash; Kredi kartı ekranında cevap anahtarı gösterilir. Gözetmen düğmelerle Onayla/Düzelt/Atla yapar.</li>
+  <li><strong>İzleme moduna geçiş</strong> &mdash; Onay sonrası ekran otomatik olarak canlı izleme moduna döner: süre çubukları, aktivite göstergesi, sayfa durumu.</li>
+</ol>
 
-<!-- ========== 2. PARCA LiSTESi ========== -->
-<h2 id="parcalar">2. Parca Listesi ve Butce</h2>
+<!-- ==================== DONANIM ==================== -->
+<h2>Donanım Bileşenleri</h2>
 
-<div class="note-box">
-  <strong>Fiyat uyarisi:</strong> Asagidaki fiyatlar Kasim 2026 web aramasina dayanir. <span class="estimated">Tahmini</span> etiketli kalemler dogrudan satin alinamadan onceye ait anlIk fiyatlardir; satin almadan once satici sayfasindan dogrulayin.
+<h3>1. Düğme Kamera Ünitesi</h3>
+<div class="card">
+  <div class="arch-diagram" style="margin-bottom:0">
+    <svg viewBox="0 0 400 180" xmlns="http://www.w3.org/2000/svg" style="font-family:'JetBrains Mono',monospace">
+      <!-- Düğme kasa -->
+      <circle cx="80" cy="90" r="35" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+      <circle cx="80" cy="90" r="28" fill="none" stroke="var(--fg-muted)" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <!-- Lens -->
+      <circle cx="80" cy="90" r="5" fill="var(--fg-muted)" opacity="0.4"/>
+      <circle cx="80" cy="90" r="3" fill="var(--fg)" opacity="0.3"/>
+      <!-- Ölçü çizgileri -->
+      <line x1="45" y1="50" x2="115" y2="50" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="45" y1="47" x2="45" y2="53" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="115" y1="47" x2="115" y2="53" stroke="var(--accent)" stroke-width="0.75"/>
+      <text x="80" y="46" text-anchor="middle" class="dim-label" font-size="10">~20mm (kasa dahil)</text>
+
+      <!-- OV2640 chip -->
+      <rect x="68" y="78" width="24" height="24" rx="2" fill="none" stroke="var(--danger)" stroke-width="1" stroke-dasharray="2,1"/>
+      <text x="80" y="93" text-anchor="middle" font-size="6" fill="var(--danger)">OV2640</text>
+      <text x="80" y="100" text-anchor="middle" font-size="5" fill="var(--fg-muted)">8×8mm</text>
+
+      <!-- Dikiş delikleri -->
+      <circle cx="60" cy="75" r="1.5" fill="var(--fg-muted)" opacity="0.5"/>
+      <circle cx="100" cy="75" r="1.5" fill="var(--fg-muted)" opacity="0.5"/>
+      <circle cx="60" cy="105" r="1.5" fill="var(--fg-muted)" opacity="0.5"/>
+      <circle cx="100" cy="105" r="1.5" fill="var(--fg-muted)" opacity="0.5"/>
+      <text x="80" y="145" text-anchor="middle" font-size="8" fill="var(--fg-muted)">Düğme Kasa (3D baskı/reçine)</text>
+      <text x="80" y="157" text-anchor="middle" font-size="7" fill="var(--fg-muted)">4 dikiş deliği ile yakaya tutturulur</text>
+
+      <!-- FPC Kablo -->
+      <line x1="115" y1="90" x2="200" y2="90" stroke="var(--tag-fw)" stroke-width="2"/>
+      <text x="158" y="83" text-anchor="middle" font-size="8" fill="var(--tag-fw)">FPC Kablo</text>
+      <text x="158" y="105" text-anchor="middle" font-size="7" fill="var(--fg-muted)">24pin, 20-30cm</text>
+      <text x="158" y="115" text-anchor="middle" font-size="7" fill="var(--fg-muted)">Kıyafet içinden geçer</text>
+
+      <!-- ESP32-S3 -->
+      <rect x="200" y="65" width="70" height="50" rx="5" fill="var(--tag-fw-soft)" stroke="var(--tag-fw)" stroke-width="1.5"/>
+      <text x="235" y="83" text-anchor="middle" font-size="9" fill="var(--tag-fw)" font-weight="600">ESP32-S3</text>
+      <text x="235" y="95" text-anchor="middle" font-size="7" fill="var(--fg-muted)">WROOM-1</text>
+      <text x="235" y="107" text-anchor="middle" font-size="7" fill="var(--fg-muted)">+ Kamera arayüzü</text>
+
+      <!-- Pil -->
+      <rect x="290" y="70" width="55" height="40" rx="4" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1"/>
+      <text x="318" y="90" text-anchor="middle" font-size="8" fill="var(--warn)" font-weight="500">LiPo Pil</text>
+      <text x="318" y="102" text-anchor="middle" font-size="7" fill="var(--fg-muted)">3.7V 2000mAh</text>
+
+      <!-- Boyut etiketi -->
+      <text x="270" y="135" text-anchor="middle" font-size="8" fill="var(--fg-muted)">Verici Ünitesi: ~60×35×15mm</text>
+      <text x="270" y="148" text-anchor="middle" font-size="7" fill="var(--fg-muted)">(Sigara paketi boyutu, cepte taşınır)</text>
+    </svg>
+  </div>
 </div>
+
+<h3>2. Kredi Kartı Gözetmen Ekranı</h3>
+<div class="card">
+  <div class="arch-diagram" style="margin-bottom:0">
+    <svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="font-family:'JetBrains Mono',monospace">
+      <!-- Kredi kartı boyutunda kasa -->
+      <rect x="50" y="20" width="172" height="108" rx="8" fill="var(--surface)" stroke="var(--success)" stroke-width="2"/>
+
+      <!-- Ekran alanı -->
+      <rect x="58" y="28" width="120" height="92" rx="4" fill="var(--success-soft)" stroke="var(--success)" stroke-width="1"/>
+      <text x="118" y="55" text-anchor="middle" font-size="9" fill="var(--success)" font-weight="600">2.4" ILI9341</text>
+      <text x="118" y="68" text-anchor="middle" font-size="8" fill="var(--fg-muted)">240×320 TFT LCD</text>
+
+      <!-- Mini UI mockup -->
+      <rect x="65" y="76" width="106" height="6" rx="2" fill="var(--success)" opacity="0.3"/>
+      <rect x="65" y="76" width="70" height="6" rx="2" fill="var(--success)" opacity="0.6"/>
+      <rect x="65" y="86" width="106" height="6" rx="2" fill="var(--warn)" opacity="0.3"/>
+      <rect x="65" y="86" width="40" height="6" rx="2" fill="var(--warn)" opacity="0.6"/>
+      <rect x="65" y="96" width="106" height="6" rx="2" fill="var(--accent)" opacity="0.3"/>
+      <rect x="65" y="96" width="85" height="6" rx="2" fill="var(--accent)" opacity="0.6"/>
+      <text x="70" y="113" font-size="6" fill="var(--fg-muted)">S1: 3:42 | S2: 1:15 | S3: --</text>
+
+      <!-- Düğmeler -->
+      <circle cx="196" cy="48" r="8" fill="var(--success-soft)" stroke="var(--success)" stroke-width="1"/>
+      <text x="196" y="51" text-anchor="middle" font-size="7" fill="var(--success)">&#10003;</text>
+      <circle cx="196" cy="72" r="8" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1"/>
+      <text x="196" y="75" text-anchor="middle" font-size="7" fill="var(--warn)">&#9998;</text>
+      <circle cx="196" cy="96" r="8" fill="var(--surface-alt)" stroke="var(--border)" stroke-width="1"/>
+      <text x="196" y="99" text-anchor="middle" font-size="7" fill="var(--fg-muted)">&#8811;</text>
+
+      <!-- Ölçü çizgileri -->
+      <line x1="50" y1="140" x2="222" y2="140" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="50" y1="137" x2="50" y2="143" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="222" y1="137" x2="222" y2="143" stroke="var(--accent)" stroke-width="0.75"/>
+      <text x="136" y="153" text-anchor="middle" class="dim-label" font-size="10">85.6mm (kredi kartı genişliği)</text>
+
+      <line x1="235" y1="20" x2="235" y2="128" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="232" y1="20" x2="238" y2="20" stroke="var(--accent)" stroke-width="0.75"/>
+      <line x1="232" y1="128" x2="238" y2="128" stroke="var(--accent)" stroke-width="0.75"/>
+      <text x="250" y="78" class="dim-label" font-size="9" transform="rotate(90,250,78)">54mm</text>
+
+      <!-- Bileşenler listesi -->
+      <text x="290" y="35" font-size="9" fill="var(--fg)" font-weight="600">Bileşenler:</text>
+      <text x="290" y="52" font-size="8" fill="var(--fg-muted)">&#8226; ESP32-C3-MINI-1</text>
+      <text x="290" y="66" font-size="8" fill="var(--fg-muted)">&#8226; 2.4" ILI9341 TFT</text>
+      <text x="290" y="80" font-size="8" fill="var(--fg-muted)">&#8226; LiPo 500mAh ince</text>
+      <text x="290" y="94" font-size="8" fill="var(--fg-muted)">&#8226; 3x dokunsal düğme</text>
+      <text x="290" y="108" font-size="8" fill="var(--fg-muted)">&#8226; 3D baskı kasa</text>
+      <text x="290" y="128" font-size="9" fill="var(--success)" font-weight="600">Kalınlık: ~8mm</text>
+    </svg>
+  </div>
+</div>
+
+<h3>Parça Listesi ve Bütçe</h3>
 
 <div class="part-grid">
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">ESP32-CAM (OV2640)</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~500&ndash;620 TL</div>
-    <div class="part-detail">2MP WiFi kamera modulu. MJPEG akisi destekler. USB programlayici dahil set tercih edin (ESP-CAM-MB).</div>
-    <div class="part-size">Boyut: ~27 &times; 40 &times; 4.5 mm (yalnizca kart)</div>
-    <a class="part-link" href="https://www.robotistan.com" target="_blank" rel="noopener">Robotistan</a>
-    <a class="part-link" href="https://www.direnc.net" target="_blank" rel="noopener">Direnc.net</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">OV2640 Kamera Modülü (çıplak)</span>
+    <span class="part-price">120 TL</span>
+    <span class="part-detail">8×8mm CMOS sensör, 2MP, 24pin FPC konnektör. DVP arayüzü ile ESP32-S3'e bağlanır.</span>
+    <span class="part-size">8 × 8 × 3mm (sadece modül)</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">USB Powerbank (5V, 5000mAh)</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~200&ndash;300 TL</div>
-    <div class="part-detail">ESP32-CAM beslemesi. Kucuk boyutlu (kredi karti boyutu) tercih edin. 5000mAh ile ~3-4 saat calisma suresi beklenir.</div>
-    <div class="part-size">Tahmini boyut: ~90 &times; 60 &times; 13 mm</div>
-    <a class="part-link" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">FPC Kablo (24pin, 30cm)</span>
+    <span class="part-price">25 TL</span>
+    <span class="part-detail">Esnek düz kablo, kıyafet içinden geçirilebilir. Kamera-verici bağlantısı.</span>
+    <span class="part-size">30cm uzunluk, 0.5mm kalınlık</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">Esnek Gooseneck Kelepce</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~100&ndash;200 TL</div>
-    <div class="part-detail">Masaya veya kitap destegine klipsle tutturulan esnek kollu tutucu. Kamerayi kagida 20&ndash;30 cm mesafeye konumlandirir.</div>
-    <div class="part-size">Kol uzunlugu: ~30&ndash;40 cm</div>
-    <a class="part-link" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol / Hepsiburada</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-fw">Firmware</span>
+    <span class="part-name">ESP32-S3-WROOM-1 DevKit</span>
+    <span class="part-price">280 TL</span>
+    <span class="part-detail">DVP kamera arayüzü, WiFi 802.11 b/g/n, 2MB PSRAM. MJPEG akışı için yeterli. Verici görevi.</span>
+    <span class="part-size">~25 × 18mm (modül), devkit ~55 × 26mm</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">microSD Kart (32GB)</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~150 TL</div>
-    <div class="part-detail">ESP32-CAM'de yerel yedekleme icin. Class 10 veya ustu.</div>
-    <div class="part-size">Standart microSD</div>
-    <a class="part-link" href="https://www.mediamarkt.com.tr" target="_blank" rel="noopener">MediaMarkt</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">LiPo Pil 3.7V 2000mAh</span>
+    <span class="part-price">80 TL</span>
+    <span class="part-detail">Verici ünitesi için. ~3-4 saat çalışma süresi (MJPEG akışında). JST konnektör.</span>
+    <span class="part-size">~50 × 30 × 8mm</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">7" Android Tablet</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~3.000&ndash;3.500 TL</div>
-    <div class="part-detail">Egitmen ekrani olarak kullanilir. Hometech Alfa 7LM veya Lenovo Tab M7 (32GB, 2GB RAM). Tarayicida web panosu acar.</div>
-    <div class="part-size">~18 &times; 10.5 &times; 0.9 cm</div>
-    <a class="part-link" href="https://www.trendyol.com" target="_blank" rel="noopener">Trendyol</a>
-    <a class="part-link" href="https://www.hepsiburada.com" target="_blank" rel="noopener">Hepsiburada</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">TP4056 Şarj Modülü</span>
+    <span class="part-price">15 TL</span>
+    <span class="part-detail">Mikro USB ile LiPo şarj. Verici ünitesine entegre edilir.</span>
+    <span class="part-size">~25 × 19 × 4mm</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">WiFi Router (opsiyonel)</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~500&ndash;1.000 TL</div>
-    <div class="part-detail">Sinav odasinda mevcut WiFi yoksa gerekir. Alternatif: Mac'in hotspot ozelligini kullanin (ucretsiz).</div>
-    <div class="part-size">Standart router</div>
-    <a class="part-link" href="https://www.mediamarkt.com.tr" target="_blank" rel="noopener">MediaMarkt</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">Düğme Kasa (3D Baskı)</span>
+    <span class="part-price">50 TL</span>
+    <span class="part-detail">Reçine 3D baskı düğme kasası. 4 dikiş deliği ile yakaya tutturulur. Pin-hole lens açıklığı.</span>
+    <span class="part-size">~20mm çap, 6mm kalınlık</span>
   </div>
 
   <div class="part-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span class="part-name">Kablo ve Adaptorler</span>
-      <span class="tag tag-hw">Donanim</span>
-    </div>
-    <div class="part-price">~200&ndash;300 TL</div>
-    <div class="part-detail">Micro-USB kablolar, USB-C/USB-A adaptor, kasa/muhafaza malzemesi (3D baski veya kucuk plastik kutu).</div>
-    <a class="part-link" href="https://www.direnc.net" target="_blank" rel="noopener">Direnc.net</a>
-    <span class="tag tag-warn">Tahmini fiyat</span>
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">Verici Kasası (3D Baskı)</span>
+    <span class="part-price">40 TL</span>
+    <span class="part-detail">ESP32-S3 + pil + şarj modülü için kasa. Kemer klipsi veya cep boyutu.</span>
+    <span class="part-size">~65 × 40 × 18mm</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">ESP32-C3-MINI-1 DevKit</span>
+    <span class="part-price">180 TL</span>
+    <span class="part-detail">Gözetmen ekranının beyni. WiFi, SPI ile TFT sürme. Çok küçük form faktörü.</span>
+    <span class="part-size">~13 × 16.6mm (modül)</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">2.4" ILI9341 TFT LCD</span>
+    <span class="part-price">110 TL</span>
+    <span class="part-detail">240×320 piksel, SPI arayüzü. Renkli ekran, geniş görüş açısı. Gözetmen ekranı.</span>
+    <span class="part-size">~60 × 43 × 3mm (PCB dahil)</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">LiPo Pil 3.7V 500mAh (ince)</span>
+    <span class="part-price">55 TL</span>
+    <span class="part-detail">Gözetmen ekranı için. ~6-8 saat çalışma (düşük yenileme hızı). İnce form faktörü.</span>
+    <span class="part-size">~50 × 30 × 4mm</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">Ekran Kasası (3D Baskı)</span>
+    <span class="part-price">60 TL</span>
+    <span class="part-detail">Kredi kartı boyutunda kasa. ESP32-C3 + TFT + pil + 3 düğme. Ergonomik.</span>
+    <span class="part-size">86 × 54 × 8mm</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">Dokunsal Düğme × 3</span>
+    <span class="part-price">10 TL</span>
+    <span class="part-detail">Onayla (yeşil), Düzelt (sarı), Atla/İleri (gri). Gözetmen ekranı kontrolleri.</span>
+    <span class="part-size">6 × 6 × 3mm (her biri)</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">WiFi Router (Mevcut/Ek)</span>
+    <span class="part-price">0 – 400 TL</span>
+    <span class="part-detail">Mevcut router kullanılabilir. Yoksa küçük travel router. 2.4GHz yeterli.</span>
+    <span class="part-size">Değişken</span>
+  </div>
+
+  <div class="part-card">
+    <span class="tag tag-hw">Donanım</span>
+    <span class="part-name">Kablo, Lehim, Bağlantı Malz.</span>
+    <span class="part-price">75 TL</span>
+    <span class="part-detail">Header pinler, JST konnektörler, ısı çekmeli makaron, lehim teli, jumper kablolar.</span>
+    <span class="part-size">—</span>
   </div>
 </div>
 
-<h3>Butce Ozeti</h3>
+<div class="budget-total">Toplam: ~1.100 TL</div>
+<div class="budget-remaining">Bütçe: 10.000 TL &mdash; Kalan: ~8.900 TL (ek öğrenci setleri, yedek parça, geliştirme)</div>
 
-<div class="overflow-x">
-<table>
-  <thead>
-    <tr><th>Kalem</th><th>Fiyat Araligi (TL)</th><th>Durum</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>ESP32-CAM + programlayici</td><td>500 &ndash; 620</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>Powerbank</td><td>200 &ndash; 300</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>Gooseneck kelepce</td><td>100 &ndash; 200</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>microSD 32GB</td><td>~150</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>7" Android tablet</td><td>3.000 &ndash; 3.500</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>WiFi router (opsiyonel)</td><td>0 &ndash; 1.000</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr><td>Kablo/adaptor/kasa</td><td>200 &ndash; 300</td><td><span class="estimated">Tahmini</span></td></tr>
-    <tr style="font-weight:700; background: var(--surface-alt);">
-      <td>TOPLAM</td><td>4.150 &ndash; 6.070</td><td></td>
-    </tr>
-    <tr>
-      <td>Kalan tampon</td><td>3.930 &ndash; 5.850</td><td><span class="tag tag-ok">Yeterli</span></td>
-    </tr>
-  </tbody>
-</table>
+<div class="warn-callout">
+  <strong>Not:</strong> Fiyatlar Kasım 2026 Türkiye piyasası tahminidir. Tek öğrenci seti maliyetidir. Her ek öğrenci için ~610 TL (kamera + verici seti) eklenir. 3D baskı maliyetleri filament/reçine bazlı tahminidir.
 </div>
 
-<div class="budget-bar">
-  <div style="flex: 42; background: var(--tag-hw);">Kamera %42</div>
-  <div style="flex: 50; background: var(--accent);">Tablet %50</div>
-  <div style="flex: 8; background: var(--fg-muted);">Diger %8</div>
-</div>
-<p style="font-size: 0.8rem; color: var(--fg-muted);">Mac hotspot kullanilirsa router maliyeti sifirlanir.</p>
+<!-- ==================== YAZILIM MİMARİSİ ==================== -->
+<h2>Yazılım Mimarisi</h2>
 
-<!-- ========== 3. FiZiKSEL BOYUTLAR ========== -->
-<h2 id="boyutlar">3. Fiziksel Boyutlar ve Montaj</h2>
+<p>Sistem üç katmanlı bir yazılım mimarisine sahiptir: ESP32 firmware (verici + ekran), Mac Python uygulaması (merkez işleme), ve arabirim protokolleri.</p>
 
-<div class="card">
-  <h3 style="margin-top:0;">Kamera Birimi (Toplam)</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.88rem;">
-    <div><span class="spec-label">ESP32-CAM kart:</span> <span class="spec-value">27 &times; 40 &times; 4.5 mm</span></div>
-    <div><span class="spec-label">Kasa dahil (tahmini):</span> <span class="spec-value">~35 &times; 50 &times; 20 mm</span></div>
-    <div><span class="spec-label">Agirlik (kart):</span> <span class="spec-value">~10 g</span></div>
-    <div><span class="spec-label">Pil dahil (tahmini):</span> <span class="spec-value">~200 g</span></div>
-  </div>
-  <p style="font-size: 0.85rem; margin-top: 0.75rem; color: var(--fg-muted);">Kamera esnek kol ucuna monte edilir. Kagida 20&ndash;30 cm mesafede, yazan elin karsi tarafinda konumlandirilir. Yazmayi engellemez.</p>
-</div>
-
-<div class="info-box">
-  <strong>Montaj:</strong> Gooseneck kelepce, masa kenarIna veya sinav kozu/kitap destegine tutturulur. ESP32-CAM, kolun ucuna cift taraflI bant veya kucuk vida ile sabitlenir. Powerbank kelepce tabanina veya masa altina ziptle baglanir.
-</div>
-
-<!-- ========== 4. YAZILIM MiMARiSi ========== -->
-<h2 id="yazilim">4. Yazilim Mimarisi</h2>
-
-<h3>Gereken Yazilimlar</h3>
-<div class="overflow-x">
-<table>
-  <thead>
-    <tr><th>Yazilim</th><th>Amac</th><th>Kurulum</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>Python 3.11+</td><td>Ana programlama dili</td><td>Mac'te genelde yuklu; yoksa python.org</td></tr>
-    <tr><td>OpenCV</td><td>Video yakalama, hareket analizi</td><td><code>pip install opencv-python</code></td></tr>
-    <tr><td>Tesseract OCR</td><td>Sayfa metni okuma</td><td><code>brew install tesseract tesseract-lang</code></td></tr>
-    <tr><td>pytesseract</td><td>Python&ndash;Tesseract koprüsü</td><td><code>pip install pytesseract</code></td></tr>
-    <tr><td>Flask + SocketIO</td><td>Egitmen pano sunucusu</td><td><code>pip install flask flask-socketio</code></td></tr>
-    <tr><td>PyQt6</td><td>Mac arayuzu (canli onizleme)</td><td><code>pip install pyqt6</code></td></tr>
-    <tr><td>Arduino IDE</td><td>ESP32-CAM firmware yukleme</td><td>arduino.cc (ucretsiz)</td></tr>
-  </tbody>
-</table>
-</div>
-
-<div class="info-box">
-  <strong>Tek satirda kurulum (Mac Terminal):</strong><br>
-  <code>pip install opencv-python pytesseract flask flask-socketio pyqt6</code><br>
-  <code>brew install tesseract tesseract-lang</code>
-</div>
-
-<h3>Modul Yapisi</h3>
-
-<div class="flow-step">
-  <div class="flow-num">1</div>
-  <div class="flow-text"><strong>capture.py &mdash; Video Yakalama</strong> ESP32-CAM'den MJPEG akisini alir (<code>http://&lt;ip&gt;:81/stream</code>). Canli onizleme penceresine ve analiz modullerine kare dagitir. Zaman damgali .mp4 kaydeder.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">2</div>
-  <div class="flow-text"><strong>frame_analyzer.py &mdash; Hareket Analizi</strong> Ardisik kareleri karsilastirir (frame differencing). Olaylari uretir: <code>WRITING</code>, <code>PAUSE</code>, <code>ERASING</code>, <code>PAGE_TURN</code>. Stres veya duygu cikarimi yapmaz.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">3</div>
-  <div class="flow-text"><strong>page_detector.py &mdash; Sayfa Algilama</strong> Buyuk alan degisikliginde (sayfa cevirme) yuksek cozunurluklu kare yakalar. OCR ile sayfa numarasi, soru numaralari ve belge kimligini cikarir.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">4</div>
-  <div class="flow-text"><strong>document_stitcher.py &mdash; Belge Birlestirme</strong> Sirali sayfalari tek belgede birlestirir. Tekrarlari yonetir. Eksik sayfayla kesin cevap uretilmesini engeller.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">5</div>
-  <div class="flow-text"><strong>timing_engine.py &mdash; Zamanlama Motoru</strong> Soru basina goruntuleme suresi, yazma, duraklama, silme ve ziyaret sayisini hesaplar.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">6</div>
-  <div class="flow-text"><strong>answer_key.py &mdash; Cevap Anahtari</strong> AI taslak uretir, egitmen onaylar. Farkli varyantlar belge kimligiyle eslesir.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">7</div>
-  <div class="flow-text"><strong>instructor_display.py &mdash; Egitmen Ekrani</strong> Flask-SocketIO sunucusu. Tabletteki tarayiciya WebSocket uzerinden canli veri gonderir.</div>
-</div>
-
-<h3>Veritabani Semasi (SQLite)</h3>
-<div class="card" style="font-size: 0.82rem; font-family: monospace; white-space: pre-wrap; line-height: 1.6; overflow-x: auto;">exam_sessions   (id, start_time, end_time, participant_code, consent_given)
-documents        (id, session_id, status[PARTIAL|COMPLETE|UNCERTAIN], total_pages_expected, total_pages_captured)
-page_captures    (id, document_id, page_number, capture_time, image_path, ocr_text, ocr_confidence, is_duplicate)
-answer_keys      (id, document_id, question_number, ai_draft_answer, verified_answer, verified_by, verified_at)
-activity_events  (id, session_id, timestamp, event_type, question_number, duration_ms)
-question_timings (id, session_id, document_id, question_number, total_visible_ms, writing_ms, pause_ms, erasing_ms, visit_count)
-access_log       (id, accessed_at, user_identity, action, target_session_id)</div>
-
-<!-- ========== 5. COK SAYFALI BELGE ========== -->
-<h2 id="belge">5. Cok Sayfali Belge Isleme</h2>
-
-<p>Sinav genellikle 20 soru, 2&ndash;3 sayfadir. Soru metni, siklar veya ortak aciklamalar sonraki sayfaya tasabilir.</p>
-
-<div class="card">
-  <h3 style="margin-top:0;">Birlestirme Algoritmasi</h3>
-  <div class="flow-step">
-    <div class="flow-num">1</div>
-    <div class="flow-text"><strong>Sayfa numarasi cikarma:</strong> OCR ile "Sayfa 1/3", "- 2 -" gibi kaliplar aranir. Bulunamazsa soru numaralarindan cikarim yapilir (S1&ndash;7 = sayfa 1, S8&ndash;14 = sayfa 2, S15&ndash;20 = sayfa 3).</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-num">2</div>
-    <div class="flow-text"><strong>Belge kimligi:</strong> Oneri: her sayfaya kucuk QR kod basilsin (varyant + sayfa). QR yoksa baslik metninden veya icerik ozetinden cikarilir.</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-num">3</div>
-    <div class="flow-text"><strong>Tekrar algilama:</strong> Yeni sayfa OCR'i mevcut sayfalarla karsilastirilir (benzerlik &gt;%85 = tekrar). Daha yuksek OCR guvenli olan korunur.</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-num">4</div>
-    <div class="flow-text"><strong>Devam algilama:</strong> Sayfanin son satiri tamamlanmamis cumle ise ve sonraki sayfa devam ediyorsa, soru "sayfalar arasi" olarak isaretlenir ve metinler birlestirilir.</div>
-  </div>
-  <div class="flow-step">
-    <div class="flow-num">5</div>
-    <div class="flow-text"><strong>Tamlam kontrolu:</strong> Tum beklenen sayfalar gorulduyse COMPLETE. Eksik sayfa varsa PARTIAL &mdash; cevap anahtari "eksik sayfa" uyarisiyla isaretlenir, kesin cevap uretilmez.</div>
-  </div>
-</div>
-
-<div class="note-box">
-  <strong>Onemli kural:</strong> Sistem, PARTIAL durumda kesinlesmis cevap anahtari uretmez. Egitmene "X sayfa eksik" uyarisi gosterilir.
-</div>
-
-<!-- ========== 6. CEVAP ANAHTARI ========== -->
-<h2 id="anahtar">6. Cevap Anahtari Is Akisi</h2>
-
-<div class="flow-step">
-  <div class="flow-num">1</div>
-  <div class="flow-text"><strong>Belge tamamlanir:</strong> document_stitcher tum sayfalari birlestirip OCR metnini uretir.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">2</div>
-  <div class="flow-text"><strong>AI taslak hazirlar:</strong> Metin AI'a gonderilir. Her soru icin cevap + gerekce + guven seviyesi doner. Emin olunmayan sorular <code>[BELIRSIZ]</code> olarak isaretlenir. Eksik metin varsa cevap verilmez.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">3</div>
-  <div class="flow-text"><strong>Egitmen dogrular:</strong> Mac arayuzunde her soru icin: Onayla / Duzelt / Atla. Yalnizca onaylanan cevaplar "dogrulanmis" olarak kaydedilir.</div>
-</div>
-<div class="flow-step">
-  <div class="flow-num">4</div>
-  <div class="flow-text"><strong>Varyant eslesmesi:</strong> Her sinav varyanti (A, B, C...) belge kimligiyle eslenir. Farkli soru/sik siralamalari AI'a gercek metinle gittigi icin varyanta ozel cevap uretilir.</div>
-</div>
-
-<div class="success-box">
-  AI asla nihai degerlendirme yapmaz. Tum cevap anahtari kararlarI egitmenin elindedir.
-</div>
-
-<!-- ========== 7. EGiTMEN EKRANI ========== -->
-<h2 id="ekran">7. Egitmen Kablosuz Ekrani</h2>
-
-<div class="card">
-  <h3 style="margin-top:0;">Gosterge Paneli Icerigi</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.88rem;">
-    <div><strong>Mevcut sayfa / soru:</strong> Hangi sorularin goruntulendigi</div>
-    <div><strong>Belge kimligi:</strong> Hangi sinav varyantinin acik oldugu</div>
-    <div><strong>Cevap anahtari:</strong> Dogrulanmis / taslak / belirsiz durumlu</div>
-    <div><strong>Soru basina sureler:</strong> Yazma / duraklama / silme cubuk grafikleri</div>
-    <div><strong>Toplam gecen sure:</strong> Sinav baslangicindanki kronometre</div>
-    <div><strong>Belge durumu:</strong> COMPLETE / PARTIAL gostergesi</div>
-  </div>
-
-  <h3>Teknik Akis</h3>
-  <p style="font-size: 0.85rem;">Mac uzerindeki Flask-SocketIO sunucusu <code>:5000</code> portunda calisir. Tablet, tarayicida <code>http://&lt;mac-ip&gt;:5000</code> adresini acar. Her 2 saniyede WebSocket ile guncelleme alinir. Baglanti koparsa "Baglanti kesildi" uyarisi goruntulenir ve otomatik yeniden baglanir.</p>
-</div>
-
-<!-- ========== 8. TAKViM ========== -->
-<h2 id="takvim">8. Adim Adim Takvim (7&ndash;10 Gun)</h2>
-
-<div class="timeline">
-  <div class="tl-item">
-    <div class="tl-day">Gun 1 &mdash; Satin Alma</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>ESP32-CAM + programlayici siparis (Robotistan / Direnc.net)</li>
-        <li>Gooseneck kelepce + powerbank siparis (Trendyol)</li>
-        <li>7" Android tablet siparis (Trendyol / Hepsiburada)</li>
-        <li>microSD kart, kablo/adaptor temin</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 2&ndash;3 &mdash; Kamera Hazirlik</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>Arduino IDE kurulumu, ESP32 kart paketini ekle</li>
-        <li>ESP32-CAM'e CameraWebServer ornegini yukle</li>
-        <li>WiFi baglantisinI test et: tarayicida MJPEG akisi gor</li>
-        <li>Kamerayi gooseneck'e monte et, kagit uzerindeki goruntuyu ayarla</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 3&ndash;4 &mdash; Mac Yazilim Kurulumu</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>Python paketlerini kur (opencv, pytesseract, flask, pyqt6)</li>
-        <li>Tesseract + Turkce dil paketini kur</li>
-        <li>capture.py: Kameradan video al ve kaydet</li>
-        <li>Canli onizleme penceresini test et</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 5&ndash;6 &mdash; Analiz Modulleri</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>frame_analyzer.py: Hareket algilama (yazma/duraklama/silme)</li>
-        <li>page_detector.py: OCR ile sayfa ve soru algilama</li>
-        <li>document_stitcher.py: Cok sayfali birlestirme</li>
-        <li>timing_engine.py: Soru basina zamanlama</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 6&ndash;7 &mdash; Cevap Anahtari + Egitmen Ekrani</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>answer_key.py: AI taslak uretimi + dogrulama arayuzu</li>
-        <li>instructor_display.py: Flask-SocketIO + HTML pano</li>
-        <li>Tablette tarayici testI</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 8&ndash;9 &mdash; Entegrasyon Testi</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>Uctan uca test: kamera &rarr; Mac &rarr; analiz &rarr; tablet</li>
-        <li>Cok sayfali sinav belgesi ile test (asagidaki plan)</li>
-        <li>Gizlilik kontrolleri: onam akisi, saklama suresi, erisim logu</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="tl-item">
-    <div class="tl-day">Gun 10 &mdash; Son Ayar ve Dokumantasyon</div>
-    <div class="tl-tasks">
-      <ul>
-        <li>Kullanim kilavuzu hazirla (egitmen icin)</li>
-        <li>Katilimci bilgilendirme metni yazdir</li>
-        <li>Yedek pil/kablo kontrolu</li>
-        <li>Sistem hazir</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- ========== 9. TEST PLANI ========== -->
-<h2 id="test">9. Gercek Cok Sayfali Test Plani</h2>
-
-<p>Asagidaki test senaryolari, sistemi gercek sinav kosullarinda dogrulamak icin tasarlanmistir.</p>
-
-<div class="card">
-  <h3 style="margin-top:0;">Test Belgesi Ozellikleri</h3>
-  <ul style="font-size: 0.88rem; margin: 0;">
-    <li>20 coktan secmeli soru, 3 sayfa</li>
-    <li>Sayfa 1: Sorular 1&ndash;7 (7. soru 2. sayfaya tasar)</li>
-    <li>Sayfa 2: 7. sorunun devami + Sorular 8&ndash;14</li>
-    <li>Sayfa 3: Sorular 15&ndash;20 + ortak sekil/grafik</li>
-    <li>2 varyant (A ve B): farkli soru sirasi</li>
-    <li>Her sayfada QR kod (varyant + sayfa numarasi)</li>
+<h3>A. ESP32-S3 Verici Firmware</h3>
+<div class="module-card">
+  <h3><code>camera_stream.ino</code> <span class="tag tag-fw">Arduino/ESP-IDF</span></h3>
+  <ul>
+    <li>OV2640 kamera DVP arayüzü ile başlatma (QVGA 640×480)</li>
+    <li>MJPEG HTTP sunucusu (<code>/stream</code> endpoint)</li>
+    <li>WiFi bağlantı yönetimi (SSID/şifre EEPROM'da)</li>
+    <li>Pil voltajı ADC ölçümü ve düşük pil uyarısı</li>
+    <li>OTA (Over-The-Air) güncelleme desteği</li>
+    <li>Hedef: 5-10 fps, JPEG kalitesi 10-12 (boyut/kalite dengesi)</li>
   </ul>
 </div>
 
-<div class="overflow-x">
-<table>
-  <thead>
-    <tr><th style="width: 28%;">Senaryo</th><th style="width: 40%;">Yapilacak</th><th>Beklenen Sonuc</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>T1:</strong> Normal 3 sayfa sirali</td>
-      <td>3 sayfayi sirayla goster, her biri 20sn</td>
-      <td>Belge COMPLETE, 20 soru tespit, sureler kayitli</td>
-    </tr>
-    <tr>
-      <td><strong>T2:</strong> Sayfa tekrari</td>
-      <td>Sayfa 1'i goster, sayfa 2, tekrar sayfa 1, sayfa 3</td>
-      <td>Tekrar algilanir, yalnizca 3 benzersiz sayfa kaydedilir</td>
-    </tr>
-    <tr>
-      <td><strong>T3:</strong> Eksik sayfa</td>
-      <td>Yalnizca sayfa 1 ve 3'u goster</td>
-      <td>Belge PARTIAL, sayfa 2 eksik uyarisi, sayfalar arasi soru (S7) cevapsiz</td>
-    </tr>
-    <tr>
-      <td><strong>T4:</strong> Sayfalar arasi soru</td>
-      <td>S7'nin sayfa 1 sonunda kesilip sayfa 2 basinda devam ettigini dogrula</td>
-      <td>"spans_pages: [1, 2]" isaretlenmis, metin birlestirilmis</td>
-    </tr>
-    <tr>
-      <td><strong>T5:</strong> Farkli varyant</td>
-      <td>Varyant A ve B'yi sirayla test et</td>
-      <td>Her biri ayri document_id ile kaydedilir, ayri cevap anahtari uretilir</td>
-    </tr>
-    <tr>
-      <td><strong>T6:</strong> Yazma/duraklama algilama</td>
-      <td>30sn yaz, 10sn dur, 5sn sil, devam et</td>
-      <td>Olay loglari dogru tiplerde (WRITING, PAUSE, ERASING)</td>
-    </tr>
-    <tr>
-      <td><strong>T7:</strong> Sayfa gecisi zamanlama</td>
-      <td>Sayfa 1'de 60sn, sayfa 2'de 45sn, sayfa 1'e don 30sn</td>
-      <td>S1&ndash;7 icin total_visible = 90sn, visit_count = 2</td>
-    </tr>
-    <tr>
-      <td><strong>T8:</strong> WiFi kopma</td>
-      <td>Kamera akis sirasinda WiFi'yi 10sn kes</td>
-      <td>Mac "Baglanti kesildi" gosterir, otomatik yeniden baglanir, kayip sureler isaretlenir</td>
-    </tr>
-    <tr>
-      <td><strong>T9:</strong> Egitmen ekrani guncelleme</td>
-      <td>Sayfa gecisi yap, tablet ekranini izle</td>
-      <td>&le;2sn icinde yeni sayfa/soru bilgisi guncellenir</td>
-    </tr>
-    <tr>
-      <td><strong>T10:</strong> Cevap anahtari dogrulama</td>
-      <td>AI taslak uretsin, 3 cevabi duzelt, 2'sini atla</td>
-      <td>Yalnizca onaylanan ve duzeltilen cevaplar "verified" olarak kaydedilir</td>
-    </tr>
-  </tbody>
-</table>
+<h3>B. ESP32-C3 Gözetmen Ekranı Firmware</h3>
+<div class="module-card">
+  <h3><code>display_client.ino</code> <span class="tag tag-fw">Arduino/ESP-IDF</span></h3>
+  <ul>
+    <li>WiFi ile MacBook'a WebSocket bağlantısı</li>
+    <li>ILI9341 TFT sürücü (SPI, 240×320)</li>
+    <li><strong>Mod 1 — Cevap Anahtarı:</strong> Soru/cevap çiftleri gösterilir, 3 düğme ile Onayla/Düzelt/Atla</li>
+    <li><strong>Mod 2 — Canlı İzleme:</strong> Soru başına süre çubukları, aktivite göstergesi, sayfa durumu</li>
+    <li>Otomatik mod geçişi (cevap anahtarı onaylanınca izleme moduna)</li>
+    <li>Pil durumu göstergesi</li>
+  </ul>
 </div>
 
-<div class="note-box">
-  <strong>Test edilmemis ozellikler:</strong> Yukaridaki plan henuz gerceklestirilmemis bir tasarimdir. Gercek test sonucu uretilmemistir. T1&ndash;T10 senaryolari, sistemin ilk calistirmada dogrulanmasi gereken minimum test setidir.
+<h3>C. Mac Python Uygulaması (Hub)</h3>
+
+<div class="module-card">
+  <h3><code>capture.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>ESP32-S3'ün MJPEG akışından kare yakalama</li>
+    <li>Çoklu kamera desteği (birden fazla öğrenci)</li>
+    <li>Kare arabelleği ve FPS sayacı</li>
+    <li>Bağlantı kopması/yeniden bağlanma yönetimi</li>
+  </ul>
 </div>
 
-<!-- ========== 10. RiSKLER ========== -->
-<h2 id="riskler">10. Riskler ve Varsayimlar</h2>
-
-<div class="overflow-x">
-<table>
-  <thead>
-    <tr><th>Risk / Varsayim</th><th>Etki</th><th>Onlem</th></tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>ESP32-CAM 2MP cozunurlugu kucuk el yazisi icin yetersiz kalabilir</td>
-      <td>Orta</td>
-      <td>Kamerayi 20 cm'ye yaklastirin. Yetersizse OV5640 (5MP) modulune yukseltme (~200 TL ek)</td>
-    </tr>
-    <tr>
-      <td>Tesseract OCR el yazisini tam okuyamayabilir</td>
-      <td>Dusuk</td>
-      <td>OCR yalnizca basili sinav metnini okur (soru, sik). El yazisi analizi icin kullanilmaz</td>
-    </tr>
-    <tr>
-      <td>WiFi kalabalik ortamda kararsiz olabilir</td>
-      <td>Orta</td>
-      <td>5 GHz bant tercih edin. Mac hotspot genelde kararlidir. Otomatik yeniden baglanti kodlanmistir</td>
-    </tr>
-    <tr>
-      <td>Parca stoklari degisken</td>
-      <td>Dusuk</td>
-      <td>Birden fazla saticiyi kontrol edin. ESP32-CAM yaygin urun, genelde mevcut</td>
-    </tr>
-    <tr>
-      <td>Teknik bilgi sinirli</td>
-      <td>Orta</td>
-      <td>Arduino IDE sihirbaz benzeri arayuz sunar. Python kurulumu adim adim dokumante edilecek</td>
-    </tr>
-    <tr>
-      <td>Sinav odasi aydinlatmasi yetersiz olabilir</td>
-      <td>Dusuk</td>
-      <td>ESP32-CAM flash LED'i var (yakin mesafede yeterli). Gerekirse kucuk USB LED ek (~50 TL)</td>
-    </tr>
-  </tbody>
-</table>
+<div class="module-card">
+  <h3><code>frame_analyzer.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>El ve kalem tespiti (OpenCV kontur analizi)</li>
+    <li>Yazma / duraklama / silme hareket sınıflandırması</li>
+    <li>Hareket yoğunluğu hesaplama (optik akış)</li>
+    <li>Kağıt dörtgenini tespit (perspektif düzeltme)</li>
+  </ul>
 </div>
 
-<div class="card" style="margin-top: 1.5rem;">
-  <h3 style="margin-top:0;">Dogrulanmis Ozellikler vs. Tahminler</h3>
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.88rem;">
-    <div>
-      <strong class="verified">Dogrulanmis</strong>
-      <ul style="margin: 0.25rem 0 0 1rem; padding: 0;">
-        <li>ESP32-CAM MJPEG akis destegi</li>
-        <li>OpenCV MJPEG/RTSP yakalama</li>
-        <li>Tesseract Turkce dil destegi</li>
-        <li>Flask-SocketIO WebSocket destegi</li>
-        <li>ESP32-CAM fiziksel boyutlari</li>
-      </ul>
+<div class="module-card">
+  <h3><code>page_detector.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>Çoklu sayfa tespiti (kağıt çevirme algılama)</li>
+    <li>OCR tabanlı tekrar tespit (&gt;85% benzerlik = aynı sayfa)</li>
+    <li>Sayfa durumu: PARTIAL / COMPLETE / UNCERTAIN</li>
+    <li>Eğimli masa açısı kompanzasyonu</li>
+  </ul>
+</div>
+
+<div class="module-card">
+  <h3><code>document_stitcher.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>Tüm sayfaları birleştirerek tam belge oluşturma</li>
+    <li>OCR ile soru numarası tespiti</li>
+    <li>Sayfa sırası doğrulama</li>
+  </ul>
+</div>
+
+<div class="module-card">
+  <h3><code>timing_engine.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>Soru başına zamanlama (yazma süresi, duraklama süresi, silme süresi)</li>
+    <li>Toplam sınav süresi takibi</li>
+    <li>Aktivite zaman çizelgesi oluşturma</li>
+    <li>Olay tabanlı kayıt (WRITE_START, WRITE_END, PAUSE, ERASE, PAGE_TURN)</li>
+  </ul>
+</div>
+
+<div class="module-card">
+  <h3><code>answer_key.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>Tesseract OCR ile Türkçe metin çıkarma</li>
+    <li>AI destekli cevap anahtarı taslağı oluşturma</li>
+    <li>Gözetmen onay akışı yönetimi (WebSocket üzerinden)</li>
+    <li>Onaylanan cevap anahtarını veritabanına kaydetme</li>
+  </ul>
+</div>
+
+<div class="module-card">
+  <h3><code>display_server.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>WebSocket sunucusu (ESP32-C3 ekranlarla iletişim)</li>
+    <li>Veri paketleme: JSON → kompakt ikili format (ekran için)</li>
+    <li>Mod yönetimi (cevap anahtarı → izleme geçişi)</li>
+    <li>Çoklu ekran desteği</li>
+  </ul>
+</div>
+
+<div class="module-card">
+  <h3><code>db.py</code> <span class="tag tag-sw">Python</span></h3>
+  <ul>
+    <li>SQLite veritabanı yönetimi</li>
+    <li>Kayıt saklama ve silme politikası</li>
+    <li>Erişim günlüğü</li>
+  </ul>
+</div>
+
+<!-- ==================== VERİTABANI ==================== -->
+<h2>Veritabanı Şeması (SQLite)</h2>
+
+<pre>
+-- Sınav oturumları
+CREATE TABLE exam_sessions (
+    id          INTEGER PRIMARY KEY,
+    started_at  TEXT NOT NULL,
+    ended_at    TEXT,
+    student_id  TEXT,       -- Anonim tanımlayıcı
+    camera_ip   TEXT,
+    status      TEXT DEFAULT 'ACTIVE'
+);
+
+-- Belge sayfaları
+CREATE TABLE page_captures (
+    id          INTEGER PRIMARY KEY,
+    session_id  INTEGER REFERENCES exam_sessions(id),
+    page_num    INTEGER,
+    captured_at TEXT NOT NULL,
+    image_path  TEXT,
+    ocr_text    TEXT,
+    status      TEXT DEFAULT 'PARTIAL'  -- PARTIAL/COMPLETE/UNCERTAIN
+);
+
+-- Cevap anahtarı
+CREATE TABLE answer_keys (
+    id          INTEGER PRIMARY KEY,
+    session_id  INTEGER REFERENCES exam_sessions(id),
+    question_no INTEGER,
+    ocr_answer  TEXT,       -- OCR'dan okunan
+    verified    INTEGER DEFAULT 0,
+    corrected   TEXT,       -- Gözetmen düzeltmesi (varsa)
+    verified_at TEXT
+);
+
+-- Aktivite olayları
+CREATE TABLE activity_events (
+    id          INTEGER PRIMARY KEY,
+    session_id  INTEGER REFERENCES exam_sessions(id),
+    event_type  TEXT NOT NULL,  -- WRITE_START, WRITE_END, PAUSE, ERASE, PAGE_TURN
+    timestamp   TEXT NOT NULL,
+    page_num    INTEGER,
+    question_no INTEGER,
+    duration_ms INTEGER,
+    metadata    TEXT            -- JSON ek bilgi
+);
+
+-- Soru zamanlamaları
+CREATE TABLE question_timings (
+    id              INTEGER PRIMARY KEY,
+    session_id      INTEGER REFERENCES exam_sessions(id),
+    question_no     INTEGER,
+    total_time_ms   INTEGER,
+    write_time_ms   INTEGER,
+    pause_time_ms   INTEGER,
+    erase_time_ms   INTEGER,
+    first_touch_at  TEXT,
+    last_touch_at   TEXT
+);
+
+-- Erişim günlüğü
+CREATE TABLE access_log (
+    id          INTEGER PRIMARY KEY,
+    accessed_at TEXT NOT NULL,
+    user_role   TEXT,       -- INSTRUCTOR, ADMIN
+    action      TEXT,
+    session_id  INTEGER
+);
+</pre>
+
+<!-- ==================== İLETİŞİM PROTOKOLLERİ ==================== -->
+<h2>İletişim Protokolleri</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h3 style="margin-top:0">ESP32-S3 → MacBook</h3>
+    <p style="font-size:0.88rem"><strong>Protokol:</strong> HTTP MJPEG Akışı</p>
+    <p style="font-size:0.88rem"><strong>Endpoint:</strong> <code>http://&lt;ESP32_IP&gt;:81/stream</code></p>
+    <p style="font-size:0.88rem"><strong>Format:</strong> multipart/x-mixed-replace; JPEG kareleri</p>
+    <p style="font-size:0.88rem"><strong>Çözünürlük:</strong> 640×480 @ 5-10 fps</p>
+    <p style="font-size:0.88rem"><strong>Bant genişliği:</strong> ~2-4 Mbps</p>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">MacBook → ESP32-C3 Ekran</h3>
+    <p style="font-size:0.88rem"><strong>Protokol:</strong> WebSocket (JSON)</p>
+    <p style="font-size:0.88rem"><strong>Port:</strong> 8765</p>
+    <p style="font-size:0.88rem"><strong>Mesaj tipleri:</strong></p>
+    <ul style="font-size:0.82rem;padding-left:1rem">
+      <li><code>ANSWER_KEY</code> — Soru/cevap çifti göster</li>
+      <li><code>TIMING_UPDATE</code> — Süre çubukları güncelle</li>
+      <li><code>MODE_SWITCH</code> — Mod değiştir</li>
+      <li><code>STATUS</code> — Durum bilgisi</li>
+    </ul>
+  </div>
+</div>
+
+<h3>WebSocket Mesaj Formatı (MacBook → Ekran)</h3>
+<pre>
+// Cevap anahtarı modu
+{
+  "type": "ANSWER_KEY",
+  "question": 3,
+  "total": 10,
+  "ocr_text": "F = m × a",
+  "confidence": 0.87
+}
+
+// Zamanlama güncelleme
+{
+  "type": "TIMING_UPDATE",
+  "questions": [
+    {"q": 1, "write": 180, "pause": 45, "erase": 0, "active": false},
+    {"q": 2, "write": 95,  "pause": 12, "erase": 8, "active": true},
+    {"q": 3, "write": 0,   "pause": 0,  "erase": 0, "active": false}
+  ],
+  "current_page": 1,
+  "total_pages": 3,
+  "elapsed": "00:24:15"
+}
+
+// Düğme yanıtı (Ekran → MacBook)
+{
+  "type": "BUTTON",
+  "action": "CONFIRM" | "CORRECT" | "SKIP",
+  "question": 3,
+  "correction": "F = m · a"  // sadece CORRECT'te
+}
+</pre>
+
+<!-- ==================== PROJE YAPISI ==================== -->
+<h2>Proje Dosya Yapısı</h2>
+
+<pre>
+sinav-gozlem/
+├── firmware/
+│   ├── camera_stream/
+│   │   ├── camera_stream.ino       # ESP32-S3 verici firmware
+│   │   └── config.h                # WiFi ayarları
+│   └── display_client/
+│       ├── display_client.ino      # ESP32-C3 ekran firmware
+│       ├── ui_renderer.h           # TFT UI çizim fonksiyonları
+│       └── config.h                # WiFi + sunucu ayarları
+├── server/
+│   ├── main.py                     # Ana uygulama giriş noktası
+│   ├── capture.py                  # MJPEG akış yakalama
+│   ├── frame_analyzer.py           # Görüntü analizi
+│   ├── page_detector.py            # Sayfa tespiti
+│   ├── document_stitcher.py        # Belge birleştirme
+│   ├── timing_engine.py            # Zamanlama motoru
+│   ├── answer_key.py               # Cevap anahtarı + AI
+│   ├── display_server.py           # WebSocket sunucu (ekranlar için)
+│   ├── db.py                       # SQLite yönetimi
+│   ├── config.py                   # Yapılandırma
+│   └── privacy.py                  # Gizlilik politikası uygulama
+├── hardware/
+│   ├── button_case.stl             # Düğme kamera kasası 3D model
+│   ├── transmitter_case.stl        # Verici kasası 3D model
+│   ├── display_case.stl            # Ekran kasası 3D model
+│   └── wiring_diagram.svg          # Kablaj şeması
+├── recordings/                     # Geçici kayıtlar
+├── captures/                       # Yakalanmış kareler
+├── exam_data.db                    # SQLite veritabanı
+└── requirements.txt                # Python bağımlılıkları
+</pre>
+
+<!-- ==================== GELİŞTİRME PLANI ==================== -->
+<h2>Geliştirme Planı (10 Gün)</h2>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="day">Gün 1-2: Donanım Montajı</div>
+    <div class="task">
+      ESP32-S3 + OV2640 kamera bağlantısı ve test. FPC kablo lehimleme.
+      Düğme kasası 3D baskı. Verici kasası hazırlama.
+      ESP32-C3 + ILI9341 TFT bağlantısı. Ekran kasası 3D baskı.
     </div>
-    <div>
-      <strong class="estimated">Tahmin / Test Edilmemis</strong>
-      <ul style="margin: 0.25rem 0 0 1rem; padding: 0;">
-        <li>Gercek OCR dogrulugu bu sinav formatinda</li>
-        <li>Pil omru (3&ndash;4 saat tahmini)</li>
-        <li>Fiyatlar (web snippet'larina dayali)</li>
-        <li>Hareket algilama hassasiyeti</li>
-        <li>QR kod okuma mesafesi</li>
-        <li>Toplam kasa boyutlari</li>
-      </ul>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 3: Firmware Geliştirme</div>
+    <div class="task">
+      ESP32-S3 kamera firmware: MJPEG HTTP sunucusu, WiFi bağlantı, pil yönetimi.
+      ESP32-C3 ekran firmware: TFT sürücü, WebSocket istemci, UI çizim.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 4-5: Python Çekirdek</div>
+    <div class="task">
+      capture.py: MJPEG akış yakalama. frame_analyzer.py: El/kalem tespiti, hareket sınıflandırma.
+      page_detector.py: Sayfa tespiti, eğim kompanzasyonu. timing_engine.py: Zamanlama motoru.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 6: OCR ve Cevap Anahtarı</div>
+    <div class="task">
+      Tesseract OCR entegrasyonu (Türkçe). answer_key.py: AI destekli cevap çıkarma.
+      Gözetmen onay akışı (WebSocket). display_server.py: Ekran iletişim sunucusu.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 7: Belge İşleme</div>
+    <div class="task">
+      document_stitcher.py: Çok sayfalı belge birleştirme.
+      Sayfa sırası doğrulama. OCR doğruluk iyileştirmesi.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 8: Ekran Modları</div>
+    <div class="task">
+      Cevap anahtarı modu: soru/cevap gösterimi, düğme yanıtları.
+      İzleme modu: süre çubukları, aktivite göstergesi, sayfa durumu.
+      Otomatik mod geçişi.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 9: Entegrasyon</div>
+    <div class="task">
+      Uçtan uca test: Kamera → WiFi → Mac → Ekran.
+      Çoklu öğrenci senaryosu. Hata kurtarma testleri.
+      Gizlilik kontrolü: erişim günlüğü, silme politikası.
+    </div>
+  </div>
+  <div class="timeline-item">
+    <div class="day">Gün 10: Test ve Düzeltme</div>
+    <div class="task">
+      Gerçek sınav ortamı simülasyonu. Pil ömrü testi.
+      WiFi menzil testi (oda arası). Kenar durumları.
+      Dokümantasyon güncelleme.
     </div>
   </div>
 </div>
 
-<p style="text-align: center; color: var(--fg-muted); font-size: 0.82rem; margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
-  Sinav Gozlem Sistemi Proje Plani &middot; Kasim 2026<br>
-  Fiyatlar ve stok bilgileri satin almadan once dogrulanmalidir.
-</p>
+<!-- ==================== TEST SENARYOLARI ==================== -->
+<h2>Test Senaryoları</h2>
+
+<table>
+  <tr><th style="width:60px">No</th><th>Senaryo</th><th>Beklenen Sonuç</th></tr>
+  <tr><td>T1</td><td>Düğme kamerayı yakaya takıp eğimli sırada kağıt görüntüle</td><td>Kağıdın tamamı net görüntülenir, çözünürlük OCR için yeterli</td></tr>
+  <tr><td>T2</td><td>FPC kablo ile 30cm mesafeden bağlantı, hareket esnekliği</td><td>Öğrenci normal hareketlerinde kablo kopma/gerilme olmaz</td></tr>
+  <tr><td>T3</td><td>ESP32-S3 MJPEG akışı farklı odadaki Mac'e</td><td>Stabil 5+ fps, &lt;200ms gecikme, WiFi duvar arkası çalışır</td></tr>
+  <tr><td>T4</td><td>Yazma/duraklama/silme hareketi tespiti</td><td>Her hareket tipi doğru sınıflandırılır, zaman damgası doğru</td></tr>
+  <tr><td>T5</td><td>Sayfa çevirme algılama (eğimli masada)</td><td>Sayfa değişimi &lt;3 saniyede tespit, yeni sayfa numarası doğru</td></tr>
+  <tr><td>T6</td><td>OCR ile Türkçe el yazısı okuma</td><td>Basılı metin &gt;80% doğruluk, el yazısı &gt;50% (AI destekli)</td></tr>
+  <tr><td>T7</td><td>Cevap anahtarı gözetmen ekranında gösterilip onaylanma</td><td>Ekranda okunaklı metin, düğmeler çalışır, onay Mac'e ulaşır</td></tr>
+  <tr><td>T8</td><td>Mod geçişi: cevap anahtarı → izleme</td><td>Son soru onaylanınca otomatik geçiş, süre çubukları görünür</td></tr>
+  <tr><td>T9</td><td>Pil ömrü: Verici 3 saat, Ekran 6 saat</td><td>Tam sınav süresi boyunca çalışır, düşük pil uyarısı gelir</td></tr>
+  <tr><td>T10</td><td>WiFi kopması ve yeniden bağlanma</td><td>Otomatik yeniden bağlanma, veri kaybı olmadan devam</td></tr>
+</table>
+
+<!-- ==================== RİSKLER ==================== -->
+<h2>Riskler ve Azaltma</h2>
+
+<table>
+  <tr><th>Risk</th><th>Olasılık</th><th>Etki</th><th>Azaltma</th></tr>
+  <tr>
+    <td>FPC kablo kopması/gevşemesi</td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td><span class="tag tag-danger">Yüksek</span></td>
+    <td>Konnektör takviyesi, yedek kablo, kıyafete sabitleme noktaları</td>
+  </tr>
+  <tr>
+    <td>Düğme kameranın görüş açısı yetersiz</td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td>Geniş açı lens (120°+), kamera açısı ayarlanabilir kasa</td>
+  </tr>
+  <tr>
+    <td>WiFi sinyal zayıflığı (duvar arası)</td>
+    <td><span class="tag tag-ok">Düşük</span></td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td>WiFi repeater, yönlü anten, router konumu optimizasyonu</td>
+  </tr>
+  <tr>
+    <td>Eğimli masada kamera açısı kayması</td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td><span class="tag tag-ok">Düşük</span></td>
+    <td>Yazılımda perspektif düzeltme, adaptif çerçeveleme</td>
+  </tr>
+  <tr>
+    <td>Öğrencinin kameraya rahatsızlık duyması</td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td>Küçük boyut + düğme görünümü, bilgilendirme ve rıza</td></tr>
+  <tr>
+    <td>ESP32-S3 ısınma (sürekli akış)</td>
+    <td><span class="tag tag-ok">Düşük</span></td>
+    <td><span class="tag tag-ok">Düşük</span></td>
+    <td>Kasada havalandırma delikleri, FPS düşürme seçeneği</td>
+  </tr>
+  <tr>
+    <td>OCR doğruluğu düşük (el yazısı)</td>
+    <td><span class="tag tag-warn">Orta</span></td>
+    <td><span class="tag tag-ok">Düşük</span></td>
+    <td>Gözetmen doğrulaması zorunlu, AI asistan desteği</td>
+  </tr>
+</table>
+
+<!-- ==================== GEREKSİNİMLER ==================== -->
+<h2>Yazılım Gereksinimleri</h2>
+
+<div class="two-col">
+  <div class="card">
+    <h3 style="margin-top:0">MacBook (Python)</h3>
+    <pre style="margin:0;font-size:0.8rem">Python 3.11+
+opencv-python >= 4.8
+pytesseract >= 0.3.10
+websockets >= 12.0
+numpy >= 1.24
+Pillow >= 10.0
+requests >= 2.31</pre>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">ESP32 (Arduino IDE)</h3>
+    <pre style="margin:0;font-size:0.8rem">Arduino IDE 2.x
+ESP32 Board Package 3.x
+  - esp32-s3 (verici)
+  - esp32-c3 (ekran)
+TFT_eSPI kütüphanesi
+ArduinoWebsockets
+ArduinoJson 7.x</pre>
+  </div>
+</div>
 
 </div>
